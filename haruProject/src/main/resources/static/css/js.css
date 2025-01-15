@@ -1,0 +1,70 @@
+@charset "UTF-8";
+
+.js-pro-container {
+	margin-top: 2rem;
+	color: black;
+}
+.js-pro-container .title {
+	font-size: 1.15rem;
+	font-weight: 500;
+}
+.js-pro-container .js-pro-info table {
+	margin-top: 0.8rem;
+	width: 100%;
+	color: black;
+	font-size: 1rem;
+}
+.js-pro-container .js-pro-info table .sub-title {
+	font-weight: 500;
+}
+.js-pro-container .js-pro-info table input:is([type=text], [type=number]),
+.js-pro-container .js-pro-info table select {
+    border-radius: 0.75rem;
+    border: 1px solid var(--haru);
+    padding-inline: 1rem;
+    outline-color: var(--haru);
+    height: 1.8rem;
+}
+.js-pro-container .js-pro-info table td {
+	padding-block: 0.7rem;
+}
+
+.js-pro-container .js-pro-info table select {
+	width: 10rem;
+}
+.js-pro-container .js-pro-info table input:is([type=text], [type=number]) {
+	width: 80%;
+}
+
+.js-pro-img, .js-pro-detail {
+	margin-top: 1.7rem;
+}
+.js-pro-img label.img_upload {
+	background-color: #f0f0f0;
+	cursor: pointer;
+	text-align: center;
+	width: 7rem;
+	height: 7rem;
+	line-height: 7rem;
+	font-size: 1.5rem;
+	border-radius: 0.625rem;
+}
+.pro-mainimg-div {
+	width: fit-content;
+	height: fit-content;
+	position: relative;
+	pointer-events: none;
+}
+.pro-thumbnail::after {
+	content: '\f057';
+	display: inline-block;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: red;
+    font-size: 1.25rem;
+    position: absolute;
+    top: -0.7rem;
+    left: 6.25rem;
+    cursor: pointer;
+    pointer-events: all;
+}

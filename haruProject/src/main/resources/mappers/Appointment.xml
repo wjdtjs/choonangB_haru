@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.AppointmentMapper">
+
+	<!-- select -->
+	<!-- 전체 예약 수 조회 -->
+	<select id="HR_SelectTotalAppointmentCnt" resultType="int">
+		SELECT COUNT(*) FROM appointment
+	</select>
+	
+	<!-- 예약 목록 가져오기 -->
+	<select id="HR_SelectAppointmentList" parameterType="Map" resultType="Appointment">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM rn, aa.*
+		    FROM (
+		        SELECT a.RESNO, a.RDATE, m.MNAME, p.PETNAME, d.ANAME, cm.CONTENT as item, c.CONTENT as status
+		        FROM APPOINTMENT a 
+		            JOIN MEMBER m ON a.MEMNO = m.MEMNO
+		            JOIN PET p ON a.PETNO = p.PETNO
+		            JOIN ADMIN d ON a.ANO = d.ANO
+		            JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
+		            JOIN COMMON c ON c.BCD = a.RSTATUS_BCD and c.MCD = a.RSTATUS_MCD
+		            JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD
+				ORDER BY a.REG_DATE desc
+		    )aa
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow} 
+	</select>
+
+</mapper>

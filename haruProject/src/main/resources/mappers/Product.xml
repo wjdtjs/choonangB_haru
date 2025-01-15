@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.ProductMapper">
+
+	
+	
+	<!-- SELECT -->
+	<!-- 필터 적용된 상품 리스트 수 조회 -->
+	<select id="JS_SelectTotalProductCnt" parameterType="SearchItem" resultType="int">
+		SELECT COUNT(*) FROM PRODUCT  
+		<if test="(search1 != null and !search1.equals('')) or (search2 != null and !search2.equals(''))">
+			WHERE
+		</if>
+		<if test="search1 != null and !search1.equals('')">
+			PNAME LIKE '%' || #{search1} || '%'
+		</if>
+		<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
+			AND
+		</if>
+		<if test="search2 != null and !search2.equals('')">
+			PSTATUS_MCD = #{search2}
+		</if>
+	</select>
+	
+	<!-- 상품 상태 공통데이터 종류 조회 -->
+	<select id="JS_SelectCommonStatus" resultType="Map">
+		SELECT DISTINCT cm.CONTENT as status, pp.PSTATUS_MCD
+		FROM PRODUCT pp INNER JOIN COMMON cm
+		ON pp.PSTATUS_BCD = cm.BCD AND pp.PSTATUS_MCD = cm.MCD
+	</select>
+	
+	<!-- 상품 분류 공통데이터 종류 조회 -->
+	<select id="JS_SelectProductCD" resultType="Map">
+		SELECT DISTINCT cm.CONTENT, pp.PSTEP_BCD, pp.PSTEP_MCD
+		FROM PRODUCT pp INNER JOIN COMMON cm
+		ON pp.PSTEP_BCD = cm.BCD AND
+	</select>
+
+	<!-- 상품 리스트 조회 -->
+	<select id="JS_SelectProductList" parameterType="Map" resultType="Product">
+		SELECT *
+		FROM (
+			SELECT ROWNUM rn, p.*
+			FROM (
+				SELECT PNO, PNAME, PPRICE, REG_DATE, PBRAND, cm.CONTENT as status, PQUANTITY, PSTEP_BCD, PSTEP_MCD
+				FROM PRODUCT pp INNER JOIN COMMON cm
+				ON
+				pp.PSTATUS_BCD = cm.BCD AND pp.PSTATUS_MCD = cm.MCD
+				<if test="search.search1 != null and !search.search1.equals('')">
+					AND PNAME LIKE '%' || #{search.search1} || '%'
+				</if>
+				<if test="search.search2 != null and !search.search2.equals('')">
+					AND PSTATUS_MCD = #{search.search2}
+				</if>
+				ORDER BY TO_NUMBER(PNO)
+			) p
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow} 
+	</select>
+	<!-- End SELECT -->
+	
+</mapper>

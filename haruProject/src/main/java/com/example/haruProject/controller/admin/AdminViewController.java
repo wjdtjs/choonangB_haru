@@ -1,0 +1,149 @@
+package com.example.haruProject.controller.admin;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.haruProject.service.js.ShopService;
+
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+public class AdminViewController {
+	
+	private final ShopService ss;
+	
+	//TODO: 비밀번호 관리 뷰 만들기
+	//TODO: 탈퇴 뷰 만들기
+
+	/**
+	 * 관리자페이지 로그인 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/login")
+	public String loginView() {
+		
+		return "admin/login";
+	}
+	
+	/**
+	 * 관리자페이지 메인 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/index")
+	public String indexView() {
+		return "admin/main";
+	}
+	
+	/**
+	 * 관리자페이지 관리자 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/doctor")
+	public String docView() {
+		return "admin/doctor";
+	}
+	
+	/**
+	 * 관리자페이지 근무관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/schedule")
+	public String schView() {
+		return "admin/schedule";
+	}
+	
+	/**
+	 * 관리자페이지 진료항목 관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/medical")
+	public String medicalView() {
+		return "admin/medical";
+	}
+	
+	/**
+	 * 관리자페이지 진료관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/consultation")
+	public String consView() {
+		return "admin/consultation";
+	}
+	
+	/**
+	 * 관리자페이지 재고관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/stock")
+	public String stockView(Model model) {
+		
+		//상태 정보
+		List<Map<String, Object>> statusList = new ArrayList<>();
+		statusList = ss.getStatusList();
+//		System.out.println(statusList);
+		
+		model.addAttribute("statusList", statusList);
+		
+		return "admin/stock";
+	}
+	
+	/**
+	 * 관리자페이지 상품판매관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/shop")
+	public String shopView() {
+		return "admin/shop";
+	}
+	
+	/**
+	 * 관리자페이지 회원관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/members")
+	public String memberView() {
+		return "admin/members";
+	}
+
+	/**
+	 * 관리자페이지 동물관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/animals")
+	public String animalView() {
+		return "admin/animals";
+	}
+	
+	/**
+	 * 관리자페이지 예약관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/reservation")
+	public String resView() {
+		return "admin/reservation";
+	}
+	
+	/**
+	 * 관리자페이지 공지사항관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/notice")
+	public String noticeView() {
+		return "admin/notice";
+	}
+	
+	/**
+	 * 관리자페이지 게시판관리 뷰
+	 * @return
+	 */
+	@GetMapping("/admin/board")
+	public String boardView() {
+		return "admin/board";
+	}
+}

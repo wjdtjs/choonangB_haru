@@ -1,0 +1,51 @@
+server:
+  port: 8399
+  servlet:
+    jsp:
+      init-parameters:
+        development: true
+
+spring:
+  # Oracle Connect
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@1.234.5.72:1521/xe
+    username: s202501b
+    password: tiger
+  
+  # File Size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  
+  # JPA Setting
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+#      ddl-auto: create
+
+  # View Resolver
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  
+  # gmail Transfer (OSI7 -> Application) --> SMTP (FTP, SMTP, TELNET)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: #@gmail.com
+    password: 
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true  
+                        
+#Mybatis
+mybatis:
+  config-location: classpath:configuration.xml
+  mapper-locations: classpath:mappers/*.xml
+  

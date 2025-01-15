@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center; /* 화면 가로 중앙 정렬 */
+    align-items: flex-end; /* 화면 하단 정렬 */
+    height: 100vh; /* 전체 화면 높이 */
+    background-color: #fff;
+}
+        
+.menubar {
+	display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+	width: 390px;
+	height: 72px;
+	border-radius: 24px 24px 0 0; /* 왼쪽 위와 오른쪽 위에 굴림 */
+	box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+	background-color: #fff;
+       padding: 0;
+}
+
+.menu-icon {
+	flex: 1;
+	text-align: center;
+	
+}
+
+.menu-icon i {
+	font-size: 20px;
+	display: block;
+}

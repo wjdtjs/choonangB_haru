@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias alias="Product" type="com.example.haruProject.dto.Product"/>
+		<typeAlias alias="SearchItem" type="com.example.haruProject.dto.SearchItem"/>
+		<typeAlias alias="Admin" type="com.example.haruProject.dto.Admin"/>
+		<typeAlias alias="Appointment" type="com.example.haruProject.dto.Appointment"/>
+		
+	</typeAliases>
+</configuration>

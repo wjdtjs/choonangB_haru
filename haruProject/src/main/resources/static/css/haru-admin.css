@@ -1,0 +1,179 @@
+@charset "UTF-8";
+
+.card-header .haru-search-box select {
+	outline-color: var(--haru);
+}
+
+.card-header .haru-tb-input-box {
+	position: relative;
+}
+
+.card-header .haru-tb-input-box::before {
+	content:"\f002";
+    display: block;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 18px;
+    position: absolute;
+    left: 0.625rem;
+    top: 0.3rem;
+    color: var(--haru); 
+}
+
+.card-header .haru-search-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.card-header .haru-search-box .haru-left,
+.card-header .haru-search-box .haru-right {
+	display: flex;
+	flex-direction: row;
+}
+
+select {
+	-webkit-appearance:none; /* for chrome */
+   	-moz-appearance:none; /*for firefox*/
+   	appearance:none;
+   	
+   	background-image: url("/img/drop_arrow.png");  
+	background-repeat: no-repeat;  
+	background-position: 89% center;  
+	background-size: 1.2rem;
+	cursor: pointer;
+}
+.card-header .haru-search-box select {
+	margin-right: 0.8rem;
+	border-radius: 0.75rem;
+	height: 2rem;
+	padding-left: 0.8rem;
+	padding-right: 2.5rem;
+
+}
+
+.haru-search-box .haru-tb-btn {
+	border-radius: 0.5rem;
+	height: 2rem; 
+	border: none !important;
+	padding-inline: 0.8rem;
+}
+
+
+
+.haru-pagination {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4rem;
+}
+
+.haru-pagearrow {
+    text-align: center;
+    color: var(--haru);
+    margin-inline: 0.7rem;
+    cursor: pointer;
+}
+
+.haru-pagenum {
+	width: 1.563rem;
+    height: 1.563rem;
+    line-height: 1.563rem;
+    text-align: center;
+    border-style: solid;
+    border-color: var(--haru);
+    border-width: 1px;
+    border-right: 0;
+    color: var(--haru);
+    cursor: pointer;
+}
+
+.haru-pagenum:last-of-type {
+	border-right: 1px solid;
+}
+
+.haru-pagenum.active {
+	background-color: var(--haru);
+	color: #fff;
+}
+
+
+.haru-table-tr {
+	cursor: pointer;
+}
+
+
+/* 모달 공통 스타일 */
+
+#modal_l {
+	display: none;
+ 	position:absolute;
+  	width:100%;
+  	height:auto;
+  	z-index:999;
+  	top: 55px;
+}
+
+#modal_l h4 {
+  	margin:0;
+  	color: #0C808D;
+  	font-weight: bold;
+}
+
+.modal_l_content {
+	position: relative; /* 자식 요소가 부모 요소를 기준으로 위치 설정할 수 있도록 함 */
+  	width: 1100px;
+  	height: 777px;
+  	margin: auto;
+  	padding:40px 40px;
+  	background:#fff;
+  	border-radius: 24px;
+}
+
+.modal_l-content-btn > button {
+	border-radius: 5px;
+  	width: 92px;
+  	height: 40px;
+  	font-size: 16px;
+  	
+  	border: white;
+  	color: white;
+  	font-weight: 500;
+}
+.modal_l_content button.pro_reg {
+  	margin-right: 15px;
+  	background-color: #B9B9B9;
+}
+.modal_l_content .update_btn {
+  	background-color: var(--haru);
+}
+
+#modal_l .modal_l_layer {
+  	position:fixed;
+  	top:0;
+  	left:0;
+  	width:100%;
+  	height:100%;
+  	background:rgba(0, 0, 0, 0.5);
+  	z-index:-1;
+}
+
+.modal_l_detail {
+	height: 640px;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.modal_l-content-btn {
+	width: 100%;
+	height: fit-content;
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 20px;
+	
+}
+
+.modal-backdrop.show {
+	display: none;
+}
