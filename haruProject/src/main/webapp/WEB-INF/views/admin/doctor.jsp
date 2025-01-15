@@ -18,17 +18,86 @@
 
 <script type="text/javascript">
 
-	$(()=>{
-		$('#pageNum1').addClass('active');
+	let search1 = "";
+	
+	$(async ()=>{
+		await listShow('1');
+		
+		//검색
+		$('.tb-search-input').keyup(async function() {
+// 			console.log($(this).val())
+			search1 = $(this).val();
+			await listShow('1', search1);
+		})
+		
 	})
+	
+	/**
+	 * 리스트 (ajax)
+	*/
+	async function listShow(pageNum, search1) {
+		console.log(search1)
+		
+		$.ajax({
+			url: "<%=request.getContextPath()%>/api/admin-list",
+			data: {
+				pageNum: pageNum,
+				search1: search1
+			},
+			dataType: 'json',
+			success: function(data) {
+				
+				console.log(data.list);
+				
+				let pagination = data.pagination;
+				
+				let str = "";
+				let str2 = "";
+				
+				$(data.list).each (function(){
+					str += `
+							<tr class="haru-table-click">
+		                        <td>\${this.ano}</td>
+		                        <td>\${this.aname}</td>
+		                        <td>\${this.aemail}</td>
+		                        <td>\${this.level_content}</td>
+		                        <td>\${this.hiredate.split('T')[0]}</td>
+		                        <td>\${this.status_content}</td>
+	                    	</tr>
+					       `
+				})
+				$('.adminTable').html(str);
+				
+				if(pagination.startPage > pagination.blockSize) {
+					str2 += `<i class="haru-pagearrow fa-solid fa-chevron-left" onclick="pageChange(\${pagination.startPage-pagination.blockSize})"></i>`;
+				}
+				for(let i=1; i<pagination.pageCnt+1; i++) {
+					str2 += `<div class="haru-pagenum" id="pageNum\${i}" onclick="pageChange(\${i})">\${i }</div>`;
+				} 
+				if(pagination.endPage < pagination.pageCnt) {
+					str2 += `<i class="haru-pagearrow fa-solid fa-chevron-right" onclick="pageChange(\${pagination.startPage+pagination.blockSize})"></i>`;
+				}
+				
+				$('.haru-pagination').html(str2);
+				
+				$(`#pageNum\${pagination.currentPage}`).addClass('active');
+				
+			},
+			error: function(e) {
+				console.log(e);
+			}
+		})
+	}
 	
 	/**
 	 * 페이지 교체
 	 * @param num 
 	 * @return 
 	*/
-	function pageChange(num) {
+	async function pageChange(num) {
 		let id = '#pageNum' + num;
+		
+		await listShow(num, search1);
 		
 		$('.haru-pagenum').removeClass('active');
 		$(id).addClass('active');
@@ -52,7 +121,7 @@
             <!-- Main Content -->
             <div id="content">
 
-                <!-- Topbar -->
+                 <!-- Topbar -->
                 <jsp:include page="components/topBar.jsp"></jsp:include>
                 <!-- End of Topbar -->
 
@@ -68,23 +137,30 @@
                         <div class="card-header py-3">
                             <div class="m-0 haru-search-box">
 	                            <div class="haru-left">
-	                            	<select name="searchAdmin">
-	                            		<option value="s_all">전체</option>
-	                            		<option value="s_aname">이름</option>
+	                            	<select>
+	                            		<!-- <option value="all">전체</option> -->
+	                            		<option value="name">이름</option>
 	                            	</select>
 	                            	<div class="haru-tb-input-box">
-	                            		<input class="tb-search-input" type="text" name="keyword">                            	
+	                            		<input class="tb-search-input" type="text">                            	
 	                            	</div>                            
 	                            </div>
 	                            <div class="haru-right">
-	                           		<button class="btn-primary haru-tb-btn" id="modal_open_btn">관리자 추가</button>
+	                           		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn">관리자 추가</button>
 	                           	</div>                           	                         
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                            	<c:set var="num" value="${page.total-page.start+1 }"></c:set>
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <colgroup>
+                                    	<col width="10%" />
+                                    	<col width="20%" />
+                                    	<col width="30%" />
+                                    	<col width="10%" />
+                                    	<col width="20%" />
+                                    	<col width="10%" />
+                                    </colgroup>
                                     <thead>
                                         <tr>
                                             <th>사번</th>
@@ -95,8 +171,8 @@
                                             <th>상태</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <c:forEach var="admin" items="${listAdmin }">
+                                    <tbody class="adminTable">
+                                        <%-- <c:forEach var="admin" items="${listAdmin }">
 	                                        <tr>
 	                                            <td>${admin.ano }</td>
 	                                            <td>${admin.aname  }</td>
@@ -105,32 +181,14 @@
 	                                            <td>${admin.hiredate }</td>
 	                                            <td>${admin.astatus }</td>
 	                                        </tr>
-                                        </c:forEach>
+                                        </c:forEach> --%>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                   		<%-- <div style="text-align: center;">
-							<c:if test="${startPage > blockSize }">
-								<a href='list.do?pageNum=${startPage - blockSize }'>[이전]</a>
-							</c:if>
-							<c:forEach var="i" begin="${startPage }" end="${endPage }">
-								<a href='list.do?pageNum=${i }'>[${i }]</a>
-							</c:forEach>
-							<c:if test="${endPage < pageCnt }">
-								<a href='list.do?pageNum=${startPage + blockSize }'>[다음]</a>
-							</c:if>
-						</div> --%>
+       
 						<div class="haru-pagination">
-<%-- 							<c:if test="${startPage > blockSize }"> --%>
-								<i class="haru-pagearrow fa-solid fa-chevron-left"></i>
-<%-- 							</c:if> --%>
-							<c:forEach var="i" begin="1" end="8">
-								<div class="haru-pagenum" id="pageNum${i}" onclick="pageChange(${i})">${i }</div>
-							</c:forEach>
-<%-- 							<c:if test="${endPage < pageCnt }"> --%>
-								<i class="haru-pagearrow fa-solid fa-chevron-right"></i>
-<%-- 							</c:if> --%>
+
 						</div>
                     </div>
 

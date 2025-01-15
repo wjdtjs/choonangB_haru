@@ -3,7 +3,43 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.haruProject.AdminMapper">
-	<select id="hjAdminList" resultType="Admin">
-		select * from admin
+	<select id="HJSelectTotalCnt" parameterType="SearchItem" resultType="int">
+		select count(*) from admin
+		<if test="(search1 != null and !search1.equals(''))">
+			where aname like '%' || #{search1} || '%'
+		</if>
+	</select>
+	
+	<select id="HJSelectAdminList" parameterType="map" resultType="Admin">
+	SELECT *
+	FROM (
+			SELECT ROWNUM rn, a.*
+			FROM (
+				SELECT
+				    ad.ano,
+				    ad.apasswd,
+				    ad.atel,
+				    ad.aemail,
+				    ad.aname,
+				    ad.hiredate,
+				    ad.reg_date,
+				    cm1.CONTENT AS level_content,  -- cm1의 CONTENT 컬럼
+				    cm2.CONTENT AS status_content, -- cm2의 CONTENT 컬럼
+				    cm1.bcd AS cm1_bcd,            -- cm1의 bcd 컬럼
+				    cm2.bcd AS cm2_bcd             -- cm2의 bcd 컬럼
+				FROM 
+				    common cm1
+				INNER JOIN 
+				    admin ad ON ad.alevel_bcd = cm1.bcd AND ad.alevel_mcd = cm1.mcd
+				INNER JOIN 
+				    common cm2 ON ad.astatus_bcd = cm2.bcd AND ad.astatus_mcd = cm2.mcd
+				<if test="search.search1 != null and !search.search1.equals('')">
+					where aname LIKE '%' || #{search.search1} || '%'
+				</if>
+				ORDER BY TO_NUMBER(ano)
+			)a
+		 ) 
+		 WHERE rn BETWEEN #{startRow} AND #{endRow}
+	
 	</select>
 </mapper>
