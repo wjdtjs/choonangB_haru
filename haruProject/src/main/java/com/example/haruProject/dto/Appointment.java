@@ -30,4 +30,7 @@ public class Appointment {
 	private String item;		// 진료 항목 이름
 	private String status;		// 예약 상태
 	
+	private String species;		// 종
+	private String cresno;		// 차트가 작성됐는지 확인하기 위함
+	
 }

@@ -114,8 +114,20 @@
 	border: 1px solid #0C808D;
 	border-radius: 12px;
 	color: black;
-	padding: 2px 4px;
-	font-size: 14px;	
+	font-size: 14px;
+	width: 136px;
+	height: 28px;
+	padding: 2px 0px 2px 12px;
+	margin: 0 12px;
+}
+
+#res_input {
+	width: 136px;
+	height: 28px;
+	margin: 4px 12px;
+	border: 1px solid var(--haru);
+	border-radius: 12px;
+	padding: 0 12px;
 }
 
 
@@ -198,12 +210,13 @@
 				        			
 				        			<tr>
 				        				<th>보호자</th>
-				        				<td>: 1</td>
+				        				<td><input type="text" name="mname" id="res_input"></td>
 				        			</tr>
 				        			
 				        			<tr>
 				        				<th>동물이름</th>
-				        				<td>: 이름</td>
+				        				<!-- 보호자 이름에 해당하는 동물 불러와서 선택할 수 있게 -->
+				        				<td><select></select></td>
 				        			</tr>
 				
 				
@@ -226,7 +239,7 @@
 	        
 	        <!-- 모달 버튼 -->
 	        <div class="modal_l-content-btn">
-	        	<button type="button" class="res_modal" id="modal_close_btn">목록으로</button>
+	        	<button type="button" class="res_modal to_list" id="modal_close_btn">목록으로</button>
 	        	<button type="submit" class="res_modal" id="update_btn">예약 추가</button>
 	        </div>
 	

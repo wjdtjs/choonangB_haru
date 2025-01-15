@@ -29,4 +29,9 @@ public class SearchItem {
 		this.search2 = search2;
 	}
 	
+	public SearchItem(String type1, String search1, String search2) {
+		this.search1 = search1;
+		this.search2 = search2;
+		this.type1 = type1;
+	}
 }

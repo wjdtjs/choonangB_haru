@@ -6,10 +6,39 @@
 
 	<!-- select -->
 	<!-- 전체 예약 수 조회 -->
-	<select id="HR_SelectTotalAppointmentCnt" resultType="int">
-		SELECT COUNT(*) FROM appointment
+	<select id="HR_SelectTotalAppointmentCnt" parameterType="SearchItem" resultType="int">
+		SELECT COUNT(*) 
+		FROM APPOINTMENT a
+			JOIN MEMBER m ON a.MEMNO = m.MEMNO
+		    JOIN PET p ON a.PETNO = p.PETNO
+		    JOIN ADMIN d ON a.ANO = d.ANO
+		    JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
+		    JOIN COMMON c ON c.BCD = a.RSTATUS_BCD and c.MCD = a.RSTATUS_MCD
+		    JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD
+		    
+			<if test="(search1 != null and !search1.equals('')) or (search2 != null and !search2.equals(''))">
+			WHERE
+			</if>
+			<if test="search1 != null and !search1.equals('')">
+				<choose>
+					<when test="type1 == '1'">a.RESNO LIKE '%' || #{search1} || '%'</when>
+					<when test="type1 == '2'">m.MNAME LIKE '%' || #{search1} || '%'</when>
+					<when test="type1 == '3'">p.PETNAME LIKE '%' || #{search1} || '%'</when>
+					<when test="type1 == '4'">d.ANAME LIKE '%' || #{search1} || '%'</when>
+					<when test="type1 == '5'">cm.MCD LIKE '%' || #{search1} || '%'</when>
+					<otherwise>a.RESNO LIKE '%' || #{search1} || '%'</otherwise>
+				</choose>			 
+			</if>
+			
+			<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
+				AND
+			</if>
+			<if test="search2 != null and !search2.equals('')">
+				a.RSTATUS_MCD = #{search2}
+			</if>
+
 	</select>
-	
+	 
 	<!-- 예약 목록 가져오기 -->
 	<select id="HR_SelectAppointmentList" parameterType="Map" resultType="Appointment">
 		SELECT *
@@ -24,8 +53,57 @@
 		            JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
 		            JOIN COMMON c ON c.BCD = a.RSTATUS_BCD and c.MCD = a.RSTATUS_MCD
 		            JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD
+		           
+					<if test="search.search1 != null and !search.search1.equals('')">
+						<choose>
+							<when test="type1 == '1'">AND a.RESNO LIKE '%' || #{search.search1} || '%'</when>
+							<when test="type1 == '2'">AND m.MNAME LIKE '%' || #{search.search1} || '%'</when>
+							<when test="type1 == '3'">AND p.PETNAME LIKE '%' || #{search.search1} || '%'</when>
+							<when test="type1 == '4'">AND d.ANAME LIKE '%' || #{search.search1} || '%'</when>
+							<when test="type1 == '5'">AND cm.MCD LIKE '%' || #{search.search1} || '%'</when>
+							<otherwise>AND a.RESNO LIKE '%' || #{search.search1} || '%'</otherwise>
+						</choose>			 
+					</if>
+
+					<if test="search.search2 != null and !search.search2.equals('')">
+						AND a.RSTATUS_MCD = #{search.search2}
+					</if>
+		        
 				ORDER BY a.REG_DATE desc
 		    )aa
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow} 
+	</select>
+	
+	<!-- 전체 진료 수 조회 -->
+	<select id="HR_SelectTotalConsultationCnt" resultType="int">
+		SELECT COUNT(*)
+		FROM appointment
+		WHERE rstatus_mcd = 400
+	</select>
+	
+	
+	<!-- 진료 내역 가져오기 -->
+	<select id="HR_SelectConsultationList" parameterType="Map" resultType="Appointment">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM rn, cc.*
+		    FROM (
+		        SELECT a.RESNO, ch.RESNO as cresno, a.RDATE, a.START_TIME, m.MNAME, p.PETNAME, cm1.CONTENT as species, ad.ANAME, cm2.CONTENT as item
+                FROM APPOINTMENT a
+                    JOIN MEMBER m ON a.MEMNO = m.MEMNO
+                    JOIN PET p ON a.PETNO = p.PETNO
+                    JOIN ADMIN ad ON a.ANO = ad.ANO
+                    JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
+                    JOIN COMMON c ON a.RSTATUS_BCD = c.BCD AND a.RSTATUS_MCD = c.MCD
+                    JOIN COMMON cm1 ON cm1.BCD = p.PETSPECIES_BCD AND cm1.MCD = p.PETSPECIES_MCD
+                    JOIN COMMON cm2 ON cm2.BCD = t.MTITLE_BCD AND cm2.MCD = t.MTITLE_MCD
+                    
+                    -- 차트 존재 여부 확인
+                    LEFT OUTER JOIN CHART ch ON a.RESNO = ch.RESNO
+                WHERE a.RSTATUS_MCD = 400
+                ORDER BY a.RDATE DESC, a.START_TIME DESC
+		    )cc
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow} 
 	</select>

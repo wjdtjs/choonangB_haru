@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+
+<!-- 예약 상세 모달 -->
+
 <style>
 
 .modal_l_detail_title{
@@ -40,7 +43,8 @@ p#title  {
   	color: white;
   	background-color: #0C808D;
   	font-weight: bold;
-  
+  	
+  	margin: 0 10px;
 }
 
 /* 목록으로 */
@@ -98,9 +102,10 @@ button#res-modal-1-btn2 {
 	border: 1px solid #0C808D;
 	border-radius: 12px;
 	color: #0C808D;
-	padding: 0 8px;
+	padding: 1px 32px 1px 12px;
 	margin: 0 12px;
-	font-size: 15px;
+	font-size: 16px;
+	text-align: center;
 }
 
 .modal_l_content p {
@@ -226,11 +231,11 @@ button#res-modal-1-btn2 {
             </c:if> 
             --%>
 
-                <button class="res-modal" id="res-modal-1-btn1">목록으로</button>
+                <button class="res-modal to_list" id="res-modal-1-btn1">목록으로</button>
                 <button class="res-modal" id="res-modal-1-btn2">예약 거절</button>
                 <button class="res-modal" id="res-modal-1-btn3">예약 확정</button>
             
-<!--         	<button type="button" class="res_modal" id="modal_close_btn">목록으로</button>
+<!--         	<button type="button" class="res_modal to_list" id="modal_close_btn">목록으로</button>
          	<button type="submit" class="res_modal" id="update_btn">진료 완료</button> -->
        	
         </div>
@@ -254,14 +259,14 @@ button#res-modal-1-btn2 {
        	const aname = $(this).find('td:nth-child(5)').text();	// 담당의
        	const mname = $(this).find('td:nth-child(3)').text();	// 보호자
        	
-    	console.log(`예약번호: ${resno}, 예약일시: ${rdate}, 진료과목: ${item}, 담당의: ${aname}, 보호자: ${mname}`);
+    	console.log(`예약번호: \${resno}, 예약일시: \${rdate}, 진료과목: \${item}, 담당의: \${aname}, 보호자: \${mname}`);
        
        	// 모달 테이블 데이터 업데이트
-       	$('#resno').text(`:  ${resno}`);
-       	$('#rdate').text(`:  ${rdate}`);
-       	$('#item').text(`:  ${item}`);
-       	$('#aname').text(`:  ${aname} 선생님`);
-       	$('#mname').text(`:  ${mname}`);
+       	$('#resno').text(`:  \${resno}`);
+       	$('#rdate').text(`:  \${rdate}`);
+       	$('#item').text(`:  \${item}`);
+       	$('#aname').text(`:  \${aname} 선생님`);
+       	$('#mname').text(`:  \${mname}`);
        	
     	$("#modal_l").css("display", "block");   	
 	});
@@ -269,7 +274,7 @@ button#res-modal-1-btn2 {
 
 	
    	/* 모달 닫기 */
-   	$('#modal_close_btn.res_modal').click(function() {
+   	$('#modal_close_btn.to_list').click(function() {
    		$("#modal_l").css("display","none");
    	})
    	$('.res-modal#res-modal-1-btn1').click(function() {
