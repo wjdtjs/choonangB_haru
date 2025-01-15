@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class Admin {
 	private int ano;			//사번
 	private String apasswd;		//비빌번호
+	private String re_apasswd;		//비빌번호
 	private String atel;		//전화번호
 	private String aemail;		//이메일
 	private String aname;		//이름
@@ -23,6 +24,8 @@ public class Admin {
 	private int astatus_mcd;	//상태 중분류
 	
 	// 공통테이블
+	private int bcd;
+	private int mcd;
 	private String level_content;
 	private String status_content;
 }

@@ -9,5 +9,7 @@ public interface AdminService {
 
 	int			getTotalCnt(SearchItem si);
 	List<Admin> adminList(int startRow, int endRow, SearchItem si);
+	int			adminAdd(Admin admin);
+	List<Admin> adminLevelMcd();
 
 }

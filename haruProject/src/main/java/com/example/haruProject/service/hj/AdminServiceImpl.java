@@ -35,4 +35,24 @@ public class AdminServiceImpl implements AdminService {
 		return aList;
 	}
 
+	@Override
+	public int adminAdd(Admin admin) {
+		System.out.println("AdminService adminAdd Start...");
+		
+		int addAdmin = ad.adminAdd(admin);
+		System.out.println("AdminService admimAdd addAdmin->"+addAdmin);
+		
+		return addAdmin;
+	}
+
+	@Override
+	public List<Admin> adminLevelMcd() {
+		System.out.println("AdminService adminLevelMcd Start...");
+		
+		List<Admin> alevelList = ad.adminAlevelMcd();
+
+		
+		return alevelList;
+	}
+
 }

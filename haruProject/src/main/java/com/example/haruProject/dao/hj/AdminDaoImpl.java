@@ -57,4 +57,30 @@ public class AdminDaoImpl implements AdminDao {
 		return list;
 	}
 
+	@Override
+	public int adminAdd(Admin admin) {
+		System.out.println("AdminDaoImpl adminAdd Start,,,");
+		int addAdmin = 0;
+		System.out.println("admin ->"+admin);
+		try {
+			addAdmin = session.insert("HJInsertAdmin", admin);
+		} catch (Exception e) {
+			System.out.println("AdminDaoImpl getTotalCnt error->"+e.getMessage());
+			// TODO: handle exception
+		}
+		return addAdmin;
+	}
+
+	@Override
+	public List<Admin> adminAlevelMcd() {
+		System.out.println("AdminDaoImpl adminAlevelMcd Start,,,");
+		List<Admin> alevelMcd = null;
+		try {
+			alevelMcd = session.selectList("HJSelectAdminAlevel");
+		} catch (Exception e) {
+			System.out.println("AdminDaoImpl adminAlevelMcd error->"+e.getMessage());
+		}
+		return alevelMcd;
+	}
+
 }

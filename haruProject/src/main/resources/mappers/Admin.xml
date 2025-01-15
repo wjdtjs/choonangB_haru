@@ -42,4 +42,18 @@
 		 WHERE rn BETWEEN #{startRow} AND #{endRow}
 	
 	</select>
+	
+	
+	<select id="HJSelectAdminAlevel" resultType="Map">
+		SELECT bcd, mcd, content
+		FROM common
+		WHERE bcd = 700 AND MCD != 999
+	</select>
+	
+	<insert id="HJInsertAdmin" parameterType="Admin">
+		<if test="apasswd == re_apasswd">
+			INSERT INTO	admin(aname, apasswd, atel, hiredate, reg_date, aemail, alevel_mcd)
+			VALUES (#{aname}, #{apasswd}, #{atel}, #{hiredate}, sysdate, #{aemail}, #{mcd})
+		</if>
+	</insert>
 </mapper>

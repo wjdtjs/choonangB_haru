@@ -1,21 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <script type="text/javascript">
-$("#modal_open_btn.admin_modal").click((e) => {
-	console.log('ajax')
-	let alevelBCD = "";
+
+
+$(document).ready(function() {
+	// 테이블 행 클릭 이벤트
+	$('.adminTable').on('click','tr',function(){
+		// 클릭된 행의 데이터 추출
+		let ano = $(this).chlidren('td').first().text();
+		
+		console.log('클릭된 행의 ano 값:',ano);
+	})
+	
+}
 	$.ajax({
-		url: "<%=request.getContextPath()%>/api/alevel-mcd",
-		data: {},
-		dataType: 'json',
+		url: "<%=request.getContextPath()%>/api/getAdminDetails",
+		type: 'GET',
+		data: {ano: ano},
+		dataType: 'json'
 		success: function(data){
-			console.log(data.alevelList)
-			let str = "";
-			$(data.alevelList).each(function(){
-				str += `<option value="\${this.MCD}">\${this.CONTENT}</option>`;
-			})
+			console.log(data)
 			
-			$('.sub-mcd-select').append(str);
 		}
 	})
 })
@@ -73,11 +78,11 @@ select {
                         <col width="35%" />
                     </colgroup>
 		        	<tr>
-		        		<!-- <th>사번</th>		<td><input class="form-input" type="number" name="ano" required="required"></td> -->
+		        		<th>사번</th>		<td id="ano"></td>
 		        		<th>이름</th>		<td><input class="form-input" type="text" name="aname" required="required"></td>
-		        		<th>비밀번호</th>	<td><input class="form-input" type="text" name="apasswd" required="required"></td>
 		        	</tr>
 		        	<tr>
+		        		<th>비밀번호</th>	<td><input class="form-input" type="text" name="apasswd" required="required"></td>
 		        		<th>전화번호</th>	<td><input class="form-input" type="text" name="atel" required="required" placeholder="000-0000-0000"></td>
 		        		<th>비밀번호확인</th><td><input class="form-input" type="text" name="re_apasswd" required="required"></td>
 		        	</tr>
