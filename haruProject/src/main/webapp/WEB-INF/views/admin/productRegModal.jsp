@@ -9,121 +9,137 @@
    <!-- 모달 내용 + 모달 버튼 -->
     <div class="modal_l_content">
     	<!-- 모달 내용 -->       
-        <div class="modal_l_detail">
-        	<h4>상품 등록</h4>
-        
-	        <form class="js-pro-container" action="uploadProduct" method="post" enctype="multipart/form-data">
-	        	<div class="js-pro-info">
-	        		<div class="title">상품 정보</div>
-		        	<table>
-		        		<colgroup>
-		        			<col width="10%"/>
-		        			<col width="40%"/>
-		        			<col width="10%"/>
-		        			<col width="40%"/>
-		        		</colgroup>
-		        		<tr>
-		        			<td class="sub-title">분류</td>
-		        			<td>
-		        				<select>
-		        					<option>대분류</option>
-		        				</select>
-		        				<select>
-		        					<option>중분류</option>
-		        				</select>
-		        			</td>
-		        		</tr>
-		        		<tr>
-		        			<td class="sub-title">상품명</td>
-		        			<td colspan="3"><input type="text" style="width: 91%"></td>
-		        		</tr>
-		        		<tr>
-		        			<td class="sub-title">가격</td>
-		        			<td><input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(.*)\./g, '$1');"></td>
-		        			<td class="sub-title">브랜드</td>
-		        			<td><input type="text"></td>
-		        		</tr>
-		        		<tr>
-		        			<td class="sub-title">수량</td>
-		        			<td><input type="number" min="0"></td>
-		        			<td class="sub-title">구매처</td>
-		        			<td><input type="text"></td>
-		        		</tr>
-		        	</table>
-	        	</div>
-	        	
-	        	<div class="js-pro-img">
-	        		<div class="title">메인 이미지</div>
-		        	<div style="margin-top: 1rem">
-						<%-- <c:choose> 
-							<c:when test="${not empty savedName }"> 
-								<img alt="UpLoad Image" src="">	        		
-							</c:when>
-							<c:otherwise>  --%>
-							<div class="pro-label-div">
-								<label for="main_img" class="img_upload">+</label>
-								<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none"> 							
-							</div>
-							<div class="pro-mainimg-div" style="display: none">
-							</div>
-							<%-- </c:otherwise> 
-						</c:choose>  --%>
+       	<h4>상품 등록</h4>
+       
+        <form class="js-pro-container" action="uploadProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+	        <div class="modal_l_detail">
+		        	<div class="js-pro-info">
+		        		<div class="title">상품 정보</div>
+			        	<table>
+			        		<colgroup>
+			        			<col width="10%"/>
+			        			<col width="40%"/>
+			        			<col width="10%"/>
+			        			<col width="40%"/>
+			        		</colgroup>
+			        		<tr>
+			        			<td class="sub-title">분류 <span class="haru-required">*</span></td>
+			        			<td>
+			        				<select class="sub-bcd-select" name="pstep_bcd">
+			        					<option disabled selected value="0">대분류</option>
+			        				</select>
+			        				<select class="sub-mcd-select" name="pstep_mcd">
+			        					<option disabled selected value="0">중분류</option>
+			        				</select>
+			        			</td>
+			        		</tr>
+			        		<tr>
+			        			<td class="sub-title">상품명 <span class="haru-required">*</span></td>
+			        			<td colspan="3"><input class="haru-pro-name" name="pname" type="text" style="width: 91%"></td>
+			        		</tr>
+			        		<tr>
+			        			<td class="sub-title">가격 <span class="haru-required">*</span></td>
+			        			<td><input class="haru-pro-price" name="pprice" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(.*)\./g, '$1');"></td>
+			        			<td class="sub-title">브랜드 <span class="haru-required">*</span></td>
+			        			<td><input class="haru-pro-brand" name="pbrand" type="text"></td>
+			        		</tr>
+			        		<tr>
+			        			<td class="sub-title">수량 <span class="haru-required">*</span></td>
+			        			<td><input class="haru-pro-quantity" name="pquantity" type="number" min="0"></td>
+			        			<td class="sub-title">구매처 <span class="haru-required">*</span></td>
+			        			<td><input class="haru-pro-store" name="pbuy_store" type="text"></td>
+			        		</tr>
+			        	</table>
 		        	</div>
-	        	</div>
-	        	
-	        	<div class="js-pro-detail">
-	        		<div class="title">상세 설명</div>
-		        	<div style="margin-top: 1rem">
-						<jsp:include page="components/productDetails.jsp">
-							<jsp:param name="isEditor" value="true"/>
-						</jsp:include>
+		        	
+		        	<div class="js-pro-img">
+		        		<div class="title">메인 이미지 <span class="haru-required">*</span></div>
+			        	<div style="margin-top: 1rem">
+							<%-- <c:choose> 
+								<c:when test="${not empty savedName }"> 
+									<img alt="UpLoad Image" src="">	        		
+								</c:when>
+								<c:otherwise>  --%>
+								<div class="pro-label-div">
+									<label for="main_img" class="img_upload">+</label>
+									<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none"> 							
+								</div>
+								<div class="pro-mainimg-div" style="display: none">
+								</div>
+								<%-- </c:otherwise> 
+							</c:choose>  --%>
+			        	</div>
 		        	</div>
-	        	</div>
-	        	
-	        </form>
-	        
-	        
-        
-		</div>
+		        	
+		        	<div class="js-pro-detail">
+		        		<div class="title">상세 설명</div>
+			        	<div style="margin-top: 1rem">
+							<jsp:include page="components/productDetails.jsp">
+								<jsp:param name="isEditor" value="true"/>
+							</jsp:include>
+			        	</div>
+		        	</div>
+		        	
+			</div>
 	        <!-- 모달 버튼 -->
 	        <div class="modal_l-content-btn">
-	        	<button type="button" id="modal_close_btn" class="pro_reg">목록으로</button>
+	        	<button type="button" id="modal_close_btn" class="to_list pro_reg">목록으로</button>
 	        	<button type="submit" class="update_btn">추가하기</button>
 	        </div>
        
+	   </form>
     </div>
-   
+    
     <div class="modal_l_layer"></div>
 </div>
 
 <script>
 	
-	/* 모달 열기 */
+	/**
+	 * 모달 열기
+	 */
 	$('#modal_open_btn.pro_reg').click(function() {
    		$("#modal_l.pro_reg").css("display","block");
+   		
+   		/* 상품 대분류 가져오기 */
    		$.ajax({
-   			url: "<%=request.getContextPath()%>/api/product-list",
-			data: {
-				pageNum: pageNum,
-				blockSize: '10',
-				search1: search1,
-				search2: search2
-			},
+   			url: "<%=request.getContextPath()%>/api/product-bcd",
 			dataType: 'json',
 			success: function(data){
+// 				console.log(data)
 				
+				let str = "";
+				$(data).each(function() {
+					str += `<option value="\${this.BCD}" class="add-product-bcd">\${this.CONTENT}</option>`;
+				})
+				
+				$('.sub-bcd-select').append(str); //대분류 <option>추가
 			}
    		})
    	})
 	
-   	/* 모달 닫기 */
-   	$('#modal_close_btn.pro_reg').click(function() {
+   	/**
+	 * 모달 닫기
+	 */
+   	$('#modal_close_btn.to_list').click(function() {
    		
+   		//input 데이터 삭제
    		$("input").val('');
+   		//썸네일 이미지 선택 삭제
    		$('.pro-mainimg-div').css('display', 'none');
    	 	$('.pro-label-div').css('display', 'block');
+   	 	//상세 설명 데이터 삭제
    	 	$('#summernote').summernote('reset');
-   		
+   	 	//분류 선택 데이터 삭제
+   	 	$('.add-product-bcd').remove();
+		$('.sub-bcd-select option:eq(0)').prop("selected", true);
+   	 	$('.add-product-mcd').remove();
+		$('.sub-mcd-select option:eq(0)').prop("selected", true);
+		
+		//스크롤 맨 위
+		$(".modal_l_detail").scrollTop(0);
+   	 	
+   	 	//모달 닫기
    		$("#modal_l.pro_reg").css("display","none");
    	})
 
@@ -154,86 +170,83 @@
         
    	})
    	
-   	/* 이미지 삭제 */
+   	
+   	/**
+   	 * 대분류 선택 시 중분류 값 가져오기
+   	 */
+ 	$(".sub-bcd-select").change((e) => {
+ 		let selectedOptionValue = $(".sub-bcd-select option:selected").val();
+//  		console.log(selectedOptionValue);
+
+		$('.add-product-mcd').remove();
+		$('.sub-mcd-select option:eq(0)').prop("selected", true);
+		
+		$.ajax({
+			url: "<%=request.getContextPath()%>/api/product-mcd/"+selectedOptionValue,
+			dataType: 'json',
+			success: function(data){
+// 				console.log(data)
+				
+				let str = "";
+				$(data).each(function() {
+					str += `<option value="\${this.MCD}" class="add-product-mcd">\${this.CONTENT}</option>`;
+				})
+				
+				$('.sub-mcd-select').append(str);
+			}
+		})
+ 	})
+ 	
+   	
+   	/**
+   	 * 썸네일 이미지 삭제
+   	 */
    	document.querySelector('.pro-mainimg-div').addEventListener('click', (e) => {
 		$('#main_img').val('');
         $('.pro-mainimg-div').css('display', 'none');
    	 	$('.pro-label-div').css('display', 'block');
    	});
    	
-	/* 리치텍스트에디터 이미지 선택 */
-	function imageUploader(file, el) {
-		let formData = new FormData();
-		formData.append('type', 'product');
-		formData.append('file', file);
-	  
-		$.ajax({                                                              
-			data : formData,
-			type : "POST",
-	        // url은 자신의 이미지 업로드 처리 컨트롤러 경로로 설정해주세요.
-			url : '<%=request.getContextPath()%>/api/uploadFile',  
-			contentType : false,
-			processData : false,
-			enctype : 'multipart/form-data',                                  
-			success : function(data) {   
-				$(el).summernote('insertImage', "${pageContext.request.contextPath}/upload/product/"+data.data, function($image) {
-					$image.css('width', "100%");
-				});
+	
+ 	/**
+ 	 * 상품 등록
+ 	 */
+   	function validateForm() {
+		let result = false;
+		
+		let bcd = $(".sub-bcd-select option:selected").val(); //대분류
+		let mcd = $(".sub-mcd-select option:selected").val(); //중분류
+		let name = $(".haru-pro-name").val(); //상품명
+		let price = $(".haru-pro-price").val(); //가격
+		let brand = $(".haru-pro-brand").val(); //브랜드
+		let quantity = $(".haru-pro-quantity").val(); //수량
+		let store = $(".haru-pro-store").val(); //구매처
+		let thumb = $("#main_img").val(); //썸네일
+		let details = $('#summernote').summernote('code'); //상세설명
+		
+// 		console.log(`대분류 : \${bcd}, 중분류 : \${mcd}, 상품명 : \${name}, 가격 : \${price}, 브랜드 : \${brand}, 수량 : \${quantity}, 구매처 : \${store}`);
+// 		console.log(thumb);
+// 		console.log(details)
 
-// 				console.log(data);
-			}
-		});
+// 		console.log(isEmpty(details))
+
+		// 전체 필수 체크
+		if(isEmpty(bcd) && isEmpty(mcd) && isEmpty(name) && isEmpty(price) && isEmpty(brand) 
+				&& isEmpty(quantity) && isEmpty(store) && isEmpty(thumb)) {
+			
+			result = true;
+			
+		} else {
+			alert('필수값을 입력하세요');
+			
+			result = false;
+		}
+		
+		return result;
 	}
 	
 	
-	
 
-	
-	
-	
-	
-	
-   	/* 리치 텍스트 에디터 설정 */
-   	$('#summernote').summernote({
-      
-	  // 에디터 크기 설정
-	  height: 400,
-	  // 에디터 한글 설정
-	  lang: 'ko-KR',
-	  // 에디터에 커서 이동 (input창의 autofocus라고 생각하시면 됩니다.)
-	  toolbar: [
-		    // 글자 크기 설정
-		    ['fontsize', ['fontsize']],
-		    // 글자 [굵게, 기울임, 밑줄, 취소 선, 지우기]
-		    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-		    // 글자색 설정
-		    ['color', ['color']],
-		    // 표 만들기
-		    ['table', ['table']],
-		    // 서식 [글머리 기호, 번호매기기, 문단정렬]
-		    ['para', ['ul', 'ol', 'paragraph']],
-		    // 줄간격 설정
-		    ['height', ['height']],
-		    // 이미지 첨부
-		    ['insert',['picture']]
-		  ],
-		  // 추가한 글꼴
-		fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋음체','바탕체'],
-		 // 추가한 폰트사이즈
-		fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72','96'],
-        // focus는 작성 페이지 접속시 에디터에 커서를 위치하도록 하려면 설정해주세요.
-		focus : true,
-        // callbacks은 이미지 업로드 처리입니다.
-		callbacks : {                                                    
-			onImageUpload : function(files, editor, welEditable) {   
-                // 다중 이미지 처리를 위해 for문을 사용했습니다.
-				for (var i = 0; i < files.length; i++) {
-					imageUploader(files[i], this);
-				}
-			}
-		}
-		
-  });
-   	
 </script>
+<script src="/js/validation.js"></script>
 

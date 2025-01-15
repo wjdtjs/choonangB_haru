@@ -35,7 +35,6 @@ public class ShopServiceImp implements ShopService {
 	}
 	
 
-
 	/**
 	 * 상품 리스트 조회
 	 * @return 상품 리스트
@@ -51,9 +50,8 @@ public class ShopServiceImp implements ShopService {
 		return pList;
 	}
 
-
 	/**
-	 * 
+	 * 상품 상태 공통 데이터 리스트
 	 * @return 상태 공통 데이터 리스트
 	 */
 	@Override
@@ -66,15 +64,47 @@ public class ShopServiceImp implements ShopService {
 		return statusList;
 	}
 
-
-
+	/**
+	 * 상품 분류 공통데이터 대분류 리스트
+	 * @return
+	 */
 	@Override
-	public List<Map<String, Object>> getCDList() {
-		log.info("getCDList() start..");
-		List<Map<String, Object>> cdList = new ArrayList<>();
+	public List<Map<String, Object>> getBCDList() {
+		log.info("getBCDList() start..");
+		List<Map<String, Object>> bcdList = new ArrayList<>();
 		
-		cdList = sd.getCDList();
-		return cdList;
+		bcdList = sd.getBCDList();
+		
+		return bcdList;
+	}
+
+	/**
+	 * 상품 분류 공통데이터 중분류 리스트
+	 * @param bcd 대분류 값
+	 * @return
+	 */
+	@Override
+	public List<Map<String, Object>> getMCDList(int bcd) {
+		log.info("getMCDList() start..");
+		List<Map<String, Object>> mcdList = new ArrayList<>();
+		
+		mcdList = sd.getMCDList(bcd);
+		
+		return mcdList;
+	}
+
+	/**
+	 * 상품 등록
+	 * @param pd 등록상품 객체
+	 * @retur
+	 */
+	@Override
+	public void uploadProduct(Product pd) {
+		log.info("uploadProduct() start..");
+		
+		sd.uploadProduct(pd);
+		
+		
 	}
 
 	

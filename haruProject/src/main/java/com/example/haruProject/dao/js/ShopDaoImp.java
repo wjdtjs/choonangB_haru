@@ -80,7 +80,7 @@ public class ShopDaoImp implements ShopDao {
 
 
 	/**
-	 * 상태 공통데이터 리스트
+	 * 상품 상태 공통데이터 리스트
 	 * @return
 	 */
 	@Override
@@ -98,18 +98,53 @@ public class ShopDaoImp implements ShopDao {
 
 
 	/**
-	 * 
+	 * 상품 분류 공통데이터 대분류 리스트
+	 * @return
 	 */
 	@Override
-	public List<Map<String, Object>> getCDList() {
+	public List<Map<String, Object>> getBCDList() {
 		List<Map<String, Object>> list = new ArrayList<>();
 		
 		try {
-			list = session.selectList("JS_SelectProductCD");
+			list = session.selectList("JS_SelectProductBCD");
 		} catch (Exception e) {
-			log.error("getCDList() query error -> {}", e.getMessage());
+			log.error("getBCDList() query error -> {}", e.getMessage());
 		}
 		
 		return list;
+	}
+
+
+	/**
+	 * 상품 분류 공통데이터 중분류 리스트
+	 * @parama bcd 대분류 값
+	 * @return
+	 */
+	@Override
+	public List<Map<String, Object>> getMCDList(int bcd) {
+		List<Map<String, Object>> list = new ArrayList<>();
+		
+		try {
+			list = session.selectList("JS_SelectProductMCD", bcd);
+		} catch (Exception e) {
+			log.error("getMCDList() query error -> {}", e.getMessage());
+		}
+		
+		return list;
+	}
+
+
+	/**
+	 * 상품 등록
+	 * @param pd 상품 객체
+	 */
+	@Override
+	public void uploadProduct(Product pd) {
+		try {
+			session.insert("JS_InsertProduct", pd);
+		} catch (Exception e) {
+			log.error("uploadProduct() query error -> {}", e.getMessage());
+		}
+		
 	}
 }

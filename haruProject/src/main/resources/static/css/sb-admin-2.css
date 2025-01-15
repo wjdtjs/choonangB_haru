@@ -4569,7 +4569,7 @@ input[type="button"].btn-block {
 .card-header {
 /*   padding: 0.75rem 1.25rem; */
   margin-bottom: 0;
-  background-color: #f8f9fc;
+  background-color: #fff;
 /*   border-bottom: 1px solid #e3e6f0; */
 }
 
@@ -9828,7 +9828,7 @@ a:focus {
 }
 
 #wrapper #content-wrapper {
-  background-color: #f8f9fc;
+  background-color: #fff;
   width: 100%;
   overflow-x: hidden;
 }

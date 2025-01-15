@@ -9,12 +9,11 @@ import com.example.haruProject.dto.SearchItem;
 public interface ShopService {
 
 	List<Product> productList(int startRow, int endRow, SearchItem si);
-
 	int getTotalCnt(SearchItem si);
-
 	List<Map<String, Object>> getStatusList();
-
-	List<Map<String, Object>> getCDList();
+	List<Map<String, Object>> getBCDList();
+	List<Map<String, Object>> getMCDList(int bcd);
+	void uploadProduct(Product pd);
 	
 	
 }

@@ -45,7 +45,7 @@
 	 * 리스트 보여주기 (ajax)
 	*/
 	function listShow(pageNum, search1, search2) {
-		console.log(search1, search2)
+// 		console.log(search1, search2)
 		
 		$.ajax({
 			url: "<%=request.getContextPath()%>/api/product-list",
@@ -73,7 +73,7 @@
 					}
 					str += `
 							
-								<td style="">\${this.pno}</td>
+								<td>\${this.pno}</td>
 								<td>\${this.pname}</td>
 								<td>\${this.pbrand}</td>
 								<td>\${this.pprice}</td>
@@ -167,7 +167,7 @@
 	                            	<select class="haru-show-select" name="isshow">
 	                            		<option value="0">전체</option>
 	                            		<c:forEach var="ps" items="${statusList }">
-	                            			<option value="${ps.PSTATUS_MCD }">${ps.STATUS }</option>
+	                            			<option value="${ps.MCD }">${ps.CONTENT }</option>
 	                            		</c:forEach>
 	                            	</select>
 	                           		<button class="btn-primary haru-tb-btn shadow-none pro_reg" id="modal_open_btn">상품 추가</button>                           	                         

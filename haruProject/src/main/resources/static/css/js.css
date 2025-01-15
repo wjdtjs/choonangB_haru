@@ -68,3 +68,7 @@
     cursor: pointer;
     pointer-events: all;
 }
+
+.haru-required {
+	color: red;
+}

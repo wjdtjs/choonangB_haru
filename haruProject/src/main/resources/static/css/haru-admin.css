@@ -90,7 +90,7 @@ select {
 }
 
 .haru-pagenum:last-of-type {
-	border-right: 1px solid;
+	border-right: 1px solid var(--haru);
 }
 
 .haru-pagenum.active {
@@ -141,7 +141,7 @@ select {
   	color: white;
   	font-weight: 500;
 }
-.modal_l_content button.pro_reg {
+.modal_l_content button.to_list {
   	margin-right: 15px;
   	background-color: #B9B9B9;
 }
@@ -160,7 +160,8 @@ select {
 }
 
 .modal_l_detail {
-	height: 640px;
+/* 	height: 640px; */
+	height: 590px;
 	overflow-y: scroll;
 	scrollbar-width: none;
 }

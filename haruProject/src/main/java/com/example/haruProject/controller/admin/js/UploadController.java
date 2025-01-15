@@ -99,7 +99,7 @@ public class UploadController {
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	private String uploadFile(String type, 
+	public String uploadFile(String type, 
 							  InputStream inputStream, 
 							  String uploadPath, 
 							  String suffix) throws FileNotFoundException, IOException {

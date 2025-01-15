@@ -24,18 +24,30 @@
 		</if>
 	</select>
 	
-	<!-- 상품 상태 공통데이터 종류 조회 -->
+	<!-- 상품 상태 공통데이터 종류 조회 
+		(SCD - 300: 노출여부 | MCD - 100:노출, 200:비노출) 
+	-->
 	<select id="JS_SelectCommonStatus" resultType="Map">
-		SELECT DISTINCT cm.CONTENT as status, pp.PSTATUS_MCD
-		FROM PRODUCT pp INNER JOIN COMMON cm
-		ON pp.PSTATUS_BCD = cm.BCD AND pp.PSTATUS_MCD = cm.MCD
+		SELECT CONTENT, BCD, MCD
+		FROM COMMON
+		WHERE SCD = 300 AND MCD IN (100, 200)
 	</select>
 	
-	<!-- 상품 분류 공통데이터 종류 조회 -->
-	<select id="JS_SelectProductCD" resultType="Map">
-		SELECT DISTINCT cm.CONTENT, pp.PSTEP_BCD, pp.PSTEP_MCD
-		FROM PRODUCT pp INNER JOIN COMMON cm
-		ON pp.PSTEP_BCD = cm.BCD AND
+	<!-- 상품 분류 공통데이터 종류 조회 
+		(SCD - 400: 상품종류)
+	-->
+	<select id="JS_SelectProductBCD" resultType="Map">
+		SELECT CONTENT, BCD
+		FROM COMMON
+		WHERE SCD = 400 AND MCD = 999
+	</select>
+	
+	<!-- 상품 분류 공통데이터 중분류 조회 
+	-->
+	<select id="JS_SelectProductMCD" parameterType="int" resultType="Map">
+		SELECT CONTENT, MCD
+		FROM COMMON
+		WHERE SCD = 400 AND BCD = #{bcd} AND MCD != 999
 	</select>
 
 	<!-- 상품 리스트 조회 -->
@@ -54,11 +66,32 @@
 				<if test="search.search2 != null and !search.search2.equals('')">
 					AND PSTATUS_MCD = #{search.search2}
 				</if>
-				ORDER BY TO_NUMBER(PNO)
+				ORDER BY TO_NUMBER(PNO) DESC
 			) p
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow} 
 	</select>
 	<!-- End SELECT -->
+	
+	
+	<!-- INSERT -->
+	<!-- 상품 등록 -->
+	<insert id="JS_InsertProduct" parameterType="Product">
+		INSERT INTO PRODUCT(
+			PNO, PNAME, PPRICE, PBUY_STORE, PIMG_MAIN, PBRAND, PDETAILS, PQUANTITY, PSTEP_BCD, PSTEP_MCD
+		) VALUES(
+			SEQ_PRO.NEXTVAL, 
+			#{pname}, 
+			#{pprice}, 
+			#{pbuy_store}, 
+			#{pimg_main}, 
+			#{pbrand}, 
+			#{pdetails}, 
+			#{pquantity}, 
+			#{pstep_bcd}, 
+			#{pstep_mcd}
+		)
+	</insert>
+	<!-- End INSERT -->
 	
 </mapper>

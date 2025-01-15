@@ -28,4 +28,4 @@
 
 <!-- Custom styles for this template-->
 <link href="/css/sb-admin-2.css?v=0.37" rel="stylesheet">
-<link href="/css/haru-admin.css?v=0.22" rel="stylesheet">
+<link href="/css/haru-admin.css?v=0.25" rel="stylesheet">
