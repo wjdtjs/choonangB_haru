@@ -11,5 +11,8 @@ public interface AdminService {
 	List<Admin> adminList(int startRow, int endRow, SearchItem si);
 	int			adminAdd(Admin admin);
 	List<Admin> adminLevelMcd();
+	Admin		getAdminDetail(int ano);
+	List<Admin> adminBcdMcd();
+	int		updateAdmin(Admin admin);
 
 }

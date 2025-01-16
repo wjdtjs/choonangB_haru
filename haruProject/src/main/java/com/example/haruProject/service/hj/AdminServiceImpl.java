@@ -35,6 +35,7 @@ public class AdminServiceImpl implements AdminService {
 		return aList;
 	}
 
+	// 관리자 등록
 	@Override
 	public int adminAdd(Admin admin) {
 		System.out.println("AdminService adminAdd Start...");
@@ -44,7 +45,8 @@ public class AdminServiceImpl implements AdminService {
 		
 		return addAdmin;
 	}
-
+	
+	// 관리자 등록 : Role 값 가져옴
 	@Override
 	public List<Admin> adminLevelMcd() {
 		System.out.println("AdminService adminLevelMcd Start...");
@@ -53,6 +55,30 @@ public class AdminServiceImpl implements AdminService {
 
 		
 		return alevelList;
+	}
+	
+	// 관리자 정보
+	@Override
+	public Admin getAdminDetail(int ano) {
+		System.out.println("AdminService getAdminDetail Start...");
+		Admin adminDetail = ad.getAdminDetail(ano);
+		return adminDetail;
+	}
+	
+	// 관리자 정보 수정 : Role, 상태 가져옴
+	@Override
+	public List<Admin> adminBcdMcd() {
+		System.out.println("AdminService adminBcdMcd Start...");
+		List<Admin> adminCommon = ad.adminCommon();
+		return adminCommon;
+	}
+	
+	// 관리자 정보 수정
+	@Override
+	public int updateAdmin(Admin admin) {
+		System.out.println("AdminService updateAdmin ...");
+		int result = ad.updateAdmin(admin);
+		return result;
 	}
 
 }

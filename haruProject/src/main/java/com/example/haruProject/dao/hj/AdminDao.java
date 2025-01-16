@@ -11,6 +11,9 @@ public interface AdminDao {
 	List<Admin>		adminList(int startRow, int endRow, SearchItem si);
 	int				adminAdd(Admin admin);
 	List<Admin> 	adminAlevelMcd();
+	Admin			getAdminDetail(int ano);
+	List<Admin>		adminCommon();
+	int				updateAdmin(Admin admin);
 
 	
 

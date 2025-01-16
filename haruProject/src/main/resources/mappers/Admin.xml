@@ -50,10 +50,53 @@
 		WHERE bcd = 700 AND MCD != 999
 	</select>
 	
+	<select id="HJSelectAdminCommon" resultType="Map">
+		SELECT bcd, mcd, content
+		FROM common
+		WHERE bcd in (200,700) AND MCD != 999
+	</select>
+	
 	<insert id="HJInsertAdmin" parameterType="Admin">
 		<if test="apasswd == re_apasswd">
 			INSERT INTO	admin(aname, apasswd, atel, hiredate, reg_date, aemail, alevel_mcd)
 			VALUES (#{aname}, #{apasswd}, #{atel}, #{hiredate}, sysdate, #{aemail}, #{mcd})
 		</if>
 	</insert>
+	
+	<select id="HJSelectAdmin" parameterType="int" resultType="Admin">
+			SELECT
+				ad.ano,
+				ad.apasswd,
+				ad.atel,
+				ad.aemail,
+				ad.aname,
+				ad.hiredate,
+				ad.reg_date,
+				alevel_bcd,
+				alevel_mcd,
+				astatus_bcd,
+				astatus_mcd,
+				cm1.CONTENT AS level_content,  -- cm1의 CONTENT 컬럼
+				cm2.CONTENT AS status_content, -- cm2의 CONTENT 컬럼
+				cm1.bcd AS cm1_bcd,            -- cm1의 bcd 컬럼
+				cm2.bcd AS cm2_bcd             -- cm2의 bcd 컬럼
+			FROM 
+			    common cm1
+			INNER JOIN 
+			    admin ad ON ad.alevel_bcd = cm1.bcd AND ad.alevel_mcd = cm1.mcd
+			INNER JOIN 
+			    common cm2 ON ad.astatus_bcd = cm2.bcd AND ad.astatus_mcd = cm2.mcd
+			WHERE ad.ano = #{ano}	  
+	</select>
+	
+	<update id="HJUpdateAdmin" parameterType="Admin">
+		<if test="apasswd == re_apasswd">
+			UPDATE admin set aname = #{aname}
+							,atel = #{atel}
+							,aemail = #{aemail}
+							,alevel_mcd = #{alevelMcd}
+							,astatus_mcd =  #{astatusMcd}
+			WHERE ano = #{ano}
+		</if>
+	</update>
 </mapper>

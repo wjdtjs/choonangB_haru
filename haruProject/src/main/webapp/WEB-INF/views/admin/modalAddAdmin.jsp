@@ -23,6 +23,7 @@ $("#modal_open_btn.admin_modal").click((e) => {
 </script>
 
 <style>
+
 .inputTable {
 	margin: 20px AUTO;
 }
@@ -58,9 +59,8 @@ select {
 <div id="modal_l">
    
     <div class="modal_l_content">
-    
+    	<h4>관리자추가</h4>
     	<div class="modal_l_detail">
-    		<h4>관리자추가</h4>
     		
     		<!-- 모달에 들어갈 컨텐츠 -->
     		<form action="/api/addAdmin" method="post" name="frm" id="add_ad">

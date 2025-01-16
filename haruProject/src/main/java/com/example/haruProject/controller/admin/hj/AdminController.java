@@ -19,7 +19,7 @@ import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.hj.AdminService;
 
-import ch.qos.logback.core.model.Model;
+import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -28,6 +28,7 @@ public class AdminController {
 	
 	private final AdminService as;
 	
+	// 관리자 리스트
 	@ResponseBody
 	@GetMapping(value = "/api/admin-list")
 	public Map<String, Object> adminList(
@@ -61,19 +62,20 @@ public class AdminController {
 		
 		return aListMap;
 	}
-	
+
+	// 관리자 추가 : Role
 	@ResponseBody
 	@GetMapping(value = "/api/alevel-mcd")
 	public Map<String,Object> adminLevelMcd (){
 		System.out.println("AdminController adminLevelMcd Start,,,");
-		List<Admin> alevelList = new ArrayList<>();
+		List<Admin> alevelList = new ArrayList<>(); 
 		Map<String, Object> alevelMap = new HashMap<>();
-		
+	  
 		alevelList = as.adminLevelMcd();
 		alevelMap.put("alevelList", alevelList);
 		System.out.println(alevelMap);
 		return alevelMap;
-		
+	  
 	}
 	 
 	@ResponseBody
@@ -89,5 +91,53 @@ public class AdminController {
 	    modelAndView.setViewName("redirect:/admin/doctor"); // 리다이렉트할 URL 설정
 	    return modelAndView;
 	}
+	
+	// 관리자 정보
+	@ResponseBody
+	@GetMapping(value = "/api/getAdminDetails")
+	public Admin getAdminDetail(@RequestParam(value = "ano", required = true) int ano) {
+		System.out.println("AdminController getAdminDetails Start...");
+		Admin adminDatail = as.getAdminDetail(ano);
+		
+		System.out.println("AdminController getAdminDetails adminDatail->"+adminDatail);
+		return adminDatail;
+	}
+	
+	// 관리자 정보 수정 : Role, 상태 가져옴
+	@ResponseBody
+	@GetMapping(value = "/api/admin-common")
+	public Map<String, Object> adminBcdMcd() {
+		System.out.println("AdminController adminBcdMcd Start,,,");
 
+		List<Admin> commonList = new ArrayList<>();
+		Map<String, Object> commonMap = new HashMap<>();
+			
+		commonList = as.adminBcdMcd();
+		commonMap.put("adminCommon", commonList);
+			
+		return commonMap;
+	}
+	
+	// 관리자 정보
+	@GetMapping(value = "/AdminDetail")
+	public String getAdminDetail(@RequestParam("ano") String ano,Model model) {
+		System.out.println("AdminController getAdminDetail... ");
+		System.out.println("AdminController getAdminDetailano- >"+ano);
+		
+		Admin admin = as.getAdminDetail(Integer.parseInt(ano));
+		model.addAttribute("admin",admin);
+		
+		return "/admin/adminDetail";
+	}
+	
+	// 관리자 정보 수정
+	@PostMapping(value = "/updateAdmin")
+	public String updateAdmin (Admin admin) {
+		System.out.println("AdminController updateAdmin...");
+		System.out.println("AdminController updateAdmin admin->"+admin);
+		int result = as.updateAdmin(admin);
+		
+		return "redirect:/admin/doctor";
+		
+	}
 }

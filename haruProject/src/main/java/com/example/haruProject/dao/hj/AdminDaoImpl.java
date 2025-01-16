@@ -73,7 +73,7 @@ public class AdminDaoImpl implements AdminDao {
 
 	@Override
 	public List<Admin> adminAlevelMcd() {
-		System.out.println("AdminDaoImpl adminAlevelMcd Start,,,");
+		System.out.println("AdminDaoImpl adminAlevelMcd Start...");
 		List<Admin> alevelMcd = null;
 		try {
 			alevelMcd = session.selectList("HJSelectAdminAlevel");
@@ -81,6 +81,44 @@ public class AdminDaoImpl implements AdminDao {
 			System.out.println("AdminDaoImpl adminAlevelMcd error->"+e.getMessage());
 		}
 		return alevelMcd;
+	}
+
+	@Override
+	public Admin getAdminDetail(int ano) {
+		System.out.println("AdminDao getAdminDetail Start...");
+		Admin adminDetail = null;
+		try {
+			adminDetail = session.selectOne("HJSelectAdmin", ano);
+		} catch (Exception e) {
+			System.out.println("AdminDaoImpl getAdminDetail error->"+e.getMessage());
+		}
+		return adminDetail;
+	}
+
+	@Override
+	public List<Admin> adminCommon() {
+		System.out.println("AdminDao adminBcdMcd Start,,,");
+		List<Admin> BcdMcd = null;
+		try {
+			BcdMcd = session.selectList("HJSelectAdminCommon");
+		} catch (Exception e) {
+			System.out.println("AdminDaoImpl adminBcdMcd error->"+e.getMessage());
+
+		}
+		return BcdMcd;
+	}
+
+	@Override
+	public int updateAdmin(Admin admin) {
+		System.out.println("AdminDao updateAdmin...");
+		int result = 0;
+		try {
+			result = session.update("HJUpdateAdmin",admin);
+			System.out.println("result ->"+result);
+		} catch (Exception e) {
+			System.out.println("AdminDaoImpl println error->"+e.getMessage());
+		}
+		return result;
 	}
 
 }

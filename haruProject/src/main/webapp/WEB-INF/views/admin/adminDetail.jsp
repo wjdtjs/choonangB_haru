@@ -12,18 +12,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>관리자 관리</title>
+    <title>관리자 수정</title>
 
 </head>
 
 <script type="text/javascript">
-	$(document).on('click','#dataTable .adminTable tr',function(){
-		const ano = $(this).find('td:nth-child(1)').text();
-		
-		console.log('클릭된 행의 ano 값:',ano);
-		
-		window.location.href = `<%=request.getContextPath()%>/AdminDetail?ano=\${ano}`;
-	});
 
 	let search1 = "";
 	
@@ -64,7 +57,7 @@
 				$(data.list).each (function(){
 					str += `
 							<tr class="haru-table-click">
-		                        <td>\${this.ano}</a></td>
+		                        <td>\${this.ano}</td>
 		                        <td>\${this.aname}</td>
 		                        <td>\${this.aemail}</td>
 		                        <td>\${this.level_content}</td>
@@ -111,8 +104,6 @@
 		
 	}
 	
-	
-	
 </script>
 
 <body id="page-top"> 
@@ -142,64 +133,48 @@
                     
 
                     <!-- DataTales Example -->
-                    <div class="card mb-4">
-                        <div class="card-header py-3">
-                            <div class="m-0 haru-search-box">
-	                            <div class="haru-left">
-	                            	<select>
-	                            		<!-- <option value="all">전체</option> -->
-	                            		<option value="name">이름</option>
-	                            	</select>
-	                            	<div class="haru-tb-input-box">
-	                            		<input class="tb-search-input" type="text">                            	
-	                            	</div>                            
-	                            </div>
-	                            <div class="haru-right">
-	                           		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn">관리자 추가</button>
-	                           	</div>                           	                         
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <colgroup>
-                                    	<col width="10%" />
-                                    	<col width="20%" />
-                                    	<col width="30%" />
-                                    	<col width="10%" />
-                                    	<col width="20%" />
-                                    	<col width="10%" />
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th>사번</th>
-                                            <th>이름</th>
-                                            <th>이메일</th>
-                                            <th>ROLE</th>
-                                            <th>입사일</th>
-                                            <th>상태</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="adminTable">
-                                        <%-- <c:forEach var="admin" items="${listAdmin }">
-	                                        <tr>
-	                                            <td>${admin.ano }</td>
-	                                            <td>${admin.aname  }</td>
-	                                            <td>${admin.aemail }</td>
-	                                            <td>${admin.alevel }</td>
-	                                            <td>${admin.hiredate }</td>
-	                                            <td>${admin.astatus }</td>
-	                                        </tr>
-                                        </c:forEach> --%>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-       
-						<div class="haru-pagination">
+                    <form action="/updateAdmin" method="post" name="frm" id="upd_ad">
 
-						</div>
-                    </div>
+		        <table class="inputTable">
+		        <input type="hidden" name="ano" value="${admin.ano }">
+		        	<colgroup>
+                    	<col width="15%" />
+                        <col width="35%" />
+                        <col width="15%" />
+                        <col width="35%" />
+                    </colgroup>
+		        	<tr>
+		        		<th>사번</th>		<td>${admin.ano }</td>
+		        		<th>비밀번호</th>	<td><input class="form-input" type="text" name="apasswd" required="required"></td>
+		        	</tr>
+		        	<tr>
+		        		<th>이름</th>		<td><input class="form-input" type="text" name="aname" required="required" value="${admin.aname}"></td>
+		        		<th>비밀번호확인</th><td><input class="form-input" type="text" name="re_apasswd" required="required"></td>
+		        	</tr>
+		        	<tr>
+		        		<th>전화번호</th>	<td><input class="form-input" type="text" name="atel" required="required" value="${admin.atel}"></td>
+		        		<th>이메일</th>	<td><input class="form-input" type="text" name="aemail" value="${admin.aemail}"></td>
+		        	</tr>
+		        	<tr>
+		        		<th>Role</th>
+		        		<td>
+		        			<select class="form-input sub-alevel-mcd-select" name="${admin.alevel_bcd }"></select>
+		        		</td>
+		        		<th>입사일</th>	<td>${admin.hiredate }</td>
+		        		
+		        		
+		        	</tr>
+		        	<tr>
+		        		<th>상태</th>
+		        		<td>
+		        			<select class="form-input sub-status-mcd-select" name="${astatus_bcd }" ></select>
+		        		</td>
+		        		<th>등록일</th>	<td>${admin.reg_date }</td>
+		        		
+		        		
+		        	</tr>
+		        </table>
+	        </form>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -226,7 +201,7 @@
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
     <jsp:include page="modalAddAdmin.jsp"></jsp:include>
-   <%--  <jsp:include page="modalAdmin.jsp"></jsp:include> --%>
+    <jsp:include page="modalAdmin.jsp"></jsp:include>
 
 </body>
 </html>
