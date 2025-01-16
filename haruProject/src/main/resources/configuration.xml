@@ -8,6 +8,6 @@
 		<typeAlias alias="SearchItem" type="com.example.haruProject.dto.SearchItem"/>
 		<typeAlias alias="Admin" type="com.example.haruProject.dto.Admin"/>
 		<typeAlias alias="Appointment" type="com.example.haruProject.dto.Appointment"/>
-		
+		<typeAlias alias="Board" type="com.example.haruProject.dto.Board"/>
 	</typeAliases>
 </configuration>

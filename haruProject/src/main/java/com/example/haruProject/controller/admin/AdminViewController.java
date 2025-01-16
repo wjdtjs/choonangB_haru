@@ -138,13 +138,5 @@ public class AdminViewController {
 		return "admin/notice";
 	}
 	
-	/**
-	 * 관리자페이지 게시판관리 뷰
-	 * @return
-	 */
-	@GetMapping("/admin/board")
-	public String boardView() {
-		return "admin/board";
-	}
 	
 }
