@@ -9847,6 +9847,11 @@ a:focus {
   padding-right: 5.5rem;
 }
 
+.container-fluid.modal_ {
+	padding-left: 10rem;
+  	padding-right: 10rem;
+}
+
 .scroll-to-top {
   position: fixed;
   right: 1rem;

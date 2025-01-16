@@ -52,7 +52,6 @@ public class ShopDaoImp implements ShopDao {
 		return totalCnt;
 	}
 	
-	
 	/**
 	 * 상품 목록 가져오기 (페이지네이션)
 	 * @param startRow	첫 게시글
@@ -78,7 +77,6 @@ public class ShopDaoImp implements ShopDao {
 		return list;
 	}
 
-
 	/**
 	 * 상품 상태 공통데이터 리스트
 	 * @return
@@ -96,7 +94,6 @@ public class ShopDaoImp implements ShopDao {
 		return list;
 	}
 
-
 	/**
 	 * 상품 분류 공통데이터 대분류 리스트
 	 * @return
@@ -113,7 +110,6 @@ public class ShopDaoImp implements ShopDao {
 		
 		return list;
 	}
-
 
 	/**
 	 * 상품 분류 공통데이터 중분류 리스트
@@ -133,7 +129,6 @@ public class ShopDaoImp implements ShopDao {
 		return list;
 	}
 
-
 	/**
 	 * 상품 등록
 	 * @param pd 상품 객체
@@ -144,6 +139,35 @@ public class ShopDaoImp implements ShopDao {
 			session.insert("JS_InsertProduct", pd);
 		} catch (Exception e) {
 			log.error("uploadProduct() query error -> {}", e.getMessage());
+		}
+		
+	}
+
+	/**
+	 * 상품 상세 조회
+	 */
+	@Override
+	public Product getProductDetail(String pno) {
+		Product pd = new Product();
+		try {
+			pd = session.selectOne("JS_SelectProductDetail", pno);
+		} catch (Exception e) {
+			log.error("getProductDetail() query error -> {}", e.getMessage());
+		}
+		
+		return pd;
+	}
+
+	/**
+	 * 상품 수정
+	 * @param pd 수정상품 객체
+	 */
+	@Override
+	public void updateProduct(Product pd) {
+		try {
+			session.insert("JS_UpdateProduct", pd);
+		} catch (Exception e) {
+			log.error("updateProduct() query error -> {}", e.getMessage());
 		}
 		
 	}

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.Product;
@@ -117,12 +118,81 @@ public class ShopController {
 	 */
 	@PostMapping("/admin/uploadProduct")
 	public String uploadProduct(Product pd, HttpServletRequest request, Model model) {
-		log.info("uploadProduct start..");
+		log.info("uploadProduct() start..");
 //		System.out.println(pd);
 		
 		String type = "thumb";
-		UploadController uc = new UploadController();
+		String imgPath = saveImage(type, request);
+		
+		if(imgPath==null) {
+			return "redirect:stock";
+		} else {
+			pd.setPimg_main(imgPath); //썸네일 이름 객체에 저장			
+		}
+		
+//		System.out.println("=========================");
+//		System.out.println(pd);
+		////상품데이터 db 저장
+		ss.uploadProduct(pd);
+		
+		return "redirect:stock";
+	}
 	
+	
+	/**
+	 * 상품 정보 조회
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/api/getProductDetail/{pno}")
+	public Product getProductDetail(@PathVariable("pno") String pno) {
+		log.info("getProductDetail() start..");
+//		System.out.println(pno);
+		Product pd = new Product();
+		
+		pd = ss.getProductDetail(pno);
+//		System.out.println(pd);
+		
+		return pd;
+	}
+	
+	
+	/**
+	 * 상품 수정
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/admin/updateProduct")
+	public String updateProduct(Product pd, HttpServletRequest request, Model model) {
+		log.info("uploadProduct() start..");
+		System.out.println(pd);
+		
+		String type = "thumb";
+		
+		//TODO: 같은 이름의 이미지가 있는지 확인
+		System.out.println(pd.getPimg_main());
+		
+		System.out.println("=========================");
+		System.out.println(pd);
+		////상품데이터 db 저장
+//		ss.updateProduct(pd);
+		
+		return "redirect:stock";
+	}
+	
+	
+	
+	/**
+	 * 이미지 저장
+	 * @param type
+	 * @param request
+	 * @return
+	 */
+	private String saveImage(String type, HttpServletRequest request) {
+		UploadController uc = new UploadController();
+		String imgPath = null;
+		
 		////썸네일 저장
 		try {
 			Part image = request.getPart("main_img");
@@ -132,11 +202,9 @@ public class ShopController {
 			// 파일 확장자 구하기
 			String fileName = image.getSubmittedFileName();
 			String[] split = fileName.split("\\.");
-			String originalName = split[split.length -2];
 			String suffix = split[split.length -1];
 			
 			log.info("fileName -> {}", fileName);
-			log.info("originalName -> {}", originalName);
 			log.info("suffix -> {}",suffix);
 			
 			// Servlet 상속 받지 못했을 때 realPath 불러오는 방법
@@ -147,23 +215,55 @@ public class ShopController {
 			log.info("uploadForm() POST Start..");
 			String savedName = uc.uploadFile(type, inputStream, uploadPath, suffix);
 			
-			log.info("Return savedName: {}", savedName);
-			System.out.println(type_path+savedName);
-			pd.setPimg_main(type_path+savedName);
+			log.info("Return savedName: {}", savedName);			
+			imgPath = type_path+savedName;
+			System.out.println(imgPath);
 			
 		} catch (Exception e) {
 			log.error("image upload error : ", e.getMessage());
-			return "redirect:stock";
 		}
 		
-		System.out.println("=========================");
-		System.out.println(pd);
-		////상품데이터 db 저장
-		ss.uploadProduct(pd);
-		
-		return "redirect:stock";
+		return imgPath;
 	}
-
 	
+	
+	/**
+	 * 상품 등록 페이지 뷰
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/admin/upload-product")
+	public String uploadProductView(Model model) {
+		log.info("uploadProductView() start..");
+		List<Map<String, Object>> cdList = new ArrayList<>();
+		cdList = ss.getBCDList();
+		
+		model.addAttribute("bcdList", cdList); //상품 대분류
+		
+		return "admin/uploadProduct";
+	}
+	
+	/**
+	 * 상품 상세 페이지 뷰
+	 * @param pd
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/admin/details-product")
+	public String detailsProductView(Product pd, Model model, @RequestParam("pno") String pno) {
+		log.info("detailsProductView() start..");
+		List<Map<String, Object>> cdList = new ArrayList<>();
+		List<Map<String, Object>> statusList = new ArrayList<>();
+
+		cdList = ss.getBCDList(); //상품 대분류
+		statusList = ss.getStatusList(); //상태
+		pd = ss.getProductDetail(pno); //정보
+		
+		model.addAttribute("statusList", statusList);
+		model.addAttribute("bcdList", cdList); 
+		model.addAttribute("product", pd);
+		
+		return "admin/detailsProduct";
+	}
 	
 }

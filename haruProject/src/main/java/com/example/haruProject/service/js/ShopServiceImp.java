@@ -100,11 +100,31 @@ public class ShopServiceImp implements ShopService {
 	 */
 	@Override
 	public void uploadProduct(Product pd) {
-		log.info("uploadProduct() start..");
-		
+		log.info("uploadProduct() start..");	
 		sd.uploadProduct(pd);
+	}
+
+	/**
+	 * 상품 상세 조회
+	 */
+	@Override
+	public Product getProductDetail(String pno) {
+		log.info("getProductDetail() start..");
 		
+		Product pd = new Product();
+		pd = sd.getProductDetail(pno);
 		
+		return pd;
+	}
+
+	/**
+	 * 상품 수정
+	 * @param pd 수정상품 객체
+	 */
+	@Override
+	public void updateProduct(Product pd) {
+		log.info("updateProduct() start..");
+		sd.updateProduct(pd);
 	}
 
 	

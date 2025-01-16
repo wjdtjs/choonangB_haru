@@ -131,6 +131,10 @@ select {
   	border-radius: 24px;
 }
 
+.modal_l_content h4 {
+	margin-bottom: 2rem !important;
+}
+
 .modal_l-content-btn > button {
 	border-radius: 5px;
   	width: 92px;
@@ -141,11 +145,11 @@ select {
   	color: white;
   	font-weight: 500;
 }
-.modal_l_content button.to_list {
+.modal_l-content-btn > button.to_list {
   	margin-right: 15px;
   	background-color: #B9B9B9;
 }
-.modal_l_content .update_btn {
+.modal_l-content-btn > button.update_btn {
   	background-color: var(--haru);
 }
 
@@ -160,21 +164,19 @@ select {
 }
 
 .modal_l_detail {
-/* 	height: 640px; */
-	height: 590px;
-	overflow-y: scroll;
-	scrollbar-width: none;
+	padding-top: 1rem;
 }
 
 .modal_l-content-btn {
-	width: 100%;
-	height: fit-content;
-	display: flex;
-	justify-content: flex-end;
-	margin-top: 20px;
-	
+	text-align: right;
+	margin-block: 5rem;
 }
 
-.modal-backdrop.show {
-	display: none;
+.modal-backdrop.show,
+.note-modal-backdrop {
+	display: none !important;
+}
+
+.haru-table-click {
+	cursor: pointer;
 }

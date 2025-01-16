@@ -67,9 +67,9 @@
 				
 				$(data.list).each (function(){
 					if(this.status=='비노출') {
-						str+= `<tr class="haru-table-click" style="background: #f2f2f2">`
+						str+= `<tr class="haru-table-click" style="background: #f2f2f2" onclick="location.href='/admin/details-product?pno=\${this.pno}'">`
 					} else {
-						str+= `<tr class="haru-table-click">`
+						str+= `<tr class="haru-table-click" onclick="location.href='/admin/details-product?pno=\${this.pno}'">`
 					}
 					str += `
 							
@@ -119,6 +119,7 @@
 		$(id).addClass('active');
 		
 	}
+	
 	
 </script>
 
@@ -170,7 +171,7 @@
 	                            			<option value="${ps.MCD }">${ps.CONTENT }</option>
 	                            		</c:forEach>
 	                            	</select>
-	                           		<button class="btn-primary haru-tb-btn shadow-none pro_reg" id="modal_open_btn">상품 추가</button>                           	                         
+	                           		<button class="btn-primary haru-tb-btn shadow-none pro_reg" id="modal_open_btn" onclick="location.href='/admin/upload-product'">상품 추가</button>                           	                         
 	                            </div>
 	                            <!-- 이거 필요없으면 걍 지우면 됩니다!! -->
                             
@@ -253,7 +254,9 @@
     <!-- Logout Modal-->
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
-    <jsp:include page="productRegModal.jsp"></jsp:include>
+    <script>const contextPath = "<%=request.getContextPath()%>";</script>
+	<script src="/js/shop_modal.js"></script>
+	<script src="/js/summernote.js?v=0.01"></script>
 
 </body>
 </html>

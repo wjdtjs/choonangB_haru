@@ -146,4 +146,5 @@ public class AdminViewController {
 	public String boardView() {
 		return "admin/board";
 	}
+	
 }

@@ -71,6 +71,13 @@
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow} 
 	</select>
+	
+	<!-- 상품상세 조회 -->
+	<select id="JS_SelectProductDetail" parameterType="java.lang.String" resultType="Product">
+		SELECT PNO, PNAME, PPRICE, PBUY_STORE, PIMG_MAIN, UPDATE_DATE, PBRAND, PDETAILS, PSTATUS_BCD, PSTATUS_MCD, PQUANTITY, PSTEP_BCD, PSTEP_MCD
+		FROM PRODUCT
+		WHERE PNO = #{pno}
+	</select>
 	<!-- End SELECT -->
 	
 	
@@ -93,5 +100,23 @@
 		)
 	</insert>
 	<!-- End INSERT -->
+	
+	<!-- UPDATE -->
+	<!-- 상품 수정 -->
+	<update id="JS_UpdateProduct" parameterType="Product">
+		UPDATE PRODUCT SET
+			PNAME = #{pname},
+			PPRICE = #{pprice},
+			PBUY_STORE = #{pbuy_store},
+			PIMG_MAIN = #{pimg_main},
+			PBRAND = #{pbrand},
+			PDETAILS = #{pdetails},
+			PQUANTITY = #{pquantity},
+			PSTEP_BCD = #{pstep_bcd},
+			PSTEP_MCD = #{pstep_mcd},
+			PSTATUS_MCD = #{pstatus_mcd},
+			UPDATE_DATE = sysdate
+		WHERE PNO = #{pno}
+	</update>
 	
 </mapper>
