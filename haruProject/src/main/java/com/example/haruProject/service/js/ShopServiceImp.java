@@ -122,9 +122,9 @@ public class ShopServiceImp implements ShopService {
 	 * @param pd 수정상품 객체
 	 */
 	@Override
-	public void updateProduct(Product pd) {
+	public void updateProduct(Product pd, boolean img_change) {
 		log.info("updateProduct() start..");
-		sd.updateProduct(pd);
+		sd.updateProduct(pd, img_change);
 	}
 
 	

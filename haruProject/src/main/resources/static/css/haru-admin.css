@@ -181,3 +181,6 @@ select {
 .haru-table-click {
 	cursor: pointer;
 }
+.haru-table-istop {
+	background-color: #d0e4e875;
+}

@@ -19,7 +19,7 @@ import lombok.ToString;
 public class Product {
 	private int pno;			//상품번호
 	private String pname;		//상품명
-	private double pprice;		//상품가격
+	private int pprice;			//상품가격
 	private String pbuy_store;	//구매
 	private String pimg_main;	//메인이미지
 	private String pbrand;		//브랜드

@@ -119,7 +119,7 @@ public class AdminController {
 	}
 	
 	// 관리자 정보
-	@GetMapping(value = "/AdminDetail")
+	@GetMapping(value = "/admin/AdminDetail")
 	public String getAdminDetail(@RequestParam("ano") String ano,Model model) {
 		System.out.println("AdminController getAdminDetail... ");
 		System.out.println("AdminController getAdminDetailano- >"+ano);

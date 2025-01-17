@@ -4,7 +4,7 @@
  * false : 있음
  */
  function isEmpty(value) {
-
+	console.log('isEmpty : ', value);
     return !(!value || value.trim() === "" || value == 0);
 }
 

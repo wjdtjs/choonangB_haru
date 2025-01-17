@@ -15,6 +15,6 @@ public interface ShopDao {
 	List<Map<String, Object>> getMCDList(int bcd);
 	void uploadProduct(Product pd);
 	Product getProductDetail(String pno);
-	void updateProduct(Product pd);
+	void updateProduct(Product pd, boolean img_change);
 
 }

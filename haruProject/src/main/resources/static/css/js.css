@@ -17,8 +17,8 @@
 .js-pro-container .js-pro-info table .sub-title {
 	font-weight: 500;
 }
-.js-pro-container .js-pro-info table input:is([type=text], [type=number]),
-.js-pro-container .js-pro-info table select {
+.js-pro-container .js-pro-info input:is([type=text], [type=number]),
+.js-pro-container .js-pro-info select {
     border-radius: 0.75rem;
     border: 1px solid var(--haru);
     padding-inline: 1rem;
@@ -29,10 +29,10 @@
 	padding-block: 0.7rem;
 }
 
-.js-pro-container .js-pro-info table select {
+.js-pro-container .js-pro-info select {
 	width: 10rem;
 }
-.js-pro-container .js-pro-info table input:is([type=text], [type=number]) {
+.js-pro-container .js-pro-info input:is([type=text], [type=number]) {
 	width: 80%;
 }
 

@@ -4,30 +4,27 @@
 
 
 /* 썸네일 이미지 선택 */
-const mainImg = document.getElementById('main_img');
-mainImg.addEventListener('change', (e) => {
-	const files = e.currentTarget.files;
-	
-	if (files && files[0]) {
+$('#main_img').on('change', function(e) {
+    const files = e.target.files; // 변경 이벤트에서 파일 목록 가져오기
+
+    if (files && files[0]) {
         const reader = new FileReader();
         
         // 파일 로드 완료 시 실행
         reader.onload = function(event) {
-        	console.log(event)
             // 파일의 데이터 URL을 가져와 이미지 태그 생성
             const imgTag = `<img src="${event.target.result}" alt="product-image" style="width: 7rem; height: 7rem"/>`;
-            
+
             $('.pro-label-div').css('display', 'none');
             $('.pro-mainimg-div').css('display', 'block');
             $('.pro-mainimg-div').html(imgTag);
-         	$('.pro-mainimg-div').addClass('pro-thumbnail');
+            $('.pro-mainimg-div').addClass('pro-thumbnail');
         };
-        
-     	reader.readAsDataURL(files[0]);
 
+        reader.readAsDataURL(files[0]); // 파일 읽기
     }
-    
-})
+});
+
 
 /**
  * 대분류 선택 시 중분류 값 가져오기

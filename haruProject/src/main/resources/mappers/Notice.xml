@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.ProductMapper">
+
+	
+	
+	<!-- SELECT -->
+	<!-- 상품 상태 공통데이터 종류 조회 
+		(SCD - 300: 노출여부 | MCD - 100:노출, 200:비노출) 
+	-->
+	<select id="JS_SelectNoticeStatus" resultType="Map">
+		SELECT CONTENT, BCD, MCD
+		FROM COMMON
+		WHERE BCD = 300 AND MCD IN (100, 200)
+	</select>
+	
+	<select id="JS_SelectAllNoticeStatus" resultType="Map">
+		SELECT CONTENT, BCD, MCD
+		FROM COMMON
+		WHERE BCD = 300 AND MCD NOT IN (999)
+	</select>
+	
+	<!-- 필터 적용된 상품 리스트 수 조회 -->
+	<select id="JS_SelectTotalNoticeCnt" parameterType="SearchItem" resultType="int">
+		SELECT COUNT(*) FROM NOTICE  
+		<if test="(search1 != null and !search1.equals('')) or (search2 != null and !search2.equals(''))">
+			WHERE
+		</if>
+		<if test="search1 != null and !search1.equals('')">
+			NTITLE LIKE '%' || #{search1} || '%'
+		</if>
+		<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
+			AND
+		</if>
+		<if test="search2 != null and !search2.equals('')">
+			NSTATUS_MCD = #{search2}
+		</if>
+	</select>
+
+	<!-- 상품 리스트 조회 -->
+	<select id="JS_SelectNoticeList" parameterType="Map" resultType="Notice">
+		SELECT *
+		FROM (
+			SELECT ROWNUM rn, n.*
+			FROM (
+				SELECT cm.CONTENT as status, 
+                        nn.NNO,
+                        nn.NTITLE,
+                        nn.NCONTENTS,
+                        nn.REG_DATE,
+                        nn.NVIEW_COUNT,
+                        nn.UPDATE_DATE,
+                        nn.NSTATUS_BCD,
+                        nn.NSTATUS_MCD,
+                        nn.ANO,
+                        a.ANAME,
+                        DECODE(nn.NSTATUS_MCD, 300, 1, null) as istop,
+                        DECODE(nn.NSTATUS_MCD, 200, 1, null) as isvisible
+				FROM NOTICE nn 
+                INNER JOIN COMMON cm ON
+                    nn.NSTATUS_BCD = cm.BCD AND nn.NSTATUS_MCD = cm.MCD
+                INNER JOIN ADMIN a ON
+                    nn.ANO = a.ANO
+                    
+				<if test="search.search1 != null and !search.search1.equals('')">
+					AND NTITLE LIKE '%' || #{search.search1} || '%'
+				</if>
+				<if test="search.search2 != null and !search.search2.equals('')">
+					AND NSTATUS_MCD = #{search.search2}
+				</if>
+				ORDER BY TO_NUMBER(NNO) DESC
+			) n
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow} 
+	</select>
+	
+	<!-- 상품상세 조회 -->
+	<select id="JS_SelectNoticeDetail" parameterType="java.lang.String" resultType="Notice">
+		SELECT n.NNO, 
+				n.NTITLE, 
+				n.NCONTENTS,
+				n.REG_DATE,
+				n.NVIEW_COUNT,
+				n.UPDATE_DATE,
+				n.NSTATUS_BCD,
+				n.ANO,
+				n.NSTATUS_MCD,
+				a.ANAME
+		FROM NOTICE n INNER JOIN ADMIN a ON n.ANO = a.ANO 
+		WHERE n.NNO = #{nno}
+	</select>
+	<!-- End SELECT -->
+	
+	
+	<!-- INSERT -->
+	<!-- 상품 등록 -->
+	<insert id="JS_InsertNotice" parameterType="Notice">
+		INSERT INTO NOTICE(
+			NNO, NTITLE, NCONTENTS, NSTATUS_MCD, ANO
+		) VALUES(
+			SEQ_NOTICE.NEXTVAL, 
+			#{ntitle},
+			#{ncontents},
+			#{nstatus_mcd},
+			10501
+		)
+	</insert>
+	<!-- End INSERT -->
+	
+	<!-- UPDATE -->
+	<!-- 상품 수정 -->
+	<update id="JS_UpdateNotice" parameterType="Notice">
+		UPDATE NOTICE SET
+			NTITLE = #{ntitle},
+			NCONTENTS = #{ncontents},
+			NSTATUS_MCD = #{nstatus_mcd},
+			ANO = 10502,
+			UPDATE_DATE = sysdate
+		WHERE NNO = #{nno}
+	</update>
+	
+</mapper>

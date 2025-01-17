@@ -163,9 +163,13 @@ public class ShopDaoImp implements ShopDao {
 	 * @param pd 수정상품 객체
 	 */
 	@Override
-	public void updateProduct(Product pd) {
+	public void updateProduct(Product pd, boolean img_change) {
+		Map<String, Object> update_map = new HashMap<>();
+		update_map.put("pd", pd);
+		update_map.put("ic", img_change);
+		
 		try {
-			session.insert("JS_UpdateProduct", pd);
+			session.insert("JS_UpdateProduct", update_map);
 		} catch (Exception e) {
 			log.error("updateProduct() query error -> {}", e.getMessage());
 		}

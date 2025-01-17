@@ -129,14 +129,5 @@ public class AdminViewController {
 		return "admin/reservation";
 	}
 	
-	/**
-	 * 관리자페이지 공지사항관리 뷰
-	 * @return
-	 */
-	@GetMapping("/admin/notice")
-	public String noticeView() {
-		return "admin/notice";
-	}
-	
 	
 }

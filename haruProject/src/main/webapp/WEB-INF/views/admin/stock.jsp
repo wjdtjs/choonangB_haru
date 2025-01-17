@@ -255,8 +255,6 @@
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
     <script>const contextPath = "<%=request.getContextPath()%>";</script>
-	<script src="/js/shop_modal.js"></script>
-	<script src="/js/summernote.js?v=0.01"></script>
 
 </body>
 </html>

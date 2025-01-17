@@ -85,7 +85,7 @@
 	<!-- 상품 등록 -->
 	<insert id="JS_InsertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
-			PNO, PNAME, PPRICE, PBUY_STORE, PIMG_MAIN, PBRAND, PDETAILS, PQUANTITY, PSTEP_BCD, PSTEP_MCD
+			PNO, PNAME, PPRICE, PBUY_STORE, PIMG_MAIN, PBRAND, PDETAILS, PQUANTITY, PSTEP_BCD, PSTEP_MCD, ANO
 		) VALUES(
 			SEQ_PRO.NEXTVAL, 
 			#{pname}, 
@@ -96,27 +96,30 @@
 			#{pdetails}, 
 			#{pquantity}, 
 			#{pstep_bcd}, 
-			#{pstep_mcd}
+			#{pstep_mcd},
+			null
 		)
 	</insert>
 	<!-- End INSERT -->
 	
 	<!-- UPDATE -->
 	<!-- 상품 수정 -->
-	<update id="JS_UpdateProduct" parameterType="Product">
+	<update id="JS_UpdateProduct" parameterType="Map">
 		UPDATE PRODUCT SET
-			PNAME = #{pname},
-			PPRICE = #{pprice},
-			PBUY_STORE = #{pbuy_store},
-			PIMG_MAIN = #{pimg_main},
-			PBRAND = #{pbrand},
-			PDETAILS = #{pdetails},
-			PQUANTITY = #{pquantity},
-			PSTEP_BCD = #{pstep_bcd},
-			PSTEP_MCD = #{pstep_mcd},
-			PSTATUS_MCD = #{pstatus_mcd},
+			PNAME = #{pd.pname},
+			PPRICE = #{pd.pprice},
+			PBUY_STORE = #{pd.pbuy_store},
+		<if test="ic == true">
+			PIMG_MAIN = #{pd.pimg_main},		
+		</if>
+			PBRAND = #{pd.pbrand},
+			PDETAILS = #{pd.pdetails},
+			PQUANTITY = #{pd.pquantity},
+			PSTEP_BCD = #{pd.pstep_bcd},
+			PSTEP_MCD = #{pd.pstep_mcd},
+			PSTATUS_MCD = #{pd.pstatus_mcd},
 			UPDATE_DATE = sysdate
-		WHERE PNO = #{pno}
+		WHERE PNO = #{pd.pno}
 	</update>
 	
 </mapper>

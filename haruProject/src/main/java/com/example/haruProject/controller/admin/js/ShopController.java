@@ -1,5 +1,6 @@
 package com.example.haruProject.controller.admin.js;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.js.ShopService;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,7 @@ public class ShopController {
 	 */
 	@ResponseBody
 	@GetMapping("/api/product-list")
-	public Map<String, Object> productList(@RequestParam(value = "pageNum", required = true) String pageNum,
+	public Map<String, Object> productList(@RequestParam(value = "pageNum", required = true, defaultValue = "1") String pageNum,
             						 @RequestParam(value = "blockSize", required = false, defaultValue="10") String blockSize,
             						 @RequestParam(value = "search1", required = false) String search1,
             						 @RequestParam(value = "search2", required = false) String search2
@@ -75,22 +77,22 @@ public class ShopController {
 		
 	}
 	
-	/**
-	 * 상품 분류 공통데이터-대분류 리스트 조회 api
-	 * @return
-	 */
-	@ResponseBody
-	@GetMapping("/api/product-bcd")
-	public List<Map<String, Object>> productBCD() {
-		log.info("productBCD() start..");
-		
-		List<Map<String, Object>> cdList = new ArrayList<>();
-		cdList = ss.getBCDList();
-		
-//		System.out.println(cdList);
-		
-		return cdList;
-	}
+//	/**
+//	 * 상품 분류 공통데이터-대분류 리스트 조회 api
+//	 * @return
+//	 */
+//	@ResponseBody
+//	@GetMapping("/api/product-bcd")
+//	public List<Map<String, Object>> productBCD() {
+//		log.info("productBCD() start..");
+//		
+//		List<Map<String, Object>> cdList = new ArrayList<>();
+//		cdList = ss.getBCDList();
+//		
+////		System.out.println(cdList);
+//		
+//		return cdList;
+//	}
 	
 	/**
 	 * 상품 분류 공통데이터-중분류 리스트 조회 api
@@ -109,78 +111,6 @@ public class ShopController {
 		
 		return cdList;
 	}
-	
-	/**
-	 * 상품 등록
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@PostMapping("/admin/uploadProduct")
-	public String uploadProduct(Product pd, HttpServletRequest request, Model model) {
-		log.info("uploadProduct() start..");
-//		System.out.println(pd);
-		
-		String type = "thumb";
-		String imgPath = saveImage(type, request);
-		
-		if(imgPath==null) {
-			return "redirect:stock";
-		} else {
-			pd.setPimg_main(imgPath); //썸네일 이름 객체에 저장			
-		}
-		
-//		System.out.println("=========================");
-//		System.out.println(pd);
-		////상품데이터 db 저장
-		ss.uploadProduct(pd);
-		
-		return "redirect:stock";
-	}
-	
-	
-	/**
-	 * 상품 정보 조회
-	 * @return
-	 */
-	@ResponseBody
-	@GetMapping("/api/getProductDetail/{pno}")
-	public Product getProductDetail(@PathVariable("pno") String pno) {
-		log.info("getProductDetail() start..");
-//		System.out.println(pno);
-		Product pd = new Product();
-		
-		pd = ss.getProductDetail(pno);
-//		System.out.println(pd);
-		
-		return pd;
-	}
-	
-	
-	/**
-	 * 상품 수정
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@PostMapping("/admin/updateProduct")
-	public String updateProduct(Product pd, HttpServletRequest request, Model model) {
-		log.info("uploadProduct() start..");
-		System.out.println(pd);
-		
-		String type = "thumb";
-		
-		//TODO: 같은 이름의 이미지가 있는지 확인
-		System.out.println(pd.getPimg_main());
-		
-		System.out.println("=========================");
-		System.out.println(pd);
-		////상품데이터 db 저장
-//		ss.updateProduct(pd);
-		
-		return "redirect:stock";
-	}
-	
 	
 	
 	/**
@@ -263,7 +193,79 @@ public class ShopController {
 		model.addAttribute("bcdList", cdList); 
 		model.addAttribute("product", pd);
 		
+		
 		return "admin/detailsProduct";
 	}
+	
+	
+	/**
+	 * 상품 등록
+	 * @param pd
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/admin/uploadProduct")
+	public String uploadProduct(Product pd, HttpServletRequest request, Model model) {
+		log.info("uploadProduct() start..");
+//		System.out.println(pd);
+		
+		String type = "thumb";
+		String imgPath = saveImage(type, request);
+		
+		if(imgPath==null) {
+			return "redirect:stock";
+		} else {
+			pd.setPimg_main(imgPath); //썸네일 이름 객체에 저장			
+		}
+		
+//		System.out.println("=========================");
+//		System.out.println(pd);
+		////상품데이터 db 저장
+		ss.uploadProduct(pd);
+		
+		return "redirect:stock";
+	}
+	
+	
+	/**
+	 * 상품 수정
+	 * @param pd
+	 * @param request
+	 * @param model
+	 * @return
+	 * @throws ServletException 
+	 * @throws IOException 
+	 */
+	@PostMapping("/admin/updateProduct")
+	public String updateProduct(Product pd, HttpServletRequest request, Model model) throws IOException, ServletException {
+		log.info("uploadProduct() start..");
+		System.out.println(pd);
+		
+		boolean img_change = false;
+		String type = "thumb";
+		String imgPath = null;
+		
+		Part image = request.getPart("main_img");
+		if(image.getSize() == 0) {
+			System.out.println("이미지 변경 안함");
+		} else  {
+			System.out.println("이미지 변경함");
+			
+			imgPath = saveImage(type, request);
+			if(imgPath==null) {
+				return "redirect:stock";
+			} else {
+				pd.setPimg_main(imgPath); //썸네일 이름 객체에 저장
+				img_change = true;
+			}
+		}
+
+		////상품데이터 db 저장
+		ss.updateProduct(pd, img_change);
+		
+		return "redirect:stock";
+	}
+	
 	
 }

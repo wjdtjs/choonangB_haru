@@ -75,7 +75,7 @@
 					        		<tr>
 					        			<td class="sub-title">수량 <span class="haru-required">*</span></td>
 					        			<td><input class="haru-pro-quantity" name="pquantity" type="number" min="0"></td>
-					        			<td class="sub-title">구매처 <span class="haru-required">*</span></td>
+					        			<td class="sub-title">구매처</td>
 					        			<td><input class="haru-pro-store" name="pbuy_store" type="text"></td>
 					        		</tr>
 					        	</table>
@@ -152,20 +152,20 @@
     	})
     	
 	    /**
-	 	 * 상품 등록
+	 	 * 상품등록 요청 전 validation 체크
 	 	 */
 	   	function regValidateForm() {
 			let result = false;
 			
-			let bcd = $(".sub-bcd-select option:selected").val(); //대분류
-			let mcd = $(".sub-mcd-select option:selected").val(); //중분류
-			let name = $(".haru-pro-name").val(); //상품명
-			let price = $(".haru-pro-price").val(); //가격
-			let brand = $(".haru-pro-brand").val(); //브랜드
-			let quantity = $(".haru-pro-quantity").val(); //수량
-			let store = $(".haru-pro-store").val(); //구매처
-			let thumb = $("#main_img").val(); //썸네일
-			let details = $('.summernoteTextArea.proRegSummernote').summernote('code'); //상세설명
+			let bcd 		= $(".sub-bcd-select option:selected").val(); //대분류
+			let mcd 		= $(".sub-mcd-select option:selected").val(); //중분류
+			let name 		= $(".haru-pro-name").val(); //상품명
+			let price 		= $(".haru-pro-price").val(); //가격
+			let brand 		= $(".haru-pro-brand").val(); //브랜드
+			let quantity	= $(".haru-pro-quantity").val(); //수량
+			let store 		= $(".haru-pro-store").val(); //구매처
+			let thumb 		= $("#main_img").val(); //썸네일
+			let details 	= $('.summernoteTextArea.proRegSummernote').summernote('code'); //상세설명
 			
 	// 		console.log(`대분류 : \${bcd}, 중분류 : \${mcd}, 상품명 : \${name}, 가격 : \${price}, 브랜드 : \${brand}, 수량 : \${quantity}, 구매처 : \${store}`);
 	// 		console.log(thumb);
@@ -175,10 +175,12 @@
 	
 			// 전체 필수 체크
 			if(isEmpty(bcd) && isEmpty(mcd) && isEmpty(name) && isEmpty(price) && isEmpty(brand) 
-					&& isEmpty(quantity) && isEmpty(store) && isEmpty(thumb)) {
+					&& isEmpty(quantity) && isEmpty(thumb)) {
 				
 				console.log('성공')
-				result = true;
+				if(confirm('이대로 등록하시겠습니까?')) {
+					result = true;					
+				}
 				
 			} else {
 				alert('필수값을 입력하세요');
@@ -192,7 +194,7 @@
     </script>
 
     
-    <script src="/js/shop_modal.js"></script>
-	<script src="/js/summernote.js?v=0.01"></script>
+    <script src="/js/shop_modal.js?v=0.01"></script>
+	<script src="/js/summernote.js?v=0.02"></script>
 </body>
 </html>
