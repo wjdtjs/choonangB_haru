@@ -92,31 +92,21 @@ public class AdminController {
 	    return modelAndView;
 	}
 	
-	// 관리자 정보
-	@ResponseBody
-	@GetMapping(value = "/api/getAdminDetails")
-	public Admin getAdminDetail(@RequestParam(value = "ano", required = true) int ano) {
-		System.out.println("AdminController getAdminDetails Start...");
-		Admin adminDatail = as.getAdminDetail(ano);
-		
-		System.out.println("AdminController getAdminDetails adminDatail->"+adminDatail);
-		return adminDatail;
-	}
 	
 	// 관리자 정보 수정 : Role, 상태 가져옴
-	@ResponseBody
-	@GetMapping(value = "/api/admin-common")
-	public Map<String, Object> adminBcdMcd() {
-		System.out.println("AdminController adminBcdMcd Start,,,");
-
-		List<Admin> commonList = new ArrayList<>();
-		Map<String, Object> commonMap = new HashMap<>();
-			
-		commonList = as.adminBcdMcd();
-		commonMap.put("adminCommon", commonList);
-			
-		return commonMap;
-	}
+	/*
+	 * @ResponseBody
+	 * 
+	 * @GetMapping(value = "/api/admin-common") public Map<String, Object>
+	 * adminBcdMcd() { System.out.println("AdminController adminBcdMcd Start,,,");
+	 * 
+	 * List<Admin> commonList = new ArrayList<>(); Map<String, Object> commonMap =
+	 * new HashMap<>();
+	 * 
+	 * commonList = as.adminBcdMcd(); commonMap.put("adminCommon", commonList);
+	 * 
+	 * return commonMap; }
+	 */
 	
 	// 관리자 정보
 	@GetMapping(value = "/admin/AdminDetail")
@@ -125,19 +115,24 @@ public class AdminController {
 		System.out.println("AdminController getAdminDetailano- >"+ano);
 		
 		Admin admin = as.getAdminDetail(Integer.parseInt(ano));
+		System.out.println("AdminController getAdminDetailano admin- >"+admin);
+		List<Map<String, Object>> acommonList=as.acommonList();
+		System.out.println("AdminController getAdminDetailano acommonList- >"+acommonList);
 		model.addAttribute("admin",admin);
-		
+		model.addAttribute("common",acommonList);
+		model.addAttribute("pageNum",1);
+
 		return "/admin/adminDetail";
 	}
 	
 	// 관리자 정보 수정
-	@PostMapping(value = "/updateAdmin")
+	@PostMapping(value = "/admin/updateAdmin")
 	public String updateAdmin (Admin admin) {
 		System.out.println("AdminController updateAdmin...");
 		System.out.println("AdminController updateAdmin admin->"+admin);
 		int result = as.updateAdmin(admin);
 		
-		return "redirect:/admin/doctor";
+		return "/admin/doctor";
 		
 	}
 }

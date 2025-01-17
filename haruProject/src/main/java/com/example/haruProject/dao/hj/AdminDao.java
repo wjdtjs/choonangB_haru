@@ -1,6 +1,7 @@
 package com.example.haruProject.dao.hj;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.SearchItem;
@@ -12,7 +13,7 @@ public interface AdminDao {
 	int				adminAdd(Admin admin);
 	List<Admin> 	adminAlevelMcd();
 	Admin			getAdminDetail(int ano);
-	List<Admin>		adminCommon();
+	List<Map<String, Object>>		adminCommon();
 	int				updateAdmin(Admin admin);
 
 	

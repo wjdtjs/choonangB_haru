@@ -96,9 +96,9 @@ public class AdminDaoImpl implements AdminDao {
 	}
 
 	@Override
-	public List<Admin> adminCommon() {
+	public List<Map<String, Object>> adminCommon() {
 		System.out.println("AdminDao adminBcdMcd Start,,,");
-		List<Admin> BcdMcd = null;
+		List<Map<String, Object>> BcdMcd = null;
 		try {
 			BcdMcd = session.selectList("HJSelectAdminCommon");
 		} catch (Exception e) {

@@ -22,7 +22,7 @@
 		
 		console.log('클릭된 행의 ano 값:',ano);
 		
-		window.location.href = `<%=request.getContextPath()%>/AdminDetail?ano=\${ano}`;
+		window.location.href = `<%=request.getContextPath()%>/admin/AdminDetail?ano=\${ano}`;
 	});
 
 	let search1 = "";

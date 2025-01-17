@@ -16,97 +16,44 @@
 
 </head>
 
-<script type="text/javascript">
+<!-- style -->
+<style>
 
-	let search1 = "";
-	
-	$(async ()=>{
-		await listShow('1');
-		
-		//검색
-		$('.tb-search-input').keyup(async function() {
-// 			console.log($(this).val())
-			search1 = $(this).val();
-			await listShow('1', search1);
-		})
-		
-	})
-	
-	/**
-	 * 리스트 (ajax)
-	*/
-	async function listShow(pageNum, search1) {
-		console.log(search1)
-		
-		$.ajax({
-			url: "<%=request.getContextPath()%>/api/admin-list",
-			data: {
-				pageNum: pageNum,
-				search1: search1
-			},
-			dataType: 'json',
-			success: function(data) {
-				
-				console.log(data.list);
-				
-				let pagination = data.pagination;
-				
-				let str = "";
-				let str2 = "";
-				
-				$(data.list).each (function(){
-					str += `
-							<tr class="haru-table-click">
-		                        <td>\${this.ano}</td>
-		                        <td>\${this.aname}</td>
-		                        <td>\${this.aemail}</td>
-		                        <td>\${this.level_content}</td>
-		                        <td>\${this.hiredate.split('T')[0]}</td>
-		                        <td>\${this.status_content}</td>
-	                    	</tr>
-					       `
-				})
-				$('.adminTable').html(str);
-				
-				if(pagination.startPage > pagination.blockSize) {
-					str2 += `<i class="haru-pagearrow fa-solid fa-chevron-left" onclick="pageChange(\${pagination.startPage-pagination.blockSize})"></i>`;
-				}
-				for(let i=1; i<pagination.pageCnt+1; i++) {
-					str2 += `<div class="haru-pagenum" id="pageNum\${i}" onclick="pageChange(\${i})">\${i }</div>`;
-				} 
-				if(pagination.endPage < pagination.pageCnt) {
-					str2 += `<i class="haru-pagearrow fa-solid fa-chevron-right" onclick="pageChange(\${pagination.startPage+pagination.blockSize})"></i>`;
-				}
-				
-				$('.haru-pagination').html(str2);
-				
-				$(`#pageNum\${pagination.currentPage}`).addClass('active');
-				
-			},
-			error: function(e) {
-				console.log(e);
-			}
-		})
-	}
-	
-	/**
-	 * 페이지 교체
-	 * @param num 
-	 * @return 
-	*/
-	async function pageChange(num) {
-		let id = '#pageNum' + num;
-		
-		await listShow(num, search1);
-		
-		$('.haru-pagenum').removeClass('active');
-		$(id).addClass('active');
-		
-	}
-	
-</script>
+.inputTable{
+	color: black;
+	width: 100%;
+}
+.form-input-title {
+	height: 50px;
+	font-weight: 500;
+	margin:4px 12px;
 
-<body id="page-top"> 
+}
+
+.inputTable tr {
+	height: 50px;
+
+}
+
+.form-input{
+	width: 90%;
+	height: 35px;
+	border: 1.5px solid var(--haru);
+	border-radius: 10px;
+	padding-left: 10px;
+}
+/* SELECT 버튼 위치 수정*/
+select {
+	background-position: 95% center;
+}
+em {
+	color: red;
+	justify-content: center;
+
+}
+</style>
+
+<body> 
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -126,56 +73,80 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid modal_">
 
                     <!-- Page Heading -->
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >관리자 관리</h1>
                     
+                    <div class="modal_l_detail">
+                    <form action="/admin/updateAdmin" method="post" name="frm" id="upd_ad">
+				        <table class="inputTable">
+				        <input type="hidden" name="ano" value="${admin.ano }">
+				        	<colgroup>
+		                    	<col width="15%" />
+		                        <col width="35%" />
+		                        <col width="15%" />
+		                        <col width="35%" />
+		                    </colgroup>
+				        	<tr>
+				        		<td class="form-input-title">사번</td>				<td>${admin.ano }</td>
+				        		<td class="form-input-title">비밀번호<em>*</em></td>	<td><input class="form-input" type="text" name="apasswd" required="required" placeholder="수정하려면 비밀번호를 입력하세요"></td>
+				        	</tr>
+				        	<tr>
+				        		<td class="form-input-title">이름<em>*</em></td>		<td><input class="form-input" type="text" name="aname" required="required" value="${admin.aname}"></td>
+				        		<td class="form-input-title">비밀번호확인</td>			<td><input class="form-input" type="text" name="re_apasswd" required="required" placeholder="비밀번호를 재입력하세요."></td>
+				        	</tr>
+				        	<tr>
+				        		<td class="form-input-title">전화번호<em>*</em></td>	<td><input class="form-input" type="text" name="atel" required="required" value="${admin.atel}"></td>
+				        		<td class="form-input-title">이메일</td>				<td><input class="form-input" type="text" name="aemail" value="${admin.aemail}"></td>
+				        	</tr>
+				        	<tr>
+				        		<td tclass="form-input-title">Role</td>
+				        		<td>
+				        			<select class="form-input sub-alevel-mcd-select" name="alevel_mcd">
+						        		<c:forEach var="alevel" items="${common}">
+							        		<c:choose>
+				        						<c:when test="${alevel.BCD == admin.alevel_bcd && alevel.MCD == admin.alevel_mcd }">
+							        				<option value="${alevel.MCD}" selected>${alevel.CONTENT}</option>
+				        						</c:when>
+				        						<c:when test="${alevel.BCD == admin.alevel_bcd && alevel.MCD != admin.alevel_mcd}">
+						        					<option value="${alevel.MCD}">${alevel.CONTENT}</option>				        						
+				        						</c:when>
+				        					</c:choose>
+				        				</c:forEach>
+					        		</select>
+				        		</td>
+				        		<td class="form-input-title">입사일</td>				<td><fmt:formatDate value="${admin.hiredate }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 
-                    <!-- DataTales Example -->
-                    <form action="/updateAdmin" method="post" name="frm" id="upd_ad">
-
-		        <table class="inputTable">
-		        <input type="hidden" name="ano" value="${admin.ano }">
-		        	<colgroup>
-                    	<col width="15%" />
-                        <col width="35%" />
-                        <col width="15%" />
-                        <col width="35%" />
-                    </colgroup>
-		        	<tr>
-		        		<th>사번</th>		<td>${admin.ano }</td>
-		        		<th>비밀번호</th>	<td><input class="form-input" type="text" name="apasswd" required="required"></td>
-		        	</tr>
-		        	<tr>
-		        		<th>이름</th>		<td><input class="form-input" type="text" name="aname" required="required" value="${admin.aname}"></td>
-		        		<th>비밀번호확인</th><td><input class="form-input" type="text" name="re_apasswd" required="required"></td>
-		        	</tr>
-		        	<tr>
-		        		<th>전화번호</th>	<td><input class="form-input" type="text" name="atel" required="required" value="${admin.atel}"></td>
-		        		<th>이메일</th>	<td><input class="form-input" type="text" name="aemail" value="${admin.aemail}"></td>
-		        	</tr>
-		        	<tr>
-		        		<th>Role</th>
-		        		<td>
-		        			<select class="form-input sub-alevel-mcd-select" name="${admin.alevel_bcd }"></select>
-		        		</td>
-		        		<th>입사일</th>	<td>${admin.hiredate }</td>
-		        		
-		        		
-		        	</tr>
-		        	<tr>
-		        		<th>상태</th>
-		        		<td>
-		        			<select class="form-input sub-status-mcd-select" name="${astatus_bcd }" ></select>
-		        		</td>
-		        		<th>등록일</th>	<td>${admin.reg_date }</td>
-		        		
-		        		
-		        	</tr>
-		        </table>
-	        </form>
-
+				        	</tr>
+				        	<tr>
+				        		<td class="form-input-title">상태</td>
+				        		<td>
+				        			<select class="form-input sub-status-mcd-select" name="astatus_mcd" >
+				        				<c:forEach var="atatus" items="${common}">
+				        					<c:choose>
+				        						<c:when test="${atatus.BCD == admin.astatus_bcd && atatus.MCD == admin.astatus_mcd }">
+							        				<option value="${atatus.MCD}" selected>${atatus.CONTENT}</option>
+				        						</c:when>
+				        						<c:when test="${atatus.BCD == admin.astatus_bcd}">
+						        					<option value="${atatus.MCD}">${atatus.CONTENT}</option>				        						
+				        						</c:when>
+				        					</c:choose>
+				        				</c:forEach>
+				        			</select>
+				        		</td>
+				        		<td class="form-input-title">등록일</td>	<td><fmt:formatDate value="${admin.reg_date }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+				        		
+				        		
+				        	</tr>
+				        </table>
+	       			 </form>
+	       			 </div>
+					<!-- 모달 버튼 -->
+			       	<div class="modal_l-content-btn">
+				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/doctor'">목록으로</button>
+			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="upd_ad">수정하기</button>
+			       	</div> 
                 </div>
                 <!-- /.container-fluid -->
 
@@ -200,8 +171,5 @@
     <!-- Logout Modal-->
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
-    <jsp:include page="modalAddAdmin.jsp"></jsp:include>
-    <jsp:include page="modalAdmin.jsp"></jsp:include>
-
 </body>
 </html>

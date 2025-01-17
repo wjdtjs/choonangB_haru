@@ -94,8 +94,8 @@
 			UPDATE admin set aname = #{aname}
 							,atel = #{atel}
 							,aemail = #{aemail}
-							,alevel_mcd = #{alevelMcd}
-							,astatus_mcd =  #{astatusMcd}
+							,alevel_mcd = #{alevel_mcd}
+							,astatus_mcd =  #{astatus_mcd}
 			WHERE ano = #{ano}
 		</if>
 	</update>

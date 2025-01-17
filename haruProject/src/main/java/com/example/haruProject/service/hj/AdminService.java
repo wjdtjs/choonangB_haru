@@ -1,6 +1,7 @@
 package com.example.haruProject.service.hj;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.SearchItem;
@@ -12,7 +13,7 @@ public interface AdminService {
 	int			adminAdd(Admin admin);
 	List<Admin> adminLevelMcd();
 	Admin		getAdminDetail(int ano);
-	List<Admin> adminBcdMcd();
 	int		updateAdmin(Admin admin);
+	List<Map<String, Object>> acommonList();
 
 }

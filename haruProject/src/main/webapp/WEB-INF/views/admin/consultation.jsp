@@ -90,7 +90,7 @@
 					if (this.cresno === this.resno) {
 						str += `<td><button type="button" class="chart_btn con_modal" id="chart_modal_open_btn">차트상세</button></td>`
 					} else {
-						str += `<td><button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn">차트작성</button></td>`
+						str += `<td><button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn" onclick="location.href='/admin/addConsultation?resno=\${this.resno}'">차트작성</button></td>`
 					}
 							
 					str += `</tr>`					
@@ -170,9 +170,11 @@
 	                            	</div>                            
 	                            </div>
 	                            
-	                            <div class="haru-right">
-									<button class="btn-primary haru-tb-btn con_modal" id="modal_open_btn">진료 내역 추가</button>
+	                            <!--
+								<div class="haru-right">
+									<button class="btn-primary haru-tb-btn">진료 내역 추가</button>
 	                            </div>
+	                            -->
                             
                             </div>
                         </div>

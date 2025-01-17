@@ -2,6 +2,7 @@ package com.example.haruProject.service.hj;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -62,16 +63,18 @@ public class AdminServiceImpl implements AdminService {
 	public Admin getAdminDetail(int ano) {
 		System.out.println("AdminService getAdminDetail Start...");
 		Admin adminDetail = ad.getAdminDetail(ano);
+
 		return adminDetail;
 	}
 	
 	// 관리자 정보 수정 : Role, 상태 가져옴
-	@Override
-	public List<Admin> adminBcdMcd() {
-		System.out.println("AdminService adminBcdMcd Start...");
-		List<Admin> adminCommon = ad.adminCommon();
-		return adminCommon;
-	}
+	
+	 @Override public List<Map<String, Object>> acommonList() {
+		 System.out.println("AdminService adminBcdMcd Start...");
+		 List<Map<String, Object>> adminCommon = ad.adminCommon();
+		 return adminCommon; 
+	 }
+	 
 	
 	// 관리자 정보 수정
 	@Override

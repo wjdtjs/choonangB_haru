@@ -11,11 +11,11 @@ public class Appointment {
 	private String resno;
 	private Date rdate;
 	private String mcode;
-	private int anl;
+	private int ano;
 	private int memno;
 	private int pno;
 	private Date reg_date;
-	private long memo;
+	private String memo;
 	private String start_time;
 	private String end_time;
 	
@@ -29,6 +29,10 @@ public class Appointment {
 	private String aname;		// 주치의 이름
 	private String item;		// 진료 항목 이름
 	private String status;		// 예약 상태
+	private Date petbirth;		// 생일
+	private float petweight;	// 몸무게
+	private String petspecial;	// 특이사항
+	private String gender;		// 성별
 	
 	private String species;		// 종
 	private String cresno;		// 차트가 작성됐는지 확인하기 위함
