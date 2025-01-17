@@ -13,6 +13,10 @@
 
     <title>후기 상세</title>
 
+<!-- 폰트어썸 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <style>
@@ -64,7 +68,7 @@
 
 /* 후기 상세 테이블 */
 #hr-table-empty {
-	padding: 16px 150px;
+	padding: 0px;
 }
 
 .board_detail_table {
@@ -121,9 +125,8 @@
 
 .board_detail_re_table {
 	margin: 20px 40px;
-	box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1);
-	border-radius: 24px;
-	padding: 20px;
+	display: flex;
+	justify-content: space-between;	
 }
 
 table#board_detail_re_table {
@@ -134,7 +137,27 @@ table#board_detail_re_table {
 
 .board_detail_re_table p {
 	color: black;
+	padding-top: 12px;
 	font-size: 16px;
+}
+
+#board_detail_table_re tr {
+	margin: 4px;
+	color: black;
+}
+
+#board_detail_table_re {
+	width: 500px;
+}
+
+#re_writer {
+	font-size: 12px;
+	color: #B9B9B9;
+}
+
+#re_del_btn {
+	color : #FF0000;
+	margin: auto 0;
 }
 
 
@@ -142,9 +165,6 @@ table#board_detail_re_table {
 
 </style>
 
-<script type="text/javascript">
-
-</script>
 
 <body id="page-top"> 
 
@@ -166,7 +186,7 @@ table#board_detail_re_table {
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid modal_">
 
                   
                     
@@ -180,45 +200,52 @@ table#board_detail_re_table {
                         	<!-- 내용 전체 -->
 	                        <div class="board_detail_body">
 	                        
-			                    <div class="board_btn">
-				                            	<button type="button" class="board_detail" id="detail_close_btn" onclick="location.href='/admin/board'">목록으로</button>
-				                            	<button type="button" class="board_detail" id="update_btn" form="">삭제하기</a></button>	                           
-				                </div>   
 	                        	<!-- Page Heading -->
 	                    		<h1 class="h4 mb-4 text-gray-800 font-weight-bold" id="board_detail_title" >후기 상세</h1>
 	                    		
-	                        	<div class="board_detail_top">
-			                        <c:forEach var="content" items="${bdList_content }">
+	                        	<div class="board_detail_top">			                       
 		                        	<!-- 게시글 설명 -->                   	
 			                        	<div class="board_detail_table">
 			                        		<table id="board_detail_table_data">
+			                        		 	<colgroup>
+			                        		 		<col width="25%" />
+			                        		 		<col width="25%" />
+			                        		 		<col width="25%" />
+			                        		 		<col width="25%" />
+			                        		 	</colgroup>
 			                        				<tr>
 								        				<th>게시글 번호</th>
-								        				<td>: ${content.bno }</td>
-								        				<td><div id="hr-table-empty"></div></td>
-								        				<th>작성자</th>
-								        				<td>: ${content.mname }</td>
-								        			</tr>
-								        			<tr>
-								        				<c:if test="">
-									        				<th>예약 번호</th>
-									        				<td>: ${content.resno }</td>
-								        				</c:if>
+								        				<td>${board.bno }</td>
 								        				
-								        				<td><div id="hr-table-empty"></div></td>
+								        				<th>작성자</th>
+								        				<td>${board.mname }</td>
+								        			</tr>
+								        			<tr>								        				
+								        				<c:choose>
+								        					<c:when test="${board.resno ne null}">
+								        						<th>예약 번호</th>
+									        					<td>${board.resno }</td>
+								        					</c:when>								        					
+								        					<c:when test="${board.resno eq null}">
+								        						<th>상품 번호</th>
+									        					<td>${board.pno }</td>
+								        					</c:when>
+								        				</c:choose>
+								        				
+								        				
 								        				<th>작성일</th>
-								        				<td>: ${content.reg_date }</td>
+								        				<td><fmt:formatDate value="${board.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>								        				
 								        			</tr>
 								        			<tr>
 								        				<th>예약 분류</th>
-								        				<td>: ${content.item }</td>
-								        				<td><div id="hr-table-empty"></div></td>
+								        				<td>${board.item }</td>
+								        				
 								        				<th>마지막 수정일</th>
-								        				<td>: ${content.update_date }</td>
+								        				<td><fmt:formatDate value="${board.update_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 								        			</tr>
 													<tr>
 								        				<th>조회수</th>
-								        				<td>: ${content.bview_count }</td>
+								        				<td>${board.bview_count }</td>
 								        			</tr>
 			                        		</table>                        		
 			                        	</div>
@@ -227,37 +254,45 @@ table#board_detail_re_table {
 			                        	<div class="board_detail_content">
 				                        	<p>글 제목</p>
 									        <div class="hr-board-text">
-									        ${content.bcontents }
+									        ${board.bcontents }
 									        </div>
-			                        	</div>
-			                       	</c:forEach>			                        			
+			                        	</div>			                        			
 		                        </div>                	
 	                        	
 	                        	
 	                        	<!-- 댓글 -->
 	                        	<div class="board_detail_re">
-	                        		<c:forEach var="re" items="${bdList_re}">
-	                        		<h5>댓글</h5>
-								        <c:if test="${re.bseq != null && re.bseq ne ''}">
-								            <div class="board_detail_re_table">	                        		
-								                <!-- 작성자 정보 -->		    
-								                <table id="board_detail_table_re">
-								                    <tr>
-								                        <th>작성자</th>
-								                        <td>: ${re.mname }</td>
-								                    </tr>
-								                    <tr>
-								                        <th>작성일</th>
-								                        <td>: ${re.reg_date }</td>
-								                    </tr>
-								                </table>
-								                <p>${re.bcontents }</p>
-								            </div>
-								        </c:if>
-								    </c:forEach>
-	                        		
+	                        		<h5 style="display: inline">댓글</h5>
+	                        		<p style="display: inline">${board.re_count -1}</p>	                        			
+		                        			<c:forEach var="re" items="${bdList_re}">
+			                        			<c:if test="${re.bseq != null && re.bseq ne ''}">								  
+										            <div class="board_detail_re_table">
+										                <!-- 작성자 정보 -->		    
+										                <table id="board_detail_table_re">
+										              	<colgroup>
+					                        		 		<col width="10%" />
+					                        		 		<col width="90%" />			                        		 		
+					                        		 	</colgroup>							              						                
+										                    <tr>
+										                        <td colspan="2"><p>${re.bcontents }</p></td>
+										                    </tr>
+										                    <tr id="re_writer">
+										                        <td>${re.mname }</td>							               
+										                        <td><fmt:formatDate value="${re.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+										                    </tr>
+										                </table>								                
+										                	<i id="re_del_btn" class="fa-solid fa-xmark" alt="re_del" onclick="location.href='/boardDelete_re?bno=${re.bno}&bgroup=${re.bgroup }'" ></i>
+										            </div>
+										            <hr>
+										        </c:if>
+									    	</c:forEach>                        		
 	                        		
 	                        	</div>
+	                        	<div class="modal_l-content-btn">	                        	 
+								    <button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/board'">목록으로</button>
+	                      	        <button type="button" class="update_btn" onclick="location.href='/boardDelete?bno=${board.bno}'">삭제하기</button>
+				  				</div>   
+				                        	
 	                        </div>
 	                                       	
 	                        	
@@ -268,7 +303,7 @@ table#board_detail_re_table {
                         					
 	
                     </div>
-
+		
                 </div>
                 <!-- /.container-fluid -->
 

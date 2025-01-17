@@ -17,6 +17,8 @@
 </head>
 
 <script type="text/javascript">
+
+	// 후기 상세 페이지로 이동
 	function goToDetail(bno) {
 		alert("kk bno->"+bno);
 		console.log("kk bno 값:", bno);
@@ -28,6 +30,37 @@
        // location.href = `/admin/board_detail?bno=${bno}`;
         location.href = '/admin/board_detail?bno='+bno;
     }
+	
+	let search1 = null;
+	let type1 = null;
+	
+	// 검색창에서 엔터키 눌렀을 때 검색
+	function search_word(e) {
+		if(event.key === "Enter"){
+			console.log("search_word search1 ->"+search1 +", type1 ->"+type1);
+			search1 = event.target.value;	// 입력된 검색어
+			type1 = document.querySelector("haru-search-select").value;	// 선택된 필터
+			redirectToSearch(type1, search1);
+		}
+	}
+	
+	// 드롭다운 값 변경됐을 때 동작
+	function search_type(selectElement) {
+		type1 = selectElement.value; // 선택된 필터
+        search1 = document.querySelector(".tb-search-input").value;	// 입력된 검색어
+        console.log("search_type search1 ->"+search1 +", type1 ->"+type1);
+        redirectToSearch(type1, search1)
+	}
+	
+	// 서버로 type1, search1 보내기
+	function redirectToSearch(type1, search1) {
+		const encodedType = encodeURIComponent(type1); // JavaScript에서 URL 인코딩
+        const encodedSearch = encodeURIComponent(search1);
+        const url = `/admin/board?search_type=${encodedType}&search_word=${encodedSearch}`;
+        console.log("redirectToSearch search1 ->"+search1 +", type1 ->"+type1);
+        console.log(url);
+        window.location.href = url;
+	}
 
 </script>
 
@@ -60,15 +93,22 @@
 
                     <!-- DataTales Example -->
                     <div class="card mb-4">
-                        <div class="card-header py-3">
+                        <div class="card-header py-3"> 	 
                             <div class="m-0 haru-search-box">
-	                            <div class="haru-left">
-	                            	<!-- 구분 드롭박스? -->
-									<!-- 검색창 -->
-	                            	<div class="haru-tb-input-box">	                            
-	                            		<input class="tb-search-input" type="text">
-	                            			
-	                            	</div>                            
+	                            <div class="haru-left">	                            	
+										<!-- 검색창 -->
+		                            	<div class="haru-tb-input-box">	                            
+		                            		<input class="tb-search-input" name="search1" type="text" onkeypress="if (event.key === 'Enter') search_word()">
+										</div>
+	                            </div>
+	                            
+	                            <div class="haru-right">
+	                            	<select name="type1" class="haru-search-select">
+		                            		<option value="0">구분</option>
+		                            		<option value="100">진료</option>
+		                            		<option value="200">수술</option>
+		                            		<option value="300">상품</option>
+		                            </select>
 	                            </div>
                             
                             </div>
@@ -92,7 +132,7 @@
                                    		    <td>${board.content } </td>
                                       		<td>${board.btitle } </td>
                                     		<td>${board.mname } </td>
-                                    		<td>${board.reg_date } </td>
+                                    		<td><fmt:formatDate value="${board.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                     		<td>${board.bview_count } </td>
                                     	</tr>
 										                                    

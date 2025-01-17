@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.hr.BoardDao;
 import com.example.haruProject.dto.Board;
+import com.example.haruProject.dto.SearchItem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,10 @@ public class BoardServiceImp implements BoardService {
 
 	// 게시글 내역
 	@Override
-	public int getTotalCnt() {
+	public int getTotalCnt(SearchItem si) {
 		System.out.println("BoardServiceImp getTotalCnt() start ,,,");
 		
-		int totalCnt = bd.getTotalCnt();
+		int totalCnt = bd.getTotalCnt(si);
 		
 		return totalCnt;
 	}
@@ -41,9 +42,22 @@ public class BoardServiceImp implements BoardService {
 
 	
 	// 후기 상세
+	// 게시글
+	@Override
+	public Board boardDetailContent(int bno) {
+		System.out.println("BoardServiceImp boardDetailContent() start ,,,");
+		System.out.println("bno ->"+bno);
+		
+		Board board = new Board();
+		board = bd.boardDetailContent(bno);
+		
+		return board;
+	}	
+	// 댓글
 	@Override
 	public List<Board> boardDetailList(int bno) {
-		System.out.println("BoardServiceImp boardDetailLis() start ,,,");
+		System.out.println("BoardServiceImp boardDetailList() start ,,,");
+		System.out.println("BoardServiceImp boardDetailList() bno ->"+bno);
 		
 		List<Board> bdList = new ArrayList<>();
 		
@@ -51,5 +65,32 @@ public class BoardServiceImp implements BoardService {
 		
 		return bdList;
 	}
+
+	// 후기 삭제
+	@Override
+	public int deleteBoard(int bno) {
+		System.out.println("BoardServiceImp deleteBoard() start ,,,");
+		System.out.println("BoardServiceImp deleteBoard() bno ->"+bno);
+		
+	
+		int result = 0;
+		result = bd.deleteBoard(bno);
+		
+		return result;
+	}
+
+	// 후기 댓글 삭제 -> 상태 비노출로 변경
+	@Override
+	public int deleteBoardRe(int bno) {
+		System.out.println("BoardServiceImp deleteBoardRe() start ,,,");
+		System.out.println("BoardServiceImp deleteBoardRe() bno ->"+bno);
+		
+		int result = 0;
+		result = bd.deleteBoardRe(bno);
+		
+		return result;
+	}
+
+	
 
 }

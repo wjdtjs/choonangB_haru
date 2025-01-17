@@ -149,6 +149,7 @@ select {
   	margin-right: 15px;
   	background-color: #B9B9B9;
 }
+
 .modal_l-content-btn > button.update_btn {
   	background-color: var(--haru);
 }

@@ -4,10 +4,23 @@
 
 <mapper namespace="com.example.haruProject.BoardMapper">
 
+	<!-- 후기 전체 불러오기 -->
 	<select id="HR_SelectTotalBoardCnt" resultType="int">
 		SELECT COUNT(*) FROM BOARD
-	</select>
-	
+		WHERE btitle IS NOT NULL
+		<if test="(type1 != null and type1 != 0) or (search1 != null and !search1.equals(''))">
+			AND
+		</if>
+		<if test="type1 != null and type1 != 0">
+			board_type_mcd = #{type1}
+		</if>
+		<if test="(type1 != null and type1 != 0) and (search1 != null and !search1.equals(''))">
+			AND
+		</if>
+		<if test="search1 != null and !search1.equals('')">
+			btitle LIKE '%' || #{search1} || '%'
+		</if>
+	</select>	
 	
 	<select id="HR_SelectBoardList" parameterType="Map" resultType="Board">
 		SELECT *
@@ -24,13 +37,46 @@
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow}
 	</select>
+		
 	
+	<!-- 후기 상세 -->
+	<!-- 게시글 원글만 불러오기 -->
+	<select id="HR_SelectBoardDetailContent" parameterType="int" resultType="Board">
+		SELECT b.bno, b.resno, c.content as item, m.mname, b.reg_date, b.update_date, b.bview_count, b.btitle, b.bcontents, b.bseq, b.pno, b.bgroup, b.pno,
+						                                                                                                                                    (SELECT COUNT(*)
+						                                                                                                                                     FROM BOARD b
+						                                                                                                                                     WHERE b.bgroup = #{bno}) as re_count
+		FROM BOARD b
+		    JOIN COMMON C ON b.board_type_bcd = c.bcd AND b.board_type_mcd = c.mcd
+		    JOIN MEMBER m ON b.memno = m.memno
+		WHERE b.bno = #{bno}
+	</select>
+	<!-- 게시글에 달린 댓글 가져오기 (원글 + 댓글) -->
 	<select id="HR_SelectBoardDetailList" parameterType="Map" resultType="Board">
-		SELECT b.bno, b.resno, c.content as item, m.mname, b.reg_date, b.update_date, b.bview_count, b.btitle, b.bcontents, b.bseq
+		SELECT b.bno, b.resno, c.content as item, m.mname, b.reg_date, b.update_date, b.bview_count, b.btitle, b.bcontents, b.bseq, b.bstatus_mcd, b.bgroup, b.pno,
+	                                                                                                                                    (SELECT COUNT(*)
+	                                                                                                                                     FROM BOARD b
+	                                                                                                                                     WHERE b.bgroup = #{bno}) as re_count
 		FROM BOARD b
 		    JOIN COMMON C ON b.board_type_bcd = c.bcd AND b.board_type_mcd = c.mcd
 		    JOIN MEMBER m ON b.memno = m.memno
 		WHERE b.bgroup = #{bno}
-	</select>
-
+	</select>	
+	
+	
+	
+	<!-- 게시글 삭제 -->
+	<delete id="HR_DeleteBoard" parameterType="int">
+		DELETE
+		FROM BOARD
+		WHERE bgroup = #{bno}
+	</delete>
+	
+	<update id="HR_DeleteBoardRe" parameterType="int">
+		UPDATE BOARD
+		SET bstatus_mcd = 200
+		WHERE bno = #{bno}
+	</update>
+	
+	
 </mapper>

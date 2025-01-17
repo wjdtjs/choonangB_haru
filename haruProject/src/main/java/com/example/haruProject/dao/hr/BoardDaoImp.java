@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.example.haruProject.dto.Board;
+import com.example.haruProject.dto.SearchItem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,12 @@ public class BoardDaoImp implements BoardDao {
 	private final SqlSession session;
 	
 	@Override
-	public int getTotalCnt() {
+	public int getTotalCnt(SearchItem si) {
 		System.out.println("BoardDaoImp getTotalCnt start ,,,");
 		int totalCnt = 0;
 		
 		try {
-			totalCnt = session.selectOne("HR_SelectTotalBoardCnt");
+			totalCnt = session.selectOne("HR_SelectTotalBoardCnt", si);
 		} catch (Exception e) {
 			log.error("getTotalCnt() error ->", e);
 		}
@@ -54,6 +55,23 @@ public class BoardDaoImp implements BoardDao {
 
 	
 	// 후기 상세
+	// 게시글
+	@Override
+	public Board boardDetailContent(int bno) {
+		System.out.println("BoardDaoImp boardList start ,,,");
+		
+		Board board = new Board();
+		
+		try {
+			board = session.selectOne("HR_SelectBoardDetailContent", bno);
+		} catch (Exception e) {
+			log.error("boardDetailList() error ->", e);
+		}
+		
+		return board;
+	}
+	
+	// 글 + 댓글
 	@Override
 	public List<Board> boardDetailList(int bno) {
 		List<Board> bdlist = new ArrayList<>();
@@ -71,5 +89,42 @@ public class BoardDaoImp implements BoardDao {
 		
 		return bdlist;
 	}
+	
+
+	// 후기 삭제
+	@Override
+	public int deleteBoard(int bno) {
+		System.out.println("BoardDaoImp deleteBoard() start ,,,");
+		System.out.println("BoardDaoImp deleteBoard() bno ->"+bno);
+		
+		int result = 0;
+		
+		try {
+			result = session.delete("HR_DeleteBoard", bno);
+			System.out.println("BoardDaoImp deleteBoard() result ->"+result);
+		} catch (Exception e) {
+			log.error("deleteBoard() error ->", e);
+		}
+		return result;
+	}
+
+	// 댓글 삭제 -> 상태 비노출로	
+	@Override
+	public int deleteBoardRe(int bno) {
+		System.out.println("BoardDaoImp deleteBoardRe() start ,,,");
+		System.out.println("BoardDaoImp deleteBoardRe() bno ->"+bno);
+		
+		int result = 0;
+		
+		try {
+			result = session.update("HR_DeleteBoardRe", bno);
+			System.out.println("BoardDaoImp deleteBoardRe() result ->"+result);
+		} catch (Exception e) {
+			log.error("deleteBoard() error ->", e);
+		}
+		return result;
+	}
+	
+	
 
 }
