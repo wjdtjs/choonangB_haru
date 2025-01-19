@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardDaoImp implements BoardDao {
 	private final SqlSession session;
 	
+	// 후기 수 cnt
 	@Override
 	public int getTotalCnt(SearchItem si) {
 		System.out.println("BoardDaoImp getTotalCnt start ,,,");
@@ -33,8 +34,9 @@ public class BoardDaoImp implements BoardDao {
 		return totalCnt;
 	}
 
+	// 후기 목록 불러오기
 	@Override
-	public List<Board> boardList(int startRow, int endRow) {
+	public List<Board> boardList(int startRow, int endRow, int type4, String search1) {
 		System.out.println("BoardDaoImp boardList start ,,,");
 		List<Board> blist = new ArrayList<>();
 		
@@ -42,6 +44,8 @@ public class BoardDaoImp implements BoardDao {
 		
 		bMap.put("startRow", startRow);
 		bMap.put("endRow", endRow);
+		bMap.put("type4", type4);
+		bMap.put("search1", search1);
 		
 		try {
 			blist = session.selectList("HR_SelectBoardList", bMap);

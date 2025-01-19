@@ -31,39 +31,51 @@
         location.href = '/admin/board_detail?bno='+bno;
     }
 	
+	
+	// 검색
+		
 	let search1 = null;
-	let type1 = null;
+	let type4 = null;
 	
 	// 검색창에서 엔터키 눌렀을 때 검색
 	function search_word(e) {
-		if(event.key === "Enter"){
-			console.log("search_word search1 ->"+search1 +", type1 ->"+type1);
-			search1 = event.target.value;	// 입력된 검색어
-			type1 = document.querySelector("haru-search-select").value;	// 선택된 필터
-			redirectToSearch(type1, search1);
-		}
+		if (e.key === "Enter") {
+	        const searchInput = document.querySelector(".tb-search-input");
+	        const searchSelect = document.querySelector(".haru-search-select");
+
+	        if (!searchInput || !searchSelect) {
+	            console.error("검색창 또는 드롭다운 요소를 찾을 수 없습니다.");
+	            return;
+	        }
+
+	        search1 = searchInput.value; // 입력된 검색어
+	        type4 = searchSelect.value; // 선택된 필터
+	        console.log('search_word 실행 -> search1: '+search1 + ', type4: '+type4);
+	        alert('search_word 실행 -> search1: '+search1 + ', type4: '+type4);
+	        location.href = '/admin/board?type4='+type4+'&search1='+search1;
+	        // redirectToSearch(type1, search1);
+	    }
 	}
 	
 	// 드롭다운 값 변경됐을 때 동작
 	function search_type(selectElement) {
-		type1 = selectElement.value; // 선택된 필터
-        search1 = document.querySelector(".tb-search-input").value;	// 입력된 검색어
-        console.log("search_type search1 ->"+search1 +", type1 ->"+type1);
-        redirectToSearch(type1, search1)
-	}
-	
-	// 서버로 type1, search1 보내기
-	function redirectToSearch(type1, search1) {
-		const encodedType = encodeURIComponent(type1); // JavaScript에서 URL 인코딩
-        const encodedSearch = encodeURIComponent(search1);
-        const url = `/admin/board?search_type=${encodedType}&search_word=${encodedSearch}`;
-        console.log("redirectToSearch search1 ->"+search1 +", type1 ->"+type1);
-        console.log(url);
-        window.location.href = url;
+		 const searchInput = document.querySelector(".tb-search-input");
+		 const selectedValue = selectElement.value;
+
+		    if (!searchInput || !selectElement) {
+		        console.error("검색창 또는 드롭다운 요소를 찾을 수 없습니다.");
+		        return;
+		    }
+
+		    type4 = selectElement.value; // 선택된 필터
+		    search1 = searchInput.value; // 입력된 검색어
+		    console.log('search_type 실행 -> search1: '+search1 + ', type4: '+type4);
+		    alert('search_type 실행 -> search1: '+search1 + ', type4: '+type4);
+		    location.href = '/admin/board?type4='+type4+'&search1='+search1;
+		    // redirectToSearch(type1, search1);
 	}
 
 </script>
-
 
 <body id="page-top"> 
 
@@ -98,16 +110,18 @@
 	                            <div class="haru-left">	                            	
 										<!-- 검색창 -->
 		                            	<div class="haru-tb-input-box">	                            
-		                            		<input class="tb-search-input" name="search1" type="text" onkeypress="if (event.key === 'Enter') search_word()">
+		                            		<input class="tb-search-input" name="search1" type="text" 
+		                            		onkeypress="console.log('onkeypress 실행됨'); if (event.key === 'Enter') search_word(event)"
+		                            		value="${search1}">
 										</div>
 	                            </div>
 	                            
 	                            <div class="haru-right">
-	                            	<select name="type1" class="haru-search-select">
-		                            		<option value="0">구분</option>
-		                            		<option value="100">진료</option>
-		                            		<option value="200">수술</option>
-		                            		<option value="300">상품</option>
+	                            	<select name="type4" class="haru-search-select" onchange="console.log('onchange 실행됨'); search_type(this)" >
+		                            		<option value="0" 	 ${type4 == '0'   ? 'selected' : ''}>전체</option>
+		                            		<option value="100"  ${type4 == '100' ? 'selected' : ''}>진료</option>
+		                            		<option value="200"  ${type4 == '200' ? 'selected' : ''}>수술</option>
+		                            		<option value="300"  ${type4 == '300' ? 'selected' : ''}>상품</option>
 		                            </select>
 	                            </div>
                             
@@ -141,7 +155,6 @@
                             </div>
                         </div>
 						
-						<div class="haru-pagination">
 							<div class="haru-pagination">
 							    <!-- 이전 블록 이동 -->
 							    <c:if test="${pagination.startPage > pagination.blockSize}">
@@ -163,7 +176,6 @@
 							           onclick="location.href='?pageNum=${pagination.startPage + pagination.blockSize}'"></i>
 							    </c:if>
 							</div>
-						</div>
 	
                     </div>
 
@@ -192,7 +204,6 @@
     <!-- Logout Modal-->
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
-
 
 </body>
 </html>

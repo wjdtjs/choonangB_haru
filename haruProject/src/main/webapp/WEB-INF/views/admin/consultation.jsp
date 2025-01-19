@@ -45,91 +45,7 @@
 </style>
 
 <script type="text/javascript">
-	
-	$(async () => {
-		// 첫 페이지 로드
-		await listShow('1');
-		
-		// 리스트 필터
-		
-		// 검색
-		
-		
-		
-	})
-	
-	
-	
-	// 리스트
-	async function listShow(pageNum) {
-		$.ajax({
-			url: "<%=request.getContextPath()%>/api/consultation-list",
-			data: {
-				pageNum: pageNum,
-				block:'10'
-			},
-			dataType: 'json',
-			success: function(data) {
-				let pagination = data.pagination;
-				
-				let str = "";		// 테이블 저장
-				let str2 = "";		// 페이지네이션 저장
-				
-				// 테이블 데이터
-				$(data.list).each(function() {
-					str += `
-							<tr>
-								<td style="">\${this.resno}</td>
-								<td>\${this.rdate.split('T')[0]}  \${this.start_time.slice(0, -2)}:\${this.start_time.slice(-2)}</td>
-								<td>\${this.mname}</td>
-								<td>\${this.petname} / \${this.species}</td>
-								<td>\${this.aname}</td>
-								<td>\${this.item}</td>
-							`
-					console.log(this.cresno, this.resno);
-					if (this.cresno === this.resno) {
-						str += `<td><button type="button" class="chart_btn con_modal" id="chart_modal_open_btn">차트상세</button></td>`
-					} else {
-						str += `<td><button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn" onclick="location.href='/admin/addConsultation?resno=\${this.resno}'">차트작성</button></td>`
-					}
-							
-					str += `</tr>`					
-				})
-				
-				// tbody에 str 넣어주기
-				$('#dataTable tbody').html(str);
-				
-				// 페이지네이션
-				if(pagination.startPage > pagination.blockSize) {
-					str2 += `<i class="haru-pagearrow fa-solid fa-chevron-left" onclick="pageChange(\${pagination.startPage-pagination.blockSize})"></i>`;
-				}
-				for(let i=1; i<pagination.pageCnt+1; i++) {
-					str2 += `<div class="haru-pagenum" id="pageNum\${i}" onclick="pageChange(\${i})">\${i }</div>`;
-				} 
-				if(pagination.endPage < pagination.pageCnt) {
-					str2 += `<i class="haru-pagearrow fa-solid fa-chevron-right" onclick="pageChange(\${pagination.startPage+pagination.blockSize})"></i>`;
-				}
-				
-				$('.haru-pagination').html(str2);
-				
-				$(`#pageNum\${pagination.currentPage}`).addClass('active');
-			},
-			error: function(e) {
-				console.log(e);
-			}
-		});
-	}
-	
-	// 페이지 교체
-	async function pageChange(num) {
-		let id = '#pageNum' + num;
-		
-		await listShow(num);
-		
-		$('.haru-pagenum').removeClass('active');
-		$('id').addClass('active');
-	}
-	
+
 </script>
 
 <body id="page-top"> 
@@ -193,25 +109,53 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>$320,800</td>
-                                            <td><button type="button" class="chart_btn con_modal" id="chart_modal_open_btn">차트상세</button></td>
-                                        </tr>
-                                        
-                                        
+                                    	<c:forEach var="consultation" items="${cList }">
+                                    		<tr onclick="goToDetail('${consultation.resno}')" style="cursor: pointer;">
+	                                    		<td>${consultation.resno } </td>
+	                                    		<td><fmt:formatDate value="${consultation.rdate}" pattern="yyyy-MM-dd"/></td>
+	                                    		<td>${consultation.mname } </td>
+	                                   		    <td>${consultation.petname }&nbsp;/&nbsp;${consultation.species } </td>
+	                                      		<td>${consultation.aname } </td>
+	                                    		<td>${consultation.item } </td>
+	                                    		<td>
+	                                    			<!-- 차트작성, 차트상세 controller에 따라서 onclick 경로에 빈 부분 채워서 사용하시면 됩니닷~!!~! -->
+	                                    			<c:choose>
+	                                    				<c:when test="${consultation.cresno eq consultation.resno }">
+	                                    					<button type="button" class="chart_btn con_modal" id="chart_modal_open_btn" onclick="location.href='/admin/  ?resno=\${this.cresno}'">차트상세</button>
+	                                    				</c:when>
+	                                    				<c:when test="${consultation.cresno ne consultation.resno }">
+	                                    					<button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn" onclick="location.href='/admin/  ?resno=\${this.cresno}'">차트작성</button>
+	                                    				</c:when>
+	                                    			</c:choose>
+	                                    		</td>
+                                    		</tr>
+                                    	</c:forEach>                                      
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 						
 						<div class="haru-pagination">
-
-						</div>
+							    <!-- 이전 블록 이동 -->
+							    <c:if test="${pagination.startPage > pagination.blockSize}">
+							        <i class="haru-pagearrow fa-solid fa-chevron-left" 
+							           onclick="location.href='?pageNum=${pagination.startPage - pagination.blockSize}'"></i>
+							    </c:if>
+							
+							    <!-- 페이지 번호 출력 -->
+							    <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+							        <div class="haru-pagenum ${i == pagination.currentPage ? 'active' : ''}" 
+							             onclick="location.href='?pageNum=${i}'">
+							            ${i}
+							        </div>
+							    </c:forEach>
+							
+							    <!-- 다음 블록 이동 -->
+							    <c:if test="${pagination.endPage < pagination.pageCnt}">
+							        <i class="haru-pagearrow fa-solid fa-chevron-right" 
+							           onclick="location.href='?pageNum=${pagination.startPage + pagination.blockSize}'"></i>
+							    </c:if>
+							</div>
 	
                     </div>
 

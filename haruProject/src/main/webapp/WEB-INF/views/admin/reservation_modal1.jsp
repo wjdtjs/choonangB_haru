@@ -242,8 +242,7 @@ button#res-modal-1-btn2 {
 
        
     </div>
-   
-    <div class="modal_l_layer"></div>
+
 </div>
 
 <script>

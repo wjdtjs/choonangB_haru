@@ -30,12 +30,12 @@ public class BoardServiceImp implements BoardService {
 	}
 
 	@Override
-	public List<Board> boardList(int startRow, int endRow) {
+	public List<Board> boardList(int startRow, int endRow, int type4, String search1) {
 		System.out.println("BoardServiceImp boardList() start ,,,");
 		
 		List<Board> bList = new ArrayList<>();
 		
-		bList = bd.boardList(startRow, endRow);
+		bList = bd.boardList(startRow, endRow, type4, search1);
 		
 		return bList;
 	}

@@ -23,6 +23,9 @@ public class AppointmentDaoImp implements AppointmentDao {
 	// 예약 목록 전체 수
 	@Override
 	public int getTotalCnt(SearchItem si) {
+		System.out.println("AppointmentDaoImp getTotalCnt() start ,,,");
+		System.out.println("AppointmentDaoImp getTotalCnt() si ->"+si);
+		
 		int totalCnt = 0;
 		
 		try {
@@ -51,6 +54,25 @@ public class AppointmentDaoImp implements AppointmentDao {
 		}
 		return alist;
 	}
+
+	// 예약 상세 가져오기
+	@Override
+	public Appointment appointmentDetail(String resno) {
+		System.out.println("AppointmentDaoImp appointmentDetail() start ,,,");
+		System.out.println("AppointmentDaoImp appointmentDetail() resno ->"+resno);
+		
+		Appointment appointment_d = new Appointment();
+		
+		try {
+			appointment_d = session.selectOne("HR_SelectAppointmentDetail", resno);
+			System.out.println("AppointmentDaoImp appointmentDetail() appointment_d ->"+appointment_d);
+		} catch (Exception e) {
+			log.error("appointmentDetail() error ->", e);
+		}
+		
+		return appointment_d;
+	}
+
 
 	
 	
@@ -85,6 +107,7 @@ public class AppointmentDaoImp implements AppointmentDao {
 		return clist;
 	}
 
+	
 
 
 }

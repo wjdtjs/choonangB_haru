@@ -9,7 +9,7 @@ public interface BoardDao {
 
 	int getTotalCnt(SearchItem si);
 
-	List<Board> boardList(int startRow, int endRow);
+	List<Board> boardList(int startRow, int endRow, int type4, String search1);
 
 	List<Board> boardDetailList(int bno);
 

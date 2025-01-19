@@ -17,4 +17,7 @@ public interface AppointmentDao {
 
 	List<Appointment> consultationListChart(int startRow, int endRow);
 
+	// 예약 상세
+	Appointment appointmentDetail(String resno);
+
 }

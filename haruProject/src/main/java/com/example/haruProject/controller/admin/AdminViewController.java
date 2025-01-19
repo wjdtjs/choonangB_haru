@@ -66,16 +66,7 @@ public class AdminViewController {
 	public String medicalView() {
 		return "admin/medical";
 	}
-	
-	/**
-	 * 관리자페이지 진료관리 뷰
-	 * @return
-	 */
-	@GetMapping("/admin/consultation")
-	public String consView() {
-		return "admin/consultation";
-	}
-	
+
 	/**
 	 * 관리자페이지 재고관리 뷰
 	 * @return
@@ -120,14 +111,7 @@ public class AdminViewController {
 		return "admin/animals";
 	}
 	
-	/**
-	 * 관리자페이지 예약관리 뷰
-	 * @return
-	 */
-	@GetMapping("/admin/reservation")
-	public String resView() {
-		return "admin/reservation";
-	}
+
 	
 	
 }

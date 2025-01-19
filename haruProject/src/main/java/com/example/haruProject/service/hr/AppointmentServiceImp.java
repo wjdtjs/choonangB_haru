@@ -23,12 +23,12 @@ public class AppointmentServiceImp implements AppointmentService {
 	@Override
 	public int getTotalCnt(SearchItem si) {
 		System.out.println("AppointmentServiceImp getTotalCnt() start ,,,");
+		System.out.println("AppointmentServiceImp getTotalCnt() si ->"+si);
 		
 		int totalCnt = ad.getTotalCnt(si);
 		
 		return totalCnt;
 	}
-
 	@Override
 	public List<Appointment> appointmentList(int startRow, int endRow, SearchItem si) {
 		System.out.println("AppointmentServiceImp appointmentList() start ,,,");
@@ -38,6 +38,19 @@ public class AppointmentServiceImp implements AppointmentService {
 		aList = ad.appointmentList(startRow, endRow, si);
 		
 		return aList;
+	}
+	
+	//예약 상세
+	@Override
+	public Appointment appointmentDetail(String resno) {
+		System.out.println("AppointmentServiceImp appointmentDetail() start ,,,");
+		System.out.println("AppointmentServiceImp appointmentDetail() resno ->"+resno);
+		
+		Appointment appointment_d = new Appointment();
+		
+		appointment_d = ad.appointmentDetail(resno);
+		
+		return appointment_d;
 	}
 
 	
@@ -62,5 +75,7 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return cList;
 	}
+
+
 
 }

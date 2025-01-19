@@ -14,28 +14,21 @@
 		    JOIN ADMIN d ON a.ANO = d.ANO
 		    JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
 		    JOIN COMMON c ON c.BCD = a.RSTATUS_BCD and c.MCD = a.RSTATUS_MCD
-		    JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD
+		    JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD		    
 		    
-			<if test="(search1 != null and !search1.equals('')) or (search2 != null and !search2.equals(''))">
-			WHERE
-			</if>
-			<if test="search1 != null and !search1.equals('')">
-				<choose>
-					<when test="type1 == '1'">a.RESNO LIKE '%' || #{search1} || '%'</when>
-					<when test="type1 == '2'">m.MNAME LIKE '%' || #{search1} || '%'</when>
-					<when test="type1 == '3'">p.PETNAME LIKE '%' || #{search1} || '%'</when>
-					<when test="type1 == '4'">d.ANAME LIKE '%' || #{search1} || '%'</when>
-					<when test="type1 == '5'">cm.MCD LIKE '%' || #{search1} || '%'</when>
-					<otherwise>a.RESNO LIKE '%' || #{search1} || '%'</otherwise>
-				</choose>			 
-			</if>
-			
-			<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
-				AND
-			</if>
-			<if test="search2 != null and !search2.equals('')">
-				a.RSTATUS_MCD = #{search2}
-			</if>
+		WHERE 1=1
+		    <if test="type4 != null and type4 != 0">
+		        AND a.rstatus_mcd = #{type4}
+		    </if>
+		    <if test="type5 != null and type5 != 0">
+		        <choose>
+		            <when test="type5 == 100">AND a.RESNO LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 200">AND m.MNAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 300">AND p.PETNAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 400">AND d.ANAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 500">AND cm.CONTENT LIKE '%' || #{search1} || '%'</when>
+		        </choose>
+		    </if>
 
 	</select>
 	 
@@ -45,35 +38,53 @@
 		FROM (
 		    SELECT ROWNUM rn, aa.*
 		    FROM (
-		        SELECT a.RESNO, a.RDATE, m.MNAME, p.PETNAME, d.ANAME, cm.CONTENT as item, c.CONTENT as status
+		        SELECT a.RESNO, a.RDATE, m.MNAME, p.PETNAME, d.ANAME, c2.CONTENT as item, c1.CONTENT as status, a.rstatus_mcd, c3.CONTENT as species, c4.CONTENT as gender, a.start_time
 		        FROM APPOINTMENT a 
 		            JOIN MEMBER m ON a.MEMNO = m.MEMNO
 		            JOIN PET p ON a.PETNO = p.PETNO
 		            JOIN ADMIN d ON a.ANO = d.ANO
 		            JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
-		            JOIN COMMON c ON c.BCD = a.RSTATUS_BCD and c.MCD = a.RSTATUS_MCD
-		            JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD
+		            JOIN COMMON c1 ON c1.BCD = a.RSTATUS_BCD and c1.MCD = a.RSTATUS_MCD			<!-- 예약 상태 -->
+		            JOIN COMMON c2 ON c2.BCD = t.MTITLE_BCD and c2.MCD = t.MTITLE_MCD			<!-- 진료 항목 -->
+		            JOIN COMMON c3 ON c3.BCD = p.PETSPECIES_BCD and c3.MCD = p.PETSPECIES_MCD	<!-- 종 -->
+		            JOIN COMMON c4 ON c4.BCD = p.PETGENDER_BCD and c4.MCD = p.PETGENDER_MCD		<!-- 성별 -->
 		           
-					<if test="search.search1 != null and !search.search1.equals('')">
-						<choose>
-							<when test="type1 == '1'">AND a.RESNO LIKE '%' || #{search.search1} || '%'</when>
-							<when test="type1 == '2'">AND m.MNAME LIKE '%' || #{search.search1} || '%'</when>
-							<when test="type1 == '3'">AND p.PETNAME LIKE '%' || #{search.search1} || '%'</when>
-							<when test="type1 == '4'">AND d.ANAME LIKE '%' || #{search.search1} || '%'</when>
-							<when test="type1 == '5'">AND cm.MCD LIKE '%' || #{search.search1} || '%'</when>
-							<otherwise>AND a.RESNO LIKE '%' || #{search.search1} || '%'</otherwise>
-						</choose>			 
-					</if>
-
-					<if test="search.search2 != null and !search.search2.equals('')">
-						AND a.RSTATUS_MCD = #{search.search2}
-					</if>
-		        
+				WHERE 1=1
+				    <if test="type4 != null and type4 != 0">
+				        AND a.rstatus_mcd = #{type4}
+				    </if>
+				    <if test="type5 != null and type5 != 0">
+				        <choose>
+				            <when test="type5 == 100">AND a.RESNO LIKE '%' || #{search1} || '%'</when>
+				            <when test="type5 == 200">AND m.MNAME LIKE '%' || #{search1} || '%'</when>
+				            <when test="type5 == 300">AND p.PETNAME LIKE '%' || #{search1} || '%'</when>
+				            <when test="type5 == 400">AND d.ANAME LIKE '%' || #{search1} || '%'</when>
+				            <when test="type5 == 500">AND cm.CONTENT LIKE '%' || #{search1} || '%'</when>
+				        </choose>
+				    </if>
+							        
 				ORDER BY a.REG_DATE desc
 		    )aa
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow} 
 	</select>
+	
+	
+	<select id="HR_SelectAppointmentDetail" parameterType="String" resultType="Appointment">
+		SELECT a.resno, a.rdate, c1.content as item, d.aname, m.mname, p.petno, p.petname, c2.content as species, c3.content as gender, p.petweight, c4.content as status
+		FROM APPOINTMENT a
+		    JOIN ADMIN d ON a.ano = d.ano
+		    JOIN MEMBER m ON a.memno = m.memno
+		    JOIN MEDICAL_ITEM t ON a.mcode = t.mcode
+		    JOIN PET p ON a.petno = p.petno
+		    JOIN COMMON c1 ON c1.bcd = t.mtitle_bcd AND c1.mcd = t.mtitle_mcd
+		    JOIN COMMON c2 ON c2.bcd = p.PETSPECIES_BCD AND c2.mcd = p.PETSPECIES_MCD
+		    JOIN COMMON c3 ON c3.bcd = p.PETGENDER_BCD AND c3.mcd = p.PETGENDER_MCD
+		    JOIN COMMON c4 ON c4.bcd = a.RSTATUS_BCD AND c4.mcd = a.RSTATUS_MCD
+		WHERE a.resno = #{resno}
+	</select>
+	
+	
 	
 	<!-- 전체 진료 수 조회 -->
 	<select id="HR_SelectTotalConsultationCnt" resultType="int">
@@ -89,7 +100,7 @@
 		FROM (
 		    SELECT ROWNUM rn, cc.*
 		    FROM (
-		        SELECT a.RESNO, ch.RESNO as cresno, a.RDATE, a.START_TIME, m.MNAME, p.PETNAME, cm1.CONTENT as species, ad.ANAME, cm2.CONTENT as item
+		        SELECT a.RESNO, ch.RESNO as cresno, a.RDATE, a.START_TIME, m.MNAME, p.PETNAME, cm1.CONTENT as species, ad.ANAME, cm2.CONTENT as item, a.rstatus_mcd
                 FROM APPOINTMENT a
                     JOIN MEMBER m ON a.MEMNO = m.MEMNO
                     JOIN PET p ON a.PETNO = p.PETNO

@@ -187,11 +187,7 @@ table#board_detail_re_table {
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid modal_">
-
-                  
-                    
-
-                    <!-- DataTales Example -->
+			        <!-- DataTales Example -->
                     <div class="card mb-4">
                     
                         

@@ -36,23 +36,23 @@ public class BoardController {
 	 * @return
 	 */
 
-	// 게시판 글 조회
+	// 게시판 글 조회 (검색 포함)
 	@GetMapping("/admin/board")
 	public String boardView(@RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
 							@RequestParam(value = "blockSize", required = false, defaultValue = "10") String blockSize,
-							@RequestParam(value = "type1", required = false, defaultValue = "0") String type1,
+							@RequestParam(value = "type4", required = false, defaultValue = "0") int type4,
    						 	@RequestParam(value = "search1", required = false, defaultValue = "") String search1,
 							Model model) 
 	{
 		System.out.println("admin/board start...");
 		System.out.println("pagenNum ->"+pageNum);
 		System.out.println("blockSize ->"+blockSize);
-		System.out.println("type1 ->"+type1);
+		System.out.println("type4 ->"+type4);
 		System.out.println("search1 ->"+search1);
 		
 		List<Board> bList = new ArrayList<>();
 		
-		SearchItem si = new SearchItem(type1, search1);
+		SearchItem si = new SearchItem(type4, search1);
 
 		// 전체 게시글 수
 		int totalCnt = bs.getTotalCnt(si);
@@ -60,12 +60,12 @@ public class BoardController {
 		// 페이지네이션
 		Pagination pagination = new Pagination(totalCnt, pageNum, Integer.parseInt(blockSize));
 
-		bList = bs.boardList(pagination.getStartRow(), pagination.getEndRow());
+		bList = bs.boardList(pagination.getStartRow(), pagination.getEndRow(), type4, search1);
 		System.out.println(bList);
 
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("bList", bList);
-		model.addAttribute("type1", type1);
+		model.addAttribute("type4", type4);
 		model.addAttribute("search1", search1);
 
 		System.out.println(bList);

@@ -11,6 +11,9 @@ public interface AppointmentService {
 	int getTotalCnt(SearchItem si);
 	List<Appointment> appointmentList(int startRow, int endRow, SearchItem si);
 	
+	// 예약 상세
+	Appointment appointmentDetail(String resno);
+	
 	// 진료 내역
 	int getTotalCntChart();
 	List<Appointment> consultationListChart(int startRow, int endRow);

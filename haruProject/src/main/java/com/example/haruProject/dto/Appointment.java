@@ -13,7 +13,7 @@ public class Appointment {
 	private String mcode;
 	private int ano;
 	private int memno;
-	private int pno;
+	private int petno;
 	private Date reg_date;
 	private String memo;
 	private String start_time;
@@ -32,8 +32,7 @@ public class Appointment {
 	private Date petbirth;		// 생일
 	private float petweight;	// 몸무게
 	private String petspecial;	// 특이사항
-	private String gender;		// 성별
-	
+	private String gender;		// 성별	
 	private String species;		// 종
 	private String cresno;		// 차트가 작성됐는지 확인하기 위함
 	

@@ -107,7 +107,7 @@ select {
 /* 모달 공통 스타일 */
 
 #modal_l {
-	display: none;
+/* 	display: none; */
  	position:absolute;
   	width:100%;
   	height:auto;

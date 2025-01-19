@@ -8,13 +8,13 @@
 	<select id="HR_SelectTotalBoardCnt" resultType="int">
 		SELECT COUNT(*) FROM BOARD
 		WHERE btitle IS NOT NULL
-		<if test="(type1 != null and type1 != 0) or (search1 != null and !search1.equals(''))">
+		<if test="(type4 != null and type4 != 0) or (search1 != null and !search1.equals(''))">
 			AND
 		</if>
-		<if test="type1 != null and type1 != 0">
-			board_type_mcd = #{type1}
+		<if test="type4 != null and type4 != 0">
+			board_type_mcd = #{type4}
 		</if>
-		<if test="(type1 != null and type1 != 0) and (search1 != null and !search1.equals(''))">
+		<if test="(type4 != null and type4 != 0) and (search1 != null and !search1.equals(''))">
 			AND
 		</if>
 		<if test="search1 != null and !search1.equals('')">
@@ -32,6 +32,18 @@
                      JOIN member m ON b.memno = m.memno
                      JOIN (SELECT mcd,content FROM common WHERE bcd= 350) c ON b.board_type_mcd = c.mcd
 				WHERE b.btitle IS NOT NULL
+				<if test="(type4 != null and type4 != 0) or (search1 != null and !search1.equals(''))">
+					AND
+				</if>
+				<if test="type4 != null and type4 != 0">
+					board_type_mcd = #{type4}
+				</if>
+				<if test="(type4 != null and type4 != 0) and (search1 != null and !search1.equals(''))">
+					AND
+				</if>
+				<if test="search1 != null and !search1.equals('')">
+					btitle LIKE '%' || #{search1} || '%'
+				</if>
 				ORDER BY b.bno desc
 		    )bb
 		)
