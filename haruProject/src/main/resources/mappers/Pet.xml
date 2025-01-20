@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.PetMapper">
+	<select id="HJSelectMyPets" parameterType="int" resultType="Pet">
+		SELECT pt.petno,
+			   pt.petname,
+			   pt.petbirth,
+			   cm1.content species1,
+			   cm2.content species2,
+			   cm3.content gender,
+			   cm4.content status
+		FROM pet pt
+		JOIN common cm1 ON pt.petspecies_bcd = cm1.bcd AND cm1.mcd = 999 
+JOIN common cm2 ON pt.petspecies_bcd = cm2.bcd AND pt.petspecies_mcd= cm2.mcd 
+JOIN common cm3 ON pt.petgender_bcd = cm3.bcd AND pt.petgender_mcd = cm3.mcd 
+JOIN common cm4 ON pt.petstatus_bcd = cm4.bcd AND pt.petstatus_mcd = cm4.mcd
+		WHERE pt.memno = #{memno}
+	</select>
+</mapper>

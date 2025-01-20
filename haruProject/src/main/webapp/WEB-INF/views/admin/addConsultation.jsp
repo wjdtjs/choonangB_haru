@@ -19,13 +19,53 @@
 <!-- style -->
 <style>
 
-.apmTable{
+table, div{
 	color: black;
 	width: 100%;
 }
 .apmTable tr{
 	height: 40px;
 }
+
+.infoTitle {
+	font-size: 20px;
+	font-weight: 500;
+	margin-top: 10px
+}
+
+.contents{
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	display: inline-grid;
+	grid-template-columns: 1fr 3fr 2fr 1fr;
+	margin: 5px 0;
+}
+
+.contents .content:first-child{
+	border-top-left-radius:10px;
+	border-bottom-left-radius:10px;
+}
+.contents .content:last-child{
+	border-top-right-radius:10px;
+	border-bottom-right-radius:10px;
+}
+
+.content{
+	border: 1px solid #aaa;
+	background-color: #eee;
+}
+
+.box{
+	height: 50px;
+	margin: 5px 0;
+	border-radius: 10px;
+	border: 1px solid #aaa;
+	background-color: #eee;
+ 
+}
+
+
 .form-input-title {
 	font-weight: 500;
 
@@ -97,56 +137,43 @@ em {
 				        	<tr>
 				        		<td class="form-input-title">담당의</td>	<td>:</td> <td>${apm.aname}</td>
 				        	</tr>
-				        	<%-- <tr>
-				        		<td class="form-input-title">전화번호<em>*</em></td>	<td><input class="form-input" type="text" name="atel" required="required" value="${admin.atel}"></td>
-				        		<td class="form-input-title">이메일</td>				<td><input class="form-input" type="text" name="aemail" value="${admin.aemail}"></td>
-				        	</tr>
-				        	<tr>
-				        		<td tclass="form-input-title">Role</td>
-				        		<td>
-				        			<select class="form-input sub-alevel-mcd-select" name="alevel_mcd">
-						        		<c:forEach var="alevel" items="${common}">
-							        		<c:choose>
-				        						<c:when test="${alevel.BCD == admin.alevel_bcd && alevel.MCD == admin.alevel_mcd }">
-							        				<option value="${alevel.MCD}" selected>${alevel.CONTENT}</option>
-				        						</c:when>
-				        						<c:when test="${alevel.BCD == admin.alevel_bcd && alevel.MCD != admin.alevel_mcd}">
-						        					<option value="${alevel.MCD}">${alevel.CONTENT}</option>				        						
-				        						</c:when>
-				        					</c:choose>
-				        				</c:forEach>
-					        		</select>
-				        		</td>
-				        		<td class="form-input-title">입사일</td>				<td><fmt:formatDate value="${admin.hiredate }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-
-				        	</tr>
-				        	<tr>
-				        		<td class="form-input-title">상태</td>
-				        		<td>
-				        			<select class="form-input sub-status-mcd-select" name="astatus_mcd" >
-				        				<c:forEach var="atatus" items="${common}">
-				        					<c:choose>
-				        						<c:when test="${atatus.BCD == admin.astatus_bcd && atatus.MCD == admin.astatus_mcd }">
-							        				<option value="${atatus.MCD}" selected>${atatus.CONTENT}</option>
-				        						</c:when>
-				        						<c:when test="${atatus.BCD == admin.astatus_bcd}">
-						        					<option value="${atatus.MCD}">${atatus.CONTENT}</option>				        						
-				        						</c:when>
-				        					</c:choose>
-				        				</c:forEach>
-				        			</select>
-				        		</td>
-				        		<td class="form-input-title">등록일</td>	<td><fmt:formatDate value="${admin.reg_date }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-				        		
-				        		
-				        	</tr> --%>
 				        </table>
-				        <h5>동물정보</h5>
-				        <table class="petInfo">
-				        	<tr>
-				        		<td>
-				        	</tr>
-				        </table>
+					    
+				        <div class="petInfo_1">
+						    <div class="infoTitle">동물 정보</div>
+				        	<div class="contents">
+				        		<div class="content">${apm.petname }</div>
+				        		<div class="content">${apm.species } (${apm.gender })</div>
+				        		<div class="content">${apm.petbirth } 출생</div>
+				        		<div class="content">${apm.pno }</div>
+				        	</div>
+				        	<div class="infoTitle">특이사항</div>
+				        	<div>
+				        		<div class="box">${apm.petspecial }</div>
+				        	</div>
+				        </div>
+				        
+				        <div class="petInfo_2">
+						    <div class="infoTitle">동물 정보</div>
+				        	<div class="contents">
+				        		<div class="content">${apm.petname }</div>
+				        		<div class="content">${apm.species } (${apm.gender })</div>
+				        		<div class="content">${apm.petbirth } 출생</div>
+				        		<div class="content">${apm.pno }</div>
+				        	</div>
+				        	<div class="infoTitle_1">이미지</div>
+				        	<div>
+				        		<div class="image">${chart.img1 }</div>
+				        	</div>
+				        	<div class="infoTitle_1">차트 내용</div>
+				        	<div>
+				        		<div class="box">${chart.content }</div>
+				        	</div>
+				        	<div class="infoTitle_1">기타/전달사항</div>
+				        	<div>
+				        		<div class="box">${apm.memo }</div>
+				        	</div>
+				        </div>
 	       			 </form>
 	       			 </div>
 					<!-- 모달 버튼 -->

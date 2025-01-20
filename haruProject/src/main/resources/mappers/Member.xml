@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.MemberMapper">
+	<select id="HJGetTotalMember" resultType="int">
+		SELECT count(*) 
+		FROM member
+	</select>
+	
+	<select id="HJSelectMembers" parameterType="Map" resultType="Member">
+		SELECT *
+		FROM (
+				SELECT ROWNUM rn, a.*
+			  	FROM (
+			  			SELECT *
+			  			FROM member
+			  			<if test="search.search2 != null and !search.search2.equals('')">
+							where memname LIKE '%' || #{search.search1} || '%'
+						</if>
+						ORDER BY memno desc
+			  		) a
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<select id="HJMemberDetail" parameterType="int" resultType="Member">
+		SELECT 
+				mb.memno,
+				mb.mid,
+				mb.mpasswd,
+				mb.mname,
+				mb.mtel,
+				mb.memail,
+				mb.reg_date,
+				mb.update_date,
+				mb.is_agree,
+				mb.agree_date,
+				cm.content mstatis_content
+		FROM member mb
+		JOIN common cm ON mb.mstatus_bcd = cm.bcd and mb.mstatus_mcd =cm.mcd
+		WHERE memno = #{memno}
+	</select>
+	
+	<insert id="HJInsertMember" parameterType="Member">
+		<if test="mpasswd == re_mpasswd">
+			INSERT INTO member(memno,mid,mpasswd,mname,mtel,memail,reg_date,is_agree,agree_date)
+			VALUES (seq_mem.nextval,#{mid},#{mpasswd},#{mname},#{mtel},#{memail},sysdate,#{is_agree},
+						<if test="is_agree == 1">
+							sysdate
+						</if>
+						<if test="is_agree == 0">
+							null
+						</if>
+					)
+		
+		</if>
+	</insert>
+	
+	<select id="HJMstatusList" resultType="Common">
+		SELECT *
+		FROM common
+		WHERE bcd = 200
+	</select>
+</mapper>
