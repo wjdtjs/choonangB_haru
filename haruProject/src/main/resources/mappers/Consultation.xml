@@ -8,11 +8,12 @@
 		SELECT ap.resno, ap.rdate, ap.mcode, ap.ano, ap.reg_date,
 			   ap.memo, ap.start_time, ap.end_time, ap.rstatus_bcd, ap.rstatus_mcd,
 			   ad.aname,
-			   pt.petno pno, pt.petname,
+			   pt.petno, pt.petname, pt.petbirth, pt.petweight, pt.petheight,
 			   mb.memno, mb.mname,
 			   cm1.content item,
 			   cm2.content status,
-			   cm3.content species
+			   cm3.content species,
+			   cm4.content gender
 		FROM appointment ap
 		JOIN admin ad ON ap.ano = ad.ano
 		JOIN member mb ON ap.memno = mb.memno
@@ -21,7 +22,14 @@
 		JOIN common cm1 ON mi.mtitle_bcd = cm1.bcd AND mi.mtitle_mcd = cm1.mcd 		<!-- 진료항목 -->
 		JOIN common cm2 ON ap.rstatus_bcd = cm2.bcd AND ap.rstatus_mcd = cm2.mcd	<!-- 예약상태 -->
 		JOIN common cm3 ON pt.petspecies_bcd = cm3.bcd AND pt.petspecies_mcd = cm3.mcd	<!-- 종 -->
+		JOIN common cm4 ON pt.petgender_bcd = cm4.bcd AND pt.petgender_mcd = cm4.mcd	<!-- 성별 -->
 		WHERE ap.resno = #{resno}
+	</select>
+	
+	<select id="HJSelectChart" parameterType="java.lang.String" resultType="Consultation">
+		SELECT *
+		FROM chart
+		where resno = #{resno}
 	</select>
 	
 </mapper>

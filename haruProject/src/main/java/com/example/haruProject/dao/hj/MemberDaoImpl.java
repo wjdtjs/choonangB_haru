@@ -137,14 +137,9 @@ public class MemberDaoImpl implements MemberDao {
 	@Override
 	public int dbCheckId(String mid) {
 		System.out.println("MemberDao dbCheckId ...");
-		List<Member> member = new ArrayList<>();
 		int result = 0;
 		try {
-			member = session.selectList("HJCheckID",mid);
-			System.out.println("member.size()->"+member.size());
-			if (member.size() == 0) {
-				result = 1;
-			} else result = 0;
+			result = session.selectOne("HJCheckID",mid);
 		} catch (Exception e) {
 			System.out.println("MemberDao dbCheckId error->"+e.getMessage());
 		}

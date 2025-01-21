@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.haruProject.dto.Appointment;
+import com.example.haruProject.dto.Consultation;
 import com.example.haruProject.service.hj.ConsultationService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,19 @@ public class ConsultationController {
 		model.addAttribute("apm",apm);
 		
 		return "admin/addConsultation";
+	}
+	
+	@RequestMapping(value = "/admin/detailConsultation")
+	public String detailConsulatation(@RequestParam("resno") String resno, Model model) {
+		System.out.println("ConsultationController detailConsulatation ...");
+		System.out.println("ConsultationController detailConsulatation resno->"+resno);
+		Appointment apm =  cs.getConsultation(resno);
+		Consultation chart = cs.getChart(resno);
+		
+		model.addAttribute("apm",apm);
+		model.addAttribute("chart",chart);
+		
+		return "/admin/detailConsultation";
 	}
 
 }

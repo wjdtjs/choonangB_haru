@@ -92,16 +92,17 @@ select {
                         <div class="card-header py-3">
                             <div class="m-0 haru-search-box">
 	                            <div class="haru-left">
-	                            	<select class="haru-tb-type-box">
-	                            		<option value="1">이름</option>
-	                            		<option value="2">전화번호</option>
+	                            	<select class="haru-tb-type-box" >
+	                            		<option value="1"  ${search.type5 == 1 ? 'selected' : ''}>이름</option>
+	                            		<option value="2"  ${search.type5 == 2 ? 'selected' : ''}>전화번호</option>
 	                            	</select>
 	                            	<div class="haru-tb-input-box">
-	                            		<input class="tb-search-input" type="text">                            	
+	                            		<input class="tb-search-input" type="text" value="${search.search1 }">                            	
 	                            	</div>                            
 	                            </div>
 	                            <div class="haru-right">
 	                            	<select class="haru-show-select">
+	                            		<option value="0">전체</option>
 	                            		<c:forEach var="status" items="${mstatus}">
 	                            			<c:if test="${status.mcd == search.type4}">
 		                            			<option value="${status.mcd }" selected>${status.content}</option>
@@ -159,7 +160,7 @@ select {
 							<!-- 페이지 번호 출력 -->
 							<c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
 							    <div class="haru-pagenum ${i == pagination.currentPage ? 'active' : ''}" 
-							         onclick="location.href='?pageNum=${i}&search1=${search.search1 }'">
+							         onclick="location.href='?pageNum=${i}&type4=${search.type4 }&search1=${search.search1 }&type5=${search.type5 }'">
 							         ${i}
 							    </div>
 							</c:forEach>

@@ -18,26 +18,37 @@
 
 <script type="text/javascript">
 	
-	
-	//아이디 중복
-	if(!frm.idDuplication.value){
-		alert('아이디 중복확인을 해주세요');
-		frm.mid.focus();
-		return false;
+	function valid() {
+		if (!checkId) {
+			alert('아이디중복 확인을 해주세요');
+			return false;
+		}
+		
 	}
+
 	
 	function fn_dbCheckId() {
 		const mid = frm.mid.value;
-		<%=request.getContextPath()%>/admin/dbCheckId?mid=\${mid};
+		console.log('mid:'+mid);
+		
+		$.ajax(
+				{
+					url: "<%=request.getContextPath()%>/api/dbCheckId",
+					data: {mid: mid},
+					dataType: 'int'
+					success:function(result){
+						if(result == 0){
+							str = "사용가능한 아이디입니다.";
+							checkId = true;
+						}else if(result > 0){
+							str = "사용중인 아이디입니다."
+							checkId = false;
+						}
+					
+				}$('.dbCheckIdResult').html(str)
+		);
+		
 
-		if (frm.idDuplication.value == 1) {
-			alert('사용중인 아이디입니다.')
-			frm.idDuplication.value = null;
-			return false;
-		}else if (frm.idDuplication.value == 0){
-			alert('사용가능한 아이디입니다.')
-			return true;
-		}
 	}
 </script>
 
@@ -110,7 +121,7 @@ em {
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >회원 등록</h1>
                     
                     <div class="modal_l_detail">
-                    <form action="/admin/addMemberAction" method="post" name="frm" id="add_mb">
+                    <form action="/admin/addMemberAction" method="post" name="frm" id="add_mb" onsubmit="return valid()">
 				       <table class="inputTable">
 			        	<colgroup>
 	                    	<col width="15%" />
@@ -122,7 +133,7 @@ em {
 			        		<th>이름<em>*</em></th>		<td><input class="form-input" type="text" name="mname" required="required"></td>
 			        		<th>아이디<em>*</em></th>	<td><input class="form-input" type="text" name="mid" required="required" style="width: 70%;">
 			        								<button class="btn-primary haru-tb-btn" id="modal_open_btn" onclick="fn_dbCheckId()">중복확인</button>
-			        								<input type="hidden" name="idDuplication" value="${result }">
+			        								<div class = "dbCheckIdResult"></td>
 			        								</td>
 			        	</tr>
 			        	<tr>

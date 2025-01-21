@@ -105,10 +105,9 @@ public class MemberController {
 		
 	}
 	
-	@RequestMapping(value = "/admin/dbCheckId")
-	public void dbCheckId(
-								@RequestParam("mid") String mid,
-								Model model
+	@RequestMapping(value = "/api/dbCheckId")
+	public int dbCheckId(
+								@RequestParam("mid") String mid
 							) {
 		int result = 0;
 		
@@ -117,7 +116,7 @@ public class MemberController {
 		result = ms.dbCheckId(mid);
 		System.out.println("MemberController dbCheckId  result->"+ result);
 		
-		model.addAttribute("result",result);
+		return result;
 	}
 	
 

@@ -12,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>차트 등록</title>
+    <title>차트 상세</title>
 
 </head>
 
@@ -131,10 +131,11 @@ em {
                 <div class="container-fluid modal_">
 
                     <!-- Page Heading -->
-                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >차트 작성</h1>
+                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >차트 상세</h1>
                     
                     <div class="modal_l_detail">
 				        <input type="hidden" name="ano" value="${apm.resno}">
+				        <input type="hidden" name="ano" value="${chart.resno}">
 				        <table class="apmTable">
 				        	<colgroup>
 		                    	<col width="8%" />
@@ -168,7 +169,7 @@ em {
 				        	</div>
 				        </div>
 				        
-				        <form action="/admin/addChart" method="post" name="frm" id="add_chart">
+				        <form action="/admin/updChart" method="post" name="frm" id="upd_chart">
 				        	<div class="infoTitle">이미지</div>
 				        	<div style="margin-top: 1rem">
 									<%-- <c:choose> 
@@ -187,11 +188,11 @@ em {
 					       </div>
 					       <div class="infoTitle">차트 내용<em>*</em></div>
 				        	<div>
-				        		<textarea class="form-input-box" name="content" required="required"></textarea>
+				        		<textarea class="form-input-box" name="content" required="required">${chart.ccontent }</textarea>
 				        	</div>
 				        	<div class="infoTitle">기타/전달사항</div>
 				        	<div>
-				        		<textarea class="form-input-box" name="memo"></textarea>
+				        		<textarea class="form-input-box" name="memo" >${chart.cent_con }</textarea>
 				        	</div>
 				        </form>
 				     </div>
@@ -199,7 +200,7 @@ em {
 					<!-- 모달 버튼 -->
 			       	<div class="modal_l-content-btn">
 				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/consultaion'">목록으로</button>
-			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="add_chart">등록하기</button>
+			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="up_chart">수정하기</button>
 			       	</div> 
                 </div>
                 <!-- /.container-fluid -->

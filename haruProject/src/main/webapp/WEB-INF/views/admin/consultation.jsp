@@ -138,10 +138,10 @@ function search_type(selectElement) {
 	                                    			<!-- 차트작성, 차트상세 controller에 따라서 onclick 경로에 빈 부분 채워서 사용하시면 됩니닷~!!~! -->
 	                                    			<c:choose>
 	                                    				<c:when test="${consultation.cresno eq consultation.resno }">
-	                                    					<button type="button" class="chart_btn con_modal" id="chart_modal_open_btn" onclick="location.href='/admin/  ?resno=\${this.cresno}'">차트상세</button>
+	                                    					<button type="button" class="chart_btn con_modal" id="chart_modal_open_btn" onclick="location.href='/admin/detailConsultation?resno=${consultation.resno}'">차트상세</button>
 	                                    				</c:when>
 	                                    				<c:when test="${consultation.cresno ne consultation.resno }">
-	                                    					<button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn" onclick="location.href='/admin/  ?resno=\${this.cresno}'">차트작성</button>
+	                                    					<button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn" onclick="location.href='/admin/addConsultation?resno=${consultation.resno}'">차트작성</button>
 	                                    				</c:when>
 	                                    			</c:choose>
 	                                    		</td>

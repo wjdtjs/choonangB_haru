@@ -16,7 +16,7 @@
 
 </head>
 
-<script type="text/javascript">
+<script type="text/javascript">// 비활동 회원 
 	$(document).on('click','#dataTable .adminTable tr',function(){
 		const ano = $(this).find('td:nth-child(1)').text();
 		

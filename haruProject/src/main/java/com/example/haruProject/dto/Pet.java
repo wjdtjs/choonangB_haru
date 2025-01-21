@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 public class Pet {
-	private int memno;			// 보호자 번호
+	private int memno;			// 회원 번호
 	private int petno;			// 동물 번호
 	private String petname;		// 동물 이름
 	private Date petbirth;		// 생일
-	private String petheight;	// 몸무게
+	private String petheight;	// 몸길이
 	private float petweight;	// 몸무게
 	private String petspecial;	// 특이사항
 	private String petimg;		// 프로필이미지

@@ -17,31 +17,26 @@
 			  				   cm.content mstatis_content
 			  			FROM member mb
 			  			JOIN common cm ON mb.mstatus_bcd = cm.bcd and mb.mstatus_mcd =cm.mcd
+			  			<if test="(search.type4 != 0 and !search.type4.equals('')) or ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">		
+			  				WHERE
+						</if>
 			  			<if test="search.type4 != 0 and !search.type4.equals('')">
-			  				<if test="search.type4 != 999">
-									WHERE mb.mstatus_mcd = #{search.type4}
-			  				</if>
+									mb.mstatus_mcd = #{search.type4}
+			  			</if>	
+			  			<if test="(search.type4 != 0 and !search.type4.equals('')) and ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">		
+			  				AND
 						</if>
 						<if test="(search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals(''))">
 			  				<choose>
 			  					<when test="search.type5 == 1">
-			  						WHERE mb.mname LIKE '%' || #{search.search1} || '%
+			  						mb.mname LIKE '%' || #{search.search1} || '%'
 			  					</when>
 			  					<when test="search.type5 == 2">
-			  						WHERE mb.mtel LIKE '%' || #{search.search1} || '%
+			  						mb.mtel LIKE '%' || #{search.search1} || '%'
 			  					</when>
 			  				</choose>
 						</if>
-						<if test="(search.type4 != 0 and !search.type4.equals('')) and (search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals(''))">
-			  				<choose>
-			  					<when test="search.type5 == 1 and search.type4 != 999">
-			  						WHERE mb.mname LIKE '%' || #{search.search1} || '% and mb.mstatus_mcd = #{search.type4}
-			  					</when>
-			  					<when test="search.type5 == 2 and search.type4 != 999">
-			  						WHERE mb.mtel LIKE '%' || #{search.search1} || '%  and mb.mstatus_mcd = #{search.type4}
-			  					</when>
-			  				</choose>
-						</if>
+						
 			  			
 						ORDER BY memno desc
 			  		) a
@@ -87,7 +82,7 @@
 	<select id="HJMstatusList" resultType="Common">
 		SELECT *
 		FROM common
-		WHERE bcd = 200
+		WHERE bcd = 200 AND mcd != 999
 	</select>
 	
 	<select id="HJMstatusList1" resultType="Common">
@@ -114,8 +109,8 @@
 		WHERE memno = #{memno}
 	</update>
 	
-	<select id="HJCheckID" parameterType="java.lang.String" resultType="Member">
-		SELECT *
+	<select id="HJCheckID" parameterType="java.lang.String" resultType="int">
+		SELECT count(*)
 		FROM member
 		WHERE mid = #{mid}
 	</select>
