@@ -107,7 +107,7 @@ select {
 /* 모달 공통 스타일 */
 
 #modal_l {
-/* 	display: none; */
+	display: none;
  	position:absolute;
   	width:100%;
   	height:auto;
@@ -183,4 +183,11 @@ select {
 }
 .haru-table-istop {
 	background-color: #d0e4e875;
+}
+
+.haru-product-tbody td {
+	padding-inline: 2rem !important;
+	overflow: hidden; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
 }

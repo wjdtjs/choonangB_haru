@@ -51,16 +51,17 @@
 	                            		<option value="name">제목</option>
 	                            	</select>
 	                            	<div class="haru-tb-input-box">
-	                            		<input class="tb-search-input" type="text">                            	
+	                            		<input class="tb-search-input" type="text" onkeypress="if (event.key === 'Enter') search_word(event)"
+	                            				value="${search1 }">                            	
 	                            	</div>                            
 	                            </div>
 	                            
 	                            <!-- 이거 필요없으면 걍 지우면 됩니다!! -->
 	                            <div class="haru-right">
 	                            	<select class="haru-show-select" name="isshow">
-	                            		<option value="0">전체</option>
+	                            		<option value="0" ${search2 == '0' ? 'selected': '' }>전체</option>
 	                            		<c:forEach var="ps" items="${statusList }">
-	                            			<option value="${ps.MCD }">${ps.CONTENT }</option>
+	                            			<option value="${ps.MCD }" ${search2 == ps.MCD ? 'selected': '' }>${ps.CONTENT }</option>
 	                            		</c:forEach>
 	                            	</select>
 	                           		<button class="btn-primary haru-tb-btn shadow-none pro_reg" id="modal_open_btn" onclick="location.href='/admin/upload-notice'">공지사항 작성</button>                           	                         
@@ -94,18 +95,20 @@
                                     	<c:if test="${pagination.totalCnt > 0}">
                                     		<c:forEach var="notice" items="${nList }" varStatus="status">
                                     			<c:choose>
-                                    				<c:when test="${notice.istop }">
-                                    					<tr class="haru-table-click" onclick="goDetail(${notice.nno})">  
-                                    				</c:when>
                                     				<c:when test="${notice.isvisible }">
-                                    					<tr class="haru-table-click" onclick="goDetail(${notice.nno})" style="background: #f2f2f2">  
+                                    					<tr class="haru-table-click" onclick="goDetail(${notice.nno})" style="background: #f2f2f2; color: #919191">  
                                     				</c:when>
                                     				<c:otherwise>
                                     					<tr class="haru-table-click" onclick="goDetail(${notice.nno})">  
                                     				</c:otherwise>
                                     			</c:choose>
 													<td>${notice.nno }</td>
-													<td>${notice.ntitle }</td>
+													<td style="position: relative">
+														<c:if test="${notice.istop }">
+                                    					<i class="fa-solid fa-thumbtack" style="color: red; position: absolute; left: 1rem; top: 1rem"></i>
+                                    					</c:if>
+                                    					${notice.ntitle }
+                                    				</td>
 													<td>${notice.aname }</td>
 													<td><fmt:formatDate value="${notice.reg_date }" pattern="yyyy-MM-dd"/></td>
 													<td>${notice.nview_count }</td>
@@ -172,9 +175,42 @@
     		$('#pageNum${pagination.currentPage}.haru-pagenum').addClass('active');
     	})
     	
+    	/**
+    	 * 상세 페이지 이동
+    	 */
     	function goDetail(nno) {
     		location.href="/admin/details-notice?nno="+nno;
     	}
+    	
+    	
+    	
+		let search1 = null; //제목 검색
+		let search2 = null; //노출 검색
+		
+    	/**
+    	 * 검색
+    	 */
+    	function search_word(e) {
+    		
+    		if (e.key === "Enter") {
+    			search1 = $(".tb-search-input").val(); // 입력된 검색어
+    			search2 = $(".haru-show-select").val(); // 선택된 필터
+
+//     	        console.log('검색: ', search1, " 선택: ", search2);
+    	        location.href = '/admin/notice?search1='+search1+'&search2='+search2;
+    	    }
+    	}
+		
+    	/**
+    	 * 드롭다운 값 변경됐을 때 동작
+    	 */
+    	 $('.haru-show-select').change(function() {
+   		    search1 = $(".tb-search-input").val(); // 입력된 검색어
+ 		    search2 = $(this).val(); // 선택된 필터
+   		    
+//  			console.log('검색: ', search1, " 선택: ", search2);
+ 			location.href = '/admin/notice?search1='+search1+'&search2='+search2;
+ 		});
     	
     </script>
 

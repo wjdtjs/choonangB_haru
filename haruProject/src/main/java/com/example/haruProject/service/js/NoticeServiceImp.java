@@ -64,8 +64,17 @@ public class NoticeServiceImp implements NoticeService {
 		List<Notice> nList = new ArrayList<>();
 		nList = nd.noticeList(startRow, endRow, si);
 		
-		return nList;
-		
+		return nList;	
+	}
+	
+	/**
+	 * 상단고정 공지사항 불러오기
+	 */
+	@Override
+	public List<Notice> topList() {
+		List<Notice> tList = new ArrayList<>();
+		tList = nd.topList();
+		return tList;
 	}
 
 	/**
@@ -81,7 +90,7 @@ public class NoticeServiceImp implements NoticeService {
 	 * 공지사항 상세
 	 */
 	@Override
-	public Notice getNoticeDetail(String nno) {
+	public Notice getNoticeDetail(int nno) {
 		Notice notice = new Notice();
 		notice = nd.getNoticeDetail(nno);
 		
@@ -93,10 +102,33 @@ public class NoticeServiceImp implements NoticeService {
 	 */
 	@Override
 	public void updateNotice(Notice notice) {
-		System.out.println("111111111111111");
+//		System.out.println("updatNotice Service");
+//		System.out.println("서비스: "+notice);
+		
 		nd.updateNotice(notice);
 		
 	}
+
+	/**
+	 * 유저 공지사항 무한스크롤
+	 */
+	@Override
+	public List<Notice> getNoticeList(int startRow, int endRow) {
+		List<Notice> nList = new ArrayList<>();
+		nList = nd.getNoticeList(startRow, endRow);
+		
+		return nList;
+	}
+
+	/**
+	 * 공지사항 조회수 증가
+	 */
+	@Override
+	public void plusViewCount(int nno) {
+		nd.plusViewCount(nno);
+	}
+
+
 	
 	
 }

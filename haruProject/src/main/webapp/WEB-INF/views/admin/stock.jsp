@@ -67,7 +67,7 @@
 				
 				$(data.list).each (function(){
 					if(this.status=='비노출') {
-						str+= `<tr class="haru-table-click" style="background: #f2f2f2" onclick="location.href='/admin/details-product?pno=\${this.pno}'">`
+						str+= `<tr class="haru-table-click" style="background: #f2f2f2; color: #919191" onclick="location.href='/admin/details-product?pno=\${this.pno}'">`
 					} else {
 						str+= `<tr class="haru-table-click" onclick="location.href='/admin/details-product?pno=\${this.pno}'">`
 					}

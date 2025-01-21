@@ -13,7 +13,10 @@ public interface NoticeDao {
 	int getTotalCnt(SearchItem si);
 	List<Notice> noticeList(int startRow, int endRow, SearchItem si);
 	void uploadNotice(Notice notice);
-	Notice getNoticeDetail(String nno);
+	Notice getNoticeDetail(int nno);
 	void updateNotice(Notice notice);
+	List<Notice> topList();
+	List<Notice> getNoticeList(int startRow, int endRow);
+	void plusViewCount(int nno);
 
 }

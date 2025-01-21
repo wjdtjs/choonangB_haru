@@ -28,9 +28,9 @@
 
 <!-- Custom scripts for all pages-->
 <script src="/js/sb-admin-2.js"></script>
-<script src="/js/validation.js?v=0.04"></script>
+<script src="/js/validation.js?v=0.05"></script>
 
 <!-- Custom styles for this template-->
 <link href="/css/sb-admin-2.css?v=0.40" rel="stylesheet">
-<link href="/css/haru-admin.css?v=0.42" rel="stylesheet">
+<link href="/css/haru-admin.css?v=0.46" rel="stylesheet">
 <link href="/css/js.css?v=0.02" rel="stylesheet">

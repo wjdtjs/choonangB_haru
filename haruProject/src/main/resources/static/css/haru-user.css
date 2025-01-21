@@ -1,0 +1,263 @@
+@charset "UTF-8";
+
+:root {
+  --haru: #0C808D;
+  --m-width: 24.375rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Noto Sans KR", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+/*   width: 24.375rem; */
+  margin: auto;
+  padding: 0;
+  display: flex;
+  justify-content: center; /* 화면 가로 중앙 정렬 */
+  align-items: flex-end; /* 화면 하단 정렬 */
+  height: 100vh; /* 전체 화면 높이 */
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #858796;
+  text-align: left;
+  background-color: #f2f2f2;
+}
+
+[tabindex="-1"]:focus:not(:focus-visible) {
+  outline: 0 !important;
+}
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+ol,
+ul,
+dl {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+ol ol,
+ul ul,
+ol ul,
+ul ol {
+  margin-bottom: 0;
+}
+
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+
+svg {
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+caption {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  color: #858796;
+  text-align: left;
+  caption-side: bottom;
+}
+
+th {
+  text-align: inherit;
+  text-align: -webkit-match-parent;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: var(--haru);
+  border-color: var(--haru);
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #2A8C95;
+  border-color: #2A8C95;
+}
+
+.btn-primary:focus, .btn-primary.focus {
+  color: #fff;
+  background-color: var(--haru);
+  border-color: var(--haru);
+/*   box-shadow: 0 0 0 0.2rem rgba(105, 136, 228, 0.5); */
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: #5D8A8E;
+  border-color: #5D8A8E;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: var(--haru);
+  border-color: var(--haru);
+}
+
+select {
+	-webkit-appearance:none; /* for chrome */
+   	-moz-appearance:none; /*for firefox*/
+   	appearance:none;
+   	
+   	background-image: url("/img/drop_arrow.png");  
+	background-repeat: no-repeat;  
+	background-position: 89% center;  
+	background-size: 1.2rem;
+	cursor: pointer;
+}
+
+
+/* 모바일 버전 컨테이너 */
+body > .haru-user-container {
+	position: relative;
+	width: 24.375rem;
+	background: #fff;
+	margin: auto;
+}
+
+
+/* summernote 읽기전용 */
+.note-editable {
+	background: white !important;
+/* 	padding: 0 !important; */
+}
+.note-editor {
+	border: none !important;
+}
+.note-statusbar {
+	display: none !important;
+}
+
+
+
+
+/* header Top Bar */
+.haru-user-topbar {
+	display: flex;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	width: var(--m-width);
+	height: 3.8rem;
+	background: #fff;
+	border-bottom: 1px solid #f2f2f2;
+	color: #6F7173;
+	z-index: 999;
+}
+
+.haru-user-topbar .topbar-title {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 1.125rem;
+	font-weight: 600;
+}
+
+.haru-user-topbar .topbar-title i {
+	color: black;
+	width: 30px;
+	text-align: end;
+}
+
+.user-body-container {
+	width: 100%;
+    height: 100%;
+    padding-inline: 1.25rem;
+    padding-top: 4.5rem;
+    padding-bottom: 5rem;
+    overflow-y: scroll;
+    color: black;
+}
+
+.user-notice-listdiv {
+	position: relative;
+	width: 100%;
+	height: 95px;
+	padding-block: 20px;
+	border-bottom: 1px solid #d9d9d9;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	cursor: pointer;
+}
+.user-notice-listdiv > i {
+	position: absolute;
+	right: 1rem;
+}
+
+.user-notice-listdiv:last-of-type {
+	border-bottom: 0;
+}
+
+.user-notice-listdiv > div:nth-child(1) {
+	font-weight: 600;
+}
+.user-notice-listdiv > div:nth-child(2) {
+	font-weight: 400;
+	color: #6F7173;
+	margin-top: 0.375rem;
+}
+
+.user-notice-info {
+	padding-bottom: 1rem;
+	border-bottom: 2px solid black;
+}
+.user-notice-title {
+/* 	font-size: 1.25rem; */
+	font-weight: 600;
+}
+.user-notice-date {
+	margin-top: 1rem;
+	color: #6F7173;
+	
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+
+
+
+
+
+
+
+
+

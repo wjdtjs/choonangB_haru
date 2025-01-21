@@ -48,6 +48,26 @@
 	}
 	
  }
+ 
+/**
+ * 읽기전용
+ */ 
+function summernoteReadOnly(cn) {
+	const $element = $(cn);
+	 if ($element.next('.note-editor').length === 0) {
+	 
+		 $element.summernote({
+	  
+		  // 에디터 크기 설정
+//		  height: 600,
+		  disableResizeEditor: true,
+		  // 에디터 한글 설정
+		  lang: 'ko-KR',
+		  toolbar: [],
+			
+		});
+	}
+}
 
  
 /* 리치텍스트에디터 이미지 선택 */

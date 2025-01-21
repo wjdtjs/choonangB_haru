@@ -3,9 +3,14 @@
  * true : 공백없음
  * false : 있음
  */
- function isEmpty(value) {
-	console.log('isEmpty : ', value);
-    return !(!value || value.trim() === "" || value == 0);
+function isEmpty(value) {
+    console.log('isEmpty : ', value);
+    return !(
+        value === undefined || 
+        value === null || 
+        (typeof value === "string" && value.trim() === "") || 
+        (typeof value !== "string" && value == 0)
+    );
 }
 
 

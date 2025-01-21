@@ -15,4 +15,5 @@ public class UserViewController {
 		
 		return "user/main";
 	}
+	
 }

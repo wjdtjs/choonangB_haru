@@ -31,17 +31,16 @@ public class NoticeController {
 	 */
 	@GetMapping("/admin/notice")
 	public String noticeView(@RequestParam(value = "pageNum", required = true, defaultValue="1") String pageNum,
-							 @RequestParam(value = "blockSize", required = false, defaultValue="10") String blockSize,
-							 @RequestParam(value = "search1", required = false) String search1,
-							 @RequestParam(value = "search2", required = false) String search2,
+							 @RequestParam(value = "blockSize", required = false, defaultValue="10") int blockSize,
+							 @RequestParam(value = "search1", required = false, defaultValue="") String search1,
+							 @RequestParam(value = "search2", required = false, defaultValue="0") int search2,
 							 Notice notice, Model model ) 
 	{
 		log.info("noticeView() start..");
-//		System.out.println("pageNum : "+pageNum);
-//		System.out.println("blockSize : "+blockSize);
-//		System.out.println(search1);
-//		System.out.println(search2);
-		
+		System.out.println("pageNum : "+pageNum);
+		System.out.println("blockSize : "+blockSize);
+		System.out.println("search1 : "+search1);
+		System.out.println("search2 : "+search2);
 		
 		//상태 정보
 		List<Map<String, Object>> statusList = new ArrayList<>();
@@ -54,11 +53,25 @@ public class NoticeController {
 		//공지사항 전체 수 (필터 적용)
 		int totalCnt = ns.getTotalCnt(si);
 		//페이지네이션
-		Pagination pagination = new Pagination(totalCnt, pageNum, totalCnt);
+		Pagination pagination = new Pagination(totalCnt, pageNum, blockSize);
+		System.out.println(pagination);
 		
 		List<Notice> noticeList = new ArrayList<>();
 		noticeList = ns.noticeList(pagination.getStartRow(), pagination.getEndRow(), si);
+
+		List<Notice> topList = new ArrayList<>();
+		if(search1=="" && search2==0) {
+			System.out.println("검색 필터 없음");
+			topList = ns.topList();
+			
+			noticeList.addAll(0, topList);
+		} else {
+			System.out.println("검색 필터 있음");
+		}
 		
+		
+		model.addAttribute("search1", search1);
+		model.addAttribute("search2", search2);
 		model.addAttribute("statusList", statusList);
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("nList", noticeList);
@@ -114,7 +127,9 @@ public class NoticeController {
 		statusList = ns.getAllStatusList();
 		
 		//상세 정보
-		notice = ns.getNoticeDetail(nno);
+		notice = ns.getNoticeDetail(Integer.parseInt(nno));
+//		System.out.println("1 ===== "+nno);
+//		System.out.println("2 ===== "+notice);
 		
 		model.addAttribute("statusList", statusList);
 		model.addAttribute("notice", notice);
@@ -131,9 +146,9 @@ public class NoticeController {
 	@PostMapping("/admin/updateNotice")
 	public String updateNotice(Notice notice, Model model) {
 		log.info("updateNotice() start..");
-		System.out.println("000000000000000000");
+		System.out.println("updateNotice Controller");
 		
-		System.out.println(notice);
+		System.out.println("컨트롤러: "+notice);
 		ns.updateNotice(notice);
 		
 		return "redirect:notice";

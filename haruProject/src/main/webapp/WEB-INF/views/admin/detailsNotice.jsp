@@ -39,28 +39,64 @@
                     
 					<div class="modal_l_detail">
 		        		<form class="js-pro-container" id="notice-update-form" action="updateNotice" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-				        	<div class="js-pro-info">				        	
-				        		<div class="title">상태</div>
-				        		<input type="hidden" value="${notice.nno }" >
-				        		<select class="sub-status-select" name="nstatus_mcd" style="margin-top: 1rem">
-		        					<option disabled selected value="0">상태</option>
-                            		<c:forEach var="ns" items="${statusList }">
-		        						<c:choose>
-		        							<c:when test="${ns.MCD eq notice.nstatus_mcd }">
-		        								<option value="${ns.MCD }" selected>${ns.CONTENT }</option>
-		        							</c:when>
-		        							<c:otherwise>
-		        								<option value="${ns.MCD }">${ns.CONTENT }</option>
-		        							</c:otherwise>
-		        						</c:choose>
-                            			
-                            		</c:forEach>
-		        				</select>
-//TODO: 최종 수정일, 작성자 등등 추가해주기, update 안됨.. 왜 안되는지 모르겠음. 컨트롤러 잘 들어가는데
-				        		<div class="title" style="margin-top: 1.7rem">제목</div>
-					        	<input type="text" name="ntitle" class="js-notice-title" style="margin-top: 1rem" value="${notice.ntitle }"/>
+				        	<input type="hidden" name="nno" value="${notice.nno }"/>
+				        	<div class="js-pro-info">	
+				        		
+				        		<div class="title">상세</div>
+				        		<table>
+					        		<colgroup>
+					        			<col width="10%"/>
+					        			<col width="40%"/>
+					        			<col width="10%"/>
+					        			<col width="40%"/>
+					        		</colgroup>
+					        		
+					        		<tr>
+					        			<td class="sub-title">제목 <span class="haru-required">*</span></td>
+					        			<td colspan="3">
+					        				<input name="ntitle" class="js-notice-title" type="text" style="width: 91%"
+					        						value="${notice.ntitle }"
+					        				>
+					        			</td>
+					        		</tr>
+					        		
+					        		<tr>
+										<td class="sub-title">상태 <span class="haru-required">*</span></td>
+					        			<td colspan="3">
+					        				<select class="sub-status-select" name="nstatus_mcd">
+					        					<option disabled selected value="0">상태</option>
+			                            		<c:forEach var="ns" items="${statusList }">
+					        						<c:choose>
+					        							<c:when test="${ns.MCD eq notice.nstatus_mcd }">
+					        								<option value="${ns.MCD }" selected>${ns.CONTENT }</option>
+					        							</c:when>
+					        							<c:otherwise>
+					        								<option value="${ns.MCD }">${ns.CONTENT }</option>
+					        							</c:otherwise>
+					        						</c:choose>
+			                            			
+			                            		</c:forEach>
+					        				</select>
+					        			</td>
+					        			
+					        		</tr>
+					        		<tr>
+					        			<td class="sub-title">작성자</td>
+					        			<td>
+					        				<input class="js-notice-writer" name="ano" type="hidden"
+					        						value="${notice.ano }">
+					        				<span>${notice.aname }</span>
+					        			</td>
+					        			
+					        			<td class="sub-title">최종 수정일</td>
+					        			<td class="pro-update-date">
+					        				<fmt:formatDate value="${notice.update_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
+					        			</td>
+					        		</tr>
+					        		
+					        	</table>
+		        	
 				        	</div>
-				        	
 				        	
 				        	<div class="js-pro-detail">
 				        		<div class="title">내용</div>
@@ -124,17 +160,14 @@
 			let status 		= $(".sub-status-select").val(); //상태
 			let details 	= $('.summernoteTextArea.noticeRegSummernote').summernote('code'); //내용
 			
-			console.log('title : ', title);
-			console.log('status : ', status);
-			console.log('details : ', details);
 	
 			// 전체 필수 체크
 			if(isEmpty(title) && isEmpty(status) && isEmpty(details)) {
 				
 				console.log('성공')
-// 				if(confirm('이대로 수정하시겠습니까?')){
+				if(confirm('이대로 수정하시겠습니까?')){
 					result = true;				
-// 				}
+				}
 				
 			} else {
 				alert('필수값을 입력하세요');

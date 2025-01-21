@@ -7,7 +7,7 @@
 	
 	
 	<!-- SELECT -->
-	<!-- 상품 상태 공통데이터 종류 조회 
+	<!-- 공지사항 상태 공통데이터 종류 조회 
 		(SCD - 300: 노출여부 | MCD - 100:노출, 200:비노출) 
 	-->
 	<select id="JS_SelectNoticeStatus" resultType="Map">
@@ -22,24 +22,53 @@
 		WHERE BCD = 300 AND MCD NOT IN (999)
 	</select>
 	
-	<!-- 필터 적용된 상품 리스트 수 조회 -->
+	<!-- 필터 적용된 공지사항 리스트 수 조회 -->
 	<select id="JS_SelectTotalNoticeCnt" parameterType="SearchItem" resultType="int">
 		SELECT COUNT(*) FROM NOTICE  
-		<if test="(search1 != null and !search1.equals('')) or (search2 != null and !search2.equals(''))">
-			WHERE
-		</if>
+		WHERE
+		<choose>
+			<when test="(search1 != null and !search1.equals('')) or (search4 != null and search4 != 0)">
+				NSTATUS_MCD != 999
+			</when>
+			<otherwise>
+				NSTATUS_MCD != 300
+			</otherwise>		
+		</choose>
 		<if test="search1 != null and !search1.equals('')">
-			NTITLE LIKE '%' || #{search1} || '%'
+			AND NTITLE LIKE '%' || #{search1} || '%'
 		</if>
-		<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
-			AND
-		</if>
-		<if test="search2 != null and !search2.equals('')">
-			NSTATUS_MCD = #{search2}
+		<if test="search4 != null and search4 != 0">
+			AND NSTATUS_MCD = #{search4}
 		</if>
 	</select>
+	
+	<!-- 상단고정 리스트 조회 -->
+	<select id="JS_SelectNoticeTop" resultType="Notice">
+		SELECT ROWNUM rn,
+				cm.CONTENT as status, 
+                      nn.NNO,
+                      nn.NTITLE,
+                      nn.NCONTENTS,
+                      nn.REG_DATE,
+                      nn.NVIEW_COUNT,
+                      nn.UPDATE_DATE,
+                      nn.NSTATUS_BCD,
+                      nn.NSTATUS_MCD,
+                      nn.ANO,
+                      a.ANAME,
+                      DECODE(nn.NSTATUS_MCD, 300, 1, null) as istop,
+                      DECODE(nn.NSTATUS_MCD, 200, 1, null) as isvisible
+		FROM NOTICE nn 
+              INNER JOIN COMMON cm ON
+                  nn.NSTATUS_BCD = cm.BCD AND nn.NSTATUS_MCD = cm.MCD
+              INNER JOIN ADMIN a ON
+                  nn.ANO = a.ANO
+              AND NSTATUS_MCD = 300
+                  
+		ORDER BY TO_NUMBER(NNO) DESC 
+	</select>
 
-	<!-- 상품 리스트 조회 -->
+	<!-- 공지사항 리스트 조회 -->
 	<select id="JS_SelectNoticeList" parameterType="Map" resultType="Notice">
 		SELECT *
 		FROM (
@@ -67,17 +96,30 @@
 				<if test="search.search1 != null and !search.search1.equals('')">
 					AND NTITLE LIKE '%' || #{search.search1} || '%'
 				</if>
-				<if test="search.search2 != null and !search.search2.equals('')">
-					AND NSTATUS_MCD = #{search.search2}
+				<if test="search.search4 != null and search.search4 != 0">
+					AND NSTATUS_MCD = #{search.search4}
 				</if>
-				ORDER BY TO_NUMBER(NNO) DESC
+				<choose>
+					<when test="(search.search1 != null and !search.search1.equals('')) or (search.search4 != null and search.search4 != 0)">
+						AND NSTATUS_MCD != 999
+					</when>
+					<otherwise>
+						AND NSTATUS_MCD != 300
+					</otherwise>		
+				</choose>
+				
+				ORDER BY 
+		            CASE 
+		                WHEN nn.NSTATUS_MCD = 300 THEN 0 ELSE 1                          
+		            END,
+		            TO_NUMBER(NNO) DESC 
 			) n
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow} 
 	</select>
 	
-	<!-- 상품상세 조회 -->
-	<select id="JS_SelectNoticeDetail" parameterType="java.lang.String" resultType="Notice">
+	<!-- 공지사항 상세 조회 -->
+	<select id="JS_SelectNoticeDetail" parameterType="int" resultType="Notice">
 		SELECT n.NNO, 
 				n.NTITLE, 
 				n.NCONTENTS,
@@ -91,11 +133,26 @@
 		FROM NOTICE n INNER JOIN ADMIN a ON n.ANO = a.ANO 
 		WHERE n.NNO = #{nno}
 	</select>
+	
+	<!-- 유저 공지사항 무한스크롤 -->
+	<select id="JS_UserSelectNotice" parameterType="Map" resultType="Notice">
+		SELECT *
+		FROM (
+			SELECT ROWNUM rn, n.*
+			FROM (
+				SELECT NNO, NTITLE, REG_DATE
+				FROM NOTICE
+				WHERE NSTATUS_MCD = 100
+				ORDER BY TO_NUMBER(NNO) DESC
+			) n
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow} 
+	</select>
 	<!-- End SELECT -->
 	
 	
 	<!-- INSERT -->
-	<!-- 상품 등록 -->
+	<!-- 공지사항 등록 -->
 	<insert id="JS_InsertNotice" parameterType="Notice">
 		INSERT INTO NOTICE(
 			NNO, NTITLE, NCONTENTS, NSTATUS_MCD, ANO
@@ -110,14 +167,20 @@
 	<!-- End INSERT -->
 	
 	<!-- UPDATE -->
-	<!-- 상품 수정 -->
+	<!-- 공지사항 수정 -->
 	<update id="JS_UpdateNotice" parameterType="Notice">
 		UPDATE NOTICE SET
 			NTITLE = #{ntitle},
 			NCONTENTS = #{ncontents},
 			NSTATUS_MCD = #{nstatus_mcd},
-			ANO = 10502,
 			UPDATE_DATE = sysdate
+		WHERE NNO = #{nno}
+	</update>
+	
+	<!-- 공지사항 조회수 증가 -->
+	<update id="JS_UpdateViewCount" parameterType="int">
+		UPDATE NOTICE SET
+			NVIEW_COUNT = NVIEW_COUNT + 1
 		WHERE NNO = #{nno}
 	</update>
 	

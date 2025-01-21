@@ -22,6 +22,7 @@ public class SearchItem {
 	
 	private int type4 = 0;
 	private int type5 = 0;
+	private int search4 = 0;
 	
 	public SearchItem(String search1) {
 		this.search1 = search1;
@@ -42,4 +43,10 @@ public class SearchItem {
 		this.type5 = type5;
 		this.search1 = search1;
 	}
+	
+	public SearchItem(String search1, int search4) {
+		this.search1 = search1;
+		this.search4 = search4;
+	}
+	
 }
