@@ -43,7 +43,7 @@ table#hr-table-appo-modal-data {
 }
 
 
-/* 모달버튼 스타일 */
+/* 버튼*/
 .modal_l_content button {
 	border-radius: 5px;
   	width: 92px;
@@ -56,6 +56,19 @@ table#hr-table-appo-modal-data {
   	font-weight: bold;
   	
   	margin: 0 10px;
+}
+
+/* 차트보기 */
+#res_to_chart {
+	background-color: var(--haru);
+}
+
+#res_del {
+	background-color: #D0E3E7;
+}
+
+button#res_change, #res_cancel, #res_del {
+    margin-right: 15px;
 }
 
 /* 예약 거절, 예약 변경 */
@@ -88,9 +101,9 @@ table#hr-table-appo-modal-data {
 }
 
 #hr-appo-table-data {
-	border-radius: 24px;
+	border-radius: 10px;
 	background-color: rgba(12, 128, 141, 0.1);
-	font-size: 20px;
+	font-size: 16px;
 	text-align: center;
 	color: black;
 	margin: 20px auto;
@@ -106,12 +119,12 @@ table#hr-table-appo-modal-data {
 
 #medical-time {
 	border: 1px solid #0C808D;
-	border-radius: 12px;
-	color: #0C808D;
-	padding: 1px 32px 1px 12px;
-	margin: 0 12px;
-	font-size: 16px;
-	text-align: center;
+    border-radius: 10px;
+    color: #0C808D;
+    margin: 0 12px;
+    font-size: 16px;
+    text-align: center;
+    width: 70px;
 }
 
 .modal_l_content p {
@@ -147,8 +160,15 @@ table#hr-table-appo-modal-data {
 	font-weight: 400;
 }
 
-button#res_change, #res_cancel {
-    margin-right: 15px;
+
+
+.res_memo {
+	width: 100%;
+    margin: 0 20px;
+    border: 1px solid var(--haru);
+    border-radius: 10px;
+    height: 200px;
+    padding: 12px;
 }
 
 
@@ -199,7 +219,7 @@ button#res_change, #res_cancel {
 							        		<colgroup>
 							        			<col width="10%">
 							        			<col width="25%">
-							        			<col width="10%">
+							        			<col width="15%">
 							        			<col width="25%">
 							        		</colgroup>
 							        			<tr>
@@ -208,16 +228,17 @@ button#res_change, #res_cancel {
 							        			</tr>
 							        			<tr>
 							        				<th>예약 일시</th>
-							        				<td><fmt:formatDate value="${appointment_d.rdate}" pattern="yyyy-MM-dd"/></td>
-							        				<th>진료 소요 시간</th>
+							        				<td><fmt:formatDate value="${appointment_d.rdate}" pattern="yyyy-MM-dd"/>&nbsp; ${appointment_d.start_time }</td>
+							        				<th>진료 소요 시간(분)</th>
 							        				<td>
 							        					<div>
-								        						<select id="medical-time">
+							        						<input id="medical-time" type="number" step="30" value="${appointment_d.rtime}">
+								        						<!-- <select id="medical-time">
 										                    		<option value="1">30분</option>
 																	<option value="2">60분</option>
 																	<option value="3">90분</option>
 																	<option value="4">120분</option>
-										                    	</select>
+										                    	</select> -->
 									                       	
 									                    </div>
 									                </td>
@@ -251,12 +272,7 @@ button#res_change, #res_cancel {
 							        <p class="res_detail_p">동물 정보</p>
 							        <div class="hr-appo-table">
 							        	<table id="hr-appo-table-data" width="100%" cellspacing="0">
-							        			<tr id="res_pet">
-							        				<th>번호</th>
-							        				<th>이름</th>
-							        				<th>종 / 성별</th>
-							        				<th>몸무게</th>
-							        			</tr>
+							        			
 							        			<tr>
 							        				<td>${appointment_d.petno }</td>
 							        				<td>${appointment_d.petname }</td>
@@ -268,10 +284,9 @@ button#res_change, #res_cancel {
 						        
 							        <p class="res_detail_p">예약 메모</p>
 							        <div style="margin-top: 1rem">
-									<div class="post-form">
-										<textarea name="pdetails" class="summernoteTextArea proRegSummernote" >${appointment_d.memo}
-										</textarea>
-									</div>
+										<div>
+											<textarea class="res_memo">${appointment_d.memo}</textarea>
+										</div>
 					        		</div>
 						        
 	                        	
@@ -287,11 +302,16 @@ button#res_change, #res_cancel {
 						        		</c:when>
 						        		<c:when test="${appointment_d.rstatus_mcd eq 200 }">
 							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+							        		<button type="button" class="update_btn" id="res_del">예약 취소</button>
 								        	<button type="button" class="update_btn2" id="res_change" >예약 변경</button>
 								        	<button type="button" class="update_btn" id="res_complete">진료 완료</button>
 						        		</c:when>
 						        		<c:when test="${appointment_d.rstatus_mcd eq 300 or appointment_d.rstatus_mcd eq 400}">
 							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+							        		<!-- 차트에 아직 작성되지 않은 상태면 목록으로만, 차트도 작성됐으면 차트보기 버튼 생성 -->
+							        		<c:if test="${appointment_d.cresno eq appointment_d.resno }">
+							        			<button type="button" id="res_to_chart" class="res_modal" onclick="location.href='/admin/chart'">차트보기</button>							        		
+							        		</c:if>
 						        		</c:when>
 						        	</c:choose>							        		        	
 						        </div>

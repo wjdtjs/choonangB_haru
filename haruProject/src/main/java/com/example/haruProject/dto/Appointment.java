@@ -17,7 +17,7 @@ public class Appointment {
 	private Date reg_date;
 	private String memo;
 	private String start_time;
-	private String end_time;
+	private int rtime;
 	
 	// 공통 테이블
 	private int rstatus_bcd;
@@ -35,5 +35,9 @@ public class Appointment {
 	private String gender;		// 성별	
 	private String species;		// 종
 	private String cresno;		// 차트가 작성됐는지 확인하기 위함
+	
+	// 검색
+	private String start_date;	// 검색 시작 날짜
+	private String end_date;	// 검색 끝 날짜
 	
 }

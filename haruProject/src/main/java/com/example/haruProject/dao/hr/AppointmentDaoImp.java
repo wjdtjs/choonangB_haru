@@ -40,6 +40,9 @@ public class AppointmentDaoImp implements AppointmentDao {
 	// 예약 목록 가져오기(페이지네이션)
 	@Override
 	public List<Appointment> appointmentList(int startRow, int endRow, SearchItem si) {
+		System.out.println("AppointmentDaoImp appointmentList() start ,,,");
+		System.out.println("AppointmentDaoImp appointmentList() si ->"+si);
+		
 		List<Appointment> alist = new ArrayList<>();
 		
 		Map<String , Object> aMap = new HashMap<>();
@@ -49,6 +52,7 @@ public class AppointmentDaoImp implements AppointmentDao {
 		
 		try {
 			alist = session.selectList("HR_SelectAppointmentList", aMap);
+			System.out.println("alist ->"+alist);
 		} catch (Exception e) {
 			log.error("appointmentList() error ->", e);
 		}

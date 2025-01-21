@@ -159,13 +159,13 @@
 							    <!-- 이전 블록 이동 -->
 							    <c:if test="${pagination.startPage > pagination.blockSize}">
 							        <i class="haru-pagearrow fa-solid fa-chevron-left" 
-							           onclick="location.href='?pageNum=${pagination.startPage - pagination.blockSize}'"></i>
+							           onclick="location.href='?pageNum=${pagination.startPage - pagination.blockSize}&type4=${type4}&search1=${search1}'"></i>
 							    </c:if>
 							
 							    <!-- 페이지 번호 출력 -->
 							    <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
 							        <div class="haru-pagenum ${i == pagination.currentPage ? 'active' : ''}" 
-							             onclick="location.href='?pageNum=${i}'">
+							             onclick="location.href='?pageNum=${i}&type4=${type4}&search1=${search1}'">
 							            ${i}
 							        </div>
 							    </c:forEach>
@@ -173,7 +173,7 @@
 							    <!-- 다음 블록 이동 -->
 							    <c:if test="${pagination.endPage < pagination.pageCnt}">
 							        <i class="haru-pagearrow fa-solid fa-chevron-right" 
-							           onclick="location.href='?pageNum=${pagination.startPage + pagination.blockSize}'"></i>
+							           onclick="location.href='?pageNum=${pagination.startPage + pagination.blockSize}&type4=${type4}&search1=${search1}'"></i>
 							    </c:if>
 							</div>
 	

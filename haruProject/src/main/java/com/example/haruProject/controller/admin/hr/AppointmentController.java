@@ -1,14 +1,11 @@
 package com.example.haruProject.controller.admin.hr;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.haruProject.dto.Appointment;
@@ -36,16 +33,23 @@ public class AppointmentController {
 						@RequestParam(value = "blockSize", required = false, defaultValue="10") String blockSize,
 						@RequestParam(value = "search1", required = false, defaultValue = "") String search1,
 						@RequestParam(value = "type4", required = false, defaultValue = "0") int type4,
-						@RequestParam(value = "type5", required = false, defaultValue = "100") int type5,
+						@RequestParam(value = "type5", required = true, defaultValue = "100") int type5,
+						@RequestParam(value = "start_date", required = false, defaultValue="") String start_date,
+						@RequestParam(value = "end_date", required = false, defaultValue = "") String end_date,
 						Model model
 						) 
 	{
 		System.out.println("/admin/reservation start ,,,");
 		System.out.println("AppointmentController appointmentList() start ,,,");
+		System.out.println("AppointmentController appointmentList() search1 ->"+search1);
+		System.out.println("AppointmentController appointmentList() type4 ->"+type4);
+		System.out.println("AppointmentController appointmentList() type5 ->"+type5);
+		System.out.println("AppointmentController appointmentList() start_date ->"+start_date);
+		System.out.println("AppointmentController appointmentList() end_date ->"+end_date);
 		
 		List<Appointment> aList = new ArrayList<>();
 		
-		SearchItem si = new SearchItem(type4, type5, search1);
+		SearchItem si = new SearchItem(type4, type5, search1, start_date, end_date);
 		
 		int totalCnt = as.getTotalCnt(si);
 		
@@ -57,7 +61,7 @@ public class AppointmentController {
 		// 시작시간 형태 전처리
 	    aList.forEach(appointment -> {
 	        String startTime = String.valueOf(appointment.getStart_time());
-	        if (startTime.length() == 4) { // "1530" 같은 형식 처리
+	        if (startTime.length() == 4) { // 1530 -> 15:30
 	            appointment.setStart_time(startTime.substring(0, 2) + ":" + startTime.substring(2));
 	        }
 	    });
@@ -67,6 +71,8 @@ public class AppointmentController {
 		model.addAttribute("type4", type4);
 		model.addAttribute("type5", type5);
 		model.addAttribute("search1", search1);
+		model.addAttribute("start_date", start_date);
+		model.addAttribute("end_date", end_date);
 		
 		return "admin/reservation";
 	}
@@ -95,6 +101,11 @@ public class AppointmentController {
 		appointment_d = as.appointmentDetail(resno);
 		System.out.println("AppointmentController detailAppointment() appointment_d ->"+appointment_d);
 		System.out.println("AppointmentController detailAppointment() appointment_d.status ->"+appointment_d.getStatus());
+		
+		String startTime = String.valueOf(appointment_d.getStart_time());
+        if (startTime.length() == 4) { // 1530 -> 15:30
+        	appointment_d.setStart_time(startTime.substring(0, 2) + ":" + startTime.substring(2));
+        }
 		
 		model.addAttribute("appointment_d", appointment_d);
 		
