@@ -72,6 +72,22 @@
 	    $('#datepicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)            
 	});
 
+	$(function() {
+	    $("#datepicker1, #datepicker2").datepicker({
+	        dateFormat: "yy-mm-dd", // 날짜 포맷 설정
+	        onSelect: function(selectedDate) {
+	            // Date 객체로 값을 가져옴
+	            var date1 = $.datepicker.formatDate("yymmdd", $("#datepicker1").datepicker("getDate"));
+	            var date2 = $.datepicker.formatDate("yymmdd", $("#datepicker2").datepicker("getDate"));
+
+	            // 선택된 날짜를 alert로 표시
+	            alert("date1: " + date1 + ", date2: " + date2);
+	        }
+	    });
+	});
+
+	
+
 
 	// 예약 상세 페이지로 이동
 	function goToDetail(resno) {
@@ -85,6 +101,8 @@
 	   // location.href = `/admin/board_detail?bno=${bno}`;
 	    location.href = '/admin/detailReservation?resno='+resno;
 	}
+	
+	
 
 
 	

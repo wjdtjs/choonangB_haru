@@ -57,21 +57,22 @@ public class AppointmentServiceImp implements AppointmentService {
 
 	// 진료 내역
 	@Override
-	public int getTotalCntChart() {
+	public int getTotalCntChart(SearchItem si) {
 		System.out.println("AppointmentServiceImp getTotalCntChart() start ,,,");
+		System.out.println("AppointmentServiceImp getTotalCntChart() si ->"+si);
 		
-		int totalCnt = ad.getTotalCntChart();
+		int totalCnt = ad.getTotalCntChart(si);
 		
 		return totalCnt;
 	}
 
 	@Override
-	public List<Appointment> consultationListChart(int startRow, int endRow) {
+	public List<Appointment> consultationListChart(int startRow, int endRow, int type4) {
 		System.out.println("AppointmentServiceImp consultationListChart() start ,,,");
 		
 		List<Appointment> cList = new ArrayList<>();
 		
-		cList = ad.consultationListChart(startRow, endRow);
+		cList = ad.consultationListChart(startRow, endRow, type4);
 		
 		return cList;
 	}

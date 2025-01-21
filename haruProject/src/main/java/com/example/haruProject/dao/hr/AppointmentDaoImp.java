@@ -78,11 +78,15 @@ public class AppointmentDaoImp implements AppointmentDao {
 	
 	// 진료 목록 전체 수
 	@Override
-	public int getTotalCntChart() {
+	public int getTotalCntChart(SearchItem si) {
+		System.out.println("AppointmentDaoImp getTotalCntChart() start ,,,");
+		System.out.println("AppointmentDaoImp getTotalCntChart() si ->"+si);
+		
 		int totalCnt = 0;
 		
 		try {
-			totalCnt = session.selectOne("HR_SelectTotalConsultationCnt");
+			totalCnt = session.selectOne("HR_SelectTotalConsultationCnt", si);
+			System.out.println("AppointmentDaoImp getTotalCntChart() totalCnt ->"+totalCnt);
 		} catch (Exception e) {
 			log.error("getTotalCntChart() error ->", e);
 		}
@@ -91,16 +95,19 @@ public class AppointmentDaoImp implements AppointmentDao {
 
 	// 진료 목록 가져오기 (페이지네이션)
 	@Override
-	public List<Appointment> consultationListChart(int startRow, int endRow) {
+	public List<Appointment> consultationListChart(int startRow, int endRow, int type4) {
 		System.out.println("AppointmentDaoImp consultationListChart() start ,,,");
+		System.out.println("AppointmentDaoImp getTotalCntChart() type4 ->"+type4);
 		List<Appointment> clist = new ArrayList<>();
 		
 		Map<String, Object> cMap = new HashMap<>();
 		cMap.put("startRow", startRow);
 		cMap.put("endRow", endRow);
+		cMap.put("type4", type4);
 		
 		try {
 			clist = session.selectList("HR_SelectConsultationList", cMap);
+			System.out.println("AppointmentDaoImp getTotalCntChart()  cList ->"+clist);
 		} catch (Exception e) {
 			log.error("consultationListChart() error ->", e);
 		}

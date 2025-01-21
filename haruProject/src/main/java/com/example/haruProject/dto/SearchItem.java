@@ -49,4 +49,8 @@ public class SearchItem {
 		this.search4 = search4;
 	}
 	
+	public SearchItem(int type4) {
+		this.type4 = type4;
+	}
+	
 }

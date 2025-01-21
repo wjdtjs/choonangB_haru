@@ -131,6 +131,8 @@ table#hr-table-appo-modal-data {
 	background-color: rgba(12, 128, 141, 0.1);
 	padding: 16px;
 	border: white;
+	width: 100%;
+	margin: 0 16px;
 }
 
 .res_detail_p {
@@ -140,8 +142,20 @@ table#hr-table-appo-modal-data {
     font-weight: 600;
 }
 
+#res_pet {
+	font-size: 16px;
+	font-weight: 400;
+}
+
+button#res_change, #res_cancel {
+    margin-right: 15px;
+}
+
 
 </style>
+
+
+
 <body>
 
 <!-- Page Wrapper -->
@@ -183,9 +197,9 @@ table#hr-table-appo-modal-data {
 							        <div class="hr-table-appo-modal">
 							        	<table id="hr-table-appo-modal-data">
 							        		<colgroup>
+							        			<col width="10%">
 							        			<col width="25%">
-							        			<col width="25%">
-							        			<col width="25%">
+							        			<col width="10%">
 							        			<col width="25%">
 							        		</colgroup>
 							        			<tr>
@@ -237,6 +251,12 @@ table#hr-table-appo-modal-data {
 							        <p class="res_detail_p">동물 정보</p>
 							        <div class="hr-appo-table">
 							        	<table id="hr-appo-table-data" width="100%" cellspacing="0">
+							        			<tr id="res_pet">
+							        				<th>번호</th>
+							        				<th>이름</th>
+							        				<th>종 / 성별</th>
+							        				<th>몸무게</th>
+							        			</tr>
 							        			<tr>
 							        				<td>${appointment_d.petno }</td>
 							        				<td>${appointment_d.petname }</td>
@@ -247,28 +267,33 @@ table#hr-table-appo-modal-data {
 							        </div>
 						        
 							        <p class="res_detail_p">예약 메모</p>
-							        <div id="hr-appo-memo">
-							        	<textarea rows="10" cols="125" placeholder="예약 메모를 입력해주세요.">${appointment_d.memo }</textarea>
-							        </div>
+							        <div style="margin-top: 1rem">
+									<div class="post-form">
+										<textarea name="pdetails" class="summernoteTextArea proRegSummernote" >${appointment_d.memo}
+										</textarea>
+									</div>
+					        		</div>
 						        
 	                        	
 	                        	
 	                        	
 	                        	<!-- 모달 버튼 -->			        
 						        <div class="modal_l-content-btn">
-							        <c:if test="${appointment_d.rstatus_mcd eq 100 }">
-								        <button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
-							        	<button type="button" class="update_btn2" id="res_cancel" >예약 거절</button>
-							        	<button type="button" class="update_btn" id="res_confirm">예약 확정</button>
-							        </c:if>
-							        <c:if test="${appointment_d.rstatus_mcd eq 200 }">
-								        <button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
-							        	<button type="button" class="update_btn2" id="res_change" >예약 변경</button>
-							        	<button type="button" class="update_btn" id="res_complete">진료 완료</button>
-							        </c:if>
-							        <c:if test="${appointment_d.rstatus_mcd eq 300 or appointment_d.rstatus_mcd eq 400}">
-								        <button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
-							        </c:if>			        	
+						        	<c:choose>
+						        		<c:when test="${appointment_d.rstatus_mcd eq 100 }">
+							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+								        	<button type="button" class="update_btn2" id="res_cancel" >예약 거절</button>
+								        	<button type="button" class="update_btn" id="res_confirm">예약 확정</button>
+						        		</c:when>
+						        		<c:when test="${appointment_d.rstatus_mcd eq 200 }">
+							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+								        	<button type="button" class="update_btn2" id="res_change" >예약 변경</button>
+								        	<button type="button" class="update_btn" id="res_complete">진료 완료</button>
+						        		</c:when>
+						        		<c:when test="${appointment_d.rstatus_mcd eq 300 or appointment_d.rstatus_mcd eq 400}">
+							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+						        		</c:when>
+						        	</c:choose>							        		        	
 						        </div>
 				                        	
 	                        </div>
@@ -303,6 +328,29 @@ table#hr-table-appo-modal-data {
     <!-- Logout Modal-->
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
+    
+    <script type="text/javascript">
+	/* 메일 보내기 */
+	const name = '';
+	const date = '';
+	const time = '';
+	const mail = 'mail 내용\n';
+	
+	/* 확정 */
+	$('#res_confirm').click(function() {
+		if(confirm(mail+"의 예약 확정 메일을 전송하시겠습니까?")==true) {
+			// 메일 보내기
+		};
+	})
+	/* 취소 */
+	$('#res_cancel').click(function() {
+		if(confirm(mail+"의 예약 취소 메일을 전송하시겠습니까?")==true) {
+			// 메일 보내기
+		};
+	})
+	
+	/* confirm에서 확인을 누르면 메일전송, 상태변경, 모달창 닫기 */
+	</script>
 
 </body>
 </html>

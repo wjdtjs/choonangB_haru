@@ -13,9 +13,9 @@ public interface AppointmentDao {
 	List<Appointment> appointmentList(int startRow, int endRow, SearchItem si);
 
 	// 진료 내역
-	int getTotalCntChart();
+	int getTotalCntChart(SearchItem si);
 
-	List<Appointment> consultationListChart(int startRow, int endRow);
+	List<Appointment> consultationListChart(int startRow, int endRow, int type4);
 
 	// 예약 상세
 	Appointment appointmentDetail(String resno);

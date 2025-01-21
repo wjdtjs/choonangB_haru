@@ -111,22 +111,32 @@ public class AppointmentController {
 	public String consultationList(
 								@RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
 								@RequestParam(value = "blockSize", required = false, defaultValue="10") String blockSize,
+								@RequestParam(value = "type4", required = false, defaultValue = "0") int type4,
 								Model model
 								  )
 	{
 		System.out.println("admin/consultation start ,,,");
 		System.out.println("AppointmentController consultationList() start ,,,");
+		System.out.println("pagenNum ->"+pageNum);
+		System.out.println("blockSize ->"+blockSize);
+		System.out.println("type4 ->"+type4);
 		
 		List<Appointment> cList = new ArrayList<>();
 		
-		int totalCnt = as.getTotalCntChart();
+		SearchItem si = new SearchItem(type4);
+		
+		int totalCnt = as.getTotalCntChart(si);
 		
 		Pagination pagination = new Pagination(totalCnt, pageNum, Integer.parseInt(blockSize));
 		
-		cList = as.consultationListChart(pagination.getStartRow(), pagination.getEndRow());
+		cList = as.consultationListChart(pagination.getStartRow(), pagination.getEndRow(), type4);
 		
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("cList", cList);
+		model.addAttribute("type4", type4);
+		
+		System.out.println(cList);
+		System.out.println("type4 ->"+type4);
 		
 		return "admin/consultation";
 	}
