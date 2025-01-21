@@ -16,12 +16,26 @@
 
 </head>
 
+<script type="text/javascript">
+	function chk(){
+		if (frm.mpasswd.value != frm.re_mpasswd.value){
+			alert('비밀번호를 다시 입력해 주세요');
+			frm.mpasswd.focus();
+			return false
+		}
+		alert(frm.mname.value+'(회원번호:'+frm.memno.value+')'+'님 정보수정완료');
+		return true;
+		
+	}
+</script>
+
 <!-- style -->
 <style>
 
 .inputTable {
 	color: black;
 	width: 100%;
+	margin-bottom: 15px;
 }
 .form-input-title {
 	height: 50px;
@@ -42,7 +56,6 @@
 	border-radius: 10px;
 	padding-left: 10px;
 }
-
 .myPetTitle{
 	display: flex;
 	margin-bottom: 5px
@@ -116,9 +129,9 @@ em {
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >회원 관리</h1>
                     
                     <div class="modal_l_detail">
-                    <form action="/admin/updateMember" method="post" name="frm" id="upd_mb">
+                    <form action="/admin/updateMember" method="post" name="frm" id="upd_mb" onsubmit="return chk()">
 				        <table class="inputTable">
-				        <input type="hidden" name="ano" value="${member.memno }">
+				        <input type="hidden" name="memno" value="${member.memno }">
 				        	<colgroup>
 		                    	<col width="15%" />
 		                        <col width="35%" />
@@ -126,22 +139,47 @@ em {
 		                        <col width="35%" />
 		                    </colgroup>
 				        	<tr>
-				        		<td class="form-input-title">회원번호</td>		<td>${member.memno }</td>
-				        		<td class="form-input-title">ID</td>		<td>${member.mid }</td>
+				        		<td class="form-input-title">회원번호</td>				<td>${member.memno }</td>
+				        		<td class="form-input-title">ID</td>				<td>${member.mid }</td>
 				        	<tr>
-				        		<td class="form-input-title">이름</td>		<td>${member.mname }</td>
-				        		<td class="form-input-title">전화번호</td>		<td>${member.mtel }</td>
+				        		<td class="form-input-title">이름<em>*</em></td>				<td><input class="form-input" type="text" name="mname" required="required" value="${member.mname }"></td>
+				        		<td class="form-input-title">비밀번호재설정<em>*</em></td>	<td><input class="form-input" type="password" name="mpasswd" value="${member.mpasswd }"></td>
 				        	</tr>
 				        	<tr>
-				        		<td class="form-input-title">등록일</td>		<td><fmt:formatDate value="${member.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-				        		<td class="form-input-title">이메일</td>		<td>${member.memail}</td>
+				        		<td class="form-input-title">전화번호<em>*</em></td>				<td><input class="form-input" type="text" name="mtel" required="required" value="${member.mtel }"></td>
+				        		<td class="form-input-title">비밀번호확인<em>*</em></td>	<td><input class="form-input" type="password" name="re_mpasswd" value="${member.mpasswd }"></td>
 				        	</tr>
 				        	<tr>
-				        		<td class="form-input-title">수정일</td>		<td><fmt:formatDate value="${member.update_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-				        		<td class="form-input-title">개인정보동의여부</td><td>${member.is_agree}</td>
+				        		<td class="form-input-title">이메일</td>				<td><input class="form-input" type="text" name="memail" required="required" value="${member.memail }"></td>
+				        		<td class="form-input-title">상태</td>			<td><select class="form-input sub-alevel-mcd-select" name="mstatus_mcd">
+				        															<c:forEach var="status" items="${mstatus }">
+				        																<c:choose>
+				        																	<c:when test="${status.mcd == member.mstatus_mcd}">
+				        																		<option value="${status.mcd}" selected>${status.content }</option>
+				        																	</c:when>
+				        																	<c:when test="${status.mcd != member.mstatus_mcd}">
+				        																		<option value="${status.mcd}">${status.content }</option>
+				        																	</c:when>
+				        																</c:choose>
+				        															</c:forEach>
+				        														</select>
 				        	</tr>
 				        	<tr>
-				        		<td class="form-input-title">상태</td>		<td>${member.mstatis_content }</td>
+				        		<td class="form-input-title">등록일</td>				<td><fmt:formatDate value="${member.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+				        													</td>
+				        		<td class="form-input-title">개인정보동의여부</td>		<td><select class="form-input sub-alevel-mcd-select" name="is_agree">
+				        																<c:if test="${member.is_agree == 0}">
+				        																	<option value="0" selected>비동의</option>
+				        																	<option value="1">동의</option>
+				        																</c:if>
+				        																<c:if test="${member.is_agree == 1}">
+						        															<option value="0">비동의</option>
+						        															<option value="1" selected>동의</option>
+				        																</c:if>
+				        															</select></td>
+				        	</tr>
+				        	<tr>
+				        		<td class="form-input-title">수정일</td>				<td><fmt:formatDate value="${member.update_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 				        		<td class="form-input-title">개인정보동의일</td>	<td><fmt:formatDate value="${member.agree_date }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 				        	</tr>
 				        </table>

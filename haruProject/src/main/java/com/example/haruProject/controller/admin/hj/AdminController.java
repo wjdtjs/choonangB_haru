@@ -109,7 +109,7 @@ public class AdminController {
 	 */
 	
 	// 관리자 정보
-	@GetMapping(value = "/admin/AdminDetail")
+	@GetMapping(value = "/admin/detailAdmin")
 	public String getAdminDetail(@RequestParam("ano") String ano,Model model) {
 		System.out.println("AdminController getAdminDetail... ");
 		System.out.println("AdminController getAdminDetailano- >"+ano);
@@ -122,7 +122,7 @@ public class AdminController {
 		model.addAttribute("common",acommonList);
 		model.addAttribute("pageNum",1);
 
-		return "/admin/adminDetail";
+		return "/admin/detailAdmin";
 	}
 	
 	// 관리자 정보 수정

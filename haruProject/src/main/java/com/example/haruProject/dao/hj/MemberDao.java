@@ -1,6 +1,7 @@
 package com.example.haruProject.dao.hj;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Member;
@@ -15,5 +16,8 @@ public interface MemberDao {
 	List<Pet>		getPetList(int memno);
 	int				addMember(Member member);
 	List<Common>	mstatusList();
+	List<Common> 	mstatusList1();
+	int				updateMember(Member member);
+	int				dbCheckId(String mid);
 
 }

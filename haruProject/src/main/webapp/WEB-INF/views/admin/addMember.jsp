@@ -16,6 +16,31 @@
 
 </head>
 
+<script type="text/javascript">
+	
+	
+	//아이디 중복
+	if(!frm.idDuplication.value){
+		alert('아이디 중복확인을 해주세요');
+		frm.mid.focus();
+		return false;
+	}
+	
+	function fn_dbCheckId() {
+		const mid = frm.mid.value;
+		<%=request.getContextPath()%>/admin/dbCheckId?mid=\${mid};
+
+		if (frm.idDuplication.value == 1) {
+			alert('사용중인 아이디입니다.')
+			frm.idDuplication.value = null;
+			return false;
+		}else if (frm.idDuplication.value == 0){
+			alert('사용가능한 아이디입니다.')
+			return true;
+		}
+	}
+</script>
+
 <!-- style -->
 <style>
 
@@ -96,7 +121,9 @@ em {
 			        	<tr>
 			        		<th>이름<em>*</em></th>		<td><input class="form-input" type="text" name="mname" required="required"></td>
 			        		<th>아이디<em>*</em></th>	<td><input class="form-input" type="text" name="mid" required="required" style="width: 70%;">
-			        								<button class="btn-primary haru-tb-btn" id="modal_open_btn">중복확인</button></td>
+			        								<button class="btn-primary haru-tb-btn" id="modal_open_btn" onclick="fn_dbCheckId()">중복확인</button>
+			        								<input type="hidden" name="idDuplication" value="${result }">
+			        								</td>
 			        	</tr>
 			        	<tr>
 			        		<th>전화번호<em>*</em></th>	<td><input class="form-input" type="text" name="mtel" required="required" placeholder="000-0000-0000"></td>

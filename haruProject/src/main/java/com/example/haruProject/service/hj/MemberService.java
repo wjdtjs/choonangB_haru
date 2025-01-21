@@ -1,6 +1,7 @@
 package com.example.haruProject.service.hj;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Member;
@@ -14,6 +15,9 @@ public interface MemberService {
 	Member			getMemberDetail(int memno);
 	List<Pet> 		getPetList(int memno);
 	int				addMember(Member member);
-	List<Common>	mstatusList();
+	List<Common>	mstatusList(); // 멤버리스트 상태로 검색
+	List<Common>	mstatusList1();
+	int				updateMember(Member member);
+	int				dbCheckId(String mid);
 
 }

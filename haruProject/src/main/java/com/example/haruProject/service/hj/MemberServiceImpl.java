@@ -1,6 +1,7 @@
 package com.example.haruProject.service.hj;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -58,6 +59,26 @@ public class MemberServiceImpl implements MemberService {
 		System.out.println("MemberService mstatusList...");
 		List<Common> mstatus = md.mstatusList();
 		return mstatus;
+	}
+
+	@Override
+	public List<Common> mstatusList1() {
+		System.out.println("MemberService mstatusList1...");
+		List<Common> mstatus = md.mstatusList1();
+		return mstatus;
+	}
+
+	@Override
+	public int updateMember(Member member) {
+		int result = md.updateMember(member);
+		return result;
+	}
+
+	@Override
+	public int dbCheckId(String mid) {
+		System.out.println("MemberService dbCheckId...");
+		int result = md.dbCheckId(mid);
+		return result;
 	}
 
 }

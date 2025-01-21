@@ -13,11 +13,36 @@
 		FROM (
 				SELECT ROWNUM rn, a.*
 			  	FROM (
-			  			SELECT *
-			  			FROM member
-			  			<if test="search.search2 != null and !search.search2.equals('')">
-							where memname LIKE '%' || #{search.search1} || '%'
+			  			SELECT mb.*,
+			  				   cm.content mstatis_content
+			  			FROM member mb
+			  			JOIN common cm ON mb.mstatus_bcd = cm.bcd and mb.mstatus_mcd =cm.mcd
+			  			<if test="search.type4 != 0 and !search.type4.equals('')">
+			  				<if test="search.type4 != 999">
+									WHERE mb.mstatus_mcd = #{search.type4}
+			  				</if>
 						</if>
+						<if test="(search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals(''))">
+			  				<choose>
+			  					<when test="search.type5 == 1">
+			  						WHERE mb.mname LIKE '%' || #{search.search1} || '%
+			  					</when>
+			  					<when test="search.type5 == 2">
+			  						WHERE mb.mtel LIKE '%' || #{search.search1} || '%
+			  					</when>
+			  				</choose>
+						</if>
+						<if test="(search.type4 != 0 and !search.type4.equals('')) and (search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals(''))">
+			  				<choose>
+			  					<when test="search.type5 == 1 and search.type4 != 999">
+			  						WHERE mb.mname LIKE '%' || #{search.search1} || '% and mb.mstatus_mcd = #{search.type4}
+			  					</when>
+			  					<when test="search.type5 == 2 and search.type4 != 999">
+			  						WHERE mb.mtel LIKE '%' || #{search.search1} || '%  and mb.mstatus_mcd = #{search.type4}
+			  					</when>
+			  				</choose>
+						</if>
+			  			
 						ORDER BY memno desc
 			  		) a
 		)
@@ -36,6 +61,8 @@
 				mb.update_date,
 				mb.is_agree,
 				mb.agree_date,
+				mb.mstatus_mcd,
+				mb.mstatus_bcd,
 				cm.content mstatis_content
 		FROM member mb
 		JOIN common cm ON mb.mstatus_bcd = cm.bcd and mb.mstatus_mcd =cm.mcd
@@ -61,5 +88,35 @@
 		SELECT *
 		FROM common
 		WHERE bcd = 200
+	</select>
+	
+	<select id="HJMstatusList1" resultType="Common">
+		SELECT *
+		FROM common
+		WHERE bcd = 200 AND mcd != 999
+	</select>
+	
+	<update id="HJUpdateMember" parameterType="Member">
+		UPDATE member SET
+			mname = #{mname},
+			mtel = #{mtel},
+			memail = #{memail},
+			mpasswd = #{mpasswd},
+			mstatus_mcd = #{mstatus_mcd},
+			is_agree = #{is_agree},
+			<if test="is_agree == 1">
+				agree_date = sysdate,
+			</if>
+			<if test="is_agree == 0">
+				agree_date = null,
+			</if>
+			update_date = sysdate
+		WHERE memno = #{memno}
+	</update>
+	
+	<select id="HJCheckID" parameterType="java.lang.String" resultType="Member">
+		SELECT *
+		FROM member
+		WHERE mid = #{mid}
 	</select>
 </mapper>

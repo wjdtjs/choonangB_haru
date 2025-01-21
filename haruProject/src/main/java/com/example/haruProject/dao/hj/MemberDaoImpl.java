@@ -37,11 +37,16 @@ public class MemberDaoImpl implements MemberDao {
 	@Override
 	public List<Member> getMemberList(int startRow, int endRow, SearchItem si) {
 		System.out.println("MemberDao getMemberList...");
+		System.out.println("MemberDao getMemberList startRow->"+startRow);
+		System.out.println("MemberDao getMemberList startRow->"+endRow);
+		System.out.println("MemberDao getMemberList startRow->"+startRow);
 		List<Member> members = new ArrayList<>();
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("startRow", startRow);
 		paramMap.put("endRow", endRow);
 		paramMap.put("search", si);
+		System.out.println("MemberDao getMemberList paramMap->"+paramMap);
+		
 		try {
 			members = session.selectList("HJSelectMembers",paramMap);
 			System.out.println("MemberDao getMemberList members->"+members);
@@ -99,6 +104,51 @@ public class MemberDaoImpl implements MemberDao {
 			System.out.println("MemberDao mstatusList error->"+e.getMessage());
 		}
 		return mstatus;
+	}
+
+	@Override
+	public List<Common> mstatusList1() {
+		System.out.println("MemberDao mstatusList1 ...");
+		List<Common> mstatus1 = new ArrayList<>();
+		try {
+			mstatus1 = session.selectList("HJMstatusList1");
+			System.out.println("mstatus->"+mstatus1);
+		} catch (Exception e) {
+			System.out.println("MemberDao mstatusList1 error->"+e.getMessage());
+		}
+		return mstatus1;
+	}
+
+	@Override
+	public int updateMember(Member member) {
+		System.out.println("MemberDao updateMember ...");
+		int result = 0;
+		try {
+			result = session.update("HJUpdateMember",member);
+			System.out.println("MemberDao updateMember result->"+result);
+			
+		} catch (Exception e) {
+			System.out.println("MemberDao updateMember error->"+e.getMessage());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public int dbCheckId(String mid) {
+		System.out.println("MemberDao dbCheckId ...");
+		List<Member> member = new ArrayList<>();
+		int result = 0;
+		try {
+			member = session.selectList("HJCheckID",mid);
+			System.out.println("member.size()->"+member.size());
+			if (member.size() == 0) {
+				result = 1;
+			} else result = 0;
+		} catch (Exception e) {
+			System.out.println("MemberDao dbCheckId error->"+e.getMessage());
+		}
+		return result;
 	}
 	
 }

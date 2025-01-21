@@ -15,45 +15,53 @@
 
 </head>
 <script type="text/javascript">
+	// detailMember로 이동
 	$(document).on('click','#dataTable .memTable tr',function(){
 		const memno = $(this).find('td:nth-child(1)').text();
-		
 		console.log('클릭된 행의 memno: ', memno);
 		
 		window.location.href = `<%=request.getContextPath()%>/admin/detailMember?memno=\${memno}`;
 	});
 	
-/* 	$('.haru-show-select').change(function() {
-	    let value = $(this).val();
-	    console.log('선택된 value: ', HJSelectAdminCommon)
-		if(value == "0") {
-			search2 = null;
-		} else search2 = value;
-		listShow(search1, search2);
-	});  */
-	
-	$(document).on('change','.haru-show-select',function(){
-		let value = $(this).val();
-	    console.log('선택된 value: ', value)
-		if(value == "0") {
-			search2 = null;
-		} else search2 = value;
-		/* listShow(search1, search2); */
+	// 비활동 회원 
+	document.addEventListener("DOMContentLoaded",function(){
+		const rows = document.querySelectorAll("#dataTable .memTable tr");
+		
+		rows.forEach((row) => {
+			const statusCell = row.querySelector("td:nth-child(5)");
+			if (statusCell && statusCell.textContent.trim() === "비활동") {
+	            row.style.backgroundColor = "#f2f2f2"; // 원하는 배경색 설정
+	        }
+		})
 	})
 	
-	function enterkey() {
-		
-	}
 	
-	function listShow(search1,search2) {
-		/* const search1 = search1;
-		const search2 = search2; */
-		
-		window.location.href = `<%=request.getContextPath()%>/admin/member?search1=\${search1}&search2=\${search2}`;
-		
-	}
+	// 필터
+	$(document).on('change','.haru-show-select',function(){
+		const type4 = $(this).val();
+		const type5 = $('.haru-tb-type-box').val();
+		const search1 = $('.tb-search-input').val();
+	    location.href = '/admin/members?type4='+type4+'&type5='+type5+'&search1='+search1;
+	    
+	})
+	
+	// 검색
+	$(document).on('keyup','.tb-search-input',function(){
+		if (window.event.keyCode == 13){
+			const type4 = $('.haru-show-select').val();
+			const type5 = $('.haru-tb-type-box').val();
+			const search1 = $('.tb-search-input').val();
+			location.href = '/admin/members?type4='+type4+'&type5='+type5+'&search1='+search1;
+		}
+	})
+	
 </script>
 
+<style>
+select {
+	background-position: 95% center;
+}
+</style>
 <body id="page-top"> 
 
     <!-- Page Wrapper -->
@@ -84,19 +92,24 @@
                         <div class="card-header py-3">
                             <div class="m-0 haru-search-box">
 	                            <div class="haru-left">
-	                            	<select name="search1">
-	                            		<!-- <option value="all">전체</option> -->
-	                            		<option value="name">이름</option>
-	                            		<option value="tel">전화번호</option>
+	                            	<select class="haru-tb-type-box">
+	                            		<option value="1">이름</option>
+	                            		<option value="2">전화번호</option>
 	                            	</select>
 	                            	<div class="haru-tb-input-box">
-	                            		<input class="tb-search-input" type="text" onkeyup="enterkey()" name="keyword">                            	
+	                            		<input class="tb-search-input" type="text">                            	
 	                            	</div>                            
 	                            </div>
 	                            <div class="haru-right">
-	                            	<select class="haru-show-select" name="search2">
+	                            	<select class="haru-show-select">
 	                            		<c:forEach var="status" items="${mstatus}">
-	                            			<option value="${status.mcd }">${status.content}</option>	                            		</c:forEach>
+	                            			<c:if test="${status.mcd == search.type4}">
+		                            			<option value="${status.mcd }" selected>${status.content}</option>
+	                            			</c:if>
+	                            			<c:if test="${status.mcd != search.type4}">
+	                            				<option value="${status.mcd }">${status.content}</option>
+	                            			</c:if>
+	                            		</c:forEach>
 	                            	</select>
 	                           		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn" onclick="location.href='/admin/addMember'">회원 추가</button>
 	                           	</div>                           	                         
@@ -109,7 +122,8 @@
                                     	<col width="10%" />
                                     	<col width="20%" />
                                     	<col width="30%" />
-                                    	<col width="30%" />
+                                    	<col width="20%" />
+                                    	<col width="10%" />
 
                                     </colgroup>
                                     <thead>
@@ -118,6 +132,7 @@
                                             <th>이름</th>
                                             <th>전화번호</th>
                                             <th>이메일</th>
+                                            <th>상태</th>
                                         </tr>
                                     </thead>
                                     <tbody class="memTable">
@@ -127,6 +142,7 @@
 	                                            <td>${member.mname  }</td>
 	                                            <td>${member.mtel }</td>
 	                                            <td>${member.memail }</td>
+	                                            <td>${member.mstatis_content }</td>
 	                                        </tr>
                                         </c:forEach>
                                     </tbody>
@@ -143,7 +159,7 @@
 							<!-- 페이지 번호 출력 -->
 							<c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
 							    <div class="haru-pagenum ${i == pagination.currentPage ? 'active' : ''}" 
-							         onclick="location.href='?pageNum=${i}'">
+							         onclick="location.href='?pageNum=${i}&search1=${search.search1 }'">
 							         ${i}
 							    </div>
 							</c:forEach>
