@@ -3,24 +3,24 @@
 
 <!-- 메뉴바 -->
 <div class="menubar">
-	<div class="menu-icon" id="shopping">
+	<a class="menu-icon" id="shopping" href="/user/shop">
 		<!-- 1. 쇼핑 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-cart-shopping"></i></span>
-	</div>
-	<div class="menu-icon" id="reservation">
+	</a>
+	<a class="menu-icon" id="reservation">
 		<!-- 2. 예약 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-calendar-check"></i></span>
-	</div>
-	<div class="menu-icon" id="home">
+	</a>
+	<a class="menu-icon" id="home" href="/user/main">
 		<!-- 3. 메인 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-house"></i></span>
-	</div>
-	<div class="menu-icon" id="board">
+	</a>
+	<a class="menu-icon" id="board">
 		<!-- 4. 게시판 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-clipboard-list"></i></span>
-	</div>
-	<div class="menu-icon" id="mypage">
+	</a>
+	<a class="menu-icon" id="mypage">
 		<!-- 5. 마이페이지 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-user"></i></span>
-	</div>
+	</a>
 </div>

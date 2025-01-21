@@ -127,5 +127,45 @@ public class ShopServiceImp implements ShopService {
 		sd.updateProduct(pd, img_change);
 	}
 
+
+	/**
+	 * 쇼핑카트에 담아둔 상품 수
+	 * @param memno 사용자 번호
+	 */
+	@Override
+	public int getCartCount(int memno) {
+		log.info("getCartCount() start..");
+		
+		int count = sd.getCartCount(memno);
+		return count;
+	}
+
+
+	/**
+	 * 분류 필터 적용된 상품 리스트 수
+	 */
+	@Override
+	public int getCDProductCnt(SearchItem si) {
+		log.info("getCDProductCnt() start..");
+		
+		int count = sd.getCDProductCnt(si);
+		return count;
+	}
+
+
+	/**
+	 * 분류 필터 적용된 상품 리스트 조회
+	 */
+	@Override
+	public List<Product> cdProductList(int startRow, int endRow, SearchItem si) {
+		log.info("cdProductList() start..");
+		
+		List<Product> pList = new ArrayList<>();
+		
+		pList = sd.cdProductList(startRow, endRow, si);
+		
+		return pList;
+	}
+
 	
 }

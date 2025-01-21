@@ -175,4 +175,56 @@ public class ShopDaoImp implements ShopDao {
 		}
 		
 	}
+
+	/**
+	 * 쇼핑카트에 담아둔 상품 수
+	 */
+	@Override
+	public int getCartCount(int memno) {
+		int count = 0;
+		
+		try {
+			count = session.selectOne("JS_SelectCartCount", memno);
+		} catch (Exception e) {
+			log.error("getCartCount() query error -> {}", e);
+		}
+		return count;
+	}
+
+	/**
+	 * 분류 필터 적용된 상품 리스트 수
+	 */
+	@Override
+	public int getCDProductCnt(SearchItem si) {
+		int count = 0;
+		try {
+			count = session.selectOne("JS_SelectCDFilterProductCnt", si);
+		} catch (Exception e) {
+			log.error("getCDProductCnt() query error -> {}", e);
+		}
+		
+		return count;
+	}
+
+	/**
+	 * 분류 필터 적용된 상품 리스트 조회
+	 */
+	@Override
+	public List<Product> cdProductList(int startRow, int endRow, SearchItem si) {
+		List<Product> list = new ArrayList<>();
+		
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("startRow", startRow);
+		parameterMap.put("endRow", endRow);
+		parameterMap.put("search", si);
+		
+		try {
+			list = session.selectList("JS_SelectCDFilterProductList", parameterMap);
+			
+		} catch (Exception e) {
+			log.error("productList() query error -> {}", e.getMessage());
+		}
+		
+		return list;
+	}
 }

@@ -16,6 +16,9 @@ public interface ShopService {
 	void uploadProduct(Product pd);
 	Product getProductDetail(String pno);
 	void updateProduct(Product pd, boolean img_change);
+	int getCartCount(int i);
+	int getCDProductCnt(SearchItem si);
+	List<Product> cdProductList(int startRow, int endRow, SearchItem si);
 	
 	
 }

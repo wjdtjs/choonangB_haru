@@ -128,17 +128,17 @@
 						<div class="haru-pagination">
 							<c:if test="${pagination.startPage > pagination.blockSize }">
 								<i class="haru-pagearrow fa-solid fa-chevron-left" 
-									onclick="location.href='/admin/notice?pageNum=${pagination.startPage-pagination.blockSize}'">
+									onclick="location.href='/admin/notice?pageNum=${pagination.startPage-pagination.blockSize}&search1=${search1 }&search2=${search2 }'">
 								</i>
 							</c:if>
 							
 							<c:forEach var="i" begin="${pagination.startPage }" end="${pagination.endPage }">
-								<div class="haru-pagenum" id="pageNum${i}" onclick="location.href='/admin/notice?pageNum=${i}'">${i }</div>
+								<div class="haru-pagenum" id="pageNum${i}" onclick="location.href='/admin/notice?pageNum=${i}&search1=${search1 }&search2=${search2 }'">${i }</div>
 							</c:forEach>
 							
 							<c:if test="${pagination.endPage < pagination.pageCnt }">
 								<i class="haru-pagearrow fa-solid fa-chevron-right" 
-									onclick="location.href='/admin/notice?pageNum=${pagination.startPage+pagination.blockSize}'">
+									onclick="location.href='/admin/notice?pageNum=${pagination.startPage+pagination.blockSize}&search1=${search1 }&search2=${search2 }'">
 								</i>
 							</c:if>
 						</div>

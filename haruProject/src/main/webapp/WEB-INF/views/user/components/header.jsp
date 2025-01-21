@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <link rel="stylesheet" 
 	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
@@ -29,5 +30,5 @@
 
 
 <!-- CSS -->
-<link href="/css/user-menubar.css?v=0.05" rel="stylesheet">
-<link href="/css/haru-user.css?v=0.32" rel="stylesheet">
+<link href="/css/user-menubar.css?v=0.06" rel="stylesheet">
+<link href="/css/haru-user.css?v=0.40" rel="stylesheet">

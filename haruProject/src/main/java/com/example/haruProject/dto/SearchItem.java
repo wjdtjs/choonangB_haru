@@ -13,9 +13,6 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class SearchItem {
 	
-	private String type1;
-	private String type2;
-	private String type3;
 	private String search1;
 	private String search2;
 	private String search3;
@@ -51,6 +48,12 @@ public class SearchItem {
 	
 	public SearchItem(int type4) {
 		this.type4 = type4;
+	}
+	
+	public SearchItem(int type4, int type5, int search4) {
+		this.type4 = type4;
+		this.type5 = type5;
+		this.search4 = search4;
 	}
 	
 }

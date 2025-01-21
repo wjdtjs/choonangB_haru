@@ -190,10 +190,19 @@ body > .haru-user-container {
 	font-weight: 600;
 }
 
-.haru-user-topbar .topbar-title i {
+.haru-user-topbar .topbar-title i,
+.haru-user-topbar .topbar-title .cart-shopping {
 	color: black;
-	width: 30px;
+	width: 45px;
 	text-align: end;
+	position: relative;
+}
+.haru-user-topbar .topbar-title .fa-chevron-left {
+	text-align: end;
+	padding-right: 0.7rem;
+}
+.haru-user-topbar .topbar-title .cart-shopping {
+	text-align: start;
 }
 
 .user-body-container {
@@ -251,6 +260,90 @@ body > .haru-user-container {
 	justify-content: space-between;
 	align-items: baseline;
 }
+
+
+.sc_count {
+	color: white;
+    background-color: var(--haru);
+    border-radius: 50%;
+    position: absolute;
+    top: -4px;
+    left: 18px;
+    font-size: 0.9rem;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+}
+
+.shopping-filter {
+	margin-top: 10px;
+}
+.shopping-filter .shopping-bcd-div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+	width: 70%;
+	margin: auto;
+}
+.shopping-filter .shopping-filter-bcd {
+	border: 2px solid #e9e9e9;
+	border-radius: 20px;
+	color: #6F7173;
+	width: 60px;
+	height: 36px;
+	text-align: center;
+	line-height: 33px;
+}
+.shopping-filter-bcd.active {
+	color: white;
+	background: var(--haru);
+	border-color: var(--haru);
+}
+
+.shopping-filter .shopping-mcd-div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+	width: 80%;
+	margin: auto;
+	margin-top: 1rem;
+}
+.shopping-filter .shopping-mcd-div > span.active {
+	border-bottom: 2px solid var(--haru);
+}
+
+.shopping-product-list {
+    margin-top: 2rem;
+	display: grid;
+    grid-template-columns: repeat(2, 1fr);
+	row-gap: 30px;
+	column-gap: 30px;      
+}
+
+.shopping-product-list .product-thumbnail-div {
+	width: 160px;
+	height: 160px;
+	border-radius: 10px;
+	background-color: #d9d9d9;
+}
+.product-info-div .product-info-desc {
+	margin-top: 1rem;
+}
+
+.product-info-div .product-info-desc > div:nth-child(1) {
+	font-weight: 500;
+}
+.product-info-div .product-info-desc > div:nth-child(2) {
+	font-weight: 600;
+}
+.product-info-div .product-info-desc > div:nth-child(3) {
+	margin-top: 0.25rem;
+	font-weight: 600;
+}
+
 
 
 
