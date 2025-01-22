@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.ShopMapper">
+	<select id="HJTotalCnt" resultType="int">
+		select count(*)
+		FROM purchase
+	</select>
+
+	<select id="HJSelectShopList" parameterType="Map" resultType="Shop">
+		SELECT *
+		FROM (
+				SELECT rownum rn, a.*
+				FROM(
+						SELECT 	pc.*,
+						   		cm1.content opayment_content,
+						   		cm2.content ostatus_content,
+						   		mb.mname,
+						   		pd.pname 
+						FROM purchase pc
+						JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
+						JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
+						JOIN member mb ON pc.memno = mb.memno
+						JOIN orderproduct op ON pc.orderno = op.orderno
+						JOIN product pd ON op.pno = pd.pno
+						ORDER BY pc.orderno desc
+					)a
+			)
+		WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	
+</mapper>

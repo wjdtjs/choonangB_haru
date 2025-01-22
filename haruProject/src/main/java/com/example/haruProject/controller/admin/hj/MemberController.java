@@ -72,7 +72,7 @@ public class MemberController {
 		System.out.println("MemberDetail getMemberDetail ...");
 		Member member = ms.getMemberDetail(memno);
 		List<Pet> myPets = ms.getPetList(memno);
-		List<Common> mstatus = ms.mstatusList1();
+		List<Common> mstatus = ms.mstatusList();
 		System.out.println("MemberController getMemberDetail member->"+member);
 		model.addAttribute("member",member);
 		model.addAttribute("myPets",myPets);

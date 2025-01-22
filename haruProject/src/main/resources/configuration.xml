@@ -13,6 +13,7 @@
 		<typeAlias alias="Member" 			type="com.example.haruProject.dto.Member"/>
 		<typeAlias alias="Pet" 				type="com.example.haruProject.dto.Pet"/>
 		<typeAlias alias="Common" 			type="com.example.haruProject.dto.Common"/>
+		<typeAlias alias="Shop" 			type="com.example.haruProject.dto.Shop"/>
 		<typeAlias alias="Notice" type="com.example.haruProject.dto.Notice"/>
 	</typeAliases>
 </configuration>

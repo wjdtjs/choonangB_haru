@@ -84,14 +84,7 @@ public class AdminViewController {
 		return "admin/stock";
 	}
 	
-	/**
-	 * 관리자페이지 상품판매관리 뷰
-	 * @return
-	 */
-	@GetMapping("/admin/shop")
-	public String shopView() {
-		return "admin/shop";
-	}
+	
 
 	/**
 	 * 관리자페이지 동물관리 뷰

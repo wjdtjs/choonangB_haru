@@ -16,6 +16,8 @@
 
 </head>
 
+
+
 <!-- style -->
 <style>
 
@@ -71,7 +73,6 @@ table, div{
 }
 
 
-
 .form-input-box{
 	width: 100%;
 	height: 200px;
@@ -89,6 +90,33 @@ table, div{
 	padding: 10px;
 	margin-bottom: 20px;
 } */
+.pro-mainimg-div {
+	width: fit-content;
+	height: fit-content;
+
+	pointer-events: none;
+}
+.pro-mainimg-div >img{
+	width: 112px;
+	height: 112px;
+	position: relative;
+	pointer-events: none;
+	margin-right: 8px;
+}
+/* .pro-thumbnail::after {
+	content: '\f057';
+	display: inline-block;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: red;
+    font-size: 1.25rem;
+    position: absolute;
+    top: -0.7rem;
+    left: 6.25rem;
+    cursor: pointer;
+    pointer-events: all;
+} */
+
 /* SELECT 버튼 위치 수정*/
 label.img_upload {
     background-color: #f0f0f0;
@@ -170,25 +198,26 @@ em {
 				        
 				        <form action="/admin/addChart" method="post" name="frm" id="add_chart">
 				        	<div class="infoTitle">이미지</div>
-				        	<div style="margin-top: 1rem">
-									<%-- <c:choose> 
-										<c:when test="${not empty savedName }"> 
-											<img alt="UpLoad Image" src="">	        		
-										</c:when>
-										<c:otherwise>  --%>
-										<div class="pro-label-div">
-											<label for="main_img" class="img_upload">+</label>
-											<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none"> 							
-										</div>
-										<div class="pro-mainimg-div" style="display: none">
-										</div>
-										<%-- </c:otherwise> 
-									</c:choose>  --%>
+				        	<div style="margin-top: 1rem" class="imgList">
+							<%-- <c:choose> 
+									<c:when test="${not empty savedName }"> 
+										<img alt="UpLoad Image" src="">	        		
+									</c:when>
+								 <c:otherwise>  --%>
+								 <div class="pro-mainimg-div" style="display: none"></div>
+								 <div class="pro-label-div">
+								 	<label for="main_img" class="img_upload">+</label>
+									<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiful> 							
+								 </div>
+							<%-- </c:otherwise> 
+								</c:choose>  --%>
 					       </div>
+					       
 					       <div class="infoTitle">차트 내용<em>*</em></div>
 				        	<div>
 				        		<textarea class="form-input-box" name="content" required="required"></textarea>
 				        	</div>
+				        	
 				        	<div class="infoTitle">기타/전달사항</div>
 				        	<div>
 				        		<textarea class="form-input-box" name="memo"></textarea>
@@ -226,4 +255,89 @@ em {
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
 </body>
+
+<script type="text/javascript">
+	
+	
+	/**
+	* 첨부파일 추가
+	*/
+	var fileNo = 0;
+	var filesArr = new Array();
+	
+ 	function addFile(obj) {
+		var maxFileCnt = 5; //최대 첨부파일 개수
+		var attFileCnt = document.querySelectorAll(".pro-mainimg-div img").length; // 기존 추가된 첨부파일 개수
+		var remainFileCnt = maxFileCnt-attFileCnt; // 추가로 첨부가능한 개수
+		var curFileCnt = obj.files.length; // 현재 첨부된 파일 개수
+		
+		console.log('attFileCnt: ' + attFileCnt + 'remainFileCnt: ' + remainFileCnt);
+		if(curFileCnt > remainFileCnt){
+			alert('최대 첨부파일 수는 '+maxFileCnt+'개 입니다.');
+		}
+		
+		if(attFileCnt+curFileCnt >= maxFileCnt){
+			$('.pro-label-div').css('display', 'none');
+		}else {
+			$('.pro-label-div').css('display', 'inline');
+			
+		}
+		
+		for (var i = 0; i< Math.min(curFileCnt, remainFileCnt); i++){
+			
+			const file = obj.files[i];
+			/* const files = obj.target.files; */
+			
+			// 파일 배열에 담기
+			var reader = new FileReader();
+			reader.onload = function (event) {
+				filesArr.push(file);
+				// 목록 추가
+				let htmlData = '';
+				
+				imgId = 'img'+fileNo;
+				
+				htmlData += `<img src="\${event.target.result}" alt="product-image" style="width: 7rem; height: 7rem" id="\${imgId}" onclick="deleteFile(\${fileNo})"/>`;
+				
+				console.log(htmlData)
+				$('.pro-mainimg-div').css('display', 'inline');
+				$('.pro-mainimg-div').append(htmlData);
+ 				$('.pro-mainimg-div').addClass('pro-thumbnail');
+				fileNo++;
+			};
+			reader.readAsDataURL(file);
+		}
+	} 
+
+	function deleteFile(num){
+		if(confirm('이미지를 삭제하겠습니까?')){
+			
+		document.querySelector("#img"+num).remove();
+		filesArr.splice(num, 1);
+		}
+	}
+	/**
+	 * 썸네일 이미지 삭제
+	 */
+	/* document.querySelector('.pro-thumbnail').addEventListener('click', (e) => {
+		if (e.target.tagName === 'IMG'){ // 클릭된 요소가 이미지 일 떄
+			var imgId = e.target.id; // 클릭된 이미지의 id
+			var fileNoToDelete = parseInt(e.target.getAttribute("data-file-no")); // data-file-no 속성에서 파일 번호 추출
+			
+			$('#' + imgId).remove(); // 클릭한 이미지만 삭제
+			
+			// 파일 배열에서 해당 파일 삭제
+			filesArr.splice(fileNoToDelete, 1);
+			
+			// 이미지 수가 미만이면 .pro-lavel-div 다시 보이기ㅐ
+			if(document.querySelectorAll(".pro-mainimg-div img").length < maxFileCnt){
+				$('.pro-label-div').css('display', 'inline');
+			}
+		}
+		 console.log('썸네일 삭제');
+		$('#main_img').val('');
+	    $('.pro-mainimg-div #img'+fileNo).css('display', 'none');
+	 	$('.pro-label-div').css('display', 'block'); 
+	}); */
+</script>
 </html>

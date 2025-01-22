@@ -31,6 +31,7 @@ public class Appointment {
 	private String item;		// 진료 항목 이름
 	private String status;		// 예약 상태
 	private Date petbirth;		// 생일
+	private String petheight;	// 몸길이
 	private float petweight;	// 몸무게
 	private String petspecial;	// 특이사항
 	private String gender;		// 성별	

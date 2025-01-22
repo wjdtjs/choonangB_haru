@@ -6,7 +6,7 @@
     
 	<select id="HJSelectApointment" parameterType="java.lang.String" resultType="Appointment">
 		SELECT ap.resno, ap.rdate, ap.mcode, ap.ano, ap.reg_date,
-			   ap.memo, ap.start_time, ap.end_time, ap.rstatus_bcd, ap.rstatus_mcd,
+			   ap.memo, ap.start_time, ap.rtime, ap.rstatus_bcd, ap.rstatus_mcd,
 			   ad.aname,
 			   pt.petno, pt.petname, pt.petbirth, pt.petweight, pt.petheight,
 			   mb.memno, mb.mname,
