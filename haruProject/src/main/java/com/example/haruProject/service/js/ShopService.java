@@ -3,6 +3,7 @@ package com.example.haruProject.service.js;
 import java.util.List;
 import java.util.Map;
 
+import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.SearchItem;
 
@@ -19,6 +20,8 @@ public interface ShopService {
 	int getCartCount(int i);
 	int getCDProductCnt(SearchItem si);
 	List<Product> cdProductList(int startRow, int endRow, SearchItem si);
+	List<Board> productReviewList(int startRow, int endRow, int pno);
+	int getProductReviewTotCnt(int pno);
 	
 	
 }

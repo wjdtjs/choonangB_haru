@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.SearchItem;
 
@@ -226,5 +227,41 @@ public class ShopDaoImp implements ShopDao {
 		}
 		
 		return list;
+	}
+
+	/**
+	 * 상품 후기 조회
+	 */
+	@Override
+	public List<Board> productReviewList(int startRow, int endRow, int pno) {
+		List<Board> rList = new ArrayList<>();
+		
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("startRow", startRow);
+		parameterMap.put("endRow", endRow);
+		parameterMap.put("pno", pno);
+		
+		try {
+			rList = session.selectList("JS_ProductReviews", parameterMap);
+		} catch (Exception e) {
+			log.error("productReviewList() query error -> {}", e);
+		}
+		
+		return rList;
+	}
+
+	/**
+	 * 해당 상품 후기 수
+	 */
+	@Override
+	public int getProductReviewTotCnt(int pno) {
+		int count = 0;
+		
+		try {
+			count = session.selectOne("JS_ProductReviesCount", pno);
+		} catch (Exception e) {
+			log.error("getProductReviewTotCnt() query error -> {}", e);
+		}
+		return count;
 	}
 }

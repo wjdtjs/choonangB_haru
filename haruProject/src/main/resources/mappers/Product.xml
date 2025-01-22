@@ -122,6 +122,50 @@
 	<select id="JS_SelectCartCount" parameterType="int" resultType="int">
 		SELECT SUM(SQUANTITY) FROM SHOPPING_CART WHERE MEMNO = #{memno}
 	</select>
+	
+	<select id="JS_ProductReviesCount" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM BOARD 
+		WHERE BSTATUS_MCD = 100
+			AND BOARD_TYPE_MCD = 300
+			AND PNO = #{pno}
+	</select>
+	
+	<!-- 상품 후기 조회 
+		(BSTATUS_MCD = 100: 노출, 
+		 BOARD_TYPE_MCD = 300: 상품후기)
+	-->
+	<select id="JS_ProductReviews" parameterType="Map" resultType="Board">
+		SELECT *
+		FROM (
+			SELECT ROWNUM rn, p.*
+			FROM (
+				SELECT 
+					b.BNO,
+					b.BTITLE,
+					b.BCONTENTS,
+					b.BGROUP,
+					b.BSEQ,
+					b.BLEVEL,
+					b.REG_DATE,
+					b.PNO,
+					b.BIMG,
+					b.BOARD_TYPE_BCD,
+					b.BOARD_TYPE_MCD,
+					b.MEMNO,
+					mask_id(m.MID) as mid
+				FROM BOARD b 
+				INNER JOIN MEMBER m
+					ON b.MEMNO = m.MEMNO
+					AND b.BSTATUS_MCD = 100
+					AND b.BOARD_TYPE_MCD = 300
+					AND b.PNO = #{pno}
+					
+				ORDER BY b.REG_DATE DESC
+			) p
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow} 
+		
+	</select>
 	<!-- End SELECT -->
 	
 	

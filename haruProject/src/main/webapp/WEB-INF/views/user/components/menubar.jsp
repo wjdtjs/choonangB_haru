@@ -11,7 +11,7 @@
 		<!-- 2. 예약 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-calendar-check"></i></span>
 	</a>
-	<a class="menu-icon" id="home" href="/user/main">
+	<a class="menu-icon" id="home" href="/user/index">
 		<!-- 3. 메인 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-house"></i></span>
 	</a>

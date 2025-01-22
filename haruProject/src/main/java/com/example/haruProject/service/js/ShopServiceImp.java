@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.js.ShopDao;
+import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.SearchItem;
 
@@ -165,6 +166,32 @@ public class ShopServiceImp implements ShopService {
 		pList = sd.cdProductList(startRow, endRow, si);
 		
 		return pList;
+	}
+
+
+	/**
+	 * 상품 후기 조회
+	 */
+	@Override
+	public List<Board> productReviewList(int startRow, int endRow, int pno) {
+		log.info("productReviewList() start..");
+		
+		List<Board> rList = new ArrayList<>();
+		rList = sd.productReviewList(startRow, endRow, pno);
+		
+		return rList;
+	}
+
+
+	/**
+	 * 해당 상품후기 전체 수
+	 */
+	@Override
+	public int getProductReviewTotCnt(int pno) {
+		log.info("getProductReviewTotCnt() start..");
+		
+		int count = sd.getProductReviewTotCnt(pno);
+		return count;
 	}
 
 	

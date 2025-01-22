@@ -10,7 +10,7 @@ public class Board {
 	private String btitle;		// 글 제목
 	private String bcontents;	// 글 내용
 	private int bview_count;	// 조회수
-	private String col;			// 이미지
+	private String bimg;			// 이미지
 	
 	private int bgroup;			// 그룹
 	private int bseq;			// 순서
@@ -29,6 +29,7 @@ public class Board {
 	private String pno;			// 상품번호
 	private int memno;			// 작성자
 	private String mname;
+	private String mid;
 	
 	// 조회용
 	private String content;	    // 공통코드 가져올 때

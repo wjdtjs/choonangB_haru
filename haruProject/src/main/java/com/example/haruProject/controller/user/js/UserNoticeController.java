@@ -98,6 +98,7 @@ public class UserNoticeController {
 		
 		int nno = notice.getNno();
 		
+		System.out.println("공지사항 번호 "+nno);
 		//조회수 증가
 		ns.plusViewCount(nno);
 		

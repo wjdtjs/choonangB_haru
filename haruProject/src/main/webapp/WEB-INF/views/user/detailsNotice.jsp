@@ -28,7 +28,8 @@
 				</div>	
 			</div>
 			<div style="margin-top: 1rem">
-				<textarea name="ncontents" class="summernoteTextArea readonly userNoticeSummernote"></textarea>	
+<!-- 				<textarea name="ncontents" class="summernoteTextArea readonly userNoticeSummernote"></textarea>	 -->
+				${notice.ncontents}
 			</div>
 		</div>
 	
@@ -39,13 +40,13 @@
 	<script type="text/javascript">
 	
 		$(()=>{
-			summernoteReadOnly('.userNoticeSummernote', 'notice');
-       		$('.userNoticeSummernote').summernote('disable');
-       		$('.userNoticeSummernote').summernote('code', '${notice.ncontents}' );
+// 			summernoteReadOnly('.userNoticeSummernote', 'notice');
+//        		$('.userNoticeSummernote').summernote('disable');
+//        		$('.userNoticeSummernote').summernote('code', '${notice.ncontents}' );
 		})
 		
 
 	</script>
-	<script src="/js/summernote.js?v=0.05"></script>
+<!-- 	<script src="/js/summernote.js?v=0.05"></script> -->
 </body>
 </html>

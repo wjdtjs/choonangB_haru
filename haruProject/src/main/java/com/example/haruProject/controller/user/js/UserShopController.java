@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.SearchItem;
@@ -24,6 +25,16 @@ public class UserShopController {
 	
 	private final ShopService ss;
 	
+	/**
+	 * 상품 리스트
+	 * @param pageNum
+	 * @param blockSize
+	 * @param bcd
+	 * @param mcd
+	 * @param product
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/user/shop")
 	public String shopView(@RequestParam(value = "pageNum", required = true, defaultValue="1") String pageNum,
 							@RequestParam(value = "blockSize", required = false, defaultValue="10") int blockSize,
@@ -68,6 +79,86 @@ public class UserShopController {
 		model.addAttribute("pagination", pagination);
 		
 		return "user/shop";
+	}
+	
+	
+	/**
+	 * 상품 상세
+	 * @param product
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/user/details-product")
+	public String detailsProductView(@RequestParam(value = "pageNum", required = true, defaultValue="1") String pageNum,
+									@RequestParam(value = "blockSize", required = false, defaultValue="10") int blockSize,
+									Product product, Model model) 
+	{
+		log.info("detailsProductView() start..");
+		
+		//쇼핑카트 담아둔 상품 수
+		int cart_count = ss.getCartCount(1); //TODO: MEMNO 변경해주기
+		
+		int pno = product.getPno(); //상품번호
+		
+		//상품 후기
+		List<Board> reviews = new ArrayList<>();
+		
+		int totalCnt = ss.getProductReviewTotCnt(pno);
+		Pagination pagination = new Pagination(totalCnt, pageNum, blockSize);
+		
+		reviews = ss.productReviewList(pagination.getStartRow(), pagination.getEndRow(), pno);
+		
+		
+		//상품 상세
+		product = ss.getProductDetail(Integer.toString(pno));
+		
+		//프론트에서 노출될 필요 없는 정보들 초기화..(쿼리재사용해서..)
+		product.setPstatus_mcd(0);
+		product.setAno(0);
+		product.setUpdate_date(null);
+		product.setReg_date(null);
+		
+		
+		model.addAttribute("cart_count", cart_count);
+		model.addAttribute("product", product);
+		model.addAttribute("reivew", reviews);
+		model.addAttribute("pagination", pagination);
+		
+		return "user/detailsProduct";
+	}
+	
+	
+	/**
+	 * 상품 리뷰 전체 보기
+	 * @param pageNum
+	 * @param blockSize
+	 * @param board
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/user/shop-reviews")
+	public String getWholeProductReviews(@RequestParam(value = "pageNum", required = true, defaultValue="1") String pageNum,
+										@RequestParam(value = "blockSize", required = false, defaultValue="10") int blockSize,
+										Product product, Model model) 
+	{
+		log.info("getWholeProductReviews() start..");
+		
+		int pno = product.getPno(); //상품번호
+
+		List<Board> reviews = new ArrayList<>();
+		
+		int totalCnt = ss.getProductReviewTotCnt(pno);
+		Pagination pagination = new Pagination(totalCnt, pageNum, blockSize);
+		
+		reviews = ss.productReviewList(pagination.getStartRow(), pagination.getEndRow(), pno);
+		
+		System.out.println("==== "+ reviews);
+		
+		model.addAttribute("pno", pno);
+		model.addAttribute("pagination", pagination);
+		model.addAttribute("review", reviews);
+		
+		return "user/productReview";
 	}
 	
 }

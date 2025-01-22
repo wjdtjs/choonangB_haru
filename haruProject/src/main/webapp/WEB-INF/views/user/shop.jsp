@@ -27,18 +27,18 @@
 		
 		<!-- body contents -->
 		<div class="user-body-container">
-			<div class="user-notice-contianer">
+			<div class="user-product-contianer">
 				
 				<div class="shopping-filter">
 					<div class="shopping-bcd-div">
 						<c:forEach var="bcd" items="${bcdList }">
-							<div class="shopping-filter-bcd ${ cBcd == bcd.BCD ? 'active' : '' }" onclick="location.href='/user/shop?bcd=${bcd.BCD}'">${bcd.CONTENT }</div>
+							<div class="shopping-filter-bcd ${ cBcd == bcd.BCD ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${bcd.BCD}')">${bcd.CONTENT }</div>
 						</c:forEach>					
 					</div>
 					<div class="shopping-mcd-div">
-						<span class="shopping-filter-mcd ${ cMcd == 999 ? 'active' : '' }" onclick="location.href='/user/shop?bcd=${cBcd}&mcd=999'">전체</span>
+						<span class="shopping-filter-mcd ${ cMcd == 999 ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${cBcd}&mcd=999')">전체</span>
 						<c:forEach var="mcd" items="${mcdList }">
-							<span class="shopping-filter-mcd ${ cMcd == mcd.MCD ? 'active' : '' }" onclick="location.href='/user/shop?bcd=${cBcd}&mcd=${mcd.MCD}'">${mcd.CONTENT}</span>
+							<span class="shopping-filter-mcd ${ cMcd == mcd.MCD ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${cBcd}&mcd=${mcd.MCD}')">${mcd.CONTENT}</span>
 						</c:forEach>
 					</div>
 				</div>
@@ -58,10 +58,10 @@
 											<div class="product-thumbnail-div"></div>
 										</c:otherwise>
 									</c:choose>
-									<div class="product-info-desc">
-										<div><c:if test="${pl.pquantity eq 0 }"><span style="color: red">[품절]</span></c:if> ${pl.pbrand }</div>
-										<div>${pl.pname }</div>
-										<div style="${pl.pquantity eq 0 ? 'text-decoration: line-through':''}"> <fmt:formatNumber value="${pl.pprice }" pattern="#,###" />원</div>
+									<div class="product-info-desc" style="margin-top: 1rem;">
+										<div class="js-pbrand"><c:if test="${pl.pquantity eq 0 }"><span style="color: red">[품절]</span></c:if> ${pl.pbrand }</div>
+										<div class="js-pname">${pl.pname }</div>
+										<div class="js-pprice" style="${pl.pquantity eq 0 ? 'text-decoration: line-through':''}"> <fmt:formatNumber value="${pl.pprice }" pattern="#,###" />원</div>
 									</div>
 								</div>
 							</c:forEach>
@@ -72,7 +72,23 @@
 					</c:otherwise>
 				</c:choose>
 					
-				
+				<div class="js-pl-pagination">
+					<c:if test="${pagination.startPage > pagination.blockSize }">
+						<i class="haru-pagearrow fa-solid fa-chevron-left" 
+							onclick="location.replace('/user/shop?pageNum=${pagination.startPage-pagination.blockSize}&bcd=${cBcd}&mcd=${cMcd}')">
+						</i>
+					</c:if>
+					
+					<c:forEach var="i" begin="${pagination.startPage }" end="${pagination.endPage }">
+						<div class="haru-pagenum" id="pageNum${i}" onclick="location.replace('/user/shop?pageNum=${i}&bcd=${cBcd}&mcd=${cMcd}')">${i }</div>
+					</c:forEach>
+					
+					<c:if test="${pagination.endPage < pagination.pageCnt }">
+						<i class="haru-pagearrow fa-solid fa-chevron-right" 
+							onclick="location.replace('/user/shop?pageNum=${pagination.startPage+pagination.blockSize}&bcd=${cBcd}&mcd=${cMcd}')">
+						</i>
+					</c:if>
+				</div>
 				
 			</div>
 		</div>
@@ -84,7 +100,7 @@
 	<script type="text/javascript">
 	
 		$(()=>{
-
+			$('#pageNum${pagination.currentPage}.haru-pagenum').addClass('active');
 		})
 		
 		
@@ -95,7 +111,7 @@
 		function goDetail(pno) {
 			console.log(pno);
 			
-// 			location.href="/user/details-shop?pno="+pno;
+			location.href="/user/details-product?pno="+pno;
 		}
 		
 		
