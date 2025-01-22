@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.haruProject.dto.Appointment;
@@ -101,6 +103,8 @@ public class AppointmentController {
 		appointment_d = as.appointmentDetail(resno);
 		System.out.println("AppointmentController detailAppointment() appointment_d ->"+appointment_d);
 		System.out.println("AppointmentController detailAppointment() appointment_d.status ->"+appointment_d.getStatus());
+		System.out.println("AppointmentController detailAppointment() appointment_d.resno ->"+appointment_d.getResno());
+		System.out.println("AppointmentController detailAppointment() appointment_d.cresno ->"+appointment_d.getCresno());
 		
 		String startTime = String.valueOf(appointment_d.getStart_time());
         if (startTime.length() == 4) { // 1530 -> 15:30
@@ -111,6 +115,35 @@ public class AppointmentController {
 		
 		return "admin/reservation_detail";
 	}
+	
+	/**
+	 * 예약 상세 수정
+	 * - 예약 대기 : 예약 확정, 예약 취소
+	 * - 예약 확정 : 예약 변경, 예약 취소, 진료 완료
+	 */
+	
+	@RequestMapping("/admin/updateReservation")
+	public String updateReservation(@RequestParam("resno") String resno,
+									 @RequestParam("rtime") int rtime,
+									 @RequestParam("memo") String memo,
+									 @RequestParam("status") int status,	// 변경할 상태 번호
+									 Model model
+									 ) {
+		System.out.println("AppointmentController confirmReservation() start ,,,");
+		System.out.println("AppointmentController confirmReservation() resno ->"+resno);
+		System.out.println("AppointmentController confirmReservation() rtime ->"+rtime);
+		System.out.println("AppointmentController confirmReservation() memo ->"+memo);
+		System.out.println("AppointmentController confirmReservation() status ->"+status);		
+		
+		int result = as.updateReservation(resno, rtime, memo, status);
+		System.out.println("AppointmentController confirmReservation() result ->"+result);
+		
+		return "redirect:/admin/reservation";
+		
+	}
+
+	
+	
 	
 	
 	/**
@@ -123,6 +156,10 @@ public class AppointmentController {
 								@RequestParam(value = "pageNum", required = false, defaultValue = "1") String pageNum,
 								@RequestParam(value = "blockSize", required = false, defaultValue="10") String blockSize,
 								@RequestParam(value = "type4", required = false, defaultValue = "0") int type4,
+								@RequestParam(value = "search1", required = false, defaultValue = "") String search1,
+								@RequestParam(value = "type5", required = true, defaultValue = "100") int type5,
+								@RequestParam(value = "start_date", required = false, defaultValue="") String start_date,
+								@RequestParam(value = "end_date", required = false, defaultValue = "") String end_date,
 								Model model
 								  )
 	{
@@ -131,23 +168,35 @@ public class AppointmentController {
 		System.out.println("pagenNum ->"+pageNum);
 		System.out.println("blockSize ->"+blockSize);
 		System.out.println("type4 ->"+type4);
+		System.out.println("search1 ->"+search1);
+		System.out.println("type5 ->"+type5);
+		System.out.println("start_date ->"+start_date);
+		System.out.println("end_date ->"+end_date);
 		
 		List<Appointment> cList = new ArrayList<>();
 		
-		SearchItem si = new SearchItem(type4);
+		SearchItem si = new SearchItem(type4, type5, search1, start_date, end_date);
 		
 		int totalCnt = as.getTotalCntChart(si);
 		
 		Pagination pagination = new Pagination(totalCnt, pageNum, Integer.parseInt(blockSize));
 		
-		cList = as.consultationListChart(pagination.getStartRow(), pagination.getEndRow(), type4);
+		cList = as.consultationListChart(pagination.getStartRow(), pagination.getEndRow(), si);
 		
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("cList", cList);
 		model.addAttribute("type4", type4);
+		model.addAttribute("search1", search1);
+		model.addAttribute("type5", type5);
+		model.addAttribute("start_date", start_date);
+		model.addAttribute("end_date", end_date);
 		
 		System.out.println(cList);
 		System.out.println("type4 ->"+type4);
+		System.out.println("search1 ->"+search1);
+		System.out.println("type5 ->"+type5);
+		System.out.println("start_date ->"+start_date);
+		System.out.println("end_date ->"+end_date);
 		
 		return "admin/consultation";
 	}

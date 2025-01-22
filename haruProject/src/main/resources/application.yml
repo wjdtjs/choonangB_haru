@@ -36,8 +36,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: #@gmail.com
-    password: 
+    username: 0808hr@gmail.com
+    password: qgwj oysv yspp igbr
     properties:
       mail:
         smtp:
@@ -48,4 +48,3 @@ spring:
 mybatis:
   config-location: classpath:configuration.xml
   mapper-locations: classpath:mappers/*.xml
-  

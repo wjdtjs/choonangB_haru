@@ -16,29 +16,23 @@
 		    JOIN COMMON c ON c.BCD = a.RSTATUS_BCD and c.MCD = a.RSTATUS_MCD
 		    JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD
 		    	    
-		    <where>
-		        <if test="type4 != null and type4 != 0">
-		            a.rstatus_mcd = #{type4}
-		        </if>
-		        <if test="type4 == null or type4 == 0">
-		            a.rstatus_bcd = 800
-		        </if>
-		        <if test="type5 != null and type5 != 0 and search1 != null and search1 != ''">
-		            <choose>
-		                <when test="type5 == 100">AND a.RESNO LIKE '%' || #{search1} || '%'</when>
-		                <when test="type5 == 200">AND m.MNAME LIKE '%' || #{search1} || '%'</when>
-		                <when test="type5 == 300">AND p.PETNAME LIKE '%' || #{search1} || '%'</when>
-		                <when test="type5 == 400">AND d.ANAME LIKE '%' || #{search1} || '%'</when>
-		                <when test="type5 == 500">AND cm.CONTENT LIKE '%' || #{search1} || '%'</when>
-		            </choose>
-		        </if>
-		        <if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
-		            AND a.rdate BETWEEN TO_DATE(#{start_date}, 'yyyy-mm-dd') 
-		                            AND TO_DATE(#{end_date}, 'yyyy-mm-dd')
-		        </if>
-		    </where>       
-
-
+		WHERE 1=1
+			<if test="type4 != null and type4 != 0">
+				AND a.rstatus_mcd = #{type4}
+			</if>
+			<if test="type5 != null and type5 != 0 and search1 != null and search1 != ''">
+				<choose>
+		            <when test="type5 == 100">AND a.RESNO LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 200">AND m.MNAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 300">AND p.PETNAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 400">AND d.ANAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 500">AND cm.CONTENT LIKE '%' || #{search1} || '%'</when>
+		        </choose>
+			</if>
+		    <if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
+		    	AND a.rdate BETWEEN TO_DATE(#{start_date}, 'yyyy-mm-dd') 
+		                    AND TO_DATE(#{end_date}, 'yyyy-mm-dd')
+		    </if>
 	</select>
 	 
 	<!-- 예약 목록 가져오기 -->
@@ -47,7 +41,8 @@
 		FROM (
 		    SELECT ROWNUM rn, aa.*
 		    FROM (
-		        SELECT a.RESNO, a.RDATE, m.MNAME, p.PETNAME, d.ANAME, c2.CONTENT as item, c1.CONTENT as status, a.rstatus_mcd, c3.CONTENT as species, c4.CONTENT as gender, a.start_time
+		        SELECT a.RESNO, a.RDATE, m.MNAME, p.PETNAME, d.ANAME, c2.CONTENT as item, c1.CONTENT as status, a.rstatus_mcd
+		        		, c3.CONTENT as species, c4.CONTENT as gender, a.start_time
 		        FROM APPOINTMENT a 
 		            JOIN MEMBER m ON a.MEMNO = m.MEMNO
 		            JOIN PET p ON a.PETNO = p.PETNO
@@ -58,27 +53,23 @@
 		            JOIN COMMON c3 ON c3.BCD = p.PETSPECIES_BCD and c3.MCD = p.PETSPECIES_MCD	<!-- 종 -->
 		            JOIN COMMON c4 ON c4.BCD = p.PETGENDER_BCD and c4.MCD = p.PETGENDER_MCD		<!-- 성별 -->
 		           
-		           	<where>
-				        <if test="type4 != null and type4 != 0">
-				            a.rstatus_mcd = #{type4}
-				        </if>
-				        <if test="type4 == null or type4 == 0">
-				            a.rstatus_bcd = 800
-				        </if>
-				        <if test="type5 != null and type5 != 0 and search1 != null and search1 != ''">
-				            <choose>
-				                <when test="type5 == 100">AND a.RESNO LIKE '%' || #{search1} || '%'</when>
-				                <when test="type5 == 200">AND m.MNAME LIKE '%' || #{search1} || '%'</when>
-				                <when test="type5 == 300">AND p.PETNAME LIKE '%' || #{search1} || '%'</when>
-				                <when test="type5 == 400">AND d.ANAME LIKE '%' || #{search1} || '%'</when>
-				                <when test="type5 == 500">AND cm.CONTENT LIKE '%' || #{search1} || '%'</when>
-				            </choose>
-				        </if>
-				        <if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
-				            AND a.rdate BETWEEN TO_DATE(#{start_date}, 'yyyy-mm-dd') 
-				                            AND TO_DATE(#{end_date}, 'yyyy-mm-dd')
-				        </if>
-				    </where>         
+		       	WHERE 1=1
+				<if test="si.type4 != null and si.type4 != 0">
+					AND a.rstatus_mcd = #{si.type4}
+				</if>
+				<if test="(si.type5 != null and si.type5 != 0) and (si.search1 != null and si.search1 != '')">
+					<choose>
+			            <when test="si.type5 == 100">AND a.RESNO LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 200">AND m.MNAME LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 300">AND p.PETNAME LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 400">AND d.ANAME LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 500">AND c2.CONTENT LIKE '%' || #{si.search1} || '%'</when>
+			        </choose>
+				</if>
+			    <if test="si.start_date != null and si.start_date != '' and si.end_date != null and si.end_date != ''">
+			    	AND a.rdate BETWEEN TO_DATE(#{si.start_date}, 'yyyy-mm-dd') 
+			                    AND TO_DATE(#{si.end_date}, 'yyyy-mm-dd')
+			    </if>      
 				ORDER BY a.REG_DATE desc
 		    )aa
 		)
@@ -88,7 +79,7 @@
 	<!-- 예약 상세 -->
 	<select id="HR_SelectAppointmentDetail" parameterType="String" resultType="Appointment">
 		SELECT a.resno, a.rdate, c1.content as item, d.aname, m.mname, p.petno, p.petname, c2.content as species, c3.content as gender, p.petweight
-				, c4.content as status, a.memo, a.rstatus_mcd, a.start_time, a.rtime, ch.resno as cresno
+				, c4.content as status, a.memo, a.rstatus_mcd, a.start_time, a.rtime, ch.resno as cresno, m.memail
 		FROM APPOINTMENT a
 		    JOIN ADMIN d ON a.ano = d.ano
 		    JOIN MEMBER m ON a.memno = m.memno
@@ -105,23 +96,49 @@
 	
 	
 	
+	
+	<!-- 예약 수정 -->
+	<update id="HR_UpdateReservation" parameterType="Map">
+		UPDATE appointment SET rtime = #{rtime}, memo = #{memo}, rstatus_mcd = #{status}
+		WHERE resno = #{resno}
+	</update>
+	
+	
+	
 	<!-- 전체 진료 수 조회 -->
 	<select id="HR_SelectTotalConsultationCnt" parameterType="SearchItem" resultType="int">
 		SELECT COUNT(*)
 		FROM appointment a
 			LEFT OUTER JOIN CHART ch ON a.RESNO = ch.RESNO
+			JOIN MEMBER m ON a.MEMNO = m.MEMNO
+		    JOIN PET p ON a.PETNO = p.PETNO
+		    JOIN ADMIN d ON a.ANO = d.ANO
+			JOIN COMMON c ON c.BCD = t.MTITLE_BCD and c.MCD = t.MTITLE_MCD
 		WHERE  a.rstatus_mcd = 400
-		<if test="(type4 != null and type4 != 0)">
-			 <choose>
-			 	<when test="type4 == 100">
-			 		AND a.resno = ch.resno
-			 		
-			 	</when>
-			 	<when test="type4 == 200">
-			 		AND ch.resno IS NULL
-			 	</when>
-			 </choose>
-		</if>
+			<if test="(type4 != null and type4 != 0)">
+				 <choose>
+				 	<when test="type4 == 100">
+				 		AND a.resno = ch.resno
+				 		
+				 	</when>
+				 	<when test="type4 == 200">
+				 		AND ch.resno IS NULL
+				 	</when>
+				 </choose>
+			</if>
+			<if test="type5 != null and type5 != 0 and search1 != null and search1 != ''">
+				<choose>
+		            <when test="type5 == 100">AND a.RESNO LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 200">AND m.MNAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 300">AND p.PETNAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 400">AND d.ANAME LIKE '%' || #{search1} || '%'</when>
+		            <when test="type5 == 500">AND c.CONTENT LIKE '%' || #{search1} || '%'</when>
+		        </choose>
+			</if>
+		    <if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
+		    	AND a.rdate BETWEEN TO_DATE(#{start_date}, 'yyyy-mm-dd') 
+		                    AND TO_DATE(#{end_date}, 'yyyy-mm-dd')
+		    </if>
 	</select>
 	
 	
@@ -144,20 +161,36 @@
                     -- 차트 존재 여부 확인
                     LEFT OUTER JOIN CHART ch ON a.RESNO = ch.RESNO
                 WHERE a.RSTATUS_MCD = 400
-                <if test="(type4 != null and type4 != 0)">
+                <if test="(si.type4 != null and si.type4 != 0)">
 					 <choose>
-					 	<when test="type4 == 100">
+					 	<when test="si.type4 == 100">
 					 		AND ch.resno IS NOT NULL
 					 	</when>
-					 	<when test="type4 == 200">
+					 	<when test="si.type4 == 200">
 					 		AND ch.resno IS NULL
 					 	</when>
 					 </choose>
 				</if>
+				<if test="(si.type5 != null and si.type5 != 0) and (si.search1 != null and si.search1 != '')">
+					<choose>
+			            <when test="si.type5 == 100">AND a.RESNO LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 200">AND m.MNAME LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 300">AND p.PETNAME LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 400">AND ad.ANAME LIKE '%' || #{si.search1} || '%'</when>
+			            <when test="si.type5 == 500">AND cm2.CONTENT LIKE '%' || #{si.search1} || '%'</when>
+			        </choose>
+				</if>
+			    <if test="si.start_date != null and si.start_date != '' and si.end_date != null and si.end_date != ''">
+			    	AND a.rdate BETWEEN TO_DATE(#{si.start_date}, 'yyyy-mm-dd') 
+			                    AND TO_DATE(#{si.end_date}, 'yyyy-mm-dd')
+			    </if>      
+				
                 ORDER BY a.RDATE DESC, a.START_TIME DESC
 		    )cc
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow} 
 	</select>
+	
+
 
 </mapper>

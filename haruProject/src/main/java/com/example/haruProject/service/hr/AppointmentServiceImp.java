@@ -52,6 +52,22 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return appointment_d;
 	}
+	
+	// 예약 수정
+	@Override
+	public int updateReservation(String resno, int rtime, String memo, int status) {
+		System.out.println("AppointmentServiceImp updateReservation() start ,,,");
+		System.out.println("AppointmentServiceImp updateReservation() resno ->"+resno);
+		System.out.println("AppointmentServiceImp updateReservation() rtime ->"+rtime);
+		System.out.println("AppointmentServiceImp updateReservation() memo ->"+memo);
+		System.out.println("AppointmentServiceImp updateReservation() status ->"+status);
+		
+		int result = ad.updateReservation(resno, rtime, memo, status);
+		
+		return result;
+	}
+
+
 
 	
 
@@ -67,16 +83,16 @@ public class AppointmentServiceImp implements AppointmentService {
 	}
 
 	@Override
-	public List<Appointment> consultationListChart(int startRow, int endRow, int type4) {
+	public List<Appointment> consultationListChart(int startRow, int endRow, SearchItem si) {
 		System.out.println("AppointmentServiceImp consultationListChart() start ,,,");
+		System.out.println("AppointmentServiceImp consultationListChart() si ->"+si);
 		
 		List<Appointment> cList = new ArrayList<>();
 		
-		cList = ad.consultationListChart(startRow, endRow, type4);
+		cList = ad.consultationListChart(startRow, endRow, si);
 		
 		return cList;
 	}
-
 
 
 }

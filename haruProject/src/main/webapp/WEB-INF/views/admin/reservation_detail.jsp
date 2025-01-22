@@ -42,7 +42,6 @@ table#hr-table-appo-modal-data {
     width: 80%;
 }
 
-
 /* 버튼*/
 .modal_l_content button {
 	border-radius: 5px;
@@ -174,6 +173,133 @@ button#res_change, #res_cancel, #res_del {
 
 </style>
 
+<script type="text/javascript">
+
+	/* 확정 */
+	$(document).ready(function () {
+		$('#res_confirm').click(function() {
+				console.log("버튼 클릭 이벤트 시작"); 
+			if(confirm("예약 확정 메일을 전송하시겠습니까?")==true) {
+				// 입력 필드 가져오기
+	            const rtimeField = document.querySelector('input[name="rtime"]'); // 단일 요소 선택
+	            if (!rtimeField) {
+	                alert("진료 소요 시간을 입력 필드를 찾을 수 없습니다.");
+	                return;
+	            }
+	            // 필수 속성 추가
+	            rtimeField.setAttribute('required', true);
+
+	            // 값 검증
+	            if (!rtimeField.value) {
+	                alert("진료 소요 시간을 입력해주세요.");
+	                return; // 검증 실패 시 종료
+	            } else if (parseInt(rtimeField.value) <= 0) {
+	                alert("0 이하의 값은 입력할 수 없습니다.");
+	                rtimeField.value = ""; // 값을 초기화
+	                return; // 검증 실패 시 종료
+	            }
+				
+				// 메일 보내기
+				const memail = '${appointment_d.memail}';
+				const date = '${appointment_d.rdate}';
+				const time = '${appointment_d.start_time}';
+				const rtime = document.querySelector('input[name="rtime"]').value;
+				console.log("memail: "+memail+", date: "+date+", time: "+time+", rtime: "+rtime);
+				location.href="/mail/confirmSend?memail="+memail+"&date="+date+"&time="+time+"&rtime="+rtime;
+				
+				// 상태 변경
+				var sendData = $('form').serialize();
+				sendData = sendData + ('&status='+200);
+				alert('sendData : '+sendData);
+	            location.href = "/admin/updateReservation?" + sendData; // GET 요청
+				
+			};
+		});
+	});
+	/* 취소 */
+	$('#res_cancel').click(function() {
+		if(confirm(mail+"의 예약 취소 메일을 전송하시겠습니까?")==true) {
+			// 메일 보내기
+			
+			// 상태 변경
+			var sendData = $('form').serialize();
+			sendData = sendData + ('&status='+300);
+			alert('sendData : '+sendData);
+            location.href = "/admin/updateReservation?" + sendData; // GET 요청
+		};
+	})
+	
+	/* confirm에서 확인을 누르면 메일전송, 상태변경, 창 닫기 */
+	
+	// 예약 확정 > 예약 취소
+	$(function() {
+		$('#res_del').click(function() {
+			if(confirm("'예약 취소' 하시겠습니까?")==true) {
+				// 폼 데이터 직렬화
+	            var sendData = $('form').serialize();
+	            sendData = sendData + ('&status=' + 300);
+	            alert('sendData : ' + sendData);
+
+	            // 예약 변경 요청
+	            location.href = "/admin/updateReservation?" + sendData; // GET 요청
+			}
+		})
+	})
+	
+	// 예약 확정 > 예약 변경
+	$(function() {
+    $('#res_change').click(function() {
+        if (confirm("예약 내용을 변경 하시겠습니까?") == true) {
+            // 입력 필드 가져오기
+            const rtimeField = document.querySelector('input[name="rtime"]'); // 단일 요소 선택
+            if (!rtimeField) {
+                alert("진료 소요 시간을 입력 필드를 찾을 수 없습니다.");
+                return;
+            }
+            // 필수 속성 추가
+            rtimeField.setAttribute('required', true);
+
+            // 값 검증
+            if (!rtimeField.value) {
+                alert("진료 소요 시간을 입력해주세요.");
+                return; // 검증 실패 시 종료
+            } else if (parseInt(rtimeField.value) <= 0) {
+                alert("0 이하의 값은 입력할 수 없습니다.");
+                rtimeField.value = ""; // 값을 초기화
+                return; // 검증 실패 시 종료
+            }
+
+            // 폼 데이터 직렬화
+            var sendData = $('form').serialize();
+            sendData = sendData + ('&status=' + 200);
+            alert('sendData : ' + sendData);
+
+            // 예약 변경 요청
+            location.href = "/admin/updateReservation?" + sendData; // GET 요청
+        }
+    });
+});
+
+	
+	// 예약 확정 > 진료 완료
+	$(function() {
+		$('#res_complete').click(function() {
+			if(confirm("'진료 완료' 하시겠습니까?")==true) {
+				// 폼 데이터 직렬화
+	            var sendData = $('form').serialize();
+	            sendData = sendData + ('&status=' + 400);
+	            alert('sendData : ' + sendData);
+
+	            // 예약 변경 요청
+	            location.href = "/admin/updateReservation?" + sendData; // GET 요청
+			}
+		})
+	})
+	
+	
+
+</script>
+
 
 
 <body>
@@ -213,109 +339,115 @@ button#res_change, #res_cancel, #res_del {
 						        	<button id="res_status">${appointment_d.status }</button>	                        	
 	                        	</div>
 					        		
-					        		<!-- 내용 -->
-							        <div class="hr-table-appo-modal">
-							        	<table id="hr-table-appo-modal-data">
-							        		<colgroup>
-							        			<col width="10%">
-							        			<col width="25%">
-							        			<col width="15%">
-							        			<col width="25%">
-							        		</colgroup>
-							        			<tr>
-							        				<th>예약 번호</th>
-							        				<td>${appointment_d.resno }</td>
-							        			</tr>
-							        			<tr>
-							        				<th>예약 일시</th>
-							        				<td><fmt:formatDate value="${appointment_d.rdate}" pattern="yyyy-MM-dd"/>&nbsp; ${appointment_d.start_time }</td>
-							        				<th>진료 소요 시간(분)</th>
-							        				<td>
-							        					<div>
-							        						<input id="medical-time" type="number" step="30" value="${appointment_d.rtime}">
-								        						<!-- <select id="medical-time">
-										                    		<option value="1">30분</option>
-																	<option value="2">60분</option>
-																	<option value="3">90분</option>
-																	<option value="4">120분</option>
-										                    	</select> -->
-									                       	
-									                    </div>
-									                </td>
-							        			</tr>
-							        			<tr>
-							        				<th><div id="hr-table-empty"></div></th>
-							        			</tr>
-							        			<tr>
-							        				<th>진료 과목</th>
-							        				<td>${appointment_d.item }</td>
-							        			</tr>
-							        			
-							        			<tr>
-							        				<th>담당의</th>
-							        				<td>${appointment_d.aname }</td>
-							        			</tr>
-							        			<tr>
-							        				<th><div id="hr-table-empty"></div></th>
-							        			</tr>
-							        			
-							        			<tr>
-							        				<th>보호자</th>
-							        				<td>${appointment_d.mname }</td>
-							        			</tr>
-							
-							
-							
-							        	</table>
-							        </div>
+					        		<form action="updateReservation" method="POST">
+						        		<!-- 내용 -->
+								        <div class="hr-table-appo-modal">
+								        	<table id="hr-table-appo-modal-data">
+								        		<colgroup>
+								        			<col width="10%">
+								        			<col width="25%">
+								        			<col width="15%">
+								        			<col width="25%">
+								        		</colgroup>
+								        			<tr>
+								        				<th>예약 번호</th>
+								        				<td><input style="border:none" name="resno" type="text" value="${appointment_d.resno }"></td>
+								        			</tr>
+								        			<tr>
+								        				<th>예약 일시</th>
+								        				<td><fmt:formatDate value="${appointment_d.rdate}" pattern="yyyy-MM-dd"/>&nbsp; ${appointment_d.start_time }</td>
+								        				<th>진료 소요 시간(분)</th>
+								        				<td>
+								        					<div>
+								        						<c:if test="${appointment_d.rstatus_mcd eq 100 or appointment_d.rstatus_mcd eq 200 }">
+								        							<input name="rtime" id="medical-time" type="number" step="30" value="${appointment_d.rtime}">							        						
+								        						</c:if>
+								        						<c:if test="${appointment_d.rstatus_mcd eq 300 or appointment_d.rstatus_mcd eq 400 }">
+								        							<input id="medical-time" type="number" step="30" value="${appointment_d.rtime}" readonly>							        						
+								        						</c:if>
+										                    </div>
+										                </td>
+								        			</tr>
+								        			<tr>
+								        				<th><div id="hr-table-empty"></div></th>
+								        			</tr>
+								        			<tr>
+								        				<th>진료 과목</th>
+								        				<td>${appointment_d.item }</td>
+								        			</tr>
+								        			
+								        			<tr>
+								        				<th>담당의</th>
+								        				<td>${appointment_d.aname }</td>
+								        			</tr>
+								        			<tr>
+								        				<th><div id="hr-table-empty"></div></th>
+								        			</tr>
+								        			
+								        			<tr>
+								        				<th>보호자</th>
+								        				<td>${appointment_d.mname }</td>
+								        			</tr>
+								
+								
+								
+								        	</table>
+								        </div>
+								        
+								        <p class="res_detail_p">동물 정보</p>
+								        <div class="hr-appo-table">
+								        	<table id="hr-appo-table-data" width="100%" cellspacing="0">
+								        			
+								        			<tr>
+								        				<td>${appointment_d.petno }</td>
+								        				<td>${appointment_d.petname }</td>
+								        				<td>${appointment_d.species }&nbsp;/&nbsp;${appointment_d.gender }</td>
+								        				<td>${appointment_d.petweight }</td>
+								        			</tr>
+								        	</table>
+								        </div>
 							        
-							        <p class="res_detail_p">동물 정보</p>
-							        <div class="hr-appo-table">
-							        	<table id="hr-appo-table-data" width="100%" cellspacing="0">
-							        			
-							        			<tr>
-							        				<td>${appointment_d.petno }</td>
-							        				<td>${appointment_d.petname }</td>
-							        				<td>${appointment_d.species }&nbsp;/&nbsp;${appointment_d.gender }</td>
-							        				<td>${appointment_d.petweight }</td>
-							        			</tr>
-							        	</table>
-							        </div>
-						        
-							        <p class="res_detail_p">예약 메모</p>
-							        <div style="margin-top: 1rem">
-										<div>
-											<textarea class="res_memo">${appointment_d.memo}</textarea>
-										</div>
-					        		</div>
+								        <p class="res_detail_p">예약 메모</p>
+								        <div style="margin-top: 1rem">
+											<div>
+												<c:if test="${appointment_d.rstatus_mcd eq 100 or appointment_d.rstatus_mcd eq 200 }">
+								        			<textarea name="memo" class="res_memo">${appointment_d.memo}</textarea>
+								        		</c:if>
+								        		<c:if test="${appointment_d.rstatus_mcd eq 300 or appointment_d.rstatus_mcd eq 400 }">
+								        			<textarea class="res_memo" readonly>${appointment_d.memo}</textarea>						        						
+								        		</c:if>
+												
+											</div>
+						        		</div>					        		
 						        
 	                        	
 	                        	
 	                        	
-	                        	<!-- 모달 버튼 -->			        
-						        <div class="modal_l-content-btn">
-						        	<c:choose>
-						        		<c:when test="${appointment_d.rstatus_mcd eq 100 }">
-							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
-								        	<button type="button" class="update_btn2" id="res_cancel" >예약 거절</button>
-								        	<button type="button" class="update_btn" id="res_confirm">예약 확정</button>
-						        		</c:when>
-						        		<c:when test="${appointment_d.rstatus_mcd eq 200 }">
-							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
-							        		<button type="button" class="update_btn" id="res_del">예약 취소</button>
-								        	<button type="button" class="update_btn2" id="res_change" >예약 변경</button>
-								        	<button type="button" class="update_btn" id="res_complete">진료 완료</button>
-						        		</c:when>
-						        		<c:when test="${appointment_d.rstatus_mcd eq 300 or appointment_d.rstatus_mcd eq 400}">
-							        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
-							        		<!-- 차트에 아직 작성되지 않은 상태면 목록으로만, 차트도 작성됐으면 차트보기 버튼 생성 -->
-							        		<c:if test="${appointment_d.cresno eq appointment_d.resno }">
-							        			<button type="button" id="res_to_chart" class="res_modal" onclick="location.href='/admin/chart'">차트보기</button>							        		
-							        		</c:if>
-						        		</c:when>
-						        	</c:choose>							        		        	
-						        </div>
+			                        	<!-- 모달 버튼 -->			        
+								        <div class="modal_l-content-btn">
+								        	<c:choose>
+								        		<c:when test="${appointment_d.rstatus_mcd eq 100 }">
+									        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+										        	<button type="button" class="update_btn2" id="res_cancel" >예약 거절</button>
+										        	<button type="button" class="update_btn" id="res_confirm">예약 확정</button>
+								        		</c:when>
+								        		<c:when test="${appointment_d.rstatus_mcd eq 200 }">
+									        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+									        		<button type="button" class="update_btn" id="res_del">예약 취소</button>
+										        	<button type="button" class="update_btn2" id="res_change" >예약 변경</button>
+										        	<button type="button" class="update_btn" id="res_complete">진료 완료</button>
+								        		</c:when>
+								        		<c:when test="${appointment_d.rstatus_mcd eq 300 or appointment_d.rstatus_mcd eq 400}">
+									        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
+									        		<!-- 차트에 아직 작성되지 않은 상태면 목록으로만, 차트도 작성됐으면 차트보기 버튼 생성 -->
+									        		<c:if test="${appointment_d.cresno eq appointment_d.resno }">
+									        			<button type="button" id="res_to_chart" class="res_modal" onclick="location.href='/admin/consultation'">차트보기</button>							        		
+									        		</c:if>
+								        		</c:when>
+								        	</c:choose>							        		        	
+								        </div>
 				                        	
+					        		</form>
 	                        </div>
 	                                       	
 	                        	
@@ -348,29 +480,6 @@ button#res_change, #res_cancel, #res_del {
     <!-- Logout Modal-->
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
-    
-    <script type="text/javascript">
-	/* 메일 보내기 */
-	const name = '';
-	const date = '';
-	const time = '';
-	const mail = 'mail 내용\n';
-	
-	/* 확정 */
-	$('#res_confirm').click(function() {
-		if(confirm(mail+"의 예약 확정 메일을 전송하시겠습니까?")==true) {
-			// 메일 보내기
-		};
-	})
-	/* 취소 */
-	$('#res_cancel').click(function() {
-		if(confirm(mail+"의 예약 취소 메일을 전송하시겠습니까?")==true) {
-			// 메일 보내기
-		};
-	})
-	
-	/* confirm에서 확인을 누르면 메일전송, 상태변경, 모달창 닫기 */
-	</script>
 
 </body>
 </html>

@@ -51,6 +51,7 @@ public class AppointmentDaoImp implements AppointmentDao {
 		aMap.put("si", si);
 		
 		try {
+			System.out.println("aMap ->"+aMap);
 			alist = session.selectList("HR_SelectAppointmentList", aMap);
 			System.out.println("alist ->"+alist);
 		} catch (Exception e) {
@@ -76,6 +77,32 @@ public class AppointmentDaoImp implements AppointmentDao {
 		
 		return appointment_d;
 	}
+	
+	// 예약 수정하기
+	@Override
+	public int updateReservation(String resno, int rtime, String memo, int status) {
+		System.out.println("AppointmentDaoImp updateReservation() start ,,,");
+		System.out.println("AppointmentDaoImp updateReservation() resno ->"+resno);
+		System.out.println("AppointmentDaoImp updateReservation() rtime ->"+rtime);
+		System.out.println("AppointmentDaoImp updateReservation() memo ->"+memo);
+		System.out.println("AppointmentDaoImp updateReservation() status ->"+status);
+		
+		Map<String, Object> rMap = new HashMap<>();
+		rMap.put("resno", resno);
+		rMap.put("rtime", rtime);
+		rMap.put("memo", memo);
+		rMap.put("status", status);
+		
+		int result = 0;
+		
+		try {
+			result = session.update("HR_UpdateReservation", rMap);
+		} catch (Exception e) {
+			log.error("updateReservation() error ->", e);
+		}
+		
+		return result;
+	}
 
 
 	
@@ -99,15 +126,15 @@ public class AppointmentDaoImp implements AppointmentDao {
 
 	// 진료 목록 가져오기 (페이지네이션)
 	@Override
-	public List<Appointment> consultationListChart(int startRow, int endRow, int type4) {
+	public List<Appointment> consultationListChart(int startRow, int endRow, SearchItem si) {
 		System.out.println("AppointmentDaoImp consultationListChart() start ,,,");
-		System.out.println("AppointmentDaoImp getTotalCntChart() type4 ->"+type4);
+		System.out.println("AppointmentDaoImp getTotalCntChart() si ->"+si);
 		List<Appointment> clist = new ArrayList<>();
 		
 		Map<String, Object> cMap = new HashMap<>();
 		cMap.put("startRow", startRow);
 		cMap.put("endRow", endRow);
-		cMap.put("type4", type4);
+		cMap.put("si", si);
 		
 		try {
 			clist = session.selectList("HR_SelectConsultationList", cMap);
@@ -116,9 +143,7 @@ public class AppointmentDaoImp implements AppointmentDao {
 			log.error("consultationListChart() error ->", e);
 		}
 		return clist;
-	}
-
-	
+	}	
 
 
 }

@@ -42,6 +42,12 @@
 #hr-res-right {
 	display: flex;
 	flex-direction: column;
+	margin-left: 40px;
+}
+
+#hr-res-right p {
+	margin-left: 8px;
+	font-size: 16px;
 }
 
 .hr-table-res-modal {
@@ -116,7 +122,151 @@
 }
 
 
+/* 예약 날짜 */
+table#calendar {
+    width: 100%;
+    height: 300px;
+    border: none;
+    text-align: center;
+    color: black;
+}
+
+#calendar td {
+    border-radius: 12px;
+	border: none;
+	padding: 8px;
+}
+
+
+#cal_time_table td{
+	text-align: center;
+}
+
+#cal_time_table button {
+    width: 85%;
+    margin: 8px;
+    border: 1px solid var(--haru);
+    background-color: white;
+    border-radius: 16px;
+    height: 28px;
+}
+
+.selected_time {
+  background-color: var(--haru) !important;
+  color: white; /* 버튼 텍스트를 가독성 있게 하려면 추가 */
+}
+
+.selected-date {
+	background-color: var(--haru);
+	color: white;
+}
+
+#cal_time_table > tbody > tr:nth-child(3) > td {
+	padding-top: 12px;
+}
+
+
+
 </style>
+
+<script type="text/javascript">
+	// 달력
+	var today = new Date();//오늘 날짜//내 컴퓨터 로컬을 기준으로 today에 Date 객체를 넣어줌
+    var date = new Date();//today의 Date를 세어주는 역할
+    function prevCalendar() {//이전 달
+    // 이전 달을 today에 값을 저장하고 달력에 today를 넣어줌
+    //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일 
+    //getMonth()는 현재 달을 받아 오므로 이전달을 출력하려면 -1을 해줘야함
+     today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+     buildCalendar(); //달력 cell 만들어 출력 
+    }
+
+    function nextCalendar() {//다음 달
+        // 다음 달을 today에 값을 저장하고 달력에 today 넣어줌
+        //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일 
+        //getMonth()는 현재 달을 받아 오므로 다음달을 출력하려면 +1을 해줘야함
+         today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+         buildCalendar();//달력 cell 만들어 출력
+    }
+	
+    function buildCalendar() {
+        var doMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        var lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        var tbCalendar = document.getElementById("calendar");
+        var tbCalendarYM = document.getElementById("tbCalendarYM");
+
+        tbCalendarYM.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";
+
+        // 기존 열 제거
+        while (tbCalendar.rows.length > 2) {
+            tbCalendar.deleteRow(tbCalendar.rows.length - 1);
+        }
+
+        var row = null;
+        row = tbCalendar.insertRow();
+        var cnt = 0;
+
+        // 빈 칸 채우기
+        for (let i = 0; i < doMonth.getDay(); i++) {
+            const cell = row.insertCell();
+            cnt++;
+        }
+
+        // 날짜 채우기
+        for (let i = 1; i <= lastDate.getDate(); i++) {
+            const currentDay = i; // `i` 값을 고정시켜 저장
+            const cell = row.insertCell();
+            cell.innerHTML = i;
+            cnt++;
+
+            if (cnt % 7 == 1) {
+                cell.innerHTML = "<font color=red>" + i + "</font>";
+            }
+            if (cnt % 7 == 0) {
+                cell.innerHTML = "<font color=blue>" + i + "</font>";
+                row = tbCalendar.insertRow();
+            }
+
+            if (
+                today.getFullYear() == date.getFullYear() &&
+                today.getMonth() == date.getMonth() &&
+                i == date.getDate()
+            ) {
+                cell.bgColor = "#FAF58C";
+            }
+
+            // 날짜 클릭 이벤트 추가
+            cell.addEventListener("click", function () {
+                var selectedDate = today.getFullYear()+'-'+(today.getMonth() + 1)+'-'+currentDay;
+                console.log("today.getFullYear():", today.getFullYear());
+                console.log("today.getMonth():", today.getMonth());
+                console.log("selectedDate:", selectedDate);
+                console.log("선택된 날짜:", currentDay);
+                alert("선택된 날짜: " + selectedDate);
+
+                // 선택된 날짜 표시
+                const selectedTd = document.querySelector(".selected-date");
+                if (selectedTd) {
+                    selectedTd.classList.remove("selected-date");
+                	console.log("selectedTd:", selectedTd);
+                }
+                cell.classList.add("selected-date");
+            });
+        }
+    }
+
+    
+    // 버튼 클릭시 회색    
+    document.addEventListener("DOMContentLoaded", () => {
+    	const cal_btn = document.querySelectorAll(".cal_time_btn");
+        
+        cal_btn.forEach((button) => {
+        	button.addEventListener("click", () => {
+        		button.classList.toggle("selected_time");
+        	});
+        });
+	});
+</script>
 
 <body>
 
@@ -150,12 +300,66 @@
 			        	
 				        	<div id="hr-res-left">
 				        		<p>예약 날짜</p>
-				        		<div id="res-calendar"></div>
+				        		<div id="res-calendar">
+				        			<table id="calendar" border="3" align="center" style="border-color:#3333FF ">
+									    <tr><!-- label은 마우스로 클릭을 편하게 해줌 -->
+									        <td><label onclick="prevCalendar()"><</label></td>
+									        <td align="center" id="tbCalendarYM" colspan="5">yyyy년 m월</td>
+									        <td><label onclick="nextCalendar()">></label></td>
+									    </tr>
+									    <tr>
+									        <td align="center"><font color ="red">일</td>
+									        <td align="center">월</td>
+									        <td align="center">화</td>
+									        <td align="center">수</td>
+									        <td align="center">목</td>
+									        <td align="center">금</td>
+									        <td align="center"><font color ="blue">토</td>
+									    </tr> 
+									</table>
+									<script language="javascript" type="text/javascript">
+									    buildCalendar();
+									</script>
+				        		</div>
+				        				<hr>
+				        		<div id="cal_time">
+				        			<table id="cal_time_table" width="100%" cellspacing="0">
+				        				<tr>
+				        					<td><button type="button" class="cal_time_btn">09:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">09:30</button></td>
+				        					<td><button type="button" class="cal_time_btn">10:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">10:30</button></td>
+				        				</tr>
+				        				<tr>
+				        					<td><button type="button" class="cal_time_btn">11:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">11:30</button></td>
+				        					<td><button type="button" class="cal_time_btn">12:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">12:30</button></td>
+				        				</tr>
+				        				<tr>
+				        					<td><button type="button" class="cal_time_btn">02:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">02:30</button></td>
+				        					<td><button type="button" class="cal_time_btn">03:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">03:30</button></td>
+				        				</tr>
+				        				<tr>
+				        					<td><button type="button" class="cal_time_btn">04:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">04:30</button></td>
+				        					<td><button type="button" class="cal_time_btn">05:00</button></td>
+				        					<td><button type="button" class="cal_time_btn">05:30</button></td>
+				        				</tr>
+				        			</table>
+				        			
+				        		</div>
 				        	</div>
 				        	
 				        	<div id="hr-res-right">
 				        		<div class="hr-table-res-modal">
 						        	<table id="hr-table-res-modal-data">
+						        		<colgroup>
+						        			<col width="10%">
+							        		<col width="25%">
+						        		</colgroup>
 						        			<tr>
 						        				<th>예약 항목</th>
 						        				<td>

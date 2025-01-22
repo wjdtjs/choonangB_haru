@@ -145,7 +145,7 @@
                                     		<td>${board.bno } </td>
                                    		    <td>${board.content } </td>
                                       		<td>${board.btitle } </td>
-                                    		<td>${board.mname } </td>
+                                    		<td>${board.mid } </td>
                                     		<td><fmt:formatDate value="${board.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                     		<td>${board.bview_count } </td>
                                     	</tr>

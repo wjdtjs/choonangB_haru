@@ -14,8 +14,11 @@ public interface AppointmentService {
 	// 예약 상세
 	Appointment appointmentDetail(String resno);
 	
+	// 예약 수정
+	int updateReservation(String resno, int rtime, String memo, int status);
+	
 	// 진료 내역
 	int getTotalCntChart(SearchItem si);
-	List<Appointment> consultationListChart(int startRow, int endRow, int type4);
+	List<Appointment> consultationListChart(int startRow, int endRow, SearchItem si);
 
 }

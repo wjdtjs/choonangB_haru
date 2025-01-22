@@ -27,7 +27,7 @@
 		FROM (
 		    SELECT ROWNUM rn, bb.*
 		    FROM (
-		        SELECT b.bno, b.btitle, m.mname, b.reg_date, b.bview_count, b.board_type_mcd, c.content
+		        SELECT b.bno, b.btitle, m.mid, b.reg_date, b.bview_count, b.board_type_mcd, c.content
 				FROM BOARD b
                      JOIN member m ON b.memno = m.memno
                      JOIN (SELECT mcd,content FROM common WHERE bcd= 350) c ON b.board_type_mcd = c.mcd
@@ -54,7 +54,7 @@
 	<!-- 후기 상세 -->
 	<!-- 게시글 원글만 불러오기 -->
 	<select id="HR_SelectBoardDetailContent" parameterType="int" resultType="Board">
-		SELECT b.bno, b.resno, c.content as item, m.mname, b.reg_date, b.update_date, b.bview_count, b.btitle, b.bcontents, b.bseq, b.pno, b.bgroup, b.pno,
+		SELECT b.bno, b.resno, c.content as item, m.mid, b.reg_date, b.update_date, b.bview_count, b.btitle, b.bcontents, b.bseq, b.pno, b.bgroup, b.pno,
 						                                                                                                                                    (SELECT COUNT(*)
 						                                                                                                                                     FROM BOARD b
 						                                                                                                                                     WHERE b.bgroup = #{bno}) as re_count
@@ -65,7 +65,7 @@
 	</select>
 	<!-- 게시글에 달린 댓글 가져오기 (원글 + 댓글) -->
 	<select id="HR_SelectBoardDetailList" parameterType="Map" resultType="Board">
-		SELECT b.bno, b.resno, c.content as item, m.mname, b.reg_date, b.update_date, b.bview_count, b.btitle, b.bcontents, b.bseq, b.bstatus_mcd, b.bgroup, b.pno,
+		SELECT b.bno, b.resno, c.content as item, m.mid, b.reg_date, b.update_date, b.bview_count, b.btitle, b.bcontents, b.bseq, b.bstatus_mcd, b.bgroup, b.pno,
 	                                                                                                                                    (SELECT COUNT(*)
 	                                                                                                                                     FROM BOARD b
 	                                                                                                                                     WHERE b.bgroup = #{bno}) as re_count

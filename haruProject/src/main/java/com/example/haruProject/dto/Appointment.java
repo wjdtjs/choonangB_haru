@@ -25,6 +25,7 @@ public class Appointment {
 	
 	// join
 	private String mname;		// 보호자 이름
+	private String memail;		// 보호자 이메일
 	private String petname;		// 동물 이름
 	private String aname;		// 주치의 이름
 	private String item;		// 진료 항목 이름

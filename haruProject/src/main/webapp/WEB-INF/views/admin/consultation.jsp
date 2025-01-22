@@ -42,24 +42,202 @@
 	font-size: 16px;
 	line-height: 0px;
 }
+
+/* 검색 - 날짜 */
+#res_date {
+	display: flex;
+	align-items: center;	
+	margin: 0 12px;
+	color: black;
+	text-align: center;
+}
+/* 날짜 검색 아이콘 */
+#res_date input {
+    margin: 0 4px;
+    border-radius: 0.75rem;
+    border: 1px solid #6F7173;
+    padding-left: 2rem;
+    padding-right: 1rem;
+    height: 2rem;
+    width: 150px;
+}
+
+#cal_icon {
+	color: var(--haru);
+	margin: 4px;
+}
+
 </style>
+
+<!-- datepicker -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+<!-- 폰트어썸 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
 
 <script type="text/javascript">
 
-//드롭박스 값 변경됐을 때 동작
-function search_type(selectElement) {
-	const searchInput = document.querySelector(".haru-status-select");
 	
-	if (!selectElement) {
-        console.error("드롭다운 요소를 찾을 수 없습니다.");
-        return;
-    }
+	var date1 = null;
+	var date2 = null;
 	
-	type4 = selectElement.value; // 선택된 필터
-    console.log('search_type 실행 -> type4: '+type4);
-    alert('search_type 실행 -> type4: '+type4);
-    location.href = '/admin/consultation?type4='+type4;
-}
+	// 날짜선택 - datepicker
+	$(function() {
+		// 시작 날짜
+		$('#datepicker1').datepicker({
+			dateFormat: 'yy-mm-dd' //달력 날짜 형태
+		    ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+		    ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+		    ,changeYear: true //option값 년 선택 가능
+		    ,changeMonth: true //option값  월 선택 가능
+		    ,buttonText: "선택" //버튼 호버 텍스트              
+		    ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+		    ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+		    ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+		    ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+		    ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일']
+			,onSelect: function(selectedDate) {
+				// Date 객체로 값을 가져옴
+	            //var date1 = $.datepicker.formatDate("yymmdd", $("#datepicker1").datepicker("getDate"));
+	            date1 = $("#datepicker1").val();
+	            //var date2 = $.datepicker.formatDate("yymmdd", $("#datepicker2").datepicker("getDate"));
+	            date2 = $("#datepicker2").val();
+	            
+	            // 선택된 날짜를 alert로 표시
+	            //alert("date1: " + date1 + ", date2: " + date2);
+	            console.log("date1: " + date1 + ", date2: " + date2);
+	            
+	         	// date1, date2 값이 다 들어오면 자동으로 검색
+	            if(date1 && date2) {
+	            	const searchInput = document.querySelector(".tb-search-input");
+	    	        const searchSelect = document.querySelector(".haru-search-select");
+	    			const selectedValue = document.querySelector(".haru-status-select");
+	
+	    			search1 = searchInput.value; // 입력된 검색어
+	    		    type4 = selectedValue.value; // 상태 드롭박스
+	    		    type5 = searchSelect.value;	 // 선택된 필터
+	    		    date1 = $("#datepicker1").val();
+	    	        date2 = $("#datepicker2").val();
+	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			  		+',start_date: '+date1+',end_date: '+date2);
+	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
+	    			  		+'&start_date='+date1+'&end_date='+date2;
+	            }
+	        }
+			,onClose: function( selectedDate ) {    
+	             // 시작일(fromDate) datepicker가 닫힐때
+	             // 종료일(toDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
+	             $("#datepicker2").datepicker( "option", "minDate", selectedDate );
+	        }
+		});
+		// 끝 날짜
+		$('#datepicker2').datepicker({
+			dateFormat: 'yy-mm-dd' //달력 날짜 형태
+		    ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+		    ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+		    ,changeYear: true //option값 년 선택 가능
+		    ,changeMonth: true //option값  월 선택 가능
+		    ,buttonText: "선택" //버튼 호버 텍스트              
+		    ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+		    ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+		    ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+		    ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+		    ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일']
+			,onSelect: function(selectedDate) {
+	            // Date 객체로 값을 가져옴
+	            //var date1 = $.datepicker.formatDate("yymmdd", $("#datepicker1").datepicker("getDate"));
+	            date1 = $("#datepicker1").val();
+	            //var date2 = $.datepicker.formatDate("yymmdd", $("#datepicker2").datepicker("getDate"));
+	            date2 = $("#datepicker2").val();
+	
+	            // 선택된 날짜를 alert로 표시
+	            //alert("date1: " + date1 + ", date2: " + date2);
+	            console.log("date1: " + date1 + ", date2: " + date2);
+	            
+	         	// date1, date2 값이 다 들어오면 자동으로 검색
+	            if(date1 && date2) {
+	            	const searchInput = document.querySelector(".tb-search-input");
+	    	        const searchSelect = document.querySelector(".haru-search-select");
+	    			const selectedValue = document.querySelector(".haru-status-select");
+	
+	    			search1 = searchInput.value; // 입력된 검색어
+	    		    type4 = selectedValue.value; // 상태 드롭박스
+	    		    type5 = searchSelect.value;	 // 선택된 필터
+	    		    date1 = $("#datepicker1").val();
+	    	        date2 = $("#datepicker2").val();
+	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			  		+',start_date: '+date1+',end_date: '+date2);
+	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
+	    			  		+'&start_date='+date1+'&end_date='+date2;
+	            }
+	        }
+			,onClose: function( selectedDate ) {    
+				// 종료일(toDate) datepicker가 닫힐때
+	            // 시작일(fromDate)의 선택할수있는 최대 날짜(maxDate)를 선택한 종료일로 지정
+	             $("#datepicker1").datepicker( "option", "maxDate", selectedDate );
+	        }
+		});
+	
+		
+	});
+	
+	// 검색
+	
+	let search1 = null;
+	let type4 = null;
+	let type5 = 100;
+	
+	// 검색창에서 엔터키 눌렀을 때 검색
+	function search_word(e) {
+		if (e.key === "Enter") {
+			const searchInput = document.querySelector(".tb-search-input");
+	        const searchSelect = document.querySelector(".haru-search-select");
+			const selectedValue = document.querySelector(".haru-status-select");
+	
+	
+			    search1 = searchInput.value; // 입력된 검색어
+		        type4 = selectedValue.value; // 상태 드롭박스
+		        type5 = searchSelect.value;	 // 선택된 필터
+		        date1 = $("#datepicker1").val();
+	            date2 = $("#datepicker2").val();
+			    console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+			    		+',start_date: '+date1+',end_date: '+date2);
+			    alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+			    		+',start_date: '+date1+',end_date: '+date2);
+			    location.href = '/admin/consultation?type4='+type4+'&type5='+type5+'&search1='+search1
+			    		+'&start_date='+date1+'&end_date='+date2;
+	    }
+	}
+	
+	// 드롭다운 값 변경됐을 때 동작
+	function search_type(selectElement) {
+		const searchInput = document.querySelector(".tb-search-input");
+	    const searchSelect = document.querySelector(".haru-search-select");
+		const selectedValue = selectElement.value;
+	
+		search1 = searchInput.value; // 입력된 검색어
+	    type4 = selectElement.value; // 상태 드롭박스
+	    type5 = searchSelect.value; // 선택된 필터
+	    date1 = $("#datepicker1").val();
+	    date2 = $("#datepicker2").val();
+		console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+				+',start_date: '+date1+',end_date: '+date2);
+		alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+		  		+',start_date: '+date1+',end_date: '+date2);
+		location.href = '/admin/consultation?type4='+type4+'&type5='+type5+'&search1='+search1
+		   		+'&start_date='+date1+'&end_date='+date2;
+	}
+	
+	
 
 </script>
 
@@ -94,15 +272,31 @@ function search_type(selectElement) {
                         <div class="card-header py-3">
                             <div class="m-0 haru-search-box">
 	                            <div class="haru-left">
-									<!-- 검색창 -->
+	                            	<!-- 검색 필터 -->
+	                            	<select class="haru-search-select">
+	                            		<option value="100" ${type5 == '100'   ? 'selected' : ''}>예약 번호</option>
+	                            		<option value="200" ${type5 == '200'   ? 'selected' : ''}>보호자 이름</option>
+	                            		<option value="300" ${type5 == '300'   ? 'selected' : ''}>동물 이름</option>
+	                            		<option value="400" ${type5 == '400'   ? 'selected' : ''}>주치의</option>
+	                            		<option value="500" ${type5 == '500'   ? 'selected' : ''}>진료 과목</option>
+	                            	</select>
+	                            	<!-- 검색어 입력 -->
 	                            	<div class="haru-tb-input-box">
-	                            		<input class="tb-search-input" type="text">
-	                            		<!-- 날짜 선택해서 검색할 수 있는 달력 추가해주기 -->                    	
-	                            	</div>                            
+	                            		<input class="tb-search-input" name="search1" type="text"
+	                            		onkeypress="console.log('onkeypress 실행됨'); if (event.key === 'Enter') search_word(event)"
+		                            	value="${search1}"
+		                            	autocomplete="off">                            	
+	                            	</div>
+	                            	<!-- 기간 검색 -->
+	                            	<p id="res_date">
+	                            		<i class="fa-solid fa-calendar-days fa-lg" id="cal_icon"></i>
+									    <input type="text" class="search_date" id="datepicker1" value="${start_date }" autocomplete="off">
+									    <input type="text" class="search_date" id="datepicker2" value="${end_date }" autocomplete="off">
+									</p>                            
 	                            </div>
 	                            
 	                            <div class="haru-right">
-	                            	<select name="type4" class="haru-search-select" onchange="console.log('onchange 실행됨'); search_type(this)" >
+	                            	<select name="type4" class="haru-status-select" onchange="console.log('onchange 실행됨'); search_type(this)" >
 		                            		<option value="0" 	 ${type4 == '0'   ? 'selected' : ''}>전체</option>
 		                            		<option value="100"  ${type4 == '100' ? 'selected' : ''}>차트 O</option>
 		                            		<option value="200"  ${type4 == '200' ? 'selected' : ''}>차트 X</option>
@@ -200,9 +394,6 @@ function search_type(selectElement) {
     <!-- Logout Modal-->
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
 
-	<!-- 차트 상세 모달 -->
-	<jsp:include page="consultation_modal.jsp"></jsp:include>
-	
 	
 </body>
 </html>

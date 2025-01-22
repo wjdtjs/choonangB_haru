@@ -87,9 +87,23 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	            //alert("date1: " + date1 + ", date2: " + date2);
 	            console.log("date1: " + date1 + ", date2: " + date2);
 	            
-	            // date1, date2 값이 다 들어오면 자동으로 검색
+	         	// date1, date2 값이 다 들어오면 자동으로 검색
 	            if(date1 && date2) {
-	            	location.href = '/admin/reservation?start_date='+date1+'&end_date='+date2;
+	            	const searchInput = document.querySelector(".tb-search-input");
+	    	        const searchSelect = document.querySelector(".haru-search-select");
+	    			const selectedValue = document.querySelector(".haru-status-select");
+
+	    			search1 = searchInput.value; // 입력된 검색어
+	    		    type4 = selectedValue.value; // 상태 드롭박스
+	    		    type5 = searchSelect.value;	 // 선택된 필터
+	    		    date1 = $("#datepicker1").val();
+	    	        date2 = $("#datepicker2").val();
+	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			  		+',start_date: '+date1+',end_date: '+date2);
+	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
+	    			  		+'&start_date='+date1+'&end_date='+date2;
 	            }
 	        }
 			,onClose: function( selectedDate ) {    
@@ -124,7 +138,21 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	            
 	         	// date1, date2 값이 다 들어오면 자동으로 검색
 	            if(date1 && date2) {
-	            	location.href = '/admin/reservation?start_date='+date1+'&end_date='+date2;
+	            	const searchInput = document.querySelector(".tb-search-input");
+	    	        const searchSelect = document.querySelector(".haru-search-select");
+	    			const selectedValue = document.querySelector(".haru-status-select");
+
+	    			search1 = searchInput.value; // 입력된 검색어
+	    		    type4 = selectedValue.value; // 상태 드롭박스
+	    		    type5 = searchSelect.value;	 // 선택된 필터
+	    		    date1 = $("#datepicker1").val();
+	    	        date2 = $("#datepicker2").val();
+	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			  		+',start_date: '+date1+',end_date: '+date2);
+	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
+	    			  		+'&start_date='+date1+'&end_date='+date2;
 	            }
 	        }
 			,onClose: function( selectedDate ) {    
@@ -164,16 +192,12 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 		if (e.key === "Enter") {
 			const searchInput = document.querySelector(".tb-search-input");
 	        const searchSelect = document.querySelector(".haru-search-select");
-			const selectedValue = selectElement.value;
+			const selectedValue = document.querySelector(".haru-status-select");
 
-			    if (!searchInput || !selectElement) {
-			        console.error("검색창 또는 드롭다운 요소를 찾을 수 없습니다.");
-			        return;
-			    }
 
 			    search1 = searchInput.value; // 입력된 검색어
-		        type4 = selectElement.value; 
-		        type5 = searchSelect.value; // 선택된 필터
+		        type4 = selectedValue.value; // 상태 드롭박스
+		        type5 = searchSelect.value;	 // 선택된 필터
 		        date1 = $("#datepicker1").val();
 	            date2 = $("#datepicker2").val();
 			    console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
@@ -191,22 +215,17 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         const searchSelect = document.querySelector(".haru-search-select");
 		const selectedValue = selectElement.value;
 
-		    if (!searchInput || !selectElement) {
-		        console.error("검색창 또는 드롭다운 요소를 찾을 수 없습니다.");
-		        return;
-		    }
-
-		    search1 = searchInput.value; // 입력된 검색어
-	        type4 = selectElement.value; 
-	        type5 = searchSelect.value; // 선택된 필터
-	        date1 = $("#datepicker1").val();
-            date2 = $("#datepicker2").val();
-		    console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-		    		+',start_date: '+date1+',end_date: '+date2);
-		    alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-		    		+',start_date: '+date1+',end_date: '+date2);
-		    location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
-		    		+'&start_date='+date1+'&end_date='+date2;
+		search1 = searchInput.value; // 입력된 검색어
+	    type4 = selectElement.value; // 상태 드롭박스
+	    type5 = searchSelect.value; // 선택된 필터
+	    date1 = $("#datepicker1").val();
+        date2 = $("#datepicker2").val();
+		console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+				+',start_date: '+date1+',end_date: '+date2);
+		alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+		  		+',start_date: '+date1+',end_date: '+date2);
+		location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
+		   		+'&start_date='+date1+'&end_date='+date2;
 	}
 	
 	
@@ -258,13 +277,14 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	                            	<div class="haru-tb-input-box">
 	                            		<input class="tb-search-input" name="search1" type="text"
 	                            		onkeypress="console.log('onkeypress 실행됨'); if (event.key === 'Enter') search_word(event)"
-		                            	value="${search1}">                            	
+		                            	value="${search1}"
+		                            	autocomplete="off"> <!-- 검색한 기록 안 남게 -->
 	                            	</div>
 	                            	<!-- 기간 검색 -->
 	                            	<p id="res_date">
 	                            		<i class="fa-solid fa-calendar-days fa-lg" id="cal_icon"></i>
-									    <input type="text" class="search_date" id="datepicker1" value="${start_date }">
-									    <input type="text" class="search_date" id="datepicker2" value="${end_date }">
+									    <input type="text" class="search_date" id="datepicker1" value="${start_date }" autocomplete="off">
+									    <input type="text" class="search_date" id="datepicker2" value="${end_date }" autocomplete="off">
 									</p>                            
 	                            </div>
 								
@@ -276,6 +296,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	                            		<option value="100" ${type4 == '100'   ? 'selected' : ''}>예약 대기</option>
 	                            		<option value="200" ${type4 == '200'   ? 'selected' : ''}>예약 확정</option>
 	                            		<option value="300" ${type4 == '300'   ? 'selected' : ''}>예약 취소</option>
+	                            		<option value="300" ${type4 == '400'   ? 'selected' : ''}>진료 완료</option>
 	                            	</select>
 	                           		<button class="btn-primary haru-tb-btn res_modal" id="modal_open_btn" onclick="location.href='/admin/addReservation'">예약 추가</button>                           	                         
 	                            </div>
