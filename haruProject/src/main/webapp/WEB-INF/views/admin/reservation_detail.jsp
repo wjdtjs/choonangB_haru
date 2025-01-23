@@ -178,7 +178,6 @@ button#res_change, #res_cancel, #res_del {
 	/* 확정 */
 	$(document).ready(function () {
 		$('#res_confirm').click(function() {
-				console.log("버튼 클릭 이벤트 시작"); 
 			if(confirm("예약 확정 메일을 전송하시겠습니까?")==true) {
 				// 입력 필드 가져오기
 	            const rtimeField = document.querySelector('input[name="rtime"]'); // 단일 요소 선택
@@ -202,34 +201,63 @@ button#res_change, #res_cancel, #res_del {
 				// 메일 보내기
 				const memail = '${appointment_d.memail}';
 				const date = '${appointment_d.rdate}';
-				const time = '${appointment_d.start_time}';
-				const rtime = document.querySelector('input[name="rtime"]').value;
-				console.log("memail: "+memail+", date: "+date+", time: "+time+", rtime: "+rtime);
-				location.href="/mail/confirmSend?memail="+memail+"&date="+date+"&time="+time+"&rtime="+rtime;
+				const fixedDate = date.replace("KST", "+0900"); // KST를 +0900으로 변경
+				const bdate = new Date(fixedDate);
 				
-				// 상태 변경
+				const year = bdate.getFullYear(); // 연도
+			    const month = String(bdate.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1 필요)
+			    const day = String(bdate.getDate()).padStart(2, '0'); // 일
+			    const rdate = year+'년 '+month+'월 '+day+'일';
+				
+				const start_time = '${appointment_d.start_time}';
+				const rtime = document.querySelector('input[name="rtime"]').value;
 				var sendData = $('form').serialize();
 				sendData = sendData + ('&status='+200);
-				alert('sendData : '+sendData);
-	            location.href = "/admin/updateReservation?" + sendData; // GET 요청
 				
+				console.log("memail: "+memail+", rdate: "+rdate+", start_time: "+start_time+", rtime: "+rtime+"\n"
+						+"sendData: "+sendData);
+				
+				url="/mail/confirmSend?memail="+memail+"&rdate="+rdate+"&start_time="+start_time+"&rtime="+rtime
+						+"&"+sendData;
+				
+				// 메일 전송으로 이동, 메일 전송 후에 상태변경 controller 호출
+				location.href = url;
 			};
 		});
 	});
 	/* 취소 */
-	$('#res_cancel').click(function() {
-		if(confirm(mail+"의 예약 취소 메일을 전송하시겠습니까?")==true) {
-			// 메일 보내기
-			
-			// 상태 변경
-			var sendData = $('form').serialize();
-			sendData = sendData + ('&status='+300);
-			alert('sendData : '+sendData);
-            location.href = "/admin/updateReservation?" + sendData; // GET 요청
-		};
-	})
 	
-	/* confirm에서 확인을 누르면 메일전송, 상태변경, 창 닫기 */
+	$(document).ready(function () {
+		$('#res_cancel').click(function() {
+			if(confirm("예약 취소 메일을 전송하시겠습니까?")==true) {			
+				// 메일 보내기
+				const memail = '${appointment_d.memail}';
+				const date = '${appointment_d.rdate}';
+				const fixedDate = date.replace("KST", "+0900"); // KST를 +0900으로 변경
+				const bdate = new Date(fixedDate);
+				
+				const year = bdate.getFullYear(); // 연도
+			    const month = String(bdate.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1 필요)
+			    const day = String(bdate.getDate()).padStart(2, '0'); // 일
+			    const rdate = year+'년 '+month+'월 '+day+'일';
+				
+				const start_time = '${appointment_d.start_time}';
+				const rtime = document.querySelector('input[name="rtime"]').value;
+				var sendData = $('form').serialize();
+				sendData = sendData + ('&status='+300);
+				
+				console.log("memail: "+memail+", rdate: "+rdate+", start_time: "+start_time+", rtime: "+rtime+"\n"
+						+"sendData: "+sendData);
+				
+				url="/mail/cancelSend?memail="+memail+"&rdate="+rdate+"&start_time="+start_time+"&rtime="+rtime
+						+"&"+sendData;
+				
+				// 메일 전송으로 이동, 메일 전송 후에 상태변경 controller 호출
+				location.href = url;
+			};		
+		});
+	});
+	
 	
 	// 예약 확정 > 예약 취소
 	$(function() {

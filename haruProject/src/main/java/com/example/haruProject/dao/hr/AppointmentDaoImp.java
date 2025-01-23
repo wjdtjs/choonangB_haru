@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.example.haruProject.dto.Appointment;
+import com.example.haruProject.dto.Schedule;
 import com.example.haruProject.dto.SearchItem;
 
 import lombok.RequiredArgsConstructor;
@@ -103,6 +104,71 @@ public class AppointmentDaoImp implements AppointmentDao {
 		
 		return result;
 	}
+	
+	// 예약 추가
+	// 예약 항목 대분류 가져오기
+	@Override
+	public List<Map<String, Object>> getBCDList() {
+		System.out.println("AppointmentDaoImp getBCDList() start ,,,");
+		
+		List<Map<String, Object>> bcdList = new ArrayList<>();
+		
+		try {
+			bcdList = session.selectList("HR_SelectMedicalItemBCD");
+		} catch (Exception e) {
+			log.error("getBCDList() error ->", e);
+		}
+		
+		return bcdList;
+	}
+	// 예약 항목 중분류 불러오기
+	@Override
+	public List<Map<String, Object>> getMCDList(int bcd) {
+		System.out.println("AppointmentDaoImp getMCDList() start ,,,");
+		
+		List<Map<String, Object>> mcdList = new ArrayList<>();
+		
+		try {
+			mcdList = session.selectList("HR_SelectMedicalItemMCD", bcd);
+		} catch (Exception e) {
+			log.error("getMCDList() error ->", e);
+		}
+		
+		return mcdList;
+	}
+	// 진료 가능 의사 불러오기
+	@Override
+	public List<Map<String, Object>> getDocList() {
+		System.out.println("AppointmentDaoImp getDocList() start ,,,");
+		
+		List<Map<String, Object>> dList = new ArrayList<>();
+	
+		try {
+			dList = session.selectList("HR_SelectDoc");
+		} catch (Exception e) {
+			log.error("getDocList() error ->", e);
+		}
+		
+		return dList;
+	}
+	// 진료 불가 날짜 불러오기
+	@Override
+	public List<Schedule> getDisabledDatesList(int ano) {
+		System.out.println("AppointmentDaoImp getDisabledDatesList() start ,,, ");
+		System.out.println("AppointmentDaoImp getDisabledDatesList() ano ->"+ano);
+		
+		List<Schedule> sList = new ArrayList<>();
+		
+		try {
+			sList = session.selectList("HR_SelectDisabledDatesList", ano);
+		} catch (Exception e) {
+			log.error("getDisabledDatesList() error ->", e);
+		}
+		
+		return sList;
+	}
+
+
 
 
 	
@@ -143,7 +209,11 @@ public class AppointmentDaoImp implements AppointmentDao {
 			log.error("consultationListChart() error ->", e);
 		}
 		return clist;
-	}	
+	}
+
+	
+
+	
 
 
 }

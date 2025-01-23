@@ -15,5 +15,6 @@
 		<typeAlias alias="Common" 			type="com.example.haruProject.dto.Common"/>
 		<typeAlias alias="Shop" 			type="com.example.haruProject.dto.Shop"/>
 		<typeAlias alias="Notice" type="com.example.haruProject.dto.Notice"/>
+		<typeAlias alias="Schedule" type="com.example.haruProject.dto.Schedule"/>
 	</typeAliases>
 </configuration>

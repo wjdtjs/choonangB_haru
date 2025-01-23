@@ -2,16 +2,20 @@ package com.example.haruProject.controller.admin.hr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Pagination;
+import com.example.haruProject.dto.Schedule;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.hr.AppointmentService;
 
@@ -81,12 +85,53 @@ public class AppointmentController {
 	
 	
 	// 예약 추가 뷰
+	// + 예약 항목 대분류 가져오기
+	// + 진료 가능 선생님 가져오기
 	@GetMapping("/admin/addReservation")
-	public String addAppointment() {
+	public String addAppointment(Model model) {
+		System.out.println("AppointmentController /admin/addReservation start ,,,");
+		System.out.println("AppointmentController addAppointment start ,,,");
+		
+		List<Map<String, Object>> bcdList = new ArrayList<>();
+		List<Map<String, Object>> docList = new ArrayList<>();
+		bcdList = as.getBCDList();
+		docList = as.getDocList();
+		System.out.println("docList ->"+docList);
+		
+		model.addAttribute("bcdList", bcdList);
+		model.addAttribute("docList", docList);
+		
 		return "admin/reservation_add";
 	}
 	
-	// 예약 추가
+	// 예약 항목 중분류 가져오기
+	@ResponseBody
+	@GetMapping("/api/res-mcd/{bcd}")
+	public List<Map<String, Object>> reservationMCD(@PathVariable("bcd") int bcd) {
+		System.out.println("AppointmentController reservationMCD() start ,,,");
+		
+		List<Map<String, Object>> mcdList = new ArrayList<>();
+		mcdList = as.getMCDList(bcd);
+		
+		return mcdList;
+	}
+	
+	// 예약 불가능 날짜 불러오기
+	@ResponseBody
+	@GetMapping("/api/disabled-dates")
+	public List<Schedule> getDisabledDates(@RequestParam(value = "ano", required = true) int ano) {
+		System.out.println("AppointmentController getDisabledDates() start ,,,");
+		System.out.println("AppointmentController getDisabledDates() ano ->"+ano);
+		
+		List<Schedule> sList = as.getDisabledDatesList(ano);
+		
+		return sList;
+	}
+	
+	
+	
+	
+	
 	
 	// 예약 상세 뷰
 	@GetMapping("/admin/detailReservation")

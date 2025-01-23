@@ -95,13 +95,40 @@
 	</select>
 	
 	
-	
-	
 	<!-- 예약 수정 -->
 	<update id="HR_UpdateReservation" parameterType="Map">
 		UPDATE appointment SET rtime = #{rtime}, memo = #{memo}, rstatus_mcd = #{status}
 		WHERE resno = #{resno}
 	</update>
+	
+	<!-- 예약 추가 -->
+	<!-- 대분류 가져오기
+		 SCD 100 : 진료 항목 -->
+	<select id="HR_SelectMedicalItemBCD" resultType="Map">
+		SELECT CONTENT, BCD
+		FROM COMMON
+		WHERE SCD = 100 AND MCD = 999
+	</select>
+	<!-- 중분류 가져오기 -->
+	<select id="HR_SelectMedicalItemMCD" parameterType="int" resultType="Map">
+		SELECT CONTENT, MCD
+		FROM COMMON
+		WHERE SCD = 100 AND BCD = #{bcd} AND BCD != 999
+	</select>
+	<!-- 진료 가능 의사 불러오기 -->
+	<select id="HR_SelectDoc" resultType="Map">
+		SELECT ano, aname
+		FROM ADMIN
+		WHERE  alevel_mcd = 200 AND astatus_mcd = 100
+	</select>
+	<!-- 진료 불가능 날짜 불러오기 -->
+	<select id="HR_SelectDisabledDatesList" parameterType="int" resultType="Schedule">
+		SELECT SCHDATE, SCHTYPE_MCD, ANO
+		FROM SCHEDULE
+		WHERE SCHTYPE_MCD = 100 
+		    OR (SCHTYPE_MCD = 200 AND ANO = #{ano})
+		    OR (SCHTYPE_MCD = 300 AND ANO = #{ano})
+	</select>
 	
 	
 	
