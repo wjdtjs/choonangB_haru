@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Member;
@@ -25,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberController {
 	private final MemberService ms;
+	private final PasswordEncoder passwordEncoder;
 	
 	@GetMapping("/admin/members")
 	public String memberView(	Model model,
@@ -89,9 +93,18 @@ public class MemberController {
 	@PostMapping(value = "/admin/addMemberAction")
 	public String addMemberAction(Member member) {
 		System.out.println("MemberController addMemberAction ...");
+		System.out.println("========= "+member);
+		
+		String passwd = member.getMpasswd();
+		
+		String encodedPassword = passwordEncoder.encode(passwd);
+		System.out.println("암호화: "+encodedPassword);
+		
+		member.setMpasswd(encodedPassword); //암호화된 패스워드 저장
+		
 		int result = ms.addMember(member);
 		
-		return "admin/member";
+		return "redirect:members";
 	}
 	
 	@PostMapping(value = "/admin/updateMember")
@@ -105,15 +118,16 @@ public class MemberController {
 		
 	}
 	
-	@RequestMapping(value = "/api/dbCheckId")
-	public int dbCheckId(
-								@RequestParam("mid") String mid
-							) {
+	@ResponseBody
+	@PostMapping(value = "/api/dbCheckId")
+	public int dbCheckId(@RequestBody Member member) {
 		int result = 0;
 		
+		String email = member.getMemail();
+		
 		System.out.println("MemberController dbCheckId ...");
-		System.out.println("MemberController dbCheckId  mid->"+ mid);
-		result = ms.dbCheckId(mid);
+		System.out.println("MemberController dbCheckId  mid->"+ email);
+		result = ms.dbCheckId(email);
 		System.out.println("MemberController dbCheckId  result->"+ result);
 		
 		return result;

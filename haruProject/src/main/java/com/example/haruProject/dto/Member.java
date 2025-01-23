@@ -20,6 +20,8 @@ public class Member {
 	private int mstatus_mcd;	// 상태 중분휴
 	private int is_agree;		// 동의 여부
 	private Date agree_date;	// 동의 날짜
+	private String authcode; 	// 인증코드
+	private Long valid_time; 	// 유효시간
 	
 	// 공통테이블
 	private String mstatis_content;

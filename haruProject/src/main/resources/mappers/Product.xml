@@ -57,7 +57,7 @@
 	<select id="JS_SelectProductMCD" parameterType="int" resultType="Map">
 		SELECT CONTENT, MCD
 		FROM COMMON
-		WHERE SCD = 400 AND BCD = #{bcd} AND MCD != 999
+		WHERE BCD = #{bcd} AND MCD != 999
 	</select>
 
 	<!-- 상품 리스트 조회 -->

@@ -17,39 +17,73 @@
 </head>
 
 <script type="text/javascript">
+	let id_dupl_check = false;
 	
 	function valid() {
-		if (!checkId) {
-			alert('아이디중복 확인을 해주세요');
-			return false;
+		let result = true;
+		
+		const passwd = frm.mpasswd.value;
+		const name = frm.mname.value;
+		const tel = frm.mtel.value;
+		
+		let str="";
+		if(!id_dupl_check) {
+			str+= '이메일 중복체크를 해주세요.\n'; //이메일 중복 체크
+	        result = false;
 		}
 		
+	    if(!checkRegex(tel, '^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$')) {
+	    	str+='잘못된 핸드폰번호 입니다.\n';
+	        result = false;
+	    }
+		
+		return result;
 	}
 
 	
 	function fn_dbCheckId() {
-		const mid = frm.mid.value;
-		console.log('mid:'+mid);
+		const email = frm.memail.value;
+		console.log('memail:'+email);
 		
-		$.ajax(
-				{
-					url: "<%=request.getContextPath()%>/api/dbCheckId",
-					data: {mid: mid},
-					dataType: 'int'
-					success:function(result){
-						if(result == 0){
-							str = "사용가능한 아이디입니다.";
-							checkId = true;
-						}else if(result > 0){
-							str = "사용중인 아이디입니다."
-							checkId = false;
-						}
+		if(!isEmpty(email) || !checkRegex(email, '^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')) {
+		  	alert('올바르지 않은 이메일입니다.');
+	   	} else {
+		   
+		   $.ajax({
+				url: "<%=request.getContextPath()%>/api/dbCheckId",
+				method: 'POST',
+				contentType:"application/json",
+				data: JSON.stringify({
+					memail: email
+				}),
+				success: function(data){
+					console.log(data)
 					
-				}$('.dbCheckIdResult').html(str)
-		);
-		
-
+					if(data>0) {
+						alert('이미 존재하는 이메일입니다.');
+						$('.form-input.email').val('');
+					} else {
+						alert('사용 가능한 이메일입니다.');
+						$('.form-input.email').attr('readonly', true);
+						$('.verifi_btn.id_dupl').attr("disabled", true);
+						id_dupl_check = true;
+						
+					}
+				}
+			})
+	   }
 	}
+	
+	   $(()=>{
+		   const $passwd = $('.form-input[name=mpasswd]');
+		   $passwd.keyup(function() {
+	 		   let text = $passwd.val()
+	 		   console.log(text);
+	 		   	$('.form-input[name=re_mpasswd]').val(text);
+	 		   console.log($('.form-input[name=re_mpasswd]').val());
+	 	   })         
+	   })
+	
 </script>
 
 <!-- style -->
@@ -75,6 +109,9 @@ td > button {
 	border: none;
 	height: 35px;
 	font-size: 14px;
+}
+.verifi_btn.id_dupl:disabled {
+	background: #d9d9d9;
 }
 
 .form-input{
@@ -131,18 +168,13 @@ em {
 	                    </colgroup>
 			        	<tr>
 			        		<th>이름<em>*</em></th>		<td><input class="form-input" type="text" name="mname" required="required"></td>
-			        		<th>아이디<em>*</em></th>	<td><input class="form-input" type="text" name="mid" required="required" style="width: 70%;">
-			        								<button class="btn-primary haru-tb-btn" id="modal_open_btn" onclick="fn_dbCheckId()">중복확인</button>
-			        								<div class = "dbCheckIdResult"></td>
-			        								</td>
+			        		<th>이메일<em>*</em></th>	<td><input class="form-input email" type="text" name="memail" required="required" style="width: 70%;">
+			        									<button class="btn-primary haru-tb-btn verifi_btn id_dupl" onclick="fn_dbCheckId()">중복확인</button>
 			        	</tr>
 			        	<tr>
-			        		<th>전화번호<em>*</em></th>	<td><input class="form-input" type="text" name="mtel" required="required" placeholder="000-0000-0000"></td>
+			        		<th>전화번호<em>*</em></th>	<td><input class="form-input" type="text" name="mtel" required="required" placeholder="-없이 입력"></td>
 			        		<th>비밀번호<em>*</em></th>	<td><input class="form-input" type="text" name="mpasswd" required="required" value="1234"></td>
-			        	</tr>
-			        	<tr>
-			        		<th>이메일</th>	<td><input class="form-input" type="text" name="memail"></td>
-			        		<th>비밀번호확인<em>*</em></th><td><input class="form-input" type="text" name="re_mpasswd" required="required" value="1234"></td>
+			        									<td><input class="form-input" type="hidden" name="re_mpasswd" value="1234"></td>
 			        	</tr>
 			        	<tr>
 			        		<th>개인정보동의여부</th>	

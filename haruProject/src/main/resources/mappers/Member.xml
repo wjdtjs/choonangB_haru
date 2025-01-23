@@ -65,9 +65,8 @@
 	</select>
 	
 	<insert id="HJInsertMember" parameterType="Member">
-		<if test="mpasswd == re_mpasswd">
-			INSERT INTO member(memno,mid,mpasswd,mname,mtel,memail,reg_date,is_agree,agree_date)
-			VALUES (seq_mem.nextval,#{mid},#{mpasswd},#{mname},#{mtel},#{memail},sysdate,#{is_agree},
+			INSERT INTO member(memno,mpasswd,mname,mtel,memail,reg_date,is_agree,agree_date)
+			VALUES (seq_mem.nextval,#{mpasswd},#{mname},#{mtel},#{memail},sysdate,#{is_agree},
 						<if test="is_agree == 1">
 							sysdate
 						</if>
@@ -76,7 +75,7 @@
 						</if>
 					)
 		
-		</if>
+
 	</insert>
 	
 	<select id="HJMstatusList" resultType="Common">
@@ -109,9 +108,48 @@
 		WHERE memno = #{memno}
 	</update>
 	
-	<select id="HJCheckID" parameterType="java.lang.String" resultType="int">
-		SELECT count(*)
-		FROM member
-		WHERE mid = #{mid}
+	
+	<!-- 이메일 중복 검사 
+		(MSTATUS_MCD = 100: 회원)
+	-->
+	<select id="JS_SelectIdDuplCnt" parameterType="java.lang.String" resultType="int">
+		SELECT COUNT(*) FROM MEMBER WHERE MEMAIL = #{email} AND MSTATUS_MCD = 100
 	</select>
+	
+	<!-- 인증코드, 전송시간 저장
+		MSTATUS_MCD = 0인 EMAIL 이 있으면 UPDATE, 없으면 INSERT
+	 -->
+	<update id="JS_EmailAuthMergeInto" parameterType="Member">
+		MERGE INTO MEMBER 
+	    USING DUAL
+	    ON (MSTATUS_MCD = 0 AND MEMAIL = #{memail})
+	    WHEN MATCHED THEN 
+	          UPDATE SET
+	          AUTHCODE = #{authcode},
+	          VALID_TIME = #{valid_time}
+	    WHEN NOT MATCHED THEN  
+	         INSERT (MEMNO, MPASSWD, MNAME, MTEL, MEMAIL, MSTATUS_MCD, AUTHCODE, VALID_TIME)
+	         VALUES (SEQ_MEM.NEXTVAL, ' ', ' ', ' ', #{memail}, 0, #{authcode}, #{valid_time})
+	</update>
+	
+	<!-- 인증코드, 전송시간 가져오기 -->
+	<select id="JS_SelectAuthCode" parameterType="java.lang.String" resultType="Member">
+		SELECT AUTHCODE, VALID_TIME 
+		FROM MEMBER
+		WHERE MEMAIL = #{email} AND MSTATUS_MCD = 0	
+	</select>
+	
+	<!-- 회원가입 -->
+	<update id="JS_SignUpMember" parameterType="Member">
+		UPDATE MEMBER SET
+			MPASSWD = #{mpasswd},
+			MNAME = #{mname},
+			MTEL = #{mtel},
+			MEMAIL = #{memail},
+			MSTATUS_MCD = 100,
+			IS_AGREE = #{is_agree},
+			AGREE_DATE = sysdate
+		WHERE MEMAIL = #{memail} AND MSTATUS_MCD = 0
+	</update>
+	
 </mapper>

@@ -146,6 +146,24 @@ select {
 	cursor: pointer;
 }
 
+#back {    
+	position: absolute;    
+	z-index: 100;    
+	background-color: #000000;    
+	display:none;    
+	left:0;    
+	top:0;
+} 
+#loadingBar {    
+	position:absolute;    
+	left:50%;    
+	top: 42%; 
+	transform: translate(-50%, -50%);    
+	display:none;    
+	z-index:200;
+}
+
+
 
 /* 모바일 버전 컨테이너 */
 body > .haru-user-container {

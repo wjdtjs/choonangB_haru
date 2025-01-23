@@ -31,7 +31,7 @@
 
 <!-- CSS -->
 <link href="/css/user-menubar.css?v=0.06" rel="stylesheet">
-<link href="/css/haru-user.css?v=0.46" rel="stylesheet">
+<link href="/css/haru-user.css?v=0.47" rel="stylesheet">
 
 <!-- JavaScript -->
-<script src="/js/validation.js?v=0.05"></script>
+<script src="/js/validation.js?v=0.08"></script>

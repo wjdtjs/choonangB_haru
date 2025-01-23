@@ -35,14 +35,4 @@ public class UserViewController {
 		return "user/agreement";
 	}
 	
-	/**
-	 * 회원가입 페이지
-	 * @return
-	 */
-	@GetMapping("/user/signup")
-	public String signUpView() {
-		
-		return "user/signup";
-	}
-	
 }
