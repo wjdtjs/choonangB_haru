@@ -13,7 +13,7 @@ import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Order;
-import com.example.haruProject.dto.OrderProdct;
+import com.example.haruProject.dto.OrderProduct;
 import com.example.haruProject.service.hj.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -74,7 +74,7 @@ public class OrderController {
 		Order orderInfo = os.getOrderInfo(orderno);
 		
 		// 주문 상품 정보
-		List<OrderProdct> products = os.getOrderProducts(orderno);
+		List<OrderProduct> products = os.getOrderProducts(orderno);
 		//주문상태값 대중분류
 		List<Common> ostatus = os.getOrderStatus();
 		// 총결제금액

@@ -22,12 +22,12 @@ public class MemberDaoImpl implements MemberDao {
 	private final SqlSession session;
 	
 	@Override
-	public int getTotalCnt() {
+	public int getTotalCnt(SearchItem si) {
 		System.out.println("MemberDao getTotalCnt...");
 		
 		int result = 0;
 		try {
-			result = session.selectOne("HJGetTotalMember");
+			result = session.selectOne("HJGetTotalMember",si);
 		} catch (Exception e) {
 			System.out.println("MemberDao getTotalCnt error->"+e.getMessage());
 		}

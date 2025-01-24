@@ -4,7 +4,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.example.haruProject.dto.Appointment;
-import com.example.haruProject.dto.Consultation;
+import com.example.haruProject.dto.Chart;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,16 +29,31 @@ public class ConsultationDaoImpl implements ConsultationDao {
 	}
 
 	@Override
-	public Consultation getChart(String resno) {
+	public Chart getChart(String resno) {
 		System.out.println("ConsultationDaoImpl getConsulatation...");
 		
-		Consultation consult = null;
+		Chart result = null;
 		try {
-			consult = session.selectOne("HJSelectChart",resno);
+			result = session.selectOne("HJSelectChart",resno);
+			System.out.println("ConsultationDaoImpl getConsulatation result ->"+result);
 		} catch (Exception e) {
 			System.out.println("ConsultationDao getChart error->"+e.getMessage());
 		}
-		return consult;
+		return result;
+	}
+
+	@Override
+	public int addChart(Chart ch) {
+		System.out.println("ConcultationDao addChart ...");
+		
+		int result = 0;
+		try {
+			result = session.insert("HJInsertChart",ch);
+
+		} catch (Exception e) {
+			System.out.println("ConsultationDao addChart error->"+e.getMessage());
+		}
+		return result;
 	}
 
 }

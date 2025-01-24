@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.hj.ConsultationDao;
 import com.example.haruProject.dto.Appointment;
-import com.example.haruProject.dto.Consultation;
+import com.example.haruProject.dto.Chart;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,10 +22,17 @@ public class ConsultationServiceImpl implements ConsultationService {
 	}
 
 	@Override
-	public Consultation getChart(String resno) {
+	public Chart getChart(String resno) {
 		System.out.println("ConsultationServiceImpl getChart...");
-		Consultation consult = cd.getChart(resno);
-		return consult;
+		Chart chart = cd.getChart(resno);
+		return chart;
+	}
+
+	@Override
+	public int addChart(Chart ch) {
+		System.out.println("ConsultationService addChart ...");
+		int result = cd.addChart(ch);
+		return result;
 	}
 
 }

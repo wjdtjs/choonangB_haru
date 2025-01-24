@@ -10,7 +10,7 @@ import com.example.haruProject.dto.SearchItem;
 
 public interface MemberDao {
 
-	int 			getTotalCnt();
+	int 			getTotalCnt(SearchItem si);
 	List<Member> 	getMemberList(int startRow, int endRow, SearchItem si);
 	Member			getMemberDetail(int memno);
 	List<Pet>		getPetList(int memno);

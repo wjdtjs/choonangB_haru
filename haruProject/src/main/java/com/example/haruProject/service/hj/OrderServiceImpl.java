@@ -8,7 +8,7 @@ import com.example.haruProject.dao.hj.OrderDao;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Order;
-import com.example.haruProject.dto.OrderProdct;
+import com.example.haruProject.dto.OrderProduct;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,9 +42,9 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public List<OrderProdct> getOrderProducts(int orderno) {
+	public List<OrderProduct> getOrderProducts(int orderno) {
 		System.out.println("ShopService getOrderProducts...");
-		List<OrderProdct> products = od.getOrderProducts(orderno);
+		List<OrderProduct> products = od.getOrderProducts(orderno);
 		return products;
 	}
 

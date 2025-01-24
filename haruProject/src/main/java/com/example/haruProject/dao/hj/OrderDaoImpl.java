@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Order;
-import com.example.haruProject.dto.OrderProdct;
+import com.example.haruProject.dto.OrderProduct;
 
 import lombok.RequiredArgsConstructor;
 
@@ -81,8 +81,8 @@ public class OrderDaoImpl implements OrderDao{
 	}
 
 	@Override
-	public List<OrderProdct> getOrderProducts(int orderno) {
-		List<OrderProdct> products = new ArrayList<>();
+	public List<OrderProduct> getOrderProducts(int orderno) {
+		List<OrderProduct> products = new ArrayList<>();
 		System.out.println("OrderDao getOrderProducts orderno"+orderno);
 
 		try {

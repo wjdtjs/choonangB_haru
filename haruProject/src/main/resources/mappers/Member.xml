@@ -3,9 +3,29 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.haruProject.MemberMapper">
-	<select id="HJGetTotalMember" resultType="int">
+	<select id="HJGetTotalMember" parameterType="SearchItem" resultType="int">
 		SELECT count(*) 
 		FROM member
+		WHERE mstatus_mcd != 0
+		<if test="(type4 != 0 and !type4.equals('')) or ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">		
+			and
+		</if>
+		<if test="type4 != 0 and !type4.equals('')">
+			mstatus_mcd = #{type4}
+		</if>	
+		<if test="(type4 != 0 and !type4.equals('')) and ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">		
+			AND
+		</if>
+		<if test="(type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals(''))">
+			<choose>
+			  	<when test="type5 == 1">
+			  		mname LIKE '%' || #{search1} || '%'
+			  	</when>
+			  	<when test="type5 == 2">
+			  		mtel LIKE '%' || #{search1} || '%'
+			  	</when>
+			 </choose>
+		</if>
 	</select>
 	
 	<select id="HJSelectMembers" parameterType="Map" resultType="Member">
@@ -17,8 +37,9 @@
 			  				   cm.content mstatis_content
 			  			FROM member mb
 			  			JOIN common cm ON mb.mstatus_bcd = cm.bcd and mb.mstatus_mcd =cm.mcd
+			  			WHERE mb.mstatus_mcd != 0
 			  			<if test="(search.type4 != 0 and !search.type4.equals('')) or ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">		
-			  				WHERE
+			  				AND
 						</if>
 			  			<if test="search.type4 != 0 and !search.type4.equals('')">
 									mb.mstatus_mcd = #{search.type4}
@@ -88,8 +109,6 @@
 		UPDATE member SET
 			mname = #{mname},
 			mtel = #{mtel},
-			memail = #{memail},
-			mpasswd = #{mpasswd},
 			mstatus_mcd = #{mstatus_mcd},
 			is_agree = #{is_agree},
 			<if test="is_agree == 1">
@@ -99,7 +118,7 @@
 				agree_date = null,
 			</if>
 			update_date = sysdate
-		WHERE memno = #{memno}
+		WHERE memail = #{memail}
 	</update>
 	
 	

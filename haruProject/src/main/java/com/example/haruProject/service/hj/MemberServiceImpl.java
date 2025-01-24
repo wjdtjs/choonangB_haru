@@ -20,9 +20,9 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberDao md;
 	
 	@Override
-	public int getTotalCnt() {
+	public int getTotalCnt(SearchItem si) {
 		System.out.println("MemberService getTotalCnt ...");
-		int totalCnt = md.getTotalCnt();
+		int totalCnt = md.getTotalCnt(si);
 		return totalCnt;
 	}
 

@@ -3,7 +3,7 @@ package com.example.haruProject.dto;
 import lombok.Data;
 
 @Data
-public class OrderProdct {
+public class OrderProduct {
 	
 	private int orderno;			// 주문전호
 	private String pno;				//상품번호

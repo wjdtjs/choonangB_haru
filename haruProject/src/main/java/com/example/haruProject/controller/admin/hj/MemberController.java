@@ -46,7 +46,7 @@ public class MemberController {
 		System.out.println("MemberController memberView si->"+si);
 		
 		// 회원 전체수
-		int totalCnt = ms.getTotalCnt();
+		int totalCnt = ms.getTotalCnt(si);
 		System.out.println("MemberController memberView totalCnt->"+totalCnt);
 		// 페이지네이션
 		Pagination pagination = new Pagination(totalCnt, pageNum, Integer.parseInt(blockSize));
@@ -81,6 +81,7 @@ public class MemberController {
 		model.addAttribute("member",member);
 		model.addAttribute("myPets",myPets);
 		model.addAttribute("mstatus",mstatus);
+		
 		return "admin/detailMember";
 	}
 	

@@ -122,7 +122,7 @@ public class AdminController {
 		model.addAttribute("common",acommonList);
 		model.addAttribute("pageNum",1);
 
-		return "/admin/detailAdmin";
+		return "admin/detailAdmin";
 	}
 	
 	// 관리자 정보 수정

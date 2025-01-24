@@ -335,7 +335,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	                                    					<button type="button" class="chart_btn con_modal" id="chart_modal_open_btn" onclick="location.href='/admin/detailConsultation?resno=${consultation.resno}'">차트상세</button>
 	                                    				</c:when>
 	                                    				<c:when test="${consultation.cresno ne consultation.resno }">
-	                                    					<button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn" onclick="location.href='/admin/addConsultation?resno=${consultation.resno}'">차트작성</button>
+	                                    					<button type="button" class="chart_btn con_modal" id="chart_add_modal_open_btn" onclick="location.href='/admin/addConsultationView?resno=${consultation.resno}'">차트작성</button>
 	                                    				</c:when>
 	                                    			</c:choose>
 	                                    		</td>

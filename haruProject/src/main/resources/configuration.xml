@@ -9,12 +9,12 @@
 		<typeAlias alias="Admin" type="com.example.haruProject.dto.Admin"/>
 		<typeAlias alias="Appointment" type="com.example.haruProject.dto.Appointment"/>
 		<typeAlias alias="Board" type="com.example.haruProject.dto.Board"/>
-		<typeAlias alias="Consultation" 	type="com.example.haruProject.dto.Consultation"/>
+		<typeAlias alias="Chart"		 	type="com.example.haruProject.dto.Chart"/>
 		<typeAlias alias="Member" 			type="com.example.haruProject.dto.Member"/>
 		<typeAlias alias="Pet" 				type="com.example.haruProject.dto.Pet"/>
 		<typeAlias alias="Common" 			type="com.example.haruProject.dto.Common"/>
 		<typeAlias alias="Order" 			type="com.example.haruProject.dto.Order"/>
-		<typeAlias alias="OrderProduct" 	type="com.example.haruProject.dto.OrderProdct"/>
+		<typeAlias alias="OrderProduct" 	type="com.example.haruProject.dto.OrderProduct"/>
 		<typeAlias alias="Notice" type="com.example.haruProject.dto.Notice"/>
 		<typeAlias alias="Schedule" type="com.example.haruProject.dto.Schedule"/>
 	</typeAliases>

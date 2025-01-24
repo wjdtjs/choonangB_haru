@@ -21,7 +21,24 @@
 		console.log('클릭된 행의 orderno:' + orderno);
 		
 		window.location.href = `<%=request.getContextPath()%>/admin/detailShop?orderno=\${orderno}`;
+	});
 	
+	// 필터
+	$(document).on('change','.haru-show-select',function(){
+		const type4 = $(this).val();
+		const type5 = $('.haru-tb-type-box').val();
+		const search1 = $('.tb-search-input').val();
+		location.href = '/admin/shop?type4='+type4+'&type5='+type5+'&search1='+search1;
+	});
+	
+	//검색
+	$(document).on('keyup','.tb-search-input',function(){
+		if (window.event.keyCode == 13) {
+			const type4 = $('.haru-show-select').val();
+			const type5 = $('.haru-tb-type-box').val();
+			const search1 = $('.tb-search-input').val();
+			location.href = '/admin/shop?type4='+type4+'&type5='+type5+'&search1='+search1;
+		}
 	})
 </script>
 <body id="page-top"> 
@@ -62,15 +79,22 @@
 	                            	</select>
 									<!-- 검색창 -->
 	                            	<div class="haru-tb-input-box">
-	                            		<input class="tb-search-input" type="text">                            	
+	                            		<input class="tb-search-input" type="text" value="${search.search1 }">                            	
 	                            	</div>                            
 	                            </div>
 	                            
 	                            <div class="haru-right">
-	                            	<select name="${ostatus_mcd }">
+	                            	<select class="haru-show-select">
 		                            		<option value="0">전체</option>
 	                            		<c:forEach var="status" items="${ostatus}">
-		                            		<option value="${status.mcd }">${status.content }</option>
+	                            			<c:choose>
+	                            				<c:when test="${status.mcd == search.type4}">
+	                            					<option value="${status.mcd }" selected>${status.content }</option>
+	                            				</c:when>
+	                            				<c:otherwise>
+				                            		<option value="${status.mcd }">${status.content }</option>
+	                            				</c:otherwise>
+	                            			</c:choose>
 	                            		</c:forEach>
 	                            	</select>
 	                            </div>

@@ -17,7 +17,7 @@
 								cm1.content opayment_content,
 								cm2.content ostatus_content,
 								mb.mname,
-								min(pd.pname)pname
+								min(pd.pname) pname
 						FROM purchase pc
 						JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
 						JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
@@ -28,9 +28,29 @@
 			  				WHERE
 						</if>
 			  			<if test="search.type4 != 0 and !search.type4.equals('')">
-									mb.mstatus_mcd = #{search.type4}
+									pc.ostatus_mcd = #{search.type4}
 			  			</if>
-						GROUP BY    pc.orderno, pc.odate, pc.update_date,
+			  			<if test="(search.type4 != 0 and !search.type4.equals('')) and ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">
+			  				AND
+			  			</if>
+			  			<if test="(search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals(''))">
+			  				<choose>
+			  					<when test="search.type5 == 1">
+			  						pc.orderno LIKE '%' || #{search.search1} || '%'
+			  					</when>
+			  					<when test="search.type5 == 2">
+			  						mb.mname LIKE '%' || #{search.search1} || '%'
+			  					</when>
+			  					<when test="search.type5 == 3">
+			  						pc.orderno IN (	SELECT orderno
+			  									 	FROM orderproduct op1
+			  									 	JOIN product pd1 ON op1.pno = pd1.pno
+			  										WHERE pd1.pname LIKE '%' || #{search.search1} || '%'
+			  									   )
+			  					</when>
+			  				</choose>
+			  			</if>
+						GROUP BY    pc.orderno, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd,
                     				cm1.content,
                     				cm2.content,
                     				mb.mname

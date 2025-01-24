@@ -19,18 +19,22 @@
 <!-- style -->
 <style>
 
-table, div{
-	color: black;
-	width: 100%;
-}
+
+
 .apmTable tr{
 	height: 40px;
+	color: black;
+}
+.petInfo_1{
+	color: black;
+	width: 100%;
 }
 
 .infoTitle {
 	font-size: 1.15rem;
 	font-weight: 500;
-	margin-top: 10px
+	margin-top: 10px;
+	color: black;
 }
 
 .contents{
@@ -40,6 +44,7 @@ table, div{
 	display: inline-grid;
 	grid-template-columns: 1fr 1fr 3fr 3fr 2fr;
 	margin: 5px 0;
+	width: 100%
 }
 
 .contents .content:first-child{
@@ -106,6 +111,11 @@ em {
 	justify-content: center;
 
 }
+
+img {
+	width: 7rem;
+	height: 7rem
+}
 </style>
 
 <body> 
@@ -170,29 +180,35 @@ em {
 				        </div>
 				        
 				        <form action="/admin/updChart" method="post" name="frm" id="upd_chart">
+				        	<input type="hidden" name="resno" value="${apm.resno}">
 				        	<div class="infoTitle">이미지</div>
-				        	<div style="margin-top: 1rem">
-									<%-- <c:choose> 
-										<c:when test="${not empty savedName }"> 
-											<img alt="UpLoad Image" src="">	        		
-										</c:when>
-										<c:otherwise>  --%>
-										<div class="pro-label-div">
-											<label for="main_img" class="img_upload">+</label>
-											<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none"> 							
-										</div>
-										<div class="pro-mainimg-div" style="display: none">
-										</div>
-										<%-- </c:otherwise> 
-									</c:choose>  --%>
+				        	<div style="margin-top: 1rem" class="imgList">
+							<%-- <c:choose> 
+									<c:when test="${not empty savedName }"> 
+										<img alt="UpLoad Image" src="">	        		
+									</c:when>
+								 <c:otherwise>  --%>
+								 <div class="pro-mainimg-div-evnet">
+								 	<img alt="chart-img" src="${chart.img1 }"  onclick="delete(this);">
+								 	<img alt="chart-img" src="${chart.img2 }" onclick="delete(this);">
+								 	<img alt="chart-img" src="${chart.img3 }" onclick="delete(this);">
+								 	<img alt="chart-img" src="${chart.img4 }" onclick="delete(this);">
+								 	<img alt="chart-img" src="${chart.img5 }" onclick="delete(this);">
+								 </div>
+								 <div class="pro-label-div">
+								 	<label for="main_img" class="img_upload">+</label>
+									<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
+								 </div>
+							
 					       </div>
+					       
 					       <div class="infoTitle">차트 내용<em>*</em></div>
 				        	<div>
-				        		<textarea class="form-input-box" name="content" required="required">${chart.ccontent }</textarea>
+				        		<textarea class="form-input-box" name="ccontents" required="required">${chart.ccontents }</textarea>
 				        	</div>
 				        	<div class="infoTitle">기타/전달사항</div>
 				        	<div>
-				        		<textarea class="form-input-box" name="memo" >${chart.cent_con }</textarea>
+				        		<textarea class="form-input-box" name="cect_con" >${chart.cect_con }</textarea>
 				        	</div>
 				        </form>
 				     </div>
@@ -227,4 +243,82 @@ em {
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
     
 </body>
+<script type="text/javascript">
+	/**
+	* 첨부파일 추가
+	*/
+	var fileNo = 1;
+	var filesArr = new Array();
+	var maxFileCnt = 5; //최대 첨부파일 개수
+	var attFileCnt = document.querySelectorAll(".pro-mainimg-div-evnet img").length;	// 기존 추가된 첨부파일 개수		
+	
+	
+	document.addEventListener("DOMContentLoaded", function(){
+		if (attFileCnt == maxFileCnt){
+	    	$('.pro-label-div').css('display', 'none');
+		}else {
+			$('.pro-label-div').css('display', 'inline');
+		}
+
+		
+	});
+	
+	function addFile(obj) {
+	
+	
+		var remainFileCnt = maxFileCnt-attFileCnt; 											// 추가로 첨부가능한 개수
+		var curFileCnt = obj.files.length; 													// 현재 첨부된 파일 개수
+	
+		// 최대 첨부파일수 초과시 
+		if(curFileCnt > remainFileCnt){
+			alert('최대 첨부파일 수는 '+maxFileCnt+'개 입니다.');
+		}
+	
+	
+		if(attFileCnt+curFileCnt >= maxFileCnt){
+			$('.pro-label-div').css('display', 'none');
+		}else {
+			$('.pro-label-div').css('display', 'inline');
+		}
+	
+		
+		for (var i = 0; i< Math.min(curFileCnt, remainFileCnt); i++){
+			
+			const file = obj.files[i];
+
+		
+			// 파일 배열에 담기
+			var reader = new FileReader();
+			reader.onload = function (event) {
+				filesArr.push(file);
+				// 목록 추가
+				let htmlData = '';
+			
+				htmlData += `<img src="\${event.target.result}" alt="product-image" name="img\${fileNo}" id="img\${fileNo}" onclick="deleteFile(\${fileNo})" style="width: 7rem; height: 7rem" />`;
+					
+				console.log(htmlData)
+				$('.pro-mainimg-div-evnet').css('display', 'inline');
+				$('.pro-mainimg-div-evnet').append(htmlData);
+				/* $('.pro-mainimg-div').addClass('pro-thumbnail'); */
+				fileNo++;
+			};
+			reader.readAsDataURL(file);
+		}
+	} 
+
+	/**
+	 * 첨부된 이미지 삭제
+	 */
+	function deleteFile(num){
+		if(confirm("이미지를 삭제하시겠습니까?")){
+			$('#img' + num).remove(); // 클릭한 이미지만 삭제
+			filesArr.splice(num, 1); // 파일 배열에서 해당 파일 삭제
+		}
+			
+		// 이미지 수가 미만이면 .pro-lavel-div 다시 보이기ㅐ
+		if(document.querySelectorAll(".pro-mainimg-div-event img").length < maxFileCnt){
+			$('.pro-label-div').css('display', 'inline');
+		}
+	}
+</script>
 </html>
