@@ -1,6 +1,7 @@
 package com.example.haruProject.service.hr;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,7 @@ public class AppointmentServiceImp implements AppointmentService {
 	}
 	
 	// 예약 추가
+	// 예약 항목(대분류) 불러오기 
 	@Override
 	public List<Map<String, Object>> getBCDList() {
 		System.out.println("AppointmentServiceImp getBCDList() start ,,,");
@@ -80,6 +82,7 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return bcdList;
 	}
+	// 세부 항목(중분류) 불러오기
 	@Override
 	public List<Map<String, Object>> getMCDList(int bcd) {
 		System.out.println("AppointmentServiceImp getMCDList() start ,,,");
@@ -90,6 +93,8 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return mcdList;
 	}
+	
+	// 진료 가능 담당의 불러오기
 	@Override
 	public List<Map<String, Object>> getDocList() {
 		System.out.println("AppointmentServiceImp getDocList() start ,,,");
@@ -100,6 +105,7 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return dList;
 	}
+	// 선택한 담당의에 따른 선택 불가능 날짜 불러오기
 	@Override
 	public List<Schedule> getDisabledDatesList(int ano) {
 		System.out.println("AppointmentServiceImp getDisabledDatesList() start ,,,");
@@ -109,6 +115,42 @@ public class AppointmentServiceImp implements AppointmentService {
 		sList = ad.getDisabledDatesList(ano);
 		
 		return sList;
+	}
+	// 선택한 날짜에 따른 선택 불가능 시간 불러오기
+	@Override
+	public List<Appointment> getDisabledTimesList(String rdate, int ano) {
+		System.out.println("AppointmentServiceImp getDisabledTimesList() start ,,,");
+		System.out.println("AppointmentServiceImp getDisabledTimesList() rdate ->"+rdate);
+		System.out.println("AppointmentServiceImp getDisabledTimesList() ano ->"+ano);
+		
+		List<Appointment> aList = new ArrayList<>();
+		aList = ad.getDisabledTimesList(rdate, ano);
+		System.out.println("AppointmentServiceImp getDisabledTimesList() aList ->"+aList);
+		
+		return aList;
+	}
+	
+	// 검색한 단어에 따른 보호자 이름 불러오기
+	@Override
+	public List<Map<String, Object>> getMnameList(String search1) {
+		System.out.println("AppointmentServiceImp getMnameList() start ,,,");
+		System.out.println("AppointmentServiceImp getMnameList() search1 ->"+search1);
+		
+		List<Map<String, Object>> mnameList = new ArrayList<>();
+		mnameList = ad.getMnameList(search1);
+		
+		return mnameList;
+	}
+	// 선택한 보호자에 대한 동물 이름 불러오기
+	@Override
+	public List<Map<String, Object>> getPetnameList(int memno) {
+		System.out.println("AppointmentServiceImp getPetnameList() start ,,,");
+		System.out.println("AppointmentServiceImp getPetnameList() memno ->"+memno);
+		
+		List<Map<String, Object>> petnameList = new ArrayList<>();
+		petnameList = ad.getPetnameList(memno);
+		
+		return petnameList;
 	}
 
 	
@@ -141,6 +183,7 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return cList;
 	}
+
 	
 
 }

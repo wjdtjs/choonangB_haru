@@ -109,8 +109,8 @@
 	border-radius: 12px;
 	color: black;
 	font-size: 14px;
-	width: 136px;
-	height: 28px;
+	width: 160px;
+	height: 30px;
 	padding: 2px 0px 2px 12px;
 	margin: 0 12px;
 }
@@ -138,6 +138,7 @@ table#calendar {
     border-radius: 12px;
 	border: none;
 	padding: 8px;
+	height: 50px;
 }
 
 
@@ -164,10 +165,25 @@ table#calendar {
 	color: white;
 }
 
+.disabled-btn {
+	background-color: #D9D9D9 !important;
+	color: white !important;
+	border: none !important;
+}
+
 #cal_time_table > tbody > tr:nth-child(3) > td {
 	padding-top: 12px;
 }
 
+/* 보호자 이름 */
+input#res-mname {
+    width: 160px;
+    height: 30px;
+    margin: 0 12px;
+    border: 1px solid var(--haru);
+    border-radius: 12px;
+    padding: 0 12px;
+}
 
 
 </style>
@@ -177,6 +193,8 @@ table#calendar {
 	var today = new Date();//오늘 날짜//내 컴퓨터 로컬을 기준으로 today에 Date 객체를 넣어줌
     var date = new Date();//today의 Date를 세어주는 역할
     var disabledDates = [];
+    
+ 	let selectedDateGlobal = null;
     
     function prevCalendar() {//이전 달
     // 이전 달을 today에 값을 저장하고 달력에 today를 넣어줌
@@ -253,7 +271,7 @@ table#calendar {
             });
             
             
-         	// 비활성화 날짜 처리
+         	// 비활성화 날짜 처리         	
             if (dateValue.includes(dateStr)) {
             	console.log("disabledDates dateValue start ,,,");
                 cell.style.backgroundColor = "lightgray";
@@ -261,9 +279,14 @@ table#calendar {
                 cell.style.opacity = "0.6"; // 시각적 효과
             } else {
                 // 날짜 클릭 이벤트 추가
-                cell.addEventListener("click", function () {
-                    const selectedDate = `\${today.getFullYear()}-\${today.getMonth() + 1}-\${currentDay}`;
-                    alert("선택된 날짜: " + selectedDate);
+                cell.addEventListener("click", async function () {
+                	// 두 자리 수로 맞추기 위한 함수 (ex: 1 -> 01)
+                	const padZero = (num) => (num < 10 ? `0\${num}` : `\${num}`);
+                	
+                	// yy/MM/dd로 변환
+                    const selectedDate = `\${today.getFullYear()}/\${padZero(today.getMonth() + 1)}/\${padZero(currentDay)}`;
+                    selectedDateGlobal = selectedDate
+                    alert("선택된 날짜: " + selectedDateGlobal);
 
                     // 선택된 날짜 표시
                     const selectedTd = document.querySelector(".selected-date");
@@ -271,24 +294,31 @@ table#calendar {
                         selectedTd.classList.remove("selected-date");
                     }
                     cell.classList.add("selected-date");
+                    
+                    enableAllButtons();		// 모든 시간 버튼 활성화
+                    
+                    // 시간 선택 버튼 보이면서 모든 시간 가져오기 + 예약 테이블에서 선택한 날짜에 해당하는 start_time, rtime 불러와서 해당하는 시간 비활성화 처리
+                    console.log(selectedDate);
+                    const disabledTimes = await getDisabledTimes(selectedDate);		// 날짜에 따른 예약 불가능 시간 가져오기
+                	
+                    console.log("disabledTimes : ",disabledTimes);
+                    // start_time, rtime/30 불러오기
+                    disabledTimes.forEach((item) => {
+                    	const stime = item.start_time;
+                    	const dtime = (item.rtime)/30;
+                    	console.log("start_time(stime) : ",stime,"rtime(dtime) : ",dtime);
+	                    // 불가능시간과 rtime/30한 값을 넣어 예약 불가능한 시간 버튼 비활성화
+	                    disableButtonsFromValue(stime, dtime);
+                    })                    
+                    
+                    $('#cal_time').css("display", "block");		// 날짜 선택 시에 시간 선택 버튼 보이게
+                    
+                    
                 });
             }
 
         }
     }
-
-    
-    // 버튼 클릭시 회색
-    document.addEventListener("DOMContentLoaded", () => {
-    	const cal_btn = document.querySelectorAll(".cal_time_btn");
-        
-        cal_btn.forEach((button) => {
-        	button.addEventListener("click", () => {
-        		button.classList.toggle("selected_time");
-        	});
-        });
-	});
-    
     
     // 비활성화 날짜 불러오기
     async function getDisabledDates(docValue) {
@@ -306,7 +336,6 @@ table#calendar {
             }
             const data = await response.json();
             console.log("getDisabledDates data ->", data);
-            // console.log("getDisabledDates data.schdate ->", data.schdate);
             return data || [];
         } catch (error) {
             console.error("Error fetching disabled dates:", error);
@@ -333,21 +362,262 @@ table#calendar {
 				if (disabledDates) {
 					console.log("disabledDates ->",disabledDates);
 					console.log("buildCalendar ready,,,");
-					buildCalendar(disabledDates);
+					buildCalendar(disabledDates);					// 진료 불가능 날짜 적용된 달력 함수 호출
 					$('#res-calendar').css("display", "block");		// 달력 보이게
 				}
 			}
     	})
     })
     
+    // 날짜 선택에 따른 시간들 불러오기
+    // 선택한 날짜에 따른 시간 불러오기 전에 모든 버튼 활성화
+    function enableAllButtons() {
+    	document.querySelectorAll(".cal_time_btn").forEach((button) => {
+    		console.log("enableAllButtons() start ,,,");
+    		 button.disabled = false; // 버튼 활성화
+    	     button.classList.remove("disabled-btn", "selected_time"); // 관련 클래스 제거
+    	     button.style.backgroundColor = ""; // 스타일 초기화
+    	     button.style.color = ""; // 텍스트 색 초기화
+    	     button.style.pointerEvents = "";
+    	});
+    }
+    
+    // 선택한 날짜에 따른 비활성화 시간 불러오기
+    async function getDisabledTimes(selectedDate) {
+    	try {
+    		const docValue = document.querySelector("#res-doc").value;
+    		console.log("getDisabledTimes selected ano : ", docValue);
+    		console.log("getDisabledTimes docValue ->"+docValue);
+    		console.log("getDisabledTimes api url ->", `/api/disabled-times?rdate=\${selectedDate}&ano=\${docValue}`);
+    		    		
+    		const response = await fetch(`/api/disabled-times?rdate=\${selectedDate}&ano=\${docValue}`, {
+    			method:"GET",
+    			headers: {
+    				"Content-Type": "application/json",
+    			},
+    		});
+    		
+    		if(!response.ok) {
+    			throw new Error("Failed to fetch disabled times");
+    		}
+    		
+    		const data = await response.json();
+    		console.log("getDisabledTimes data ->", data);
+    		return data || [];
+		} catch (error) {
+			console.error("Error fetching disabled times:", error);
+            return [];
+		}
+    }
+    
+    // 불러온 비활성화 시간에 따른 버튼 비활성화
+    function disableButtonsFromValue(startValue, count) {
+    	const buttons = Array.from(document.querySelectorAll(".cal_time_btn"));
+    	// 기준이 될 버튼 인덱스 찾기
+    	const startIndex = buttons.findIndex((button) => button.value === startValue);
+    	if (startIndex === -1) {
+            console.error("해당 value를 가진 버튼을 찾을 수 없습니다:", startValue);
+            return;
+        }
+    	
+    	// 기준 인덱스부터 count 만큼 버튼 비활성화
+        for (let i = startIndex; i < startIndex + count && i < buttons.length; i++) {
+            buttons[i].disabled = true; // 버튼 비활성화
+            buttons[i].classList.add("disabled-btn"); // 시각적 효과를 위한 클래스 추가 (선택 사항)
+        }
+    }
+    
+    
+        
+    // 시간 선택
+    document.addEventListener("DOMContentLoaded", () => {
+    	const cal_btn = document.querySelectorAll(".cal_time_btn");
+    	
+        cal_btn.forEach((button) => {
+        	button.addEventListener("click", (e) => {
+        		// 기존에 선택된 버튼이 있다면 선택 해제 -> 최대 한 개의 버튼만 선택 가능
+        		const previouslySelected = document.querySelector(".cal_time_btn.selected_time");
+                if (previouslySelected && previouslySelected !== button) {
+                    previouslySelected.classList.remove("selected_time");
+                }
+                
+        		const isSelected = button.classList.toggle("selected_time");	// 버튼 색 변경
+        		const cal_btn_val = e.target.value;				// 버튼 value 가져오기
+        		console.log("cal_btn_val : ", cal_btn_val);        		
+
+                if (isSelected) {
+                    // 버튼이 선택된 상태
+                    console.log(`버튼 선택됨: \${button.value}`);
+                    $('.select-rtime-div').css("display", "flex"); // 진료 소요 시간 드롭다운 표시
+                } else {
+                    // 버튼이 해제된 상태
+                    console.log(`버튼 해제됨: \${button.value}`);
+                    $('.select-rtime-div').css("display", "none"); // 진료 소요 시간 드롭다운 숨김
+                }
+				
+        	});
+        });
+	});
+    
+    // 진료 소요 시간 선택    
+    document.addEventListener("DOMContentLoaded", () => {
+	    const numberInput = document.querySelector("#res-select-rtime");
+	
+	    // 값 변경 시 이벤트 처리
+	    numberInput.addEventListener("input", (e) => {
+	        const currentValue = e.target.value; // 현재 입력된 값 가져오기
+	        console.log(`현재 입력된 값: \${currentValue}`);
+	        
+	        // 선택된 버튼 시간
+	       const selectedButton = document.querySelector(".cal_time_btn.selected_time");
+			
+	        let selectedValue;
+			if (selectedButton) {
+			    selectedValue = selectedButton.value; // 버튼의 value 값 가져오기
+			    console.log(`선택된 버튼의 value: \${selectedValue}`);
+			} else {
+			    console.log("선택된 버튼이 없습니다.");
+			}
+	        console.log(`현재 선택된 예약 시간: \${selectedValue}, 현재 입력된 진료 소요 시간:\${currentValue}`);
+	        
+	        const num = currentValue/30;
+	        console.log("selectedValue : ", selectedValue, "num : ", num);
+	        
+	        // 기존 상태 초기화
+	        resetButtonStates();
+
+	        // 새롭게 비활성화 버튼 적용
+	        buttonChangeFromRtime(selectedValue, num);
+	    });
+	});
+    
+ 	// 기존 버튼 상태 초기화 함수
+    function resetButtonStates() {
+        const buttons = document.querySelectorAll(".cal_time_btn");
+        buttons.forEach((button) => {
+            // button.disabled = false; // 모든 버튼 활성화
+            // button.classList.remove("selected_time"); // 클래스 초기화
+            
+            button.disabled = false; // 버튼 활성화
+   	    	button.classList.remove("disabled-btn", "selected_time"); // 관련 클래스 제거
+   	    	button.style.backgroundColor = ""; // 스타일 초기화
+   	    	button.style.color = ""; // 텍스트 색 초기화
+   	    	button.style.pointerEvents = "";
+        });
+    }
+    
+ 	// 진료 소요 시간 변경에 따른 style 변화
+    function buttonChangeFromRtime(startValue, count) {
+    	const buttons = Array.from(document.querySelectorAll(".cal_time_btn"));
+    	// 기준이 될 버튼 인덱스 찾기
+    	const startIndex = buttons.findIndex((button) => button.value === startValue);
+    	if (startIndex === -1) {
+            console.error("해당 value를 가진 버튼을 찾을 수 없습니다:", startValue);
+            return;
+        }
+    	
+    	// 기준 인덱스부터 count 만큼 버튼 비활성화
+        for (let i = startIndex; i < startIndex + count && i < buttons.length; i++) {
+            buttons[i].disabled = true; // 버튼 비활성화
+            buttons[i].classList.add("selected_time"); // 시각적 효과를 위한 클래스 추가 (선택 사항)
+        }
+    }
     
     
     
     
+    // ------ 보호자 이름 + 동물 이름
+    // 보호자 이름 입력시 드롭박스 display: none -> block
+	function search_mname(e) {
+    	if(e.key === "Enter") {
+    		const searchInput = $("#res-mname").val();
+    		console.log("searchInput(search1) : ", searchInput);
+    		
+    		getMname(searchInput);
+    		
+    		const dropMname = document.getElementById("res-select-mname");
+    		console.log("dropMname(res-select-mname) : ", dropMname);
+    		if (dropMname.style.display === "none") {
+				dropMname.style.display = "block";
+			} else {
+				dropMname.style.display = "none";
+			}
+    		
+    		
+    	}
+    }
     
-     
-     
-	// 예약 항목 > 선택된 대분류 값에 따른 중분류 값 가져오기
+    // 보호자 이름 입력시 그에 해당하는 보호자 이름 가져오기
+    function getMname(searchInput) {
+    	console.log("getMname start ,,,");
+    	console.log(searchInput);
+    	
+    	$('.add-res-mname').remove();
+    	$('#res-select-mname option:eq(0)').prop("selected",true);
+    	
+    	$.ajax({
+    		url: `${contextPath}/api/mname/`+searchInput,
+    		datatype: 'json',
+    		success: function(data) {
+    			console.log("data : ", data);
+    			let str = "";
+    			$(data).each(function(index, item) {
+    				str += `<option value="\${item.MEMNO}" class='.add-res-mname'>\${item.MNAME}&nbsp;(\${item.MTEL})</option>`;    				
+    			})
+    			$('#res-select-mname').html(str);
+    			
+    			if(searchInput) {
+    				$('#res-select-mname').val(searchInput).prop('selected', true);
+    			}
+    		},
+    		error: function(xhr, status, error) {
+	            console.error("보호자 이름 데이터를 가져오는 중 오류 발생:", error);
+	        }
+    	})
+    }
+    
+    // 보호자 이름 선택에 따른 동물 이름 가져오기 (동물이름 + 생년월일)
+    $(function() {
+    	$('#res-select-mname').change(() => {
+    		console.log("보호자 이름 선택됨");
+    		getPetname();
+    	})
+    })
+
+    function getPetname(val) {
+    	console.log("getPetname start ,,,");
+		let memno = $("#res-select-mname option:selected").val();
+    	console.log("memno : ", memno);
+    	
+    	$('.add-res-petname').remove();
+    	$('#res-select-petname option:eq(0)').prop("selected", true);
+    	
+    	$.ajax({
+    		url: `${contextPath}/api/petname/`+memno,
+    		datatype: 'json',
+    		success: function(data) {
+    			console.log("data : ", data);
+    			let str = "";
+    			$(data).each(function(index, item) {
+    				str += `<option value="\${item.PETNO}" class='.add-res-petname'>\${item.PETNAME}&nbsp;(\${item.PETBIRTH})</option>`;    				
+    			})
+    			$('#res-select-petname').html(str);
+    			
+    			if(memno) {
+    				$('#res-select-petname').val(memno).prop('selected', true);
+    			}
+    		},
+    		error: function(xhr, status, error) {
+	            console.error("동물 이름 데이터를 가져오는 중 오류 발생:", error);
+	        }
+    	})
+    	
+    	
+    }
+    
+   
+
+	// ------ 예약 항목 > 선택된 대분류 값에 따른 중분류 값 가져오기
      /**
       * 대분류 선택 시 중분류 값 가져오기
       */
@@ -393,46 +663,28 @@ table#calendar {
 	
 	
 	
-	// 보호자 이름에 따른 동물이름 데려오기
-	// 보호자 이름 검색으로 드롭박스 통해 가져오기
-/* 	function getMname(search1) {
-		console.log(search1);
-		
-		$.ajax({
-			url:  ,
-			data: {
-				search1: search1
-			},
-			dataType: 'json',
-			success: function(data) {
-				console.log(data.mname);
-				console.log(data.mtel);
+	// 예약 추가하기
+	$(document).ready(function() {
+		$('.update_btn').click(function() {
+			if(confirm("예약을 추가하시겠습니까?") == true) {
+				var sendData = $('form').serialize();
+				// sendData에 1차로 들어오는 데이터: rtime, ano, mtitle_bcd, mtitle_mcd, petno, memo
+				console.log("sendData : ", sendData);
+				// 추가로 넣어줘야 할 것들: rdate, start_time				
+                const rdate = selectedDateGlobal;
+				var start_time = document.querySelector(".cal_time_btn.selected_time").value;
 				
-				let str = "";
-				$(data).each(function(index, item) {
-					str += `<option value="\${item.mname}" class='.res-mname'>\${item.mtel}</option>`;
-				})
+				console.log("rdate : ", rdate, " start_time : ", start_time);
 				
-				$('#res-input').html(str);
+				sendData = sendData + ('&rdate='+rdate) + ('&start_time='+start_time);
 				
-				if(search1) {
-					$('#res-input').val(search1).prop('selected', true);
-				}
-			},
-			error: function(xhr, status, error) {
-	            console.error("보호자 이름 데이터를 가져오는 중 오류 발생:", error);
-	        }
+				location.href = "/admin/addReservation?"+sendData;
+			}
 		})
-	}
+	})
 	
- 	
- */
-    
-    
-    
-    
-    
-    
+	
+	
 </script>
 
 <body>
@@ -456,11 +708,13 @@ table#calendar {
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid modal_">
+                <form action="" method="POST">             
+                
                 	
                 	<!-- Page Heading -->
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >예약 추가</h1>
                     
-					<!-- 모달 내용 -->       
+					    
 			        <div class="modal_l"> 
 			        	<!-- 제목을 제외한 컨텐츠 -->
 			        	<div id="hr-res"> 
@@ -495,31 +749,37 @@ table#calendar {
 			        				<hr>
 				        			<table id="cal_time_table" width="100%" cellspacing="0">
 				        				<tr>
-				        					<td><button type="button" class="cal_time_btn">09:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">09:30</button></td>
-				        					<td><button type="button" class="cal_time_btn">10:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">10:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="0900">09:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="0930">09:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1000">10:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1030">10:30</button></td>
 				        				</tr>
 				        				<tr>
-				        					<td><button type="button" class="cal_time_btn">11:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">11:30</button></td>
-				        					<td><button type="button" class="cal_time_btn">12:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">12:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1100">11:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1130">11:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1200">12:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1230">12:30</button></td>
 				        				</tr>
 				        				<tr>
-				        					<td><button type="button" class="cal_time_btn">02:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">02:30</button></td>
-				        					<td><button type="button" class="cal_time_btn">03:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">03:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1400">02:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1430">02:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1500">03:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1530">03:30</button></td>
 				        				</tr>
 				        				<tr>
-				        					<td><button type="button" class="cal_time_btn">04:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">04:30</button></td>
-				        					<td><button type="button" class="cal_time_btn">05:00</button></td>
-				        					<td><button type="button" class="cal_time_btn">05:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1600">04:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1630">04:30</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1700">05:00</button></td>
+				        					<td><button type="button" class="cal_time_btn" value="1730">05:30</button></td>
 				        				</tr>
 				        			</table>
 				        			
+				        		<div class="select-rtime-div"  style="display: none; align-items: center;">
+					        		<p style="font-size: 16px; padding: 8px 12px;">진료 소요 시간(분)</p>
+					        		<input name="rtime" id="res-select-rtime" type="number" step="30"
+					        			style="padding:0 12px; border: 1px solid var(--haru); border-radius: 10px; width: 70px; height: 30px; " required>							        						
+				        		</div>
+
 				        		</div>
 				        		
 				        	</div>
@@ -532,7 +792,7 @@ table#calendar {
 						        				<th>담당의</th>
 						        				<td>
 						        					<div>
-								                       	<select id="res-doc" name="aname">
+								                       	<select id="res-doc" name="ano" required>
 								                       		<option disabled selected value="0">선택</option>
 								                    		<c:forEach var="d" items="${docList}">
 								                    			<option value="${d.ANO}">${d.ANAME}&nbsp;선생님</option>
@@ -545,7 +805,7 @@ table#calendar {
 						        				<th>예약 항목</th>
 						        				<td>
 						        					<div>
-								                       	<select id="res-content" name="mtitle_bcd">
+								                       	<select id="res-content" name="mtitle_bcd" required>
 								                    		<option disabled selected value="0">선택</option>
 								                    		<c:forEach var="bcd" items="${bcdList}">
 								                    			<option value="${bcd.BCD}" class="res-content-bcd">${bcd.CONTENT}</option>
@@ -558,7 +818,7 @@ table#calendar {
 						        				<th>세부 항목</th>
 						        				<td>
 						        					<div>
-								                       	<select id="res-detail" name="mtitle_mcd">
+								                       	<select id="res-detail" name="mtitle_mcd" required>
 								                    		<option disabled selected value="0">선택</option>
 								                    	</select>
 								                    </div>
@@ -569,10 +829,11 @@ table#calendar {
 						        				<th>보호자</th>
 						        				<td>
 						        					<div style="display: flex">
-						        						<input type="text">
-								                       	<select id="res-input" name="mname">
+						        						<input type="text" name="search1" id="res-mname"
+						        								onkeypress="console.log('onkeypress 실행됨'); if (event.key === 'Enter') search_mname(event)"
+						        								value="${search1 }">
+								                       	<select id="res-select-mname" name="memno" style="display:none" required>
 								                       		<option disabled selected value="0">선택</option>
-								                    		
 								                    	</select>
 								                    </div>
 						        				</td>
@@ -580,10 +841,9 @@ table#calendar {
 						        			
 						        			<tr>
 						        				<th>동물이름</th>
-						        				<!-- 보호자 이름에 해당하는 동물 불러와서 선택할 수 있게 -->
 						        				<td>
-						        					<select style="display: none">
-						        				
+						        					<select id="res-select-petname" name="petno" required>
+						        						<option disabled selected value="0">선택</option>
 						        					</select>
 						        				</td>
 						        			</tr>
@@ -595,7 +855,7 @@ table#calendar {
 						        
 				        <p>예약 메모</p>
 				        <div id="hr-res-memo">
-				        	<textarea rows="10" cols="70" placeholder="예약 메모를 입력해주세요."></textarea>
+				        	<textarea rows="10" cols="70" placeholder="예약 메모를 입력해주세요." name="memo"></textarea>
 				        </div>
 	        		
 		        	</div>
@@ -605,13 +865,16 @@ table#calendar {
 	        
 		        
 	        </div>
+	        
 			        <!-- 모달 버튼 -->
 			        <div class="modal_l-content-btn">
 			        	<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
 			        	<button type="submit" class="update_btn" form="pro-update-form">예약추가</button>
 			        </div>
 					
-                </div>
+                </form>
+                
+            </div>
                 <!-- /.container-fluid -->
 
             </div>

@@ -1,5 +1,6 @@
 package com.example.haruProject.dao.hr;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,12 @@ public interface AppointmentDao {
 	List<Map<String, Object>> getMCDList(int bcd);
 	List<Map<String, Object>> getDocList();
 	List<Schedule> getDisabledDatesList(int ano);
+	List<Map<String, Object>> getMnameList(String search1);
+	List<Map<String, Object>> getPetnameList(int memno);
+	List<Appointment> getDisabledTimesList(String rdate, int ano);
+
+
+
 
 
 

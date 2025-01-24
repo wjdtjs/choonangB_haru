@@ -37,6 +37,7 @@ public class Appointment {
 	private String gender;		// 성별	
 	private String species;		// 종
 	private String cresno;		// 차트가 작성됐는지 확인하기 위함
+	private String mtel;		// 보호자 전화 번호
 	
 	// 검색
 	private String start_date;	// 검색 시작 날짜

@@ -1,6 +1,7 @@
 package com.example.haruProject.dao.hr;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,6 +168,63 @@ public class AppointmentDaoImp implements AppointmentDao {
 		
 		return sList;
 	}
+	// 진료 날짜에 따른 예약 불가 시간 불러오기
+	@Override
+	public List<Appointment> getDisabledTimesList(String rdate, int ano) {
+		System.out.println("AppointmentDaoImp getDisabledTimesList() start ,,, ");
+		System.out.println("AppointmentDaoImp getDisabledTimesList() rdate ->"+rdate);
+		System.out.println("AppointmentDaoImp getDisabledTimesList() ano ->"+ano);
+		
+		List<Appointment> aList = new ArrayList<>();
+		Map<String, Object> aMap = new HashMap<>();
+		
+		aMap.put("rdate", rdate);
+		aMap.put("ano", ano);
+		
+		try {
+			aList = session.selectList("HR_SelectDisabledTimesList", aMap);
+			System.out.println("AppointmentDaoImp getDisabledTimesList() aList ->"+aList);
+		} catch (Exception e) {
+			log.error("getDisabledTimesList() error ->", e);
+		}
+		
+		return aList;
+	}
+
+	
+	// 보호자 이름 불러오기
+	@Override
+	public List<Map<String, Object>> getMnameList(String search1) {
+		System.out.println("AppointmentDaoImp getMnameList() start ,,, ");
+		System.out.println("AppointmentDaoImp getMnameList() search1 ->"+search1);
+		
+		List<Map<String, Object>> mnameList = new ArrayList<>();
+		
+		try {
+			mnameList = session.selectList("HR_SelectMnameList", search1);
+		} catch (Exception e) {
+			log.error("getMnameList() error ->", e);
+		}
+		
+		return mnameList;
+	}
+	// 보호자 이름 선택에 따른 동물 이름 가져오기
+	@Override
+	public List<Map<String, Object>> getPetnameList(int memno) {
+		System.out.println("AppointmentDaoImp getPetnameList() start ,,, ");
+		System.out.println("AppointmentDaoImp getPetnameList() memno ->"+memno);
+		
+		List<Map<String, Object>> petnameList = new ArrayList<>();
+		
+		try {
+			petnameList = session.selectList("HR_SelectPetnameList", memno);
+		} catch (Exception e) {
+			log.error("getPetnameList() error ->", e);
+		}
+		
+		return petnameList;
+	}
+
 
 
 
@@ -210,6 +268,9 @@ public class AppointmentDaoImp implements AppointmentDao {
 		}
 		return clist;
 	}
+
+	
+	
 
 	
 

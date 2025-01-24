@@ -1,6 +1,9 @@
 package com.example.haruProject.controller.admin.hr;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -127,6 +130,103 @@ public class AppointmentController {
 		
 		return sList;
 	}
+	
+	// 날짜에 따른 불가능 시간 불러오기
+	@ResponseBody
+	@GetMapping("/api/disabled-times")
+	public List<Appointment> getDisabledTimes(@RequestParam(value = "rdate", required = true) String rdate,
+											  @RequestParam(value = "ano", required = true) int ano) throws ParseException {
+		System.out.println("AppointmentController getDisabledTimes() start ,,,");
+		System.out.println("AppointmentController getDisabledTimes() rdate ->"+rdate);
+		System.out.println("AppointmentController getDisabledTimes() ano ->"+ano);
+
+		System.out.println("AppointmentController getDisabledTimes() rdate ->"+rdate);
+		
+		List<Appointment> aList = as.getDisabledTimesList(rdate, ano);
+		System.out.println("AppointmentController getDisabledTimes() aList ->"+aList);
+		
+		return aList;		
+	}
+	
+	// 보호자 이름 불러오기
+	@ResponseBody
+	@GetMapping("/api/mname/{search1}")
+	public List<Map<String, Object>> reservationMname(@PathVariable("search1") String search1) {
+		System.out.println("AppointmentController reservationMname() start ,,,");
+		System.out.println("AppointmentController reservationMname() search1 ->"+search1);
+		
+		List<Map<String, Object>> mnameList = new ArrayList<>();
+		mnameList = as.getMnameList(search1);
+		
+		// mtel 전처리
+	    for (Map<String, Object> item : mnameList) {
+	        if (item.containsKey("MTEL")) {
+	            String mtel = (String) item.get("MTEL");
+
+	            String processedMtel = mtel.replaceAll("^.*(\\d{4})$", "$1");
+	            System.out.println("processedMtel ->"+processedMtel);
+
+	            item.put("MTEL", processedMtel);
+	        }
+	    }
+
+	    // 처리된 결과 확인
+	    System.out.println("AppointmentController reservationMname() mnameList -> " + mnameList);
+
+		
+		return mnameList;
+	}
+	
+	// 보호자 선택시 보호자에 해당하는 동물 불러오기
+	@ResponseBody
+	@GetMapping("/api/petname/{memno}")
+	public List<Map<String, Object>> reservationPetname(@PathVariable("memno") int memno) {
+		System.out.println("AppointmentController reservationPetname() start ,,,");
+		System.out.println("AppointmentController reservationPetname() memno ->"+memno);
+		
+		List<Map<String, Object>> petnameList = new ArrayList<>();
+		petnameList = as.getPetnameList(memno);
+		
+		for(Map<String, Object> item : petnameList) {
+			if(item.containsKey("PETBIRTH")) {
+				Date petbirth = (Date) item.get("PETBIRTH");
+				
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd");
+				String processedPetbirth = simpleDateFormat.format(petbirth);	// yy-mm-dd
+				System.out.println("processedPetbirth ->"+processedPetbirth);
+				
+				item.put("PETBIRTH", processedPetbirth);
+			}
+		}
+		
+		System.out.println("AppointmentController reservationPetname() petnameList ->"+petnameList);
+		
+		return petnameList;
+	}
+	
+	
+	// 예약 추가
+	// sendData를 한 번에 옮길 수 있는지 확인해보고 여기서부터 다시 시작하기~
+	@RequestMapping("/admin/addReservation")
+	public String addReservation(@RequestParam(value = "ano", required = true) int ano,
+								 @RequestParam(value = "mtitle_bcd", required = true) int mtitle_bcd,
+								 @RequestParam(value = "mtitle_mcd", required = true) int mtitle_mcd,
+								 @RequestParam(value = "memno", required = true) int memno,
+								 @RequestParam(value = "petno", required = true) int petno,
+								 @RequestParam(value = "rdate", required = true) String rdate,
+								 @RequestParam(value = "start_time", required = true) String start_time,
+								 @RequestParam(value = "rtime", required = true) int rtime,
+								 @RequestParam(value = "memo", required = true) String memo)
+	{
+		System.out.println("/admin/addReservation start ,,,");
+		System.out.println("AppointmentController addReservation() start ,,,");
+		System.out.println("AppointmentController addReservation() ano ->"+ano);
+		
+		// as.addReservation()
+		
+		return "redirect:/admin/reservation";
+	}
+	
 	
 	
 	
