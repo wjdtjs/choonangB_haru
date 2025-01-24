@@ -48,3 +48,22 @@ spring:
 mybatis:
   config-location: classpath:configuration.xml
   mapper-locations: classpath:mappers/*.xml
+
+  
+#jwt
+jwt:
+  secret: f3d5dcfa8c3499bbeeebba5264de4f66b73e449ccbd442b8cde1ba639dc2d63c
+  access-token-expiration: 120000  #2분
+  refresh-token-expiration: 86400000 #하루
+ 
+#kakao
+kakao:
+  client:
+    id: efe8479005b06cbc1480277bd66620d9
+  redirect:
+    uri: http://localhost:8399/oauth/api/kakao
+  
+  
+  
+  
+  

@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>로그인</title>
+<title>아이디찾기</title>
 
 <style type="text/css">
 .haru-background {
@@ -22,7 +22,7 @@
 }
 .haru-login-absolute-div {
    position: absolute;
-   top: 53%;
+   top: 46%;
    left: 50%;
    transform: translate(-50%, -50%);
 }
@@ -36,25 +36,25 @@
    text-align: center;
 }
 .login-div-title {
-   font-weight: 900;
+   font-weight: 700;
     letter-spacing: 1;
-    font-size: 24px;
+    font-size: 22px;
     color: var(--haru);
 }
 
-#loginForm {
+#findIdForm {
    margin-top: 32px;
 }
-#loginForm > div {
+#findIdForm > div {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 14px;
 }
-#loginForm input {
+#findIdForm input {
    width: 100%;
 }
-#loginForm label {
+#findIdForm label {
    font-size: 12px;
    color: var(--haru);
    margin-bottom: 7px;
@@ -66,10 +66,11 @@ input:focus {
 
 input[type=text],
 input[type=password],
-button[type=button] {
+input[type=email],
+button[type=submit] {
    border: 1px solid var(--haru);
    border-radius: 12px;
-   height: 52px;
+   height: 46px;
    padding-inline: 1rem;
 }
 
@@ -77,7 +78,9 @@ button[type=button] {
    width: 100%;
    background: var(--haru);
    color: white;
-   font-size: 20px;
+   font-size: 16px;
+   font-weight: 200;
+   margin-top: 30px;
 }
 
 .find-account-div {
@@ -87,6 +90,7 @@ button[type=button] {
    justify-content: center;
    align-items: center;
    color: var(--haru);
+   margin-top: 10px;
    margin-bottom: 30px;
 }
 
@@ -111,74 +115,29 @@ button[type=button] {
       
       <div class="haru-login-absolute-div">
          <div class="login-div">
-            <div class="login-div-title">LOGIN</div>
-            <div id="loginForm">
+            <div class="login-div-title">아이디 찾기</div>
+            <form action="findEmail" id="findIdForm" method="post">
                <div>
-                  <label>아이디</label>
-                  <input type="text" class="memail" name="memail" required="required">            
+                  <label>이름</label>
+                  <input type="text" name="mname" required="required">            
                </div>
                <div>
-                  <label>비밀번호</label>
-                  <input type="password" class="mpasswd" name="mpasswd" required="required">
+                  <label>전화번호</label>
+                  <input type="text" name="mtel" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(.*)\./g, '$1');" required="required">        
                </div>
-            </div>
+            </form>
+            <button class="haru-login-btn" type="submit" form="findIdForm">아이디 찾기</button>
+            
             <div class="find-account-div">
-               <div class="find-id" onclick="location.href='/all/user/find-id'">아이디 찾기</div>
+               <div class="find-id" onclick="location.href='login'">로그인</div>
                <div style="width: 2px; height: 10px; background: #d9d9d9; margin-inline:10px"></div>
-               <div class="find-pw" onclick="location.href='/all/user/find-passwd'">비밀번호 찾기</div>
+               <div class="find-pw" onclick="location.replace('find-passwd')">비밀번호 찾기</div>
             </div>
             
-            <button class="haru-login-btn" type="button" onclick="login()">로그인</button>
-         </div>
-      
-         <img src="/img/kakao_login_btn.png" onclick="kakaoLogin()" style="margin-top: 40px">
-         <div class="go-signup-div">
-            계정이 없다면? <span onclick="location.href='/all/user/agreement'">회원가입</span>
          </div>
       </div>
       
    </div>
-   
-	<script type="text/javascript">
-	
-	/* 일반 로그인 */
-	function login() {
-		let email = $('.memail').val();
-		let passwd = $('.mpasswd').val();
-// 		console.log(email, passwd);
-		
-		$.ajax({
-				url: "<%=request.getContextPath()%>/all/api/login",
-				method: 'POST',
-				contentType:"application/json",
-				data: JSON.stringify({
-					id: email,
-					passwd: passwd,
-					type: 'G'
-				}),
-				success: function(data){
-					console.log(data)
-					
-					if(data.code != 200) alert('로그인 실패');
-					else location.href="/user/index";
-				}
-			})
-		
-	}
-	
-	/* 카카오 로그인 */
-	function kakaoLogin() {
-		$.ajax({
-			url: "<%=request.getContextPath()%>/oauth/api/kakao-login",
-			method: 'GET',
-			contentType:"application/json",
-			success: function(data){
-				console.log(data);
-			}
-		})
-	}
-	
-	</script>
 
 </body>
 </html>

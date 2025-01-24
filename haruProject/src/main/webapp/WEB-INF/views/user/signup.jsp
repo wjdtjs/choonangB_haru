@@ -157,7 +157,7 @@ input[type=email]:readonly {
                </div>
                <div>
                   <label>전화번호</label>
-                  <input type="text" class="signup-tel" name="mtel" required="required">
+                  <input type="text" class="signup-tel" name="mtel" required="required" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(.*)\./g, '$1');">
                </div>
                <input type="hidden" value="${m }" name="is_agree">
             </form>
@@ -166,7 +166,7 @@ input[type=email]:readonly {
          <div style="margin-top:40px">
             <button class="haru-login-btn" type="submit" form="signUpForm">가입하기</button>
             <div class="go-signup-div">
-               이미 계정이 있다면? <span onclick="location.href='/user/login'">로그인</span>
+               이미 계정이 있다면? <span onclick="location.href='/all/user/login'">로그인</span>
             </div>   
          </div>
          
@@ -199,18 +199,18 @@ input[type=email]:readonly {
 	   } else {
 		   
 		   $.ajax({
-				url: "<%=request.getContextPath()%>/api/id-duplicate-check",
+				url: "<%=request.getContextPath()%>/all/api/id-duplicate-check",
 				method: 'POST',
 				contentType:"application/json",
 				data: JSON.stringify({
 					memail: email
 				}),
 				beforeSend: function () {                
-					FunLoadingBarStart(); //로딩 띄우기      
+// 					FunLoadingBarStart(); //로딩 띄우기      
 				},
 				success: function(data){
 					console.log(data)
-					FunLoadingBarEnd(); //로딩 종료
+// 					FunLoadingBarEnd(); //로딩 종료
 					
 					if(!data) {
 						alert('이미 존재하는 이메일입니다.');
@@ -238,7 +238,7 @@ input[type=email]:readonly {
 	   const email = $('.signup-email').val();
 	   
 	   $.ajax({
-			url: "<%=request.getContextPath()%>/api/code-check ",
+			url: "<%=request.getContextPath()%>/all/api/code-check ",
 			method: 'POST',
 			contentType:"application/json",
 			data: JSON.stringify({

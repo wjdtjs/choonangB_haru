@@ -20,8 +20,8 @@ public class MemberServiceImp implements MemberService {
 	 * @return 
 	 */
 	@Override
-	public boolean chkIdDuplicate(String email) {
-		boolean result = md.chkIdDuplicate(email);
+	public boolean chkIdDuplicate(Member member) {
+		boolean result = md.chkIdDuplicate(member);
 		return result;
 	}
 
@@ -52,5 +52,32 @@ public class MemberServiceImp implements MemberService {
 		md.signUpMember(mem);
 		
 	}
+
+	/**
+	 * 이메일 찾기
+	 */
+	@Override
+	public String findEmail(Member member) {
+		String email = md.findEmail(member);
+		return email;
+	}
+
+	/**
+	 * 재설정된 비밀번호 저장
+	 */
+	@Override
+	public void updatePassword(String encodedPassword, Member member) {
+		md.updatePassword(encodedPassword, member);
+	}
+
+	/**
+	 * 비밀번호 가져오기
+	 */
+	@Override
+	public Member getRealPasswd(Member member) {
+		Member m = md.getRealPasswd(member);
+		return m;
+	}
+
 
 }

@@ -34,4 +34,4 @@
 <link href="/css/haru-user.css?v=0.47" rel="stylesheet">
 
 <!-- JavaScript -->
-<script src="/js/validation.js?v=0.08"></script>
+<script src="/js/validation.js?v=0.10"></script>

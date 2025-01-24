@@ -72,3 +72,6 @@ function FunLoadingBarEnd() {
 	$('#back, #loadingBar').hide();    
 	$('#back, #loadingBar').remove();
 }
+
+
+

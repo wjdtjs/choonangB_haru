@@ -4,8 +4,10 @@ import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 public class Member {
 	private int memno;
 	private String mid;
@@ -29,4 +31,9 @@ public class Member {
 	// 조회용
 	private String search1;			private String keyword;
 
+	public Member(String memail, String mpasswd) {
+		this.memail = memail;
+		this.mpasswd = mpasswd;
+	}
+	
 }

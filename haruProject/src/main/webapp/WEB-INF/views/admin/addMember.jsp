@@ -197,7 +197,7 @@ em {
 	       			 </div>
 					<!-- 모달 버튼 -->
 			       	<div class="modal_l-content-btn">
-				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/member'">목록으로</button>
+				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/members'">목록으로</button>
 			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="add_mb">등록하기</button>
 			       	</div> 
                 </div>
