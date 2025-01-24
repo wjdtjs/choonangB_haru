@@ -125,8 +125,14 @@
 	<!-- 이메일 중복 검사 
 		(MSTATUS_MCD = 100: 회원)
 	-->
-	<select id="JS_SelectIdDuplCnt" parameterType="java.lang.String" resultType="int">
-		SELECT COUNT(*) FROM MEMBER WHERE MEMAIL = #{email} AND MSTATUS_MCD = 100
+	<select id="JS_SelectIdDuplCnt" parameterType="Member" resultType="int">
+		SELECT COUNT(*) 
+		FROM MEMBER 
+		WHERE MEMAIL = #{memail} 
+			AND MSTATUS_MCD = 100
+			<if test="mname != null and !mname.equals('')">
+				AND MNAME = #{mname}
+			</if>
 	</select>
 	
 	<!-- 인증코드, 전송시간 저장
@@ -164,5 +170,35 @@
 			AGREE_DATE = sysdate
 		WHERE MEMAIL = #{memail} AND MSTATUS_MCD = 0
 	</update>
+	
+	<!-- 이메일 찾기 -->
+	<select id="JS_SelectEmail" parameterType="Member" resultType="java.lang.String">
+		SELECT MEMAIL 
+		FROM MEMBER
+		WHERE MNAME = #{mname} 
+			AND MTEL = #{mtel}
+			AND MSTATUS_MCD = 100
+	</select>
+	
+	<!-- 재설정된 비밀번호 업데이트 -->
+	<update id="JS_UpdatePassword" parameterType="Map">
+		UPDATE MEMBER 
+		SET
+			MPASSWD = #{encyrpt_pw}
+		WHERE
+			MSTATUS_MCD = 100 
+			AND MEMAIL = #{member.memail}
+			<if test="member.mname != null and !member.mname.equals('')">
+				AND MNAME = #{member.mname}
+			</if>
+			
+	</update>
+	
+	<!-- 비밀번호 가져오기 -->
+	<select id="JS_SelectPassword" parameterType="Member" resultType="Member">
+		SELECT MEMNO, MNAME, MPASSWD 
+		FROM MEMBER
+		WHERE MEMAIL = #{memail} AND MSTATUS_MCD = 100
+	</select>
 	
 </mapper>

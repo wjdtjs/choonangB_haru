@@ -128,7 +128,7 @@ public class MemberController {
 		
 		System.out.println("MemberController dbCheckId ...");
 		System.out.println("MemberController dbCheckId  mid->"+ email);
-		result = ms.dbCheckId(email);
+		result = ms.dbCheckId(member);
 		System.out.println("MemberController dbCheckId  result->"+ result);
 		
 		return result;

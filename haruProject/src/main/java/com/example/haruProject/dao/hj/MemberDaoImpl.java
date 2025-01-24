@@ -124,11 +124,11 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	@Override
-	public int dbCheckId(String email) {
+	public int dbCheckId(Member member) {
 		System.out.println("MemberDao dbCheckId ...");
 		int result = 0;
 		try {
-			result = session.selectOne("JS_SelectIdDuplCnt", email);
+			result = session.selectOne("JS_SelectIdDuplCnt", member);
 		} catch (Exception e) {
 			System.out.println("MemberDao dbCheckId error->"+e.getMessage());
 		}

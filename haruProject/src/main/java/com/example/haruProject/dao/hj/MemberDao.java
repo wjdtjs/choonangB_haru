@@ -17,6 +17,5 @@ public interface MemberDao {
 	int				addMember(Member member);
 	List<Common>	mstatusList();
 	int				updateMember(Member member);
-	int				dbCheckId(String mid);
-
+	int				dbCheckId(Member member);
 }

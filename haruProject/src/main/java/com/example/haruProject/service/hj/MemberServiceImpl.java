@@ -67,9 +67,9 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public int dbCheckId(String email) {
+	public int dbCheckId(Member member) {
 		System.out.println("MemberService dbCheckId...");
-		int result = md.dbCheckId(email);
+		int result = md.dbCheckId(member);
 		return result;
 	}
 

@@ -17,6 +17,6 @@ public interface MemberService {
 	int				addMember(Member member);
 	List<Common>	mstatusList(); // 멤버리스트 상태로 검색
 	int				updateMember(Member member);
-	int				dbCheckId(String mid);
+	int				dbCheckId(Member member);
 
 }
