@@ -26,8 +26,11 @@
 		const name = frm.mname.value;
 		const tel = frm.mtel.value;
 		
+		if(id_dupl_check) {console.log(1)} else {console.log(2)}
+		
 		let str="";
 		if(!id_dupl_check) {
+			console.log('e')
 			str+= '이메일 중복체크를 해주세요.\n'; //이메일 중복 체크
 	        result = false;
 		}
@@ -36,6 +39,9 @@
 	    	str+='잘못된 핸드폰번호 입니다.\n';
 	        result = false;
 	    }
+	    
+	    if(!result)
+	    	alert(str);
 		
 		return result;
 	}
@@ -169,7 +175,7 @@ em {
 			        	<tr>
 			        		<th>이름<em>*</em></th>		<td><input class="form-input" type="text" name="mname" required="required"></td>
 			        		<th>이메일<em>*</em></th>	<td><input class="form-input email" type="text" name="memail" required="required" style="width: 70%;">
-			        									<button class="btn-primary haru-tb-btn verifi_btn id_dupl" onclick="fn_dbCheckId()">중복확인</button>
+			        									<button type="button" class="btn-primary haru-tb-btn verifi_btn id_dupl" onclick="fn_dbCheckId()">중복확인</button>
 			        	</tr>
 			        	<tr>
 			        		<th>전화번호<em>*</em></th>	<td><input class="form-input" type="text" name="mtel" required="required" placeholder="-없이 입력"></td>
