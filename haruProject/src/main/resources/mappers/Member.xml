@@ -84,12 +84,6 @@
 		WHERE bcd = 200 AND mcd != 999
 	</select>
 	
-	<select id="HJMstatusList1" resultType="Common">
-		SELECT *
-		FROM common
-		WHERE bcd = 200 AND mcd != 999
-	</select>
-	
 	<update id="HJUpdateMember" parameterType="Member">
 		UPDATE member SET
 			mname = #{mname},

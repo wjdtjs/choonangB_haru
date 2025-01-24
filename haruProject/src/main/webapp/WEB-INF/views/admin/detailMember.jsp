@@ -12,21 +12,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>회원 정보</title>
+    <title>판매 정보</title>
 
 </head>
 
 <script type="text/javascript">
-	function chk(){
-		if (frm.mpasswd.value != frm.re_mpasswd.value){
-			alert('비밀번호를 다시 입력해 주세요');
-			frm.mpasswd.focus();
-			return false
-		}
-		alert(frm.mname.value+'(회원번호:'+frm.memno.value+')'+'님 정보수정완료');
-		return true;
-		
-	}
+	
 </script>
 
 <!-- style -->
@@ -126,12 +117,12 @@ em {
                 <div class="container-fluid modal_">
 
                     <!-- Page Heading -->
-                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >회원 관리</h1>
+                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >판매 관리</h1>
                     
                     <div class="modal_l_detail">
                     <form action="/admin/updateMember" method="post" name="frm" id="upd_mb" onsubmit="return chk()">
 				        <table class="inputTable">
-				        <input type="hidden" name="memno" value="${member.memno }">
+				        <input type="hidden" name="orderno" value="${sale.orderno}">
 				        	<colgroup>
 		                    	<col width="15%" />
 		                        <col width="35%" />

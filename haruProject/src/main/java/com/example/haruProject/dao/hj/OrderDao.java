@@ -1,0 +1,20 @@
+package com.example.haruProject.dao.hj;
+
+import java.util.List;
+
+import com.example.haruProject.dto.SearchItem;
+import com.example.haruProject.dto.Common;
+import com.example.haruProject.dto.Order;
+import com.example.haruProject.dto.OrderProdct;
+
+public interface OrderDao {
+
+	List<Order> 		getShopList(int startRow, int endRow, SearchItem si);
+	int					getTotalCnt();
+	Order 				getOrderInfo(int orderno);
+	List<OrderProdct> 	getOrderProducts(int orderno);
+	List<Common>		getOrderStatus();
+	int					totalPrice(int orderno);
+	int					updateOstatus(Order order);
+
+}

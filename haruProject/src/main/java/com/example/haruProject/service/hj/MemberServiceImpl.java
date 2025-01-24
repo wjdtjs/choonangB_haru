@@ -61,14 +61,6 @@ public class MemberServiceImpl implements MemberService {
 		return mstatus;
 	}
 
-	@Override
-	public List<Common> mstatusList1() {
-		System.out.println("MemberService mstatusList1...");
-		List<Common> mstatus = md.mstatusList1();
-		return mstatus;
-	}
-
-	@Override
 	public int updateMember(Member member) {
 		int result = md.updateMember(member);
 		return result;

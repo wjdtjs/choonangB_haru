@@ -16,7 +16,6 @@ public interface MemberDao {
 	List<Pet>		getPetList(int memno);
 	int				addMember(Member member);
 	List<Common>	mstatusList();
-	List<Common> 	mstatusList1();
 	int				updateMember(Member member);
 	int				dbCheckId(String mid);
 

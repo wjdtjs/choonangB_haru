@@ -14,7 +14,16 @@
     <title>판매 관리</title>
 
 </head>
-
+<script type="text/javascript">
+	// detail페이지로 이동
+	$(document).on('click','#dataTable .saleTable tr',function(){
+		const orderno = $(this).find('td:nth-child(1)').text();
+		console.log('클릭된 행의 orderno:' + orderno);
+		
+		window.location.href = `<%=request.getContextPath()%>/admin/detailShop?orderno=\${orderno}`;
+	
+	})
+</script>
 <body id="page-top"> 
 
     <!-- Page Wrapper -->
@@ -58,12 +67,11 @@
 	                            </div>
 	                            
 	                            <div class="haru-right">
-	                            	<select>
-	                            		<option value="1">전체</option>
-	                            		<option value="2">주문 완료</option>
-	                            		<option value="3">픽업 준비 완료</option>
-	                            		<option value="4">픽업 완료</option>
-	                            		<option value="5">취소</option>
+	                            	<select name="${ostatus_mcd }">
+		                            		<option value="0">전체</option>
+	                            		<c:forEach var="status" items="${ostatus}">
+		                            		<option value="${status.mcd }">${status.content }</option>
+	                            		</c:forEach>
 	                            	</select>
 	                            </div>
                             
@@ -88,7 +96,7 @@
                                     		<tr>
                                     			<td>${sale.orderno }</td>
                                     			<td>${sale.mname }</td>
-                                    			<td>${sale.pname }</td>
+                                    			<td>${sale.pname1 }</td>
                                     			<td><fmt:formatDate value="${sale.odate }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                     			<td>${sale.opayment_content }</td>
                                     			<td><fmt:formatDate value="${sale.update_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -102,27 +110,25 @@
                                 </table>
                             </div>
                         </div>
-                   		<%-- <div style="text-align: center;">
-							<c:if test="${startPage > blockSize }">
-								<a href='list.do?pageNum=${startPage - blockSize }'>[이전]</a>
+                   		<div class="haru-pagination">
+							<c:if test="${pagination.startPage > pagination.blockSize}">
+								<i class="haru-pagearrow fa-solid fa-chevron-left" 
+							           onclick="location.href='?pageNum=${pagination.startPage - pagination.blockSize}'"></i>
 							</c:if>
-							<c:forEach var="i" begin="${startPage }" end="${endPage }">
-								<a href='list.do?pageNum=${i }'>[${i }]</a>
+							
+							<!-- 페이지 번호 출력 -->
+							<c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
+							    <div class="haru-pagenum ${i == pagination.currentPage ? 'active' : ''}" 
+							         onclick="location.href='?pageNum=${i}&type4=${search.type4 }&search1=${search.search1 }&type5=${search.type5 }'">
+							         ${i}
+							    </div>
 							</c:forEach>
-							<c:if test="${endPage < pageCnt }">
-								<a href='list.do?pageNum=${startPage + blockSize }'>[다음]</a>
-							</c:if>
-						</div> --%>
-						<div class="haru-pagination">
-<%-- 							<c:if test="${startPage > blockSize }"> --%>
-								<i class="haru-pagearrow fa-solid fa-chevron-left"></i>
-<%-- 							</c:if> --%>
-							<c:forEach var="i" begin="1" end="8">
-								<div class="haru-pagenum" id="pageNum${i}" onclick="pageChange(${i})">${i }</div>
-							</c:forEach>
-<%-- 							<c:if test="${endPage < pageCnt }"> --%>
-								<i class="haru-pagearrow fa-solid fa-chevron-right"></i>
-<%-- 							</c:if> --%>
+							
+							<!-- 다음 블록 이동 -->
+							    <c:if test="${pagination.endPage < pagination.pageCnt}">
+							        <i class="haru-pagearrow fa-solid fa-chevron-right" 
+							           onclick="location.href='?pageNum=${pagination.startPage + pagination.blockSize}'"></i>
+							    </c:if>
 						</div>
                     </div>
 

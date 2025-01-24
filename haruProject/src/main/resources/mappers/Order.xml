@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.ShopMapper">
+	<select id="HJTotalCnt" resultType="int">
+		select count(*)
+		FROM purchase
+	</select>
+
+	<select id="HJSelectShopList" parameterType="Map" resultType="Order">
+		SELECT *
+		FROM (
+				SELECT rownum rn, a.*
+				FROM(
+						SELECT 	pc.orderno, count(*) orderCnt, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd,
+								cm1.content opayment_content,
+								cm2.content ostatus_content,
+								mb.mname,
+								min(pd.pname)pname
+						FROM purchase pc
+						JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
+						JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
+						JOIN member mb ON pc.memno = mb.memno
+						JOIN orderproduct op ON pc.orderno = op.orderno
+						JOIN product pd ON op.pno = pd.pno
+						<if test="(search.type4 != 0 and !search.type4.equals('')) or ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">		
+			  				WHERE
+						</if>
+			  			<if test="search.type4 != 0 and !search.type4.equals('')">
+									mb.mstatus_mcd = #{search.type4}
+			  			</if>
+						GROUP BY    pc.orderno, pc.odate, pc.update_date,
+                    				cm1.content,
+                    				cm2.content,
+                    				mb.mname
+						ORDER BY pc.orderno desc
+					)a
+			)
+		WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<select id="HJGetOrderDetail" parameterType="int" resultType="Order">
+		SELECT	pc.*, mb.*,
+				cm1.content opayment_content,
+		   		cm2.content ostatus_content
+		FROM purchase pc
+		JOIN member mb ON pc.memno = mb.memno
+		JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
+		JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
+		where orderno = #{orderno}
+	</select>
+	
+	<select id="HJSelectOrderProducts" parameterType="int" resultType="OrderProduct">
+		SELECT *
+		FROM orderproduct op
+		JOIN product pd ON op.pno = pd.pno
+		WHERE orderno = #{orderno}
+	</select>
+	
+	<select id="HJOrderStatus" resultType="Common">
+	 	select * from common where bcd = 900 and mcd != 999
+	</select>
+	
+	<select id="HJTotalprice" parameterType="int" resultType="int">
+		SELECT SUM(pprice*oquantity)
+		FROM orderproduct
+		WHERE orderno = #{orderno}
+	</select>
+	
+	<update id="HJUpateOstatus" parameterType="Order">
+		UPDATE purchase
+		SET ostatus_mcd = #{ostatus_mcd},
+			update_date = sysdate
+		WHERE orderno = #{orderno}
+	</update>
+</mapper>

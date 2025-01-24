@@ -106,18 +106,7 @@ public class MemberDaoImpl implements MemberDao {
 		return mstatus;
 	}
 
-	@Override
-	public List<Common> mstatusList1() {
-		System.out.println("MemberDao mstatusList1 ...");
-		List<Common> mstatus1 = new ArrayList<>();
-		try {
-			mstatus1 = session.selectList("HJMstatusList1");
-			System.out.println("mstatus->"+mstatus1);
-		} catch (Exception e) {
-			System.out.println("MemberDao mstatusList1 error->"+e.getMessage());
-		}
-		return mstatus1;
-	}
+	
 
 	@Override
 	public int updateMember(Member member) {

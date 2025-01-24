@@ -21,7 +21,7 @@
 <!-- style -->
 <style>
 
-table, div{
+.modal_l_detail, table{
 	color: black;
 	width: 100%;
 }
@@ -90,17 +90,15 @@ table, div{
 	padding: 10px;
 	margin-bottom: 20px;
 } */
-.pro-mainimg-div {
+.pro-mainimg-div-5 {
 	width: fit-content;
 	height: fit-content;
 
-	pointer-events: none;
 }
-.pro-mainimg-div >img{
+.pro-mainimg-div5 >img{
 	width: 112px;
 	height: 112px;
 	position: relative;
-	pointer-events: none;
 	margin-right: 8px;
 }
 /* .pro-thumbnail::after {
@@ -187,7 +185,7 @@ em {
 				        		<div class="content">${apm.petno }</div>
 				        		<div class="content">${apm.petname }</div>
 				        		<div class="content">${apm.species } (${apm.gender })</div>
-				        		<div class="content">${apm.petbirth } 출생</div>
+				        		<div class="content"><fmt:formatDate value="${apm.petbirth}" pattern="yyyy-MM-dd"/> 출생</div>
 				        		<div class="content">${apm.petheight }cm / ${apm.petweight }kg</div>
 				        	</div>
 				        	<div class="infoTitle">특이사항</div>
@@ -204,7 +202,7 @@ em {
 										<img alt="UpLoad Image" src="">	        		
 									</c:when>
 								 <c:otherwise>  --%>
-								 <div class="pro-mainimg-div" style="display: none"></div>
+								 <div class="pro-mainimg-div-5" style="display: none"></div>
 								 <div class="pro-label-div">
 								 	<label for="main_img" class="img_upload">+</label>
 									<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiful> 							
@@ -267,7 +265,7 @@ em {
 	
  	function addFile(obj) {
 		var maxFileCnt = 5; //최대 첨부파일 개수
-		var attFileCnt = document.querySelectorAll(".pro-mainimg-div img").length; // 기존 추가된 첨부파일 개수
+		var attFileCnt = document.querySelectorAll(".pro-mainimg-div-5 img").length; // 기존 추가된 첨부파일 개수
 		var remainFileCnt = maxFileCnt-attFileCnt; // 추가로 첨부가능한 개수
 		var curFileCnt = obj.files.length; // 현재 첨부된 파일 개수
 		
@@ -297,25 +295,46 @@ em {
 				
 				imgId = 'img'+fileNo;
 				
+				/* htmlData += `<img src="\${event.target.result}" alt="product-image" style="width: 7rem; height: 7rem" id="\${imgId}" onclick="deleteFile()"/>`; */
 				htmlData += `<img src="\${event.target.result}" alt="product-image" style="width: 7rem; height: 7rem" id="\${imgId}" onclick="deleteFile(\${fileNo})"/>`;
-				
+				/* htmlData += '<img src="'+event.target.result+ '" alt="product-image" style="width: 7rem; height: 7rem" id="\${'+imgId+'}" />'; */
+						
 				console.log(htmlData)
-				$('.pro-mainimg-div').css('display', 'inline');
-				$('.pro-mainimg-div').append(htmlData);
- 				$('.pro-mainimg-div').addClass('pro-thumbnail');
+				$('.pro-mainimg-div-5').css('display', 'inline');
+				$('.pro-mainimg-div-5').append(htmlData);
+ 				$('.pro-mainimg-div-5').addClass('pro-thumbnail');
 				fileNo++;
 			};
 			reader.readAsDataURL(file);
 		}
 	} 
 
-	function deleteFile(num){
-		if(confirm('이미지를 삭제하겠습니까?')){
-			
-		document.querySelector("#img"+num).remove();
-		filesArr.splice(num, 1);
-		}
-	}
+ 	/**
+ 	 * 첨부된 이미지 삭제
+ 	 */
+ 	 
+ 	
+ 	function deleteFile(fileNo) {
+ 		alert('함수작동');
+ 	    const imgElement = document.getElementById('imgId');
+ 	    const fileNoToDelete = parseInt(imgElement.getAttribute("data-file-no")); // 파일 번호 추출
+ 	    
+ 	    // 파일 배열에서 해당 파일 삭제
+ 	    filesArr.splice(fileNoToDelete, 1);
+
+ 	    // 이미지 요소 삭제
+ 	    imgElement.remove();
+
+ 	    // 이미지 수가 부족하면 업로드 버튼 다시 표시
+ 	    const remainingImages = document.querySelectorAll(".pro-mainimg-div-5 img").length;
+ 	    if (remainingImages < 5) {
+ 	        document.querySelector('.pro-label-div').style.display = 'inline';
+ 	    }
+
+ 	    console.log(`Deleted fileNo: ${fileNoToDelete}`);
+ 	    console.log("Remaining files:", filesArr);
+ 	}
+ 	
 	/**
 	 * 썸네일 이미지 삭제
 	 */

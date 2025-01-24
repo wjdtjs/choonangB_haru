@@ -16,7 +16,6 @@ public interface MemberService {
 	List<Pet> 		getPetList(int memno);
 	int				addMember(Member member);
 	List<Common>	mstatusList(); // 멤버리스트 상태로 검색
-	List<Common>	mstatusList1();
 	int				updateMember(Member member);
 	int				dbCheckId(String mid);
 
