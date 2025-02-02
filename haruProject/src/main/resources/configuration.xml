@@ -17,5 +17,6 @@
 		<typeAlias alias="OrderProduct" 	type="com.example.haruProject.dto.OrderProduct"/>
 		<typeAlias alias="Notice" type="com.example.haruProject.dto.Notice"/>
 		<typeAlias alias="Schedule" type="com.example.haruProject.dto.Schedule"/>
+		<typeAlias alias="BoardImg" type="com.example.haruProject.dto.BoardImg"/>
 	</typeAliases>
 </configuration>

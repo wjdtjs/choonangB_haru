@@ -1,5 +1,12 @@
 package com.example.haruProject.controller.user.js;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -15,7 +22,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.AgreementTerms;
@@ -23,7 +32,6 @@ import com.example.haruProject.dto.Member;
 import com.example.haruProject.dto.UserVO;
 import com.example.haruProject.service.js.MailService;
 import com.example.haruProject.service.js.MemberService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,8 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
-public class OAuthController {
+public class LoginController {
 	
 	private final MemberService ms;
 	private final MailService mailService;
@@ -52,67 +59,62 @@ public class OAuthController {
 	/**
 	 * 카카오 로그인 redirect url
 	 */
-	@ResponseBody
 	@GetMapping("/oauth/api/kakao")
-	public String kakaoRedirect(String code, HttpSession session) {
-//		// SETP1 : 인가코드 받기
-//        // (카카오 인증 서버는 서비스 서버의 Redirect URI로 인가 코드를 전달합니다.)
-//        // System.out.println(code);
-//
-//        // STEP2: 인가코드를 기반으로 토큰(Access Token) 발급
-//        String accessToken = null;
-//        try {
-//            accessToken = oAuthService.getAccessToken(code);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        //System.out.println("엑세스 토큰  "+accessToken);
-//
-//        // STEP3: 토큰를 통해 사용자 정보 조회
-//        KakaoInfo kakaoInfo = null;
-//        try {
-//            kakaoInfo = oAuthService.getKakaoInfo(accessToken);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        //System.out.println("이메일 확인 "+kakaoInfo.getEmail());
-//
-//        // STEP4: 카카오 사용자 정보 확인
-//        MemberResponse kakaoMember = oAuthService.ifNeedKakaoInfo(kakaoInfo);
-//
-//        // STEP5: 강제 로그인
-//        // 세션에 회원 정보 저장 & 세션 유지 시간 설정
-//        if (kakaoMember != null) {
-//            session.setAttribute("loginMember", kakaoMember);
-//            // session.setMaxInactiveInterval( ) : 세션 타임아웃을 설정하는 메서드
-//            // 로그인 유지 시간 설정 (1800초 == 30분)
-//            session.setMaxInactiveInterval(60 * 30);
-//            // 로그아웃 시 사용할 카카오토큰 추가
-//            session.setAttribute("kakaoToken", accessToken);
-//        }
+	public String kakaoRedirect(@RequestParam(value="code") String code, HttpSession session) {
+		// SETP1 : 인가코드 받기
+        // (카카오 인증 서버는 서비스 서버의 Redirect URI로 인가 코드를 전달합니다.)
+         System.out.println(code);
 
-        return "user/index";                                        
+         String reqURL = "https://kauth.kakao.com/oauth/token";
+
+         try {
+             URL url = new URL(reqURL);
+             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+             //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
+             conn.setRequestMethod("POST");
+             conn.setDoOutput(true);
+
+             //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
+             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+             StringBuilder sb = new StringBuilder();
+             sb.append("grant_type=authorization_code");
+             sb.append("&client_id="+clientId); 
+             sb.append("&redirect_uri="+redirectUri);
+             sb.append("&code=" + code);
+             bw.write(sb.toString());
+             bw.flush();
+
+             //결과 코드가 200이라면 성공
+             int responseCode = conn.getResponseCode();
+             System.out.println("responseCode : " + responseCode);
+
+             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+             String line = "";
+             String result = "";
+
+             while ((line = br.readLine()) != null) {
+                 result += line;
+             }
+             System.out.println("response body : " + result);
+
+             //TODO: access token, refresh token db 저장
+             //TODO: id token의 payload에서 유저 정보 찾기
+             //TODO: sub: ID 토큰에 해당하는 사용자의 회원번호 -> mid에 저장, 이걸로 판단해서 로그인인지 회원가입인지 확인
+             //TODO: 없는 sub이면 회원가입
+             //TODO: session에 저장
+             //TODO: 인터셉터에서 토큰 검증
+
+             br.close();
+             bw.close();
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+
+        return "user/main";                                        
          
-	}
-
-	/**
-	 * 카카오 로그인
-	 * 인가코드 받기
-	 * @return 
-	 */
-	@CrossOrigin(originPatterns = "*")
-	@GetMapping("/oauth/api/kakao-login")
-	public String kakao_Lgin() {
-		StringBuffer url = new StringBuffer();
-        url.append("https://kauth.kakao.com/oauth/authorize?");
-        url.append("client_id="+clientId);
-        url.append("&redirect_uri="+redirectUri);
-        url.append("&response_type=code");
-        
-        return "redirect:" + url.toString();
-	}
-	
-	
+	}	
 	
 	
 
@@ -376,11 +378,12 @@ public class OAuthController {
     			//비밀번호가 맞는지 확인
     			if(passwordEncoder.matches(member.getMpasswd(), real_mem.getMpasswd())) {
     				
-    				System.out.println("== 로그인성공");
+    				System.out.println("== 로그인성공 "+ real_mem.getMemail());
     				
     				Map<String, Object> mem_info = new HashMap<>();
     				mem_info.put("no", real_mem.getMemno());
     				mem_info.put("name", real_mem.getMname());
+    				mem_info.put("email", real_mem.getMemail());
     				
     				SessionUtil.login(request, mem_info);
     				

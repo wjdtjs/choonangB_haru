@@ -196,7 +196,7 @@
 	
 	<!-- 비밀번호 가져오기 -->
 	<select id="JS_SelectPassword" parameterType="Member" resultType="Member">
-		SELECT MEMNO, MNAME, MPASSWD 
+		SELECT MEMNO, MNAME, MPASSWD, mask_email(MEMAIL) as memail
 		FROM MEMBER
 		WHERE MEMAIL = #{memail} AND MSTATUS_MCD = 100
 	</select>

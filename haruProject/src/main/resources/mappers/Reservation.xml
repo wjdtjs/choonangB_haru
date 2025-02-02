@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.ReservationMapper">
+
+<!-- select -->
+	<!-- 전체 예약 수 조회 -->
+	<select id="JS_SelectReservationTotalCnt" parameterType="Map" resultType="int">
+		SELECT COUNT(*) 
+		FROM APPOINTMENT
+		WHERE RSTATUS_BCD = 800 AND MEMNO = #{memno}
+	    <if test="petno != null and petno != 0">
+	    	AND PETNO = #{petno}
+	    </if>
+	    <if test="start != null and start != '' and end != null and end != ''">
+	    	AND rdate BETWEEN TO_DATE(#{start}, 'yyyy-mm-dd') 
+	                    AND TO_DATE(#{end}, 'yyyy-mm-dd')
+	    </if>
+	</select>
+	 
+	<!-- 예약 목록 가져오기 -->
+	<select id="JS_SelectReservationList" parameterType="Map" resultType="Appointment">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM rn, aa.*
+		    FROM (
+		        SELECT a.RESNO, a.RDATE, p.PETNAME, d.ANAME, c2.CONTENT as item, c3.CONTENT as item_bcd, c1.CONTENT as status, a.rstatus_mcd
+		        		, a.start_time
+		        FROM APPOINTMENT a 
+		            JOIN MEMBER m ON a.MEMNO = m.MEMNO
+		            JOIN PET p ON a.PETNO = p.PETNO
+		            JOIN ADMIN d ON a.ANO = d.ANO
+		            JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
+		            JOIN COMMON c1 ON c1.BCD = a.RSTATUS_BCD and c1.MCD = a.RSTATUS_MCD			<!-- 예약 상태 -->
+		            JOIN COMMON c2 ON c2.BCD = t.MTITLE_BCD and c2.MCD = t.MTITLE_MCD			<!-- 진료 항목 -->
+		            JOIN COMMON c3 ON c3.BCD = t.MTITLE_BCD and c3.MCD = 999
+		           
+       			WHERE RSTATUS_BCD = 800 AND MEMNO = #{memno}
+			    <if test="petno != null and petno != 0">
+			    	AND PETNO = #{petno}
+			    </if>
+			    <if test="start != null and start != '' and end != null and end != ''">
+			    	AND rdate BETWEEN TO_DATE(#{start}, 'yyyy-mm-dd') 
+			                    AND TO_DATE(#{end}, 'yyyy-mm-dd')
+			    </if>
+				ORDER BY a.RDATE desc
+		    )aa
+		)
+		WHERE rn BETWEEN #{page.startRow} AND #{page.endRow} 
+	</select>
+
+</mapper>

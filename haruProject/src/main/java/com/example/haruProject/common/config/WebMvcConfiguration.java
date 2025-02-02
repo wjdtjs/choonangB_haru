@@ -18,19 +18,22 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 	 */
     private final LoginInterceptor loginInterCeptor;
 
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        System.out.println("인터셉터 등록");
-//        registry.addInterceptor(loginInterCeptor)
-//        		.addPathPatterns("/**")
-//        		.excludePathPatterns("/all/**",
-//    								"/oauth/**",
-//        							"/css/**",
-//        							"/error",
-//        							"/img/**",
-//        							"/js/**"
-//        				);
-//        											
-//    }
+    public void addInterceptors(InterceptorRegistry registry) {
+        System.out.println("인터셉터 등록");
+        registry.addInterceptor(loginInterCeptor)
+        		.addPathPatterns("/**")
+        		.excludePathPatterns("/all/**",
+    								"/oauth/**",
+        							"/css/**",
+        							"/error",
+        							"/img/**",
+        							"/js/**",
+        							"/vendor/**",
+        							"/admin/**"
+        				)
+        		;
+        											
+    }
     
     /**
      * cors
@@ -39,8 +42,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		
 		registry.addMapping("/**")
-				.allowedOrigins("*")
+				.allowedOriginPatterns("http://localhost:8399")
 				.allowedMethods("GET", "POST", "PUT", "DELETE")
+				.allowedHeaders("*")
+				.allowCredentials(true)
 				.maxAge(3000)
 				;
 	}

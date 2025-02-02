@@ -9,12 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.js.ShopService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +42,7 @@ public class UserShopController {
 							@RequestParam(value = "blockSize", required = false, defaultValue="10") int blockSize,
 							@RequestParam(value = "bcd", required = true, defaultValue="410") int bcd,
 							@RequestParam(value = "mcd", required = true, defaultValue="999") int mcd,
+							HttpServletRequest request,
 							Product product, Model model) 
 	{
 		log.info("shopView() start..");
@@ -52,7 +55,8 @@ public class UserShopController {
 		mcdList = ss.getMCDList(bcd);
 		
 		//쇼핑카트 담아둔 상품 수
-		int cart_count = ss.getCartCount(1); //TODO: MEMNO 변경해주기
+		int memno = SessionUtil.getNo(request);
+		int cart_count = ss.getCartCount(memno);
 		
 		//노출 상품만
 		SearchItem si = new SearchItem(bcd, mcd, 100);
@@ -91,12 +95,14 @@ public class UserShopController {
 	@GetMapping("/user/details-product")
 	public String detailsProductView(@RequestParam(value = "pageNum", required = true, defaultValue="1") String pageNum,
 									@RequestParam(value = "blockSize", required = false, defaultValue="10") int blockSize,
+									HttpServletRequest request,
 									Product product, Model model) 
 	{
 		log.info("detailsProductView() start..");
 		
 		//쇼핑카트 담아둔 상품 수
-		int cart_count = ss.getCartCount(1); //TODO: MEMNO 변경해주기
+		int memno = SessionUtil.getNo(request);
+		int cart_count = ss.getCartCount(memno); 
 		
 		int pno = product.getPno(); //상품번호
 		

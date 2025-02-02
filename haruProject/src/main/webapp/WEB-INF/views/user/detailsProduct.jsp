@@ -80,7 +80,7 @@
 							<div style="display: none">${rl.bno }</div>
 							<div class="js-p-review-div">
 								<div class="p-review-top">
-									<div>${rl.mid }</div>
+									<div>${rl.memail }</div>
 									<div><fmt:formatDate value="${rl.reg_date }" pattern="yyyy-MM-dd"/></div>							
 								</div>
 								<c:choose>
@@ -95,9 +95,9 @@
 							</div>
 						</c:forEach>
 						
-<%-- 						<c:if test="${pagination.pageCnt > 1 }"> --%>
+						<c:if test="${pagination.pageCnt > 1 }">
 							<div class="go-whole-review" onclick="location.href='/user/shop-reviews?pno=${product.pno}'">리뷰 전체 보기 ${pagination.totalCnt }</div>
-<%-- 						</c:if> --%>
+						</c:if>
 					</div>
 					<!-- 상품후기 끝 -->
 					

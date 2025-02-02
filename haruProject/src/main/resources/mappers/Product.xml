@@ -152,7 +152,7 @@
 					b.BOARD_TYPE_BCD,
 					b.BOARD_TYPE_MCD,
 					b.MEMNO,
-					mask_id(m.MID) as mid
+					mask_email(m.MEMAIL) as memail
 				FROM BOARD b 
 				INNER JOIN MEMBER m
 					ON b.MEMNO = m.MEMNO

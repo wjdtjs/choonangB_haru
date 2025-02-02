@@ -15,7 +15,7 @@
 		<!-- 3. 메인 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-house"></i></span>
 	</a>
-	<a class="menu-icon" id="board">
+	<a class="menu-icon" id="board" href="/user/community">
 		<!-- 4. 게시판 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-clipboard-list"></i></span>
 	</a>

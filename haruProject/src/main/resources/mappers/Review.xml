@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.haruProject.ReviewMapper">
+
+	<!-- 후기 중분류 select 
+		(MCD=999: 전체, MCD=300: 상품)
+	-->
+	<select id="JS_SelectBoardMcd" resultType="Map">
+		SELECT MCD, CONTENT 
+		FROM COMMON
+		WHERE BCD = 350 AND MCD NOT IN (999, 300)
+	</select>
+	
+	<!-- 후기 전체 수 -->
+	<select id="JS_SelectReviewCnt" parameterType="SearchItem" resultType="int">
+		SELECT COUNT(*) 
+		FROM BOARD
+		WHERE BSTATUS_MCD = 100 AND BSEQ = 0
+		<choose>
+			<when test="type4 == 100 or type4 == 200">
+				AND BOARD_TYPE_MCD = #{type4}
+			</when>
+			<otherwise>
+				AND BOARD_TYPE_MCD != 300
+			</otherwise>
+		</choose>
+		<if test="type5 != null and type5 != 0">
+			AND MEMNO = #{type5}
+		</if>
+		<if test="search1 != null and !search1.equals('')">
+			AND BTITLE LIKE '%' || #{search1} || '%'
+		</if>
+	</select>
+	
+	<!-- 후기 리스트 -->
+	<select id="JS_SelectReviewList" parameterType="Map" resultType="Board">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM rn, bb.*
+		    FROM (
+		        SELECT
+		        	b.BNO,
+					b.BTITLE,
+					b.BCONTENTS,
+					b.REG_DATE,
+					b.RESNO,
+					b.BOARD_TYPE_MCD,
+					b.MEMNO,
+					mask_email(m.MEMAIL) memail
+				FROM BOARD b JOIN MEMBER m 
+					ON b.MEMNO = m.MEMNO
+				WHERE b.BSTATUS_MCD = 100 AND BSEQ = 0
+				<choose>
+					<when test="si.type4 == 100 or si.type4 == 200">
+						AND b.BOARD_TYPE_MCD = #{si.type4}
+					</when>
+					<otherwise>
+						AND b.BOARD_TYPE_MCD != 300
+					</otherwise>
+				</choose>
+				<if test="si.type5 != null and si.type5 != 0">
+					AND b.MEMNO = #{si.type5}
+				</if>
+				<if test="si.search1 != null and !si.search1.equals('')">
+					AND b.BTITLE LIKE '%' || #{si.search1} || '%'
+				</if>
+				ORDER BY b.BNO DESC
+		    )bb
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<!-- 후기 상세 -->
+	<select id="JS_SelectReviewDetail" parameterType="int" resultType="Board">
+		SELECT
+			b.BNO,
+			b.BTITLE,
+			b.BCONTENTS,
+			b.BVIEW_COUNT,
+			b.BGROUP,
+			b.BSEQ,
+			b.BLEVEL,
+			b.REG_DATE,
+			b.UPDATE_DATE,
+			b.RESNO,
+			b.BIMG,
+			b.BSTATUS_MCD,
+			b.BOARD_TYPE_MCD,
+			c.CONTENT content,
+			b.MEMNO,
+			mask_email(m.MEMAIL) memail
+		FROM BOARD b JOIN COMMON c
+			ON b.BOARD_TYPE_BCD = c.BCD
+			AND	b.BOARD_TYPE_MCD = c.MCD
+		JOIN MEMBER m
+			ON b.MEMNO = m.MEMNO
+		WHERE BNO = #{bno}
+	</select>
+	
+	<!-- 후기 이미지 -->
+	<select id="JS_SelectReviewImgList" parameterType="int" resultType="BoardImg">
+		SELECT CONTENT FROM BOARDIMG WHERE BNO = #{bno}
+	</select>
+	
+	<!-- 후기 댓글 전체 수 -->
+	<select id="JS_SelectCommentTotalCnt" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM BOARD WHERE BGROUP = #{bno} AND BSEQ != 0
+	</select>
+	
+	<!-- 후기 댓글 리스트 -->
+	<select id="JS_SelectCommentList" parameterType="Map" resultType="Board">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM rn, bb.*
+		    FROM (
+		        SELECT
+		        	b.BNO,
+					bcontents,
+					b.REG_DATE,
+					b.BGROUP,
+					b.BSEQ,
+					b.BLEVEL,
+					b.MEMNO,
+					mask_email(m.MEMAIL) memail
+				FROM BOARD b JOIN MEMBER m 
+					ON b.MEMNO = m.MEMNO
+				WHERE BGROUP = #{bno} AND BSEQ != 0
+				
+				ORDER BY b.BSEQ ASC
+		    )bb
+		)
+		WHERE rn BETWEEN #{p.startRow} AND #{p.endRow}
+	</select>
+	
+	
+	<!-- 댓글 작성 -->
+	<insert id="JS_InsertComment" parameterType="Board">
+		INSERT INTO BOARD (
+			BNO, BCONTENTS, BGROUP, BSEQ, BLEVEL, MEMNO
+		)
+		VALUES (
+			SEQ_BOARD.NEXTVAL,
+			#{bcontents},
+			#{bgroup},
+			#{bseq}+1,
+			#{blevel}+1,
+			#{memno}
+		)
+	</insert>
+	
+	<!-- 댓글 순서 증가 (홍해의기적) -->
+	<update id="JS_UpdateCommentShape" parameterType="Board">
+		UPDATE BOARD SET BSEQ = BSEQ + 1
+		WHERE BGROUP = #{bgroup} AND BSEQ > #{bseq}
+	</update>
+	
+	<!-- 후기 조회수 증가 -->
+	<update id="JS_UpdateReviewViewCnt" parameterType="int">
+		UPDATE BOARD SET BVIEW_COUNT = BVIEW_COUNT + 1
+		WHERE BNO = #{bno}
+	</update>
+	
+	<!-- 후기 삭제 + 댓글 포함 
+		(BSTATUS_MCD = 200: 삭제(노출x))
+	-->
+	<update id="JS_UpdateReviewStatusDelete" parameterType="int">	
+		UPDATE BOARD SET BSTATUS_MCD = 200 
+		WHERE BGROUP = #{bno}
+	</update>
+	
+</mapper>

@@ -168,14 +168,7 @@ button[type=button] {
 	
 	/* 카카오 로그인 */
 	function kakaoLogin() {
-		$.ajax({
-			url: "<%=request.getContextPath()%>/oauth/api/kakao-login",
-			method: 'GET',
-			contentType:"application/json",
-			success: function(data){
-				console.log(data);
-			}
-		})
+		location.href="https://kauth.kakao.com/oauth/authorize?client_id=efe8479005b06cbc1480277bd66620d9&redirect_uri=http://localhost:8399/oauth/api/kakao&response_type=code";
 	}
 	
 	</script>

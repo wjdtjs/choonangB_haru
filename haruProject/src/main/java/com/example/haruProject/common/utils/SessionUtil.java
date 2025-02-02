@@ -11,7 +11,9 @@ public class SessionUtil {
     public static void login(HttpServletRequest request, Map<String, Object> user){
         HttpSession session = request.getSession(true);
         synchronized (session){
-            session.setAttribute("user", user);
+            session.setAttribute("no", user.get("no"));
+            session.setAttribute("name", user.get("name"));
+            session.setAttribute("email", user.get("email"));
             System.out.println("session 세션에 정보 저장 : "+user);
         }
     }
@@ -20,13 +22,23 @@ public class SessionUtil {
     // return boolean
     public static boolean isLogin(HttpServletRequest request){
         HttpSession session = request.getSession(true);
-        return session.getAttribute("user") != null ? true : false;
+        return session.getAttribute("no") != null ? true : false;
     }
 
-	//세션에 있는 user정보를 반환
-    public static Object getUser(HttpServletRequest request){
+	//세션에 있는 user no 정보를 반환
+    public static int getNo(HttpServletRequest request){
         HttpSession session = request.getSession(true);
-        return session.getAttribute("user");
+        return (int) session.getAttribute("no");
+    }
+    //세션에 있는 user name 정보를 반환
+    public static String getName(HttpServletRequest request){
+    	HttpSession session = request.getSession(true);
+    	return (String) session.getAttribute("name");
+    }
+  //세션에 있는 user email 정보를 반환
+    public static String getEmail(HttpServletRequest request){
+    	HttpSession session = request.getSession(true);
+    	return (String) session.getAttribute("email");
     }
     
 	//로그아웃

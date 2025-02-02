@@ -14,7 +14,7 @@
 			<div class="topbar-title">
 				<i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
 				공지사항
-				<div style="width:30px"></div>
+				<div style="width:45px"></div>
 			</div>
 		</div>
 		

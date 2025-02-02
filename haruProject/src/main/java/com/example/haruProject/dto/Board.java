@@ -30,6 +30,7 @@ public class Board {
 	private int memno;			// 작성자
 	private String mname;
 	private String mid;
+	private String memail;
 	
 	// 조회용
 	private String content;	    // 공통코드 가져올 때

@@ -28,10 +28,15 @@
 <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.js"></script>
 
+<!-- date-picker -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 
 <!-- CSS -->
 <link href="/css/user-menubar.css?v=0.06" rel="stylesheet">
-<link href="/css/haru-user.css?v=0.47" rel="stylesheet">
+<link href="/css/haru-user.css?v=0.50" rel="stylesheet">
 
 <!-- JavaScript -->
 <script src="/js/validation.js?v=0.10"></script>
