@@ -664,7 +664,7 @@ input#res-mname {
 	
 	
 	// 예약 추가하기
-	$(document).ready(function() {
+	$(function() {
 		$('.update_btn').click(function() {
 			if(confirm("예약을 추가하시겠습니까?") == true) {
 				var sendData = $('form').serialize();
@@ -672,13 +672,18 @@ input#res-mname {
 				console.log("sendData : ", sendData);
 				// 추가로 넣어줘야 할 것들: rdate, start_time				
                 const rdate = selectedDateGlobal;
-				var start_time = document.querySelector(".cal_time_btn.selected_time").value;
+				const start_time = document.querySelector(".cal_time_btn.selected_time").value;
+				const now = new Date();
+				const resno = now.getTime();
 				
-				console.log("rdate : ", rdate, " start_time : ", start_time);
+				console.log("rdate : ", rdate, " start_time : ", start_time, "resno : ", resno);
 				
-				sendData = sendData + ('&rdate='+rdate) + ('&start_time='+start_time);
+				sendData = sendData + ('&rdate='+rdate) + ('&start_time='+start_time) + ('&resno='+resno);
 				
-				location.href = "/admin/addReservation?"+sendData;
+				console.log("sendData : ", sendData);
+				alert("sendData :"+ sendData);
+				
+				location.href = "/admin/insertReservation?"+sendData;
 			}
 		})
 	})

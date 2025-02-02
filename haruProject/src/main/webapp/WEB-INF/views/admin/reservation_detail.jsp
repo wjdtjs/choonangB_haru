@@ -446,13 +446,10 @@ button#res_change, #res_cancel, #res_del {
 								        		</c:if>
 												
 											</div>
-						        		</div>					        		
-						        
+						        		</div>					        				        
 	                        	
 	                        	
-	                        	
-			                        	<!-- 모달 버튼 -->			        
-								        <div class="modal_l-content-btn">
+	                        			<div class="modal_l-content-btn">
 								        	<c:choose>
 								        		<c:when test="${appointment_d.rstatus_mcd eq 100 }">
 									        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>

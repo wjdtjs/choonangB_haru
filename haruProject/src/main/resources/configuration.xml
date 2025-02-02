@@ -3,6 +3,9 @@
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+	<settings>
+		<setting name="logImpl" value="STDOUT_LOGGING"/>
+	</settings>
 	<typeAliases>
 		<typeAlias alias="Product" type="com.example.haruProject.dto.Product"/>
 		<typeAlias alias="SearchItem" type="com.example.haruProject.dto.SearchItem"/>
@@ -18,5 +21,7 @@
 		<typeAlias alias="Notice" type="com.example.haruProject.dto.Notice"/>
 		<typeAlias alias="Schedule" type="com.example.haruProject.dto.Schedule"/>
 		<typeAlias alias="BoardImg" type="com.example.haruProject.dto.BoardImg"/>
+		<typeAlias alias="Weight" type="com.example.haruProject.dto.Weight"/>
+		<typeAlias alias="ShoppingCart" type="com.example.haruProject.dto.ShoppingCart"/>
 	</typeAliases>
 </configuration>

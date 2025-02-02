@@ -12,10 +12,76 @@
 			   cm3.content gender,
 			   cm4.content status
 		FROM pet pt
-		JOIN common cm1 ON pt.petspecies_bcd = cm1.bcd AND cm1.mcd = 999 
-JOIN common cm2 ON pt.petspecies_bcd = cm2.bcd AND pt.petspecies_mcd= cm2.mcd 
-JOIN common cm3 ON pt.petgender_bcd = cm3.bcd AND pt.petgender_mcd = cm3.mcd 
-JOIN common cm4 ON pt.petstatus_bcd = cm4.bcd AND pt.petstatus_mcd = cm4.mcd
+			JOIN common cm1 ON pt.petspecies_bcd = cm1.bcd AND cm1.mcd = 999 
+			JOIN common cm2 ON pt.petspecies_bcd = cm2.bcd AND pt.petspecies_mcd= cm2.mcd 
+			JOIN common cm3 ON pt.petgender_bcd = cm3.bcd AND pt.petgender_mcd = cm3.mcd 
+			JOIN common cm4 ON pt.petstatus_bcd = cm4.bcd AND pt.petstatus_mcd = cm4.mcd
 		WHERE pt.memno = #{memno}
 	</select>
+	
+	
+	<!-- 마이페이지 > 동물 카드 정보 불러오기 -->
+	<select id="HR_getPetList" parameterType="int" resultType="Pet">
+		SELECT p.PETNO, p.PETNAME, p.PETIMG, c1.CONTENT as GENDER, p.PETGENDER_MCD, c2.CONTENT as SPECIES, p.PETBIRTH, p.MEMNO
+		FROM PET p
+		    JOIN COMMON c1 ON p.PETGENDER_BCD = c1.BCD AND p.PETGENDER_MCD = c1.MCD
+		    JOIN COMMON c2 ON p.PETSPECIES_BCD = c2.BCD AND p.PETSPECIES_MCD = c2.MCD
+		WHERE p.MEMNO = #{memno} AND p.petstatus_mcd = 100
+	</select>
+	
+	<select id="HR_getPetSpeciesBcd" resultType="Pet">
+		SELECT bcd, mcd, content as species
+		FROM common
+		WHERE scd = 500
+		    AND mcd = 999
+	</select>
+	
+	<select id="HR_getPetSpeciesMcd" parameterType="int" resultType="Pet">
+		SELECT c.bcd, c.mcd, c.content as species
+		FROM common c
+		WHERE c.bcd = #{bcd}
+	</select>
+	
+	<!-- 동물 상세 페이지 -->
+	<!-- 동물 정보 불러오기 -->
+	<select id="HR_getPetDetail" parameterType="int" resultType="Pet">
+		SELECT p.PETNO, p.PETNAME, p.PETIMG, c1.CONTENT as GENDER, p.PETGENDER_MCD, c2.CONTENT as SPECIES, p.PETBIRTH,
+				p.PETSPECIES_BCD, p.PETSPECIES_MCD, p.PETSTATUS_MCD, p.PETHEIGHT, w.PETWEIGHT, p.PETSPECIAL
+		FROM PET p
+		    JOIN COMMON c1 ON p.PETGENDER_BCD = c1.BCD AND p.PETGENDER_MCD = c1.MCD
+		    JOIN COMMON c2 ON p.PETSPECIES_BCD = c2.BCD AND p.PETSPECIES_MCD = c2.MCD
+		    
+		    LEFT OUTER JOIN (
+			    SELECT petno, reg_date, petweight
+			    FROM WEIGHT w1
+			    WHERE reg_date = (SELECT MAX(reg_date) FROM WEIGHT w2 WHERE w1.petno = w2.petno)
+			) w ON p.petno = w.petno
+		WHERE p.PETNO = #{petno}
+	</select>
+	<!-- 동물 몸무게 불러오기 -->
+	<select id="HR_getPetWeightList" parameterType="int" resultType="Weight">
+		SELECT reg_date, petweight
+		FROM WEIGHT
+		WHERE petno = #{petno}
+		ORDER BY reg_date desc
+	</select>
+	<!-- 동물별 예약 정보 불러오기 -->
+	<select id="HR_getPAppointmentList" parameterType="int" resultType="Appointment">
+		SELECT DISTINCT a.petno, a.resno, a.rdate, a.start_time, a.mcode, c.content as item, ch.resno as cresno, b.resno as bresno
+		FROM APPOINTMENT a
+		    JOIN MEDICAL_ITEM m ON m.mcode = a.mcode
+		    JOIN COMMON c ON m.mtitle_bcd = c.bcd AND m.mtitle_mcd = c.mcd
+		    LEFT OUTER JOIN CHART ch ON a.resno = ch.resno
+		    LEFT OUTER JOIN BOARD b ON a.resno = b.resno
+		WHERE petno = #{petno}
+		ORDER BY rdate desc, start_time desc
+	</select>
+	
+	<!-- 동물 정보 삭제하기 (상태 변경) -->
+	<update id="HR_deletePet" parameterType="int">
+		UPDATE PET SET petstatus_mcd = 200
+		WHERE petno = #{petno}
+	</update>
+
+
 </mapper>

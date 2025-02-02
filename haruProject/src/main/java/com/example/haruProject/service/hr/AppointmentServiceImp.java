@@ -153,7 +153,14 @@ public class AppointmentServiceImp implements AppointmentService {
 		return petnameList;
 	}
 
-	
+	// 예약 추가
+	@Override
+	public void insertReservation(Appointment appointment) {
+		System.out.println("AppointmentServiceImp addReservation() start ,,,,");
+		System.out.println("AppointmentServiceImp addReservation() appointment ->"+appointment);
+		
+		ad.insertReservation(appointment);
+	}
 	
 
 
@@ -183,6 +190,7 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return cList;
 	}
+	
 
 	
 

@@ -82,9 +82,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	            date1 = $("#datepicker1").val();
 	            //var date2 = $.datepicker.formatDate("yymmdd", $("#datepicker2").datepicker("getDate"));
 	            date2 = $("#datepicker2").val();
-	            
-	            // 선택된 날짜를 alert로 표시
-	            //alert("date1: " + date1 + ", date2: " + date2);
+	           
 	            console.log("date1: " + date1 + ", date2: " + date2);
 	            
 	         	// date1, date2 값이 다 들어오면 자동으로 검색

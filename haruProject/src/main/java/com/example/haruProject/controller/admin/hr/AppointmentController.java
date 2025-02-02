@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -206,23 +207,14 @@ public class AppointmentController {
 	
 	
 	// 예약 추가
-	// sendData를 한 번에 옮길 수 있는지 확인해보고 여기서부터 다시 시작하기~
-	@RequestMapping("/admin/addReservation")
-	public String addReservation(@RequestParam(value = "ano", required = true) int ano,
-								 @RequestParam(value = "mtitle_bcd", required = true) int mtitle_bcd,
-								 @RequestParam(value = "mtitle_mcd", required = true) int mtitle_mcd,
-								 @RequestParam(value = "memno", required = true) int memno,
-								 @RequestParam(value = "petno", required = true) int petno,
-								 @RequestParam(value = "rdate", required = true) String rdate,
-								 @RequestParam(value = "start_time", required = true) String start_time,
-								 @RequestParam(value = "rtime", required = true) int rtime,
-								 @RequestParam(value = "memo", required = true) String memo)
+	@RequestMapping("/admin/insertReservation")
+	public String insertReservation(@ModelAttribute Appointment appointment)
 	{
-		System.out.println("/admin/addReservation start ,,,");
-		System.out.println("AppointmentController addReservation() start ,,,");
-		System.out.println("AppointmentController addReservation() ano ->"+ano);
+		System.out.println("/admin/insertReservation start ,,,");
+		System.out.println("AppointmentController insertReservation() start ,,,");
+		System.out.println("AppointmentController insertReservation() appointment ->"+appointment);
 		
-		// as.addReservation()
+		as.insertReservation(appointment);
 		
 		return "redirect:/admin/reservation";
 	}

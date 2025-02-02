@@ -18,7 +18,17 @@ public class Pet {
 	private String gender;		// 성별
 	private String species1;	// 종 대문류
 	private String species2;	// 종 중분류
+	private String species;		// 종
 	private String status;		// 상태
+	private int petgender_bcd;
+	private int petgender_mcd; 	// 성별 중분류
+	private int petstatus_bcd;
+	private int petstatus_mcd;
+	private int petspecies_bcd;
+	private int petspecies_mcd;
 	
+	private int bcd;
+	private int mcd;
+	private int scd;
 
 }

@@ -111,9 +111,11 @@
 	</select>
 	<!-- 중분류 가져오기 -->
 	<select id="HR_SelectMedicalItemMCD" parameterType="int" resultType="Map">
-		SELECT CONTENT, MCD
-		FROM COMMON
-		WHERE SCD = 100 AND BCD = #{bcd} AND BCD != 999
+		SELECT c.CONTENT, c.MCD
+		FROM COMMON c, MEDICAL_ITEM m
+		WHERE c.MCD = m.MTITLE_MCD AND c.BCD = m.MTITLE_BCD
+			AND c.SCD = 100 AND c.BCD = #{bcd} AND c.BCD != 999
+			AND m.MSTATUS_MCD = 100
 	</select>
 	<!-- 진료 가능 의사 불러오기 -->
 	<select id="HR_SelectDoc" resultType="Map">
@@ -148,6 +150,31 @@
 		FROM PET
 		WHERE MEMNO = #{memno}
 	</select>
+	
+	<!-- 예약 추가 -->
+	<insert id="HR_InsertReservation" parameterType="Appointment">
+		INSERT INTO APPOINTMENT(ano, mcode, memno, petno, rdate, start_time, rtime, memo,
+		    resno, rstatus_bcd, rstatus_mcd, reg_date)
+		VALUES(#{ano},
+		       (SELECT mcode
+		        FROM MEDICAL_ITEM
+		        WHERE mtitle_bcd = #{mtitle_bcd} AND mtitle_mcd = #{mtitle_mcd}),
+		       #{memno},
+		       #{petno},
+		       #{rdate},
+		       #{start_time},
+		       #{rtime},
+		       #{memo},
+		       <choose>
+		       		<when test="mtitle_bcd = 110">CONCAT('JR', #{resno})</when>
+		       		<when test="mtitle_bcd = 120">CONCAT('SS', #{resno})</when>
+		       		<when test="mtitle_bcd = 130">CONCAT('HC', #{resno})</when>
+		       		<when test="mtitle_bcd = 140">CONCAT('VC', #{resno})</when>
+		       </choose>,		       
+		        800,
+		        200,
+		       sysdate)
+	</insert>
 	
 	
 	<!-- 전체 진료 수 조회 -->

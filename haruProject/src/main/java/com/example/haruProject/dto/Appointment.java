@@ -39,9 +39,15 @@ public class Appointment {
 	private String species;		// 종
 	private String cresno;		// 차트가 작성됐는지 확인하기 위함
 	private String mtel;		// 보호자 전화 번호
+	private String bresno;		// 후기가 작성됐는지 확인하기 위함
 	
 	// 검색
 	private String start_date;	// 검색 시작 날짜
 	private String end_date;	// 검색 끝 날짜
+	
+	// 추가
+	private int mtitle_bcd;
+	private int mtitle_mcd;
+	private String rrdate;
 	
 }

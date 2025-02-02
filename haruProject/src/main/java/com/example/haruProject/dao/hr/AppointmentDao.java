@@ -34,6 +34,8 @@ public interface AppointmentDao {
 	List<Map<String, Object>> getMnameList(String search1);
 	List<Map<String, Object>> getPetnameList(int memno);
 	List<Appointment> getDisabledTimesList(String rdate, int ano);
+	void insertReservation(Appointment appointment);
+
 
 
 

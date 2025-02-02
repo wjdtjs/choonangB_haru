@@ -225,7 +225,19 @@ public class AppointmentDaoImp implements AppointmentDao {
 		return petnameList;
 	}
 
-
+	// 예약 추가
+	@Override
+	public void insertReservation(Appointment appointment) {
+		System.out.println("AppointmentDaoImp addReservation() start ,,,");
+		System.out.println("AppointmentDaoImp addReservation() appointment ->"+appointment);
+		
+		try {
+			session.insert("HR_InsertReservation", appointment);
+			System.out.println("AppointmentDaoImp addReservation() appointment.mtitle_bcd ->"+appointment.getMtitle_bcd());
+		} catch (Exception e) {
+			log.error("addReservation() error ->", e);
+		}
+	}
 
 
 
@@ -268,6 +280,8 @@ public class AppointmentDaoImp implements AppointmentDao {
 		}
 		return clist;
 	}
+
+	
 
 	
 	

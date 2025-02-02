@@ -549,6 +549,28 @@ body > .haru-user-container {
     margin-top: 2rem;
 }
 
+/* 버튼 스타일 */
+.user-btn-primary {
+	position: fixed;
+	bottom: 88px;
+	width: 90%;
+	height: 44px;
+	background-color: var(--haru);
+	border: none;
+	border-radius: 12px;
+	color: white;
+	font-size: 16px;
+}
+
+
+/* 동물페이지, 마이페이지 > 동물사진 */
+.petimg-div {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background-color: #d9d9d9;
+}
+
 
 
 
