@@ -178,19 +178,25 @@ img {
 				        	<input type="hidden" name="resno" value="${apm.resno}">
 				        	<div class="infoTitle">이미지</div>
 				        	<div style="margin-top: 1rem" class="imgList">
-								 <div class="pro-imgList-div">
-					        		<c:if test="${chartImgs != null}">
+						        <c:if test="${not empty chartImgs}">
+									 <div class="pro-imgList-div">
 										<c:forEach var="chartImg" items="${chartImgs}">
-											<img alt="chartImg" src="${chartImg.content }" id="img${chartImg.imgno }" >
+											<img src="${chartImg.content}" id="img${chartImg.imgno }" >
 										</c:forEach>
-					        		</c:if>
-								 </div>
-								 <div class="pro-label-div">
-								 	<label for="main_img" class="img_upload">+</label>
-									<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
-								 </div>
-							
-					       </div>
+									 </div>
+									 <div class="pro-label-div" style="display: none;">
+									 	<label for="main_img" class="img_upload">+</label>
+										<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple>
+									</div>
+						        </c:if>
+						        <c:if test="${empty chartImgs }">
+						        	<div class="pro-imgList-div" style="display: none"></div>
+									<div class="pro-label-div" style="display: none;">
+										<label for="main_img" class="img_upload">+</label>
+										<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
+									</div>
+						        </c:if>
+						    </div>
 					       
 					       <div class="infoTitle">차트 내용<em>*</em></div>
 				        	<div>

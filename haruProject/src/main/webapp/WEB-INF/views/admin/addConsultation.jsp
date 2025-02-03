@@ -192,9 +192,11 @@ em {
 									</c:when>
 								 <c:otherwise>  --%>
 								 <div class="pro-imgList-div" style="display: none"></div>
-								 <div class="pro-label-div">
-								 	<label for="upload" class="img_upload">+</label>
-									<input type="file" id="upload" name="upload" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
+								 <div class = "pro-labels-div">
+									 <div class="pro-label-div">
+									 	<label for="upload" class="img_upload">+</label>
+										<input type="file" id="upload" name="upload" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
+									 </div>
 								 </div>
 							<%-- </c:otherwise> 
 								</c:choose>  --%>
@@ -262,14 +264,15 @@ em {
 		// 최대 첨부파일수 초과시 
 		if(curFileCnt > remainFileCnt){
 			alert('최대 첨부파일 수는 '+maxFileCnt+'개 입니다.');
+			return false;
 		}
 		
 		
-		if(attFileCnt+curFileCnt >= maxFileCnt){
+		/* if(attFileCnt+curFileCnt >= maxFileCnt){
 			$('.pro-label-div').css('display', 'none');
 		}else {
 			$('.pro-label-div').css('display', 'inline');
-		}
+		} */
 		
 		
 		for (var i = 0; i< Math.min(curFileCnt, remainFileCnt); i++){
@@ -284,12 +287,15 @@ em {
 				// 목록 추가
 				let htmlData = '';
 				
+				
 				htmlData += `<img src="\${event.target.result}" alt="product-image" id="img\${fileNo}" onclick="deleteFile(\${fileNo})" style="width: 7rem; height: 7rem" />`;
-						
+				
+				
+				
 				console.log(htmlData)
 				$('.pro-imgList-div').css('display', 'inline');
 				$('.pro-imgList-div').append(htmlData);
- 				/* $('.pro-mainimg-div').addClass('pro-thumbnail'); */
+				$('.pro-label-div').css('display', 'none');
 				fileNo++;
 			};
 			reader.readAsDataURL(file);

@@ -9,6 +9,7 @@ import com.example.haruProject.dao.hj.PurchaseHistoryDao;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Order;
 import com.example.haruProject.dto.OrderProduct;
+import com.example.haruProject.dto.SearchItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +19,8 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 	private final PurchaseHistoryDao pd;
 
 	@Override
-	public List<Order> getPurchaseHistory(int memno) {
-		List<Order> purchaseList = pd.getPurchaseList(memno);
+	public List<Order> getPurchaseHistory(int memno, SearchItem si) {
+		List<Order> purchaseList = pd.getPurchaseList(memno,si);
 		return purchaseList;
 	}
 
@@ -60,8 +61,8 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 	}
 
 	@Override
-	public int updateProductReview(Board board) {
-		int result = pd.updateProdictReview(board);
+	public int updateProductReview(Board board, boolean img_change) {
+		int result = pd.updateProdictReview(board, img_change);
 		return result;
 	}
 

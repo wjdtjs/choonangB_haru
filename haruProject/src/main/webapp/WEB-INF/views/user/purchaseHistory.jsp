@@ -46,7 +46,7 @@ body{
 }
 
 .purchase-product{
-
+ font-size: 14px;
 	margin-top: 12px;
 	
 }
@@ -77,7 +77,7 @@ body{
 	height: 45px;
 	position: relative;
 	color: var(--haru);
-	font-size: 1rem;
+	font-size: 14px;
 	background-color: white;
 	border: 1px solid var(--haru);
 	bottom: 0;
@@ -88,9 +88,13 @@ body{
 	height: 45px;
 	position: relative;
 	color: var(--haru);
-	font-size: 1rem;
+	font-size: 14px;
 	background-color: #D0E3E7;
 	bottom: 0;
+}
+a{
+	text-decoration: none;
+	color: black;
 }
 
 </style>
@@ -108,9 +112,17 @@ body{
 		<!-- body contents -->
 		<div class="user-body-container" >
 			<div class="selete-order">
-				<select name="selected">
-					<option value="1">최근순</option>
-					<option value="2">오래된순</option>
+				<select class="selected-order" name="type4">
+					<c:choose>
+						<c:when test="${si.type4 == 2 }">
+							<option value="1">최근순</option>
+							<option value="2" selected>오래된순</option>
+						</c:when>
+						<c:otherwise>
+							<option value="1" selected>최근순</option>
+							<option value="2">오래된순</option>
+						</c:otherwise>
+					</c:choose>
 				</select>
 			</div>
 			<div  style="margin-top: 0.5rem; ">
@@ -123,13 +135,14 @@ body{
 						</div>
 						<c:forEach var="product" items="${purchase.productList }">
 							<div class="purchase-product">
+								
 								<input type="hidden" value="${product.orderno }">
 								<input type="hidden" value="${product.pno }">
 								<div class="purchase-product-info">
 									<img alt="prodictimg" src="${product.pimg_main }">
 									<div class="productInfo">
 										<div >${product.pbrand }</div>
-										<div>${product.pname }</div>
+										<div><a href="/user/details-product?pno=${product.pno}"> ${product.pname }</a></div>
 										<div>${product.oquantity }개 / ${product.pprice }</div>
 									</div>
 								</div>
@@ -151,7 +164,7 @@ body{
 		</div>
 		<!-- menu bar -->
 		<jsp:include page="components/menubar.jsp"></jsp:include>
-	</div>
+0	</div>
 </body>
 <script type="text/javascript">
 	$(()=>{
@@ -162,16 +175,16 @@ body{
 			console.log($(this)); // 현재 요소 확인
 
 	        if (ostatus == 100) { // 주문완
-	            $(this).css('box-shadow', '0px 3px 12px #D0E3E7');
+	            
 	            $(this).css('border','2px solid #D0E3E7');
-	            $(this).find('.status-content').css('border','2px solid #D0E3E7');
+	            $(this).find('.status-content').css('background-color','#D0E3E7');
 	            $(this).find('.status-content').css('color','#666');
 	            $(this).find('.btn-review').css('display', 'none');     
 	        }    
 	        else if (ostatus == 200) { // 픽업준비완
-	            $(this).css('box-shadow', '0px 0px 5px #D0E3E7');
-	          	$(this).css('border', '2px solid #D0E3E7');
-	            $(this).find('.status-content').css('background-color','#D0E3E7');
+	          /*   $(this).css('box-shadow', '0px 0px 5px #A6D6C6'); */
+	          	$(this).css('border', '2px solid #A6D6C6');
+	            $(this).find('.status-content').css('background-color','#A6D6C6');
 	            $(this).find('.status-content').css('color','#666');
 	            $(this).find('.btn-review').css('display', 'none');     
 	        }
@@ -182,12 +195,19 @@ body{
 	            $(this).find('.btn-review').css('display', 'block');    
 	        }
 	        else { // 주문취소
-	            $(this).css('border', '1px solid #eee');
+	            $(this).css('border', '2px solid #ddd');
 	            $(this).find('.status-content').css('background-color','#eee');
 	            $(this).find('.btn-review').css('display', 'none');
 	        }
 
 		});
 	});
+	
+	$(document).on('change','.selected-order',function(){
+		let type4 = $(this).val();
+		console.log("type4: "+type4);
+		location.href = `/user/purchaseHistory?type4=\${type4}`;
+	});
+	
 </script>
 </html>

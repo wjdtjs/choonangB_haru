@@ -90,7 +90,7 @@ button {
 					<img alt="prodictimg" src="${product.pimg_main }">
 					<div class="productInfo">
 						<div>${product.pbrand }</div>
-						<div>${product.pname }</div>
+						<div>${product.pname }</a> </div>
 						<div>${product.oquantity }개 / ${product.pprice }</div>
 					</div>
 				</div>
@@ -133,8 +133,11 @@ button {
 </body>
  <script type="text/javascript">
  	$(document).on('click','.delete-review-btn', function () {
+ 		const orderno = $('input[name="orderno"]').val();
+ 		const pno = $('input[name="pno"]').val();
+ 		console.log('orderno: '+orderno+'pno: '+pno);
 		if (confirm('리뷰를 삭제하겠습니까?')) {
-			location.href = `/user/deleteProductReview?orderno=\${product.orderno }&pno=${product.pno}`;
+			location.href = `/user/deleteProductReview?orderno=\${orderno}&pno=\${pno}`;
 		}
 	})
  </script>

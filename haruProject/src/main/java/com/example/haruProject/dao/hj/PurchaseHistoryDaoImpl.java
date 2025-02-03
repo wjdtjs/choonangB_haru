@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Order;
 import com.example.haruProject.dto.OrderProduct;
+import com.example.haruProject.dto.SearchItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,12 +21,15 @@ public class PurchaseHistoryDaoImpl implements PurchaseHistoryDao {
 	private final SqlSession session;
 
 	@Override
-	public List<Order> getPurchaseList(int memno) {
+	public List<Order> getPurchaseList(int memno,SearchItem si) {
 		System.out.println("Dao memail-> "+ memno);
+		Map<String, Object> list_map = new HashMap<>();
+		list_map.put("memno", memno);
+		list_map.put("si", si);
 		List<Order> purchaseList = new ArrayList<>();
 		
 		try {
-			purchaseList = session.selectList("HJSelectPurchseHistory", memno);
+			purchaseList = session.selectList("HJSelectPurchseHistory", list_map);
 			System.out.println("Dao purchaseList-> "+ purchaseList);
 		} catch (Exception e) {
 			System.out.println("PurchaseHistoryDao getPurchaseList e.getMessage()->"+ e.getMessage());
@@ -94,6 +98,7 @@ public class PurchaseHistoryDaoImpl implements PurchaseHistoryDao {
 		Board board = new Board();
 		try {
 			board = session.selectOne("HJ_selectProductReview",op);
+			System.out.println("Dao getProductReview board->"+board);
 		} catch (Exception e) {
 			System.out.println("PurchaseHistory getProductReview 에러 -> "+e.getMessage());
 		}
@@ -101,10 +106,13 @@ public class PurchaseHistoryDaoImpl implements PurchaseHistoryDao {
 	}
 
 	@Override
-	public int updateProdictReview(Board board) {
+	public int updateProdictReview(Board board, boolean img_change) {
 		int result = 0;
+		Map<String, Object> update_map = new HashMap<>();
+		update_map.put("ic", img_change);
+		update_map.put("board", board);
 		try {
-			result = session.update("HJ_updateProductReview", board);
+			result = session.update("HJ_updateProductReview", update_map);
 		} catch (Exception e) {
 			System.out.println("PurchaseHistory updateProdictReview 에러 -> "+e.getMessage());
 		}

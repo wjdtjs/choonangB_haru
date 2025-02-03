@@ -111,12 +111,14 @@
 		WHERE orderno = #{orderno} AND pno = #{pno}
 	</select>
 	
-	<update id="HJ_updateProductReview" parameterType="Board">
+	<update id="HJ_updateProductReview" parameterType="Map">
 		UPDATE board
-		SET bcontents = #{bcontents},
-			bimg = #{bimg},
+		SET bcontents = #{board.bcontents},
+			<if test="ic== true">
+			bimg = #{board.bimg},
+			</if>
 			update_date = sysdate
-		WHERE orderno = #{orderno} AND pno = #{pno}
+		WHERE orderno = #{board.orderno} AND pno = #{board.pno}
 	
 	</update>
 	

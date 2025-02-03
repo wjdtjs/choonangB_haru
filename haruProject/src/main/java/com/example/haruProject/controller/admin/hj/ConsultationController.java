@@ -61,7 +61,7 @@ public class ConsultationController {
 		int addChart = 	cs.addChart(ch);
 		int imgSave  = 	cs.chartImgSave(imgPaths,ch);
 		
-		return "redirect:admin/addConsultation";
+		return "redirect:/admin/consultation";
 	}
 
 	/**

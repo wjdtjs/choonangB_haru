@@ -201,4 +201,27 @@
 		WHERE MEMAIL = #{memail} AND MSTATUS_MCD = 100
 	</select>
 	
+	   
+   <!--  내 정보 수정  -->
+   <!--  저장된 정보 불러오기  -->
+   <select id="HR_getMyinfo" parameterType="int" resultType="Member">
+      SELECT MEMNO, MNAME, MEMAIL, MPASSWD, MTEL 
+      FROM MEMBER WHERE MEMNO = #{memno} 
+   </select>
+   
+   <!--  회원 탈퇴 > 상태 수정  -->
+   <update id="HR_deleteMember" parameterType="int"> 
+      UPDATE MEMBER SET mstatus_mcd = 200 
+      WHERE memno = #{memno} 
+   </update>
+   
+   <!--  회원 정보 수정  -->
+   <update id="HR_updateMember" parameterType="Member">
+      UPDATE MEMBER
+      <set>
+         mname = #{mname}, mtel = #{mtel}
+         <if test="mpasswd != null and mpasswd != ''"> , mpasswd = #{mpasswd} </if>
+      </set>
+      WHERE memno = #{memno}
+   </update>
 </mapper>

@@ -1,5 +1,6 @@
 package com.example.haruProject.controller.user.hj;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,10 @@ import com.example.haruProject.controller.admin.js.UploadController;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Order;
 import com.example.haruProject.dto.OrderProduct;
+import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.hj.PurchaseHistoryService;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +34,17 @@ public class PurchaseHistoryController {
 	private final PurchaseHistoryService ps;
 	
 	@GetMapping(value = "/user/purchaseHistory")
-	public String getPurchaseHistory(
-										@RequestParam("memno") int memno,
-										Model model
+	public String getPurchaseHistory(	
+										HttpServletRequest request,
+										Model model,
+										@RequestParam(value = "type4", defaultValue = "1") int type4
 									) {
 		System.out.println("PurchaseHistoryController getPurchaseHistory ...");
 		
 		/* 구매 내역 */
-		/* int memno = SessionUtil.getNo(request); */
-		List<Order> purchaseList = ps.getPurchaseHistory(memno);
+		int memno = SessionUtil.getNo(request);
+		SearchItem si = new SearchItem(type4);
+		List<Order> purchaseList = ps.getPurchaseHistory(memno, si);
 		
 		for (int i = 0 ; i<purchaseList.size() ; i++) {
 			int orderno  = purchaseList.get(i).getOrderno();
@@ -53,12 +58,13 @@ public class PurchaseHistoryController {
 		/* 리뷰 작성 여부*/
 		
 		model.addAttribute("purchaseList",purchaseList);
+		model.addAttribute("si",si);
 		return "user/purchaseHistory";
 	}
 	
 	@RequestMapping(value = "/user/writeProductReview")
 	public String writeReviewForm(	
-									/* HttpServletRequest request, */
+									HttpServletRequest request,
 									OrderProduct product,
 									Model model
 								 ) {
@@ -89,7 +95,8 @@ public class PurchaseHistoryController {
 		} else {
 			board.setBimg(imgPath); //썸네일 이름 객체에 저장			
 		}
-		int memno = ps.getMemno(board.getOrderno());
+		
+		int memno = SessionUtil.getNo(request);
 		String pname = ps.getPname(board.getPno());
 		
 		board.setBtitle(pname);
@@ -99,7 +106,7 @@ public class PurchaseHistoryController {
 
 		int result = ps.addProductReview(board);
 		
-		return "redirect:/user/purchaseHistory?memno=" + memno;
+		return "redirect:/user/purchaseHistory";
 	}
 	
 	/**
@@ -175,33 +182,42 @@ public class PurchaseHistoryController {
 										HttpServletRequest request,
 										Board board,
 										Model model
-									  ) {
+									  ) throws IOException, ServletException {
 		System.out.println("PurchaseHistoryController updateProductReview ...");
 		
+		boolean img_change = false;
 		String type = "board";
-		String imgPath = saveImage(type, request);
+		String imgPath = null;
 		
-		if(imgPath==null) {
-			return "redirect:/user/purchaseHistory";
-		} else {
-			board.setBimg(imgPath); //썸네일 이름 객체에 저장			
-		}
-		int memno = ps.getMemno(board.getOrderno());
-		
-		System.out.println("PurchaseHistoryController addProductReview board-> "+board);
+		Part image = request.getPart("main_img");
+		if(image.getSize() == 0 ) {
+			System.out.println("이미지 변경 안함");
+		} else {			
+			System.out.println("이미지 변경함");
+			
+			imgPath = saveImage(type, request);
+			if(imgPath==null) {
+				 return "/user/purchaseHistory";
 
-		int result = ps.updateProductReview(board);
+			} else {
+				board.setBimg(imgPath); //썸네일 이름 객체에 저장
+				img_change = true;
+			}
+		}
+		 
 		
-		return "redirect:/user/purchaseHistory?memno=" + memno;
+		int result = ps.updateProductReview(board, img_change);
+		
+		return "redirect:/user/purchaseHistory";
 	}
 	
 	@RequestMapping(value = "/user/deleteProductReview")
 	public String deleteProductReview(Board board) {
 		System.out.println("PurchaseHistoryController deleteProductReview ...");
-		int memno = ps.getMemno(board.getOrderno());
+
 		int result = ps.deleteProductReview(board);
 		
-		return "redirect:/user/purchaseHistory?memno=" + memno;
+		return "redirect:/user/purchaseHistory";
 	}
 	
 }

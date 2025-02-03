@@ -97,7 +97,7 @@
 	
 	
 	<!-- 사용자뷰 -->
-	<select id="HJSelectPurchseHistory" parameterType="int" resultType="Order">
+	<select id="HJSelectPurchseHistory" parameterType="Map" resultType="Order">
 	 SELECT pc.*,
 	 		cm1.content opayment_content,
 	 		cm2.content ostatus_content
@@ -105,7 +105,14 @@
 	 JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd 
 	 JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
 	 WHERE pc.memno = #{memno}
-	 ORDER BY pc.odate desc
+	 <choose>
+	 	<when test="si.type4 == 2">
+		 ORDER BY pc.odate	 	
+	 	</when>
+	 	<otherwise>
+			 ORDER BY pc.odate desc
+	 	</otherwise>
+	 </choose> 
 	</select>
 	
 	<select id="HJSelectPurchaseProduct" parameterType="int" resultType="OrderProduct">
