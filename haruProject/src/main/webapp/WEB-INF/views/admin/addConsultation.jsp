@@ -90,12 +90,12 @@
 	padding: 10px;
 	margin-bottom: 20px;
 } */
-.pro-mainimg-div-evnet {
+.pro-imgList-div{
 	width: fit-content;
 	height: fit-content;
 
 }
-.pro-mainimg-div-evnet >img{
+.pro-imgList-div>img{
 	width: 112px;
 	height: 112px;
 	position: relative;
@@ -191,10 +191,10 @@ em {
 										<img alt="UpLoad Image" src="">	        		
 									</c:when>
 								 <c:otherwise>  --%>
-								 <div class="pro-mainimg-div-evnet" style="display: none"></div>
+								 <div class="pro-imgList-div" style="display: none"></div>
 								 <div class="pro-label-div">
-								 	<label for="main_img" class="img_upload">+</label>
-									<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
+								 	<label for="upload" class="img_upload">+</label>
+									<input type="file" id="upload" name="upload" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
 								 </div>
 							<%-- </c:otherwise> 
 								</c:choose>  --%>
@@ -255,10 +255,10 @@ em {
 	
  	function addFile(obj) {
 		
-		//var attFileCnt = document.querySelectorAll(".pro-mainimg-div-evnet img").length;	// 기존 추가된 첨부파일 개수
-		//var remainFileCnt = maxFileCnt-attFileCnt; 											// 추가로 첨부가능한 개수
+		var attFileCnt = document.querySelectorAll(".pro-imgList-div img").length;	// 기존 추가된 첨부파일 개수
+		var remainFileCnt = maxFileCnt-attFileCnt; 											// 추가로 첨부가능한 개수
 		var curFileCnt = obj.files.length; 													// 현재 첨부된 파일 개수
-		
+		console.log('attFileCnt->'+attFileCnt)
 		// 최대 첨부파일수 초과시 
 		if(curFileCnt > remainFileCnt){
 			alert('최대 첨부파일 수는 '+maxFileCnt+'개 입니다.');
@@ -284,11 +284,11 @@ em {
 				// 목록 추가
 				let htmlData = '';
 				
-				htmlData += `<img src="\${event.target.result}" alt="product-image" name="content" id="img\${fileNo}" onclick="deleteFile(\${fileNo})" style="width: 7rem; height: 7rem" />`;
+				htmlData += `<img src="\${event.target.result}" alt="product-image" id="img\${fileNo}" onclick="deleteFile(\${fileNo})" style="width: 7rem; height: 7rem" />`;
 						
 				console.log(htmlData)
-				$('.pro-mainimg-div-evnet').css('display', 'inline');
-				$('.pro-mainimg-div-evnet').append(htmlData);
+				$('.pro-imgList-div').css('display', 'inline');
+				$('.pro-imgList-div').append(htmlData);
  				/* $('.pro-mainimg-div').addClass('pro-thumbnail'); */
 				fileNo++;
 			};
@@ -306,7 +306,7 @@ em {
  		}
  		
 		// 이미지 수가 미만이면 .pro-lavel-div 다시 보이기ㅐ
-		if(document.querySelectorAll(".pro-mainimg-div-event img").length < maxFileCnt){
+		if(document.querySelectorAll(".pro-imgList-div img").length < maxFileCnt){
 			$('.pro-label-div').css('display', 'inline');
 		}
 	}

@@ -86,14 +86,9 @@
 	margin-bottom: 20px;
 	margin-top: 5px;
 }
-/* .form-input{
-	width: 100%;
-	height: 200px;
-	border: 1.5px solid var(--haru);
-	border-radius: 10px;
-	padding: 10px;
-	margin-bottom: 20px;
-} */
+.pro-imgList-div, .pro-label-div{
+	display: inline;
+}
 /* SELECT 버튼 위치 수정*/
 label.img_upload {
     background-color: #f0f0f0;
@@ -144,8 +139,8 @@ img {
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >차트 상세</h1>
                     
                     <div class="modal_l_detail">
-				        <input type="hidden" name="ano" value="${apm.resno}">
-				        <input type="hidden" name="ano" value="${chart.resno}">
+				        <input type="hidden" name="cno" value="${chart.cno}">
+				        <input type="hidden" name="reson" value="${chart.resno}">
 				        <table class="apmTable">
 				        	<colgroup>
 		                    	<col width="8%" />
@@ -183,17 +178,12 @@ img {
 				        	<input type="hidden" name="resno" value="${apm.resno}">
 				        	<div class="infoTitle">이미지</div>
 				        	<div style="margin-top: 1rem" class="imgList">
-							<%-- <c:choose> 
-									<c:when test="${not empty savedName }"> 
-										<img alt="UpLoad Image" src="">	        		
-									</c:when>
-								 <c:otherwise>  --%>
-								 <div class="pro-mainimg-div-evnet">
-								 	<img alt="chart-img" src="${chart.img1 }"  onclick="delete(this);">
-								 	<img alt="chart-img" src="${chart.img2 }" onclick="delete(this);">
-								 	<img alt="chart-img" src="${chart.img3 }" onclick="delete(this);">
-								 	<img alt="chart-img" src="${chart.img4 }" onclick="delete(this);">
-								 	<img alt="chart-img" src="${chart.img5 }" onclick="delete(this);">
+								 <div class="pro-imgList-div">
+					        		<c:if test="${chartImgs != null}">
+										<c:forEach var="chartImg" items="${chartImgs}">
+											<img alt="chartImg" src="${chartImg.content }" id="img${chartImg.imgno }" >
+										</c:forEach>
+					        		</c:if>
 								 </div>
 								 <div class="pro-label-div">
 								 	<label for="main_img" class="img_upload">+</label>
@@ -250,8 +240,7 @@ img {
 	var fileNo = 1;
 	var filesArr = new Array();
 	var maxFileCnt = 5; //최대 첨부파일 개수
-	var attFileCnt = document.querySelectorAll(".pro-mainimg-div-evnet img").length;	// 기존 추가된 첨부파일 개수		
-	
+	var attFileCnt = document.querySelectorAll(".pro-imgList-div img").length;	// 기존 추가된 첨부파일 개수		
 	
 	document.addEventListener("DOMContentLoaded", function(){
 		if (attFileCnt == maxFileCnt){
@@ -297,8 +286,8 @@ img {
 				htmlData += `<img src="\${event.target.result}" alt="product-image" name="img\${fileNo}" id="img\${fileNo}" onclick="deleteFile(\${fileNo})" style="width: 7rem; height: 7rem" />`;
 					
 				console.log(htmlData)
-				$('.pro-mainimg-div-evnet').css('display', 'inline');
-				$('.pro-mainimg-div-evnet').append(htmlData);
+				$('.pro-imgList-div').css('display', 'inline');
+				$('.pro-imgList-div').append(htmlData);
 				/* $('.pro-mainimg-div').addClass('pro-thumbnail'); */
 				fileNo++;
 			};

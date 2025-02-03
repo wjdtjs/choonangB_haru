@@ -14,9 +14,4 @@ public class Chart {
 	private String cect_con;	// 기타전달사항
 	private String update_date; // 수정일
 	private String resno;		// 예약번호 외래키
-	private String img1;		// 이미지(1~5)
-	private String img2;
-	private String img3;
-	private String img4;
-	private String img5;
 }

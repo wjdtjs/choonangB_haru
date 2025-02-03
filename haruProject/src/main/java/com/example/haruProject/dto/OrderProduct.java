@@ -10,7 +10,11 @@ public class OrderProduct {
 	private int oquantity;			// 수량
 	private int pprice;				// 가격
 	
-	private String pname;			// 주문자이름
+	private String pname;			// 상품명
+	private String pimg_main;		// 이미지
+	private String pbrand;			// 브랜드
 	
 	private int totalPrice;			// 총구매금액
+	
+	private int bno;				// 리뷰 작성여부
 }

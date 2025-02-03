@@ -90,5 +90,38 @@
 		WHERE bno = #{bno}
 	</update>
 	
+	<!-- 리뷰 상품 정보 -->
+	<select id="HJ_SelectReviewProductInfo" parameterType="OrderProduct" resultType="OrderProduct">
+		SELECT *
+		FROM orderproduct op
+		JOIN product pd ON op.pno = pd.pno
+		WHERE op.orderno = #{orderno} AND op.pno = #{pno}
+	</select>
 	
+	<!-- 상품 리뷰 CRUD -->
+	<insert id="HJ_insertProductReview" parameterType="Board" >
+		INSERT INTO board(bno, btitle, bcontents, reg_date, board_type_bcd, board_type_mcd, orderno, pno, bimg,memno)
+		VALUES (seq_board.nextval, #{btitle}, #{bcontents}, sysdate, 350, 300, #{orderno}, #{pno}, #{bimg}, #{memno})
+		
+	</insert>
+	
+	<select id="HJ_selectProductReview" parameterType="OrderProduct" resultType="Board">
+		SELECT *
+		FROM board
+		WHERE orderno = #{orderno} AND pno = #{pno}
+	</select>
+	
+	<update id="HJ_updateProductReview" parameterType="Board">
+		UPDATE board
+		SET bcontents = #{bcontents},
+			bimg = #{bimg},
+			update_date = sysdate
+		WHERE orderno = #{orderno} AND pno = #{pno}
+	
+	</update>
+	
+	<delete id="HJ_deletePriducrReview" parameterType="Board">
+		DELETE FROM board
+		WHERE orderno = #{orderno} AND pno = #{pno}
+	</delete>
 </mapper>

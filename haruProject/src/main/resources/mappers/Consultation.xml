@@ -3,7 +3,6 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.haruProject.ConsultationMapper" >
-    
 	<select id="HJSelectApointment" parameterType="java.lang.String" resultType="Appointment">
 		SELECT ap.resno, ap.rdate, ap.mcode, ap.ano, ap.reg_date,
 			   ap.memo, ap.start_time, ap.rtime, ap.rstatus_bcd, ap.rstatus_mcd,
@@ -33,12 +32,54 @@
 	</select>
 	
 	<insert id="HJInsertChart" parameterType="Chart">
-		INSERT INTO chart (cno, reg_date, ccontents, cect_con, resno, img1, img2, img3, img4, img5)
-		VALUES ('C'||#{resno}, sysdate, #{ccontents}, #{cect_con}, #{resno},
-				#{img1, jdbcType=VARCHAR}, #{img2, jdbcType=VARCHAR},
-				#{img3, jdbcType=VARCHAR}, #{img4, jdbcType=VARCHAR},
-				#{img5, jdbcType=VARCHAR}
-				)
+		INSERT INTO chart (cno, reg_date, ccontents, cect_con, resno)
+		VALUES ('C'||#{resno}, sysdate, #{ccontents}, #{cect_con}, #{resno})
 	</insert>
+	
+	<insert id="HJSaveChartImg" parameterType="Map">
+      	  INSERT INTO chartdetail (cno, imgno, content)
+      	  VALUES ('C' || #{resno}, seq_img.nextval, #{imgPath, jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="HJSelectChartImgs" parameterType="java.lang.String" resultType="ChartDetail">
+		SELECT *
+		FROM chartdetail
+		WHERE cno LIKE 'C'||#{resno}
+	</select>
+	
+	<select id="HJSelectUserApm" parameterType="java.lang.String" resultType="Appointment">
+		SELECT ap.resno, ap.rdate, ap.mcode, ap.ano, ap.reg_date,
+			   ap.memo, ap.start_time, ap.rtime, ap.rstatus_bcd, ap.rstatus_mcd,
+			   ad.aname,
+			   pt.petno, pt.petname, pt.petbirth, pt.petweight, pt.petheight,
+			   mb.memno, mb.mname,
+			   cm1.content item,
+			   cm2.content status,
+			   cm3.content species,
+			   cm4.content gender
+		FROM appointment ap
+		JOIN admin ad ON ap.ano = ad.ano
+		JOIN member mb ON ap.memno = mb.memno
+		JOIN pet pt ON ap.petno = pt.petno
+		JOIN medical_item  mi ON ap.mcode = mi.mcode
+		JOIN common cm1 ON mi.mtitle_bcd = cm1.bcd AND mi.mtitle_mcd = cm1.mcd 		<!-- 진료항목 -->
+		JOIN common cm2 ON ap.rstatus_bcd = cm2.bcd AND ap.rstatus_mcd = cm2.mcd	<!-- 예약상태 -->
+		JOIN common cm3 ON pt.petspecies_bcd = cm3.bcd AND pt.petspecies_mcd = cm3.mcd	<!-- 종 -->
+		JOIN common cm4 ON pt.petgender_bcd = cm4.bcd AND pt.petgender_mcd = cm4.mcd	<!-- 성별 -->
+		JOIN chart ch ON ap.resno = ch.resno
+		WHERE ch.cno = #{cno}
+	</select>
+	
+	<select id="HJSelectUserChart" parameterType="java.lang.String" resultType="Chart">
+		SELECT *
+		FROM chart
+		WHERE cno = #{cno}
+	</select>
+	
+	<select id="HJSelectUserChartImages" parameterType="java.lang.String" resultType="ChartDetail">
+		SELECT *
+		FROM chartdetail
+		WHERE cno = #{cno}
+	</select>
 	
 </mapper>

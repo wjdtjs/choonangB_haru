@@ -48,29 +48,18 @@ public class ConsultationController {
 	
 	@PostMapping(value = "/admin/addChart")
 	public String addChart(Chart ch,
-							@RequestParam("content") List<MultipartFile> files,
+							@RequestParam("upload") List<MultipartFile> files,
 							HttpServletRequest request, Model model) {
 		System.out.println("ConsultController addChart Start ...");
 		System.out.println("ConsultController addChart files->"+files);
 		
 		
 		String type = "chart";
-		List<String> imgPaths = saveImages(type,request);
-		
-		String img1 = imgPaths.size() > 0 ? imgPaths.get(0) : null;
-		String img2 = imgPaths.size() > 1 ? imgPaths.get(1) : null;
-		String img3 = imgPaths.size() > 2 ? imgPaths.get(2) : null;
-		String img4 = imgPaths.size() > 3 ? imgPaths.get(3) : null;
-		String img5 = imgPaths.size() > 4 ? imgPaths.get(4) : null;
-		ch.setImg1(img1);
-		ch.setImg2(img2);
-		ch.setImg3(img3);
-		ch.setImg4(img4);
-		ch.setImg5(img5);
-		System.out.println("ConsultController addChart ch->"+ch);
+		List<String> imgPaths = saveImages(type,files,request);
 
 		
-		int result = cs.addChart(ch);
+		int addChart = 	cs.addChart(ch);
+		int imgSave  = 	cs.chartImgSave(imgPaths,ch);
 		
 		return "redirect:admin/addConsultation";
 	}
@@ -81,43 +70,33 @@ public class ConsultationController {
 	 * @param request
 	 * @return
 	 */
-	private List<String> saveImages(String type, HttpServletRequest request) {
+	private List<String> saveImages(String type, List<MultipartFile> files, HttpServletRequest request) {
 		UploadController uc = new UploadController();
 		List<String> imgPaths = new ArrayList<>();
 		
 		// 이미지 저장
 		try {
-			// 여러 이미지 파일 가져오기
-			Collection<Part> parts = request.getParts();
-			for(Part image : parts) {
-				System.out.println(image);
-				if(image.getName().startsWith("main_img") && image.getSize()>0) {
-					InputStream inputStream = image.getInputStream();
-					
-					//파일 확장자 구하기
-					String fileName = image.getSubmittedFileName();
-					String[] split = fileName.split("\\.");
-					String suffix = split[split.length -1];
-
-					log.info("fileName -> {}", fileName);
-					log.info("suffix -> {}",suffix);
-					
-					// 저장파일 경로 설정
-					// Servlet 상속 받지 못했을 때 realPath 불러오는 방법
-					String type_path = "/upload/"+type+"/";
-					String uploadPath = request.getSession().getServletContext().getRealPath(type_path);
-					System.out.println("upload Path: {}"+ uploadPath);
-					
-					// 파일저장
-					System.out.println("uploadForm() PostStart...");
-					String savedName = uc.uploadFile(type, inputStream, uploadPath, suffix);
-
-					// 저장된 경로를 리스트에 춧가
-					System.out.println("Return savedName: {}"+savedName);
-					String imgPath = type_path+savedName;
-					imgPaths.add(imgPath);
-					System.out.println("imgPath"+imgPaths);
-				}
+			for(MultipartFile file : files) {
+				// 파일 이름 및 확장자 추출
+				String fileName = file.getOriginalFilename();
+				String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+				log.info("fileName -> {}", fileName);
+				log.info("suffix -> {}",suffix);
+				
+				// 저장파일 경로 설정
+				// Servlet 상속 받지 못했을 때 realPath 불러오는 방법
+				String type_path = "/upload/"+type+"/";
+				String uploadPath = request.getSession().getServletContext().getRealPath(type_path);
+				System.out.println("upload Path: {}"+ uploadPath);
+				
+				// 파일 저장
+				InputStream inputStream = file.getInputStream();
+                String savedName = uc.uploadFile(type, inputStream, uploadPath, suffix);
+                
+                // 저장된 경로를 리스트에 추가
+                String imgPath = type_path + savedName;
+                imgPaths.add(imgPath);
+                System.out.println("imgPath: " + imgPath);
 			}	
 		} catch (Exception e) {
 			System.out.println("image upload error :"+e.getMessage());
@@ -128,13 +107,16 @@ public class ConsultationController {
 	@RequestMapping(value = "/admin/detailConsultation")
 	public String detailConsulatation(@RequestParam("resno") String resno, Model model) {
 		System.out.println("ConsultationController detailConsulatation ...");
-		System.out.println("ConsultationController detailConsulatation resno->"+resno);
+
 		Appointment apm =  cs.getConsultation(resno);
 		Chart chart = cs.getChart(resno);
+		List<ChartDetail> chartImgs = cs.getImages(resno);
 		
+		System.out.println("ConsultationController detailConsulatation chartImgs->"+chartImgs);
 		
 		model.addAttribute("apm",apm);
 		model.addAttribute("chart",chart);
+		model.addAttribute("chartImgs",chartImgs);
 		
 		return "admin/detailConsultation";
 	}

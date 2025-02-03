@@ -94,4 +94,37 @@
 			update_date = sysdate
 		WHERE orderno = #{orderno}
 	</update>
+	
+	
+	<!-- 사용자뷰 -->
+	<select id="HJSelectPurchseHistory" parameterType="int" resultType="Order">
+	 SELECT pc.*,
+	 		cm1.content opayment_content,
+	 		cm2.content ostatus_content
+	 FROM purchase pc
+	 JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd 
+	 JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
+	 WHERE pc.memno = #{memno}
+	 ORDER BY pc.odate desc
+	</select>
+	
+	<select id="HJSelectPurchaseProduct" parameterType="int" resultType="OrderProduct">
+		SELECT op.*, pd.*, bd.bno
+		FROM orderproduct op
+		JOIN product pd ON op.pno = pd.pno
+		LEFT JOIN board bd ON bd.orderno = op.orderno AND bd.pno = op.pno
+		WHERE op.orderno = #{orderno}
+	</select>
+	
+	<select id="HJgetMemno" parameterType="int" resultType="int">
+		SELECT memno
+		FROM purchase
+		WHERE orderno = #{orderno}
+	</select>
+	
+	<select id="HJgetPname" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT pname
+		FROM product
+		WHERE pno = #{pno}
+	</select>
 </mapper>

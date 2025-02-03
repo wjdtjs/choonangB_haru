@@ -1,6 +1,7 @@
 package com.example.haruProject.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -24,6 +25,8 @@ public class Order {
 	private String pno;				//상품번호                  +++
 	private int oquantity;			// 수량
 	private int price;				// 가격
+	
+	private List<OrderProduct> productList; //
 	
 	// product 테이블(pno 외래키)
 	private String pname;			// 상품이름

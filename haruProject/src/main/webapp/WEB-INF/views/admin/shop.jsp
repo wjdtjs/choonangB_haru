@@ -64,7 +64,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >상품 관리</h1>
+                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >판매 관리</h1>
                     
 
                     <!-- DataTales Example -->

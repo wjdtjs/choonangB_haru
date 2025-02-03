@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ChartDetail {
-	private String cresno;
+	private String cno;
 	private int imgno;
 	private String content;
 }
