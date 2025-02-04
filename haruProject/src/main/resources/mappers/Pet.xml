@@ -67,10 +67,11 @@
 	</select>
 	<!-- 동물별 예약 정보 불러오기 -->
 	<select id="HR_getPAppointmentList" parameterType="int" resultType="Appointment">
-		SELECT DISTINCT a.petno, a.resno, a.rdate, a.start_time, a.mcode, c.content as item, ch.resno as cresno, b.resno as bresno
+		SELECT DISTINCT a.petno, a.resno, a.rdate, a.start_time, c2.content as mitem, m.mtitle_bcd, c.content as item, ch.resno as cresno, b.resno as bresno
 		FROM APPOINTMENT a
 		    JOIN MEDICAL_ITEM m ON m.mcode = a.mcode
 		    JOIN COMMON c ON m.mtitle_bcd = c.bcd AND m.mtitle_mcd = c.mcd
+		    JOIN COMMON c2 ON m.mtitle_bcd = c2.bcd AND c2.mcd = 999
 		    LEFT OUTER JOIN CHART ch ON a.resno = ch.resno
 		    LEFT OUTER JOIN BOARD b ON a.resno = b.resno
 		WHERE petno = #{petno}

@@ -195,7 +195,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 						예약 내역
 			            <i class="fa-solid fa-chevron-right page-btn"></i> 
 			        </li>
-			        <li class="menu-item" onclick="">
+			        <li class="menu-item" onclick="location.href='/user/purchaseHistory'">
 						구매 내역
 			            <i class="fa-solid fa-chevron-right page-btn"></i> 
 			        </li>
@@ -206,7 +206,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 			<!-- 내 글 관리, 공지사항, 문의 전화 -->
 			<div class="menu-card">
 			    <ul class="menu-list">
-			        <li class="menu-item" onclick="">
+			        <li class="menu-item" onclick="location.href='/user/myCommunity'">
 			            내 글 관리
 			            <i class="fa-solid fa-chevron-right page-btn"></i> 
 			        </li>
@@ -223,7 +223,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 			
 			
-			<button class="user-btn-primary">로그아웃</button>
+			<button class="user-btn-primary" onclick="location.href='/user/rogout'">로그아웃</button>
 			
 		</div>
 	

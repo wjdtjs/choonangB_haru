@@ -246,10 +246,10 @@ th:first-child, td:first-child {
 								<p class="res-time">${res.start_time }</p>
 								<p class="res-item">
 										<c:choose>
-											<c:when test="${res.mcode.substring(0,1) eq 'J'}"><span style="color: var(--haru); font-weight: bold;">진료</span></c:when>
-											<c:when test="${res.mcode.substring(0,1) eq 'S'}"><span style="color: #DF5641; font-weight: bold;">수술</span></c:when>
-											<c:when test="${res.mcode.substring(0,1) eq 'V'}"><span style="font-weight: bold;">접종</span></c:when>
-											<c:when test="${res.mcode.substring(0,1) eq 'H'}"><span style="font-weight: bold;">검진</span></c:when>													
+											<c:when test="${res.mtitle_bcd eq 110}"><span style="color: var(--haru); font-weight: bold;">${res.mitem}</span></c:when>
+											<c:when test="${res.mtitle_bcd eq 120}"><span style="color: #DF5641; font-weight: bold;">${res.mitem}</span></c:when>
+											<c:when test="${res.mtitle_bcd eq 130}"><span style="font-weight: bold;">${res.mitem}</span></c:when>
+											<c:when test="${res.mtitle_bcd eq 140}"><span style="font-weight: bold;">${res.mitem}</span></c:when>													
 										</c:choose>
 								- &nbsp;${res.item }</p>	
 							</div>
@@ -271,9 +271,14 @@ th:first-child, td:first-child {
 							</c:choose>
 							
 							<!-- 차트 -->
-							<c:if test="${res.resno ne null and res.resno eq res.cresno }">
-								<button class="res-btn-c" onclick="location.href=''">차트 확인하기</button>
-							</c:if>
+							<c:choose>
+								<c:when test="${res.resno ne null and res.resno eq res.cresno }">
+									<button class="res-btn-c" onclick="location.href=''">차트 확인하기</button>
+								</c:when>
+								<c:otherwise>
+									<button class="res-btn-c" >차트 준비중</button>
+								</c:otherwise>
+							</c:choose>
 							
 						</div>
 					</div>

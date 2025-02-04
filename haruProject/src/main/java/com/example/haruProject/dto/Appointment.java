@@ -50,5 +50,5 @@ public class Appointment {
 	private int mtitle_bcd;
 	private int mtitle_mcd;
 	private String rrdate;
-	
+	private String mitem;		// 대분류 content
 }

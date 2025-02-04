@@ -17,7 +17,7 @@
 <!-- 				<div style="width:30px"></div> -->
 <!-- 				<i class="fa-solid fa-cart-shopping"></i> -->
 				<div class="cart-shopping">
-					<img src="/img/Cart.png" alt="shopping_cart" style="width: 27px" onclick="location.href='/user/shopping-cart'">
+					<img src="/img/Cart.png" alt="shopping_cart" style="width: 27px" onclick="location.href='/user/shoppingCart'">
 					<c:if test="${cart_count > 0 }">
 						<div class="sc_count">${cart_count }</div>
 					</c:if>			

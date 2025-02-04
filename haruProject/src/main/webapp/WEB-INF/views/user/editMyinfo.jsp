@@ -80,7 +80,7 @@
 		
 		<!-- body contents -->
 		<div class="user-body-container" id="mypage-background">
-		<form action="/user/updateMember" id="updateMyinfoForm" method="POST" onsubmit="return validateForm()">
+		<form action="/user/updateMember" id="updateMyinfoForm" method="POST">
 			<input type="hidden" name="memno" value="${member.memno }">
 		
 			<!-- 이름 -->
@@ -89,14 +89,14 @@
 			
 			<!-- 이메일 -->
 			<p>이메일</p>
-			<input type="email" value="${member.memail }" disabled>
+			<input type="email" value="${member.memail }" name="memail" readonly>
 			
 			<!-- 비밀번호 -->
 			<div class="hr-pw">
-				<p>비밀번호</p>
+				<p>비밀번호&nbsp;<span style="color: red;">*</span></p>
 				<div class="pw-container">
-					<input id="b-pw" type="password" value="${member.mpasswd }" style="width: 230px; border: none; height: auto; margin: auto 0;" disabled>
-					<button id="pw-change-btn">비밀번호 변경</button>				
+					<input id="b-pw" type="password" name="re_mpasswd" style="width: 230px; border: none; height: auto; margin: auto 0;" required>
+					<button id="pw-change-btn" type="button">비밀번호 변경</button>				
 				</div>
 				
 				<div class="pw-change" style="display: none;">
@@ -109,14 +109,12 @@
 			
 			<!-- 전화번호 -->
 			<p>전화번호</p>
-			<input type="tel" value="${member.mtel }" class="update-mtel" name="mtel">
-			
-			
+			<input type="tel" value="${member.mtel}" class="update-mtel" name="mtel">
 		
 				
 		
 			<div>
-				<button class="user-btn-primary" style="bottom: 140px !important;" onclick="updateMember()">수정하기</button>
+				<button class="user-btn-primary" style="bottom: 140px !important;" type="button" onclick="updateMember()">수정하기</button>
 				<button class="info-del-btn" onclick="deleteMember()">탈퇴하기</button>
 			</div>
 		
@@ -130,22 +128,34 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#pw-change-btn").click(function() {
-			event.preventDefault(); // 버튼 클릭 시 form 제출 방지
-
-	        let pwChangeDiv = $(this).closest(".pw-container").next(".pw-change");
-
-	        pwChangeDiv.slideToggle(function() {
-	            // 비밀번호 변경창이 보이면 required 추가, 안 보이면 required 제거
-	            if ($(this).is(":visible")) {
-	                pwChangeDiv.find("input").attr("required", true);
-	            } else {
-	                pwChangeDiv.find("input").removeAttr("required");
-	            }
-	        });
-		})
-	})
+		var editTrue = ${edit_true};
+		console.log("editTrue ->",editTrue);
+		
+		if(!editTrue) {
+			alert("비밀번호가 일치하지 않습니다. 정보 수정에 실패했습니다.");
+		}
+		
+		
+		$("#pw-change-btn").click(function(event) {
+			console.log("비밀번호 변경 버튼 눌림");
+			let npasswd = $("#b-pw").val();
+			console.log("입력된 비밀번호 ->", npasswd);
 	
+	        let pwChangeDiv = $(this).closest(".pw-container").next(".pw-change");	       
+			
+	        pwChangeDiv.slideToggle(function() {
+		        // 비밀번호 변경창이 보이면 required 추가, 안 보이면 required 제거
+		        if ($(this).is(":visible")) {
+		            pwChangeDiv.find("input").attr("required", true);
+		        } else {
+		            pwChangeDiv.find("input").removeAttr("required");
+		        }
+		    });
+		});
+
+	});
+	
+
 	// 필수값 체크
 	function validateForm() {
 		let result = true;
@@ -159,12 +169,12 @@
 		
 		// 비밀번호 변경창이 보일 때만 검사
 	    if ($(".pw-change").is(":visible")) {
-	        if(passwd !== passwd2) {
-	            str += '비밀번호가 일치하지 않습니다.\n';
-	            result = false;
-	        }
 	        if(!checkRegex(passwd, '^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,}$')) {
 	            str += '비밀번호는 영문, 숫자, 특수문자를 최소 1개씩 조합하여 8자 이상\n';
+	            result = false;
+	        }
+	        if(passwd !== passwd2) {
+	            str += '비밀번호가 일치하지 않습니다.\n';
 	            result = false;
 	        }
 	    }
@@ -188,9 +198,11 @@
 	}
 	// 수정하기
 	function updateMember() {
-		if(confirm("정보를 수정하시겠습니까?")) {
-			document.getElementById("updateMyinfoForm").action = "/user/updateMember";
-			document.getElementById("updateMyinfoForm").submit();
+		if(confirm("정보를 수정하시겠습니까?")) {			
+			if (validateForm()) {
+				document.getElementById("updateMyinfoForm").action = "/user/updateMember";
+				document.getElementById("updateMyinfoForm").submit();				
+			}
 		}
 	}
 </script>
