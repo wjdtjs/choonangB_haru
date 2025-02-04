@@ -7,6 +7,11 @@
 <meta charset="UTF-8">
 <title>예약내역</title>
 
+<!-- date-picker -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 <style type="text/css">
 /* daterangepicker 커스텀 */
 #reportrange {
@@ -56,7 +61,10 @@ li, select, td, span {
 }
 
 .pre-reservation {
-	margin-top: 10px;
+	margin-top: 20px;
+}
+.past-reservation {
+	margin-top: 40px;
 }
 .js-reservation-div-top {
 	color: #6F7173;
@@ -74,6 +82,14 @@ li, select, td, span {
      line-height: 0px;
      margin-left: 7px;
 }
+
+.empty-list {
+	width: 100%;
+	text-align: center;
+	font-size: 14px;
+	color: #6F7173;
+}
+
 
 
 </style>
@@ -103,9 +119,9 @@ li, select, td, span {
 				</div>
 				
 				<select class="js-pet-selector">
-					<option value="0">전체</option>
+					<option value="0" selected>전체</option>
 					<c:forEach var="p" items="${pet }">
-						<option value="${p.petno }">${p.petname }</option>
+						<option value="${p.petno }" ${p.petno == petno ? 'selected' : '' }>${p.petname }</option>
 					</c:forEach>
 				</select>
 			</div>
@@ -116,9 +132,16 @@ li, select, td, span {
 					<img src="/img/medical.png" style="margin-right: 8px;">
 					앞둔 예약		
 				</div>
-				<c:forEach items="${reservation }" var="r">
-					${r.resno }
-				</c:forEach>
+				<c:choose>
+					<c:when test="${not empty pre }">
+						<c:forEach items="${pre }" var="res">
+							<%@include file="components/pre_reservation_item.jsp" %>
+						</c:forEach>					
+					</c:when>
+					<c:otherwise>
+						<div class="empty-list">예약 내역이 존재하지 않습니다.</div>
+					</c:otherwise>
+				</c:choose>
 				
 			</div>
 			
@@ -129,9 +152,18 @@ li, select, td, span {
 					지난 예약 	
 				</div>
 			
-				<c:forEach begin="1" end="3">
-					<div></div>
-				</c:forEach>
+				<c:choose>
+					<c:when test="${not empty past }">
+						<c:forEach items="${past }" var="res">
+							
+							<%@include file="components/past_reservation_item.jsp" %>
+							
+						</c:forEach>					
+					</c:when>
+					<c:otherwise>
+						<div class="empty-list">예약 내역이 존재하지 않습니다.</div>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			
 		</div>
@@ -144,12 +176,76 @@ li, select, td, span {
 	<script type="text/javascript">	
 		
 		$(()=>{
-			var start = moment().subtract(29, 'days');
-		    var end = moment();
+			chooseDate();
 
-		    function cb(start, end) {
+		    
+		    /* 예약 내역 버튼 토글 */
+		    $(".page-btn").click(function() {
+		        // 클릭한 버튼과 같은 부모 `.pet-res-content` 내부의 `.res-re`를 토글
+		        $(this).closest(".pet-res-content").next(".res-re").slideToggle();
+		       
+		        var tr = $(this).css('transform');
+		        var values = tr.split('(')[1].split(')')[0].split(',');
+		        var a = values[0];
+		        var b = values[1];
+		        var c = values[2];
+		        var d = values[3];
+
+		        var scale = Math.sqrt(a*a + b*b);
+		        var sin = b/scale;
+		        var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+		        
+		        var cur = angle + 180;
+		        
+		        $(this).css('transform', `rotate(\${cur}deg)`);
+		    });
+		    
+		    
+		})
+		
+		
+		var pet = ${petno};
+		var start_date = "${start}";
+		var end_date = "${end}";
+		if('${start}') {
+			$('#reportrange span').html('${start} - ${end}');			
+		} else {
+			$('#reportrange span').html(' 전체 ');
+		}
+		
+	    /* 동물 선택 */
+	    $('.js-pet-selector').change(function() {
+	    	pet = $(this).val();
+	    	console.log(pet);
+	    	location.href="/user/reservation?petno="+pet+"&start="+start_date+"&end="+end_date;
+	    })
+	    
+	    
+   	    /* 날짜 선택 콜백 함수 */
+	    function cb(start, end) {
+	    	
+	    	if(start!=null && end!=null && start._isValid && end._isValid) {
+		    	console.log(start.format('YYYY-MM-DD'))
+		    	console.log(end.format('YYYY-MM-DD'))
+		    	
 		        $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
-		    }
+		    	start_date = start.format('YYYY-MM-DD');
+		    	end_date = end.format('YYYY-MM-DD');
+		    	
+		    	location.href="/user/reservation?petno="+pet+"&start="+start_date+"&end="+end_date;
+	    	} else {
+	    		$('#reportrange span').html(' 전체 ');
+	    		console.log('전체선택');
+	    		
+	    		location.href="/user/reservation?petno="+pet;
+	    	} 
+	    }
+	    
+		
+	    /* 날짜 선택기 초기화 */
+		function chooseDate() {
+	    	var start = '${start}';
+			var end = '${end}';
 
 		    $('#reportrange').daterangepicker({
 		        startDate: start,
@@ -177,20 +273,19 @@ li, select, td, span {
 		            ],
 		        },
 		        ranges: {
-		           '오늘': [moment(), moment()],
-		           '지난 7일': [moment().subtract(6, 'days'), moment()],
-		           '지난 30일': [moment().subtract(29, 'days'), moment()],
-		           '이번 달': [moment().startOf('month'), moment().endOf('month')],
-		           '지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+		        	'전체': [null, null],
+		           	'오늘': [moment(), moment()],
+		           	'지난 7일': [moment().subtract(6, 'days'), moment()],
+		           	'지난 30일': [moment().subtract(29, 'days'), moment()],
+		           	'이번 달': [moment().startOf('month'), moment().endOf('month')],
+		           	'지난 달': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
 		        },
 		        showDropdowns: true,
 		        alwaysShowCalendars: false,
 		    }, cb);
 
-		    cb(start, end);	
-		})
-		
-		
+	    }	    
+	    
 
 	</script>
 </body>

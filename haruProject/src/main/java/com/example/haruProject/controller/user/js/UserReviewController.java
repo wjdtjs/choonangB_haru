@@ -1,6 +1,9 @@
 package com.example.haruProject.controller.user.js;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.haruProject.common.utils.SessionUtil;
+import com.example.haruProject.controller.admin.js.UploadController;
+import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.BoardImg;
 import com.example.haruProject.dto.Pagination;
@@ -19,7 +24,9 @@ import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.js.ReviewService;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -57,7 +64,7 @@ public class UserReviewController {
 								Board board, Model model) {
 		log.info("communityView() start..");
 		
-		//상품 중분류
+		//후기 중분류
 		List<Map<String, Object>> mcdList = new ArrayList<>();
 		mcdList = rs.getMcdList();
 	
@@ -217,5 +224,102 @@ public class UserReviewController {
 		return "redirect:community";
 	}
 	
+	/**
+	 * 후기 작성 뷰
+	 * @param resno
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/user/write-review")
+	public String writeReviewView(@RequestParam(value="resno", required = true) String resno, Model model) {
+		log.info("writeReviewView() start..");
+		
+		//진료 정보
+		Appointment appointment = new Appointment();
+		appointment = rs.getAppointment(resno);
+		
+		model.addAttribute("resno", resno);
+		model.addAttribute("bcd", appointment.getItem_bcd());
+		model.addAttribute("mcd", appointment.getItem());
+		
+		return "user/uploadReview";
+	}
+	
+	/**
+	 * 후기 작성
+	 * @param board
+	 * @param model
+	 * @return
+	 * @throws ServletException 
+	 * @throws IOException 
+	 */
+	@PostMapping("/user/WriteReview")
+	public String writeReview(Board board, Model model, HttpServletRequest request) throws IOException, ServletException {
+		log.info("writeReview() start..");
+		
+		int memno = SessionUtil.getNo(request);
+		board.setMemno(memno);
+		
+		//이미지 저장
+		List<String> imgPathList = saveImage("review", request);
+		System.out.println("저장할 이미지 리스트 -> "+imgPathList);
+		
+		//프로시저를 사용해 board, boardimg 한번에 저장
+		System.out.println("writeReview() Board -> "+board);
+		rs.writeReview(board, imgPathList);
+		
+		return "redirect:reservation";
+	}
+	
+	/**
+	 * 이미지 저장
+	 * @param type
+	 * @param request
+	 * @return
+	 */
+	private List<String> saveImage(String type, HttpServletRequest request) {
+		UploadController uc = new UploadController();
+		List<String> imgPathList = new ArrayList<>();
+		
+		//// 저장
+		try {
+			String imgPath = null;
+			Collection<Part> parts = request.getParts();
+			System.out.println("parts== "+parts);
+			for (Part image : parts) {
+				
+				if (image.getContentType() != null) { // ContentType이 있는 경우 파일임			        
+			        System.out.println("UserReviewController saveImage() -> "+image.getSubmittedFileName());
+			        InputStream inputStream = image.getInputStream();
+			        
+			        // 파일 확장자 구하기
+			        String fileName = image.getSubmittedFileName();
+			        String[] split = fileName.split("\\.");
+			        String suffix = split[split.length -1];
+			        
+			        log.info("fileName -> {}", fileName);
+			        log.info("suffix -> {}",suffix);
+			        
+			        // Servlet 상속 받지 못했을 때 realPath 불러오는 방법
+			        String type_path = "/upload/"+type+"/";
+			        String uploadPath = request.getSession().getServletContext().getRealPath(type_path);
+			        System.out.println("real path : "+uploadPath);
+			        
+			        log.info("uploadForm() POST Start..");
+			        String savedName = uc.uploadFile(type, inputStream, uploadPath, suffix);
+			        
+			        log.info("Return savedName: {}", savedName);			
+			        imgPath = type_path+savedName;
+			        System.out.println(imgPath);
+			        imgPathList.add(imgPath);
+			    } 
+			}
+			
+		} catch (Exception e) {
+			log.error("image upload error : ", e);
+		}
+		
+		return imgPathList;
+	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.js.ReviewDao;
+import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.BoardImg;
 import com.example.haruProject.dto.Pagination;
@@ -118,6 +119,25 @@ public class ReviewServiceImp implements ReviewService {
 	@Override
 	public void deleteReviews(int bno) {
 		rd.deleteReviews(bno);
+		
+	}
+
+	/**
+	 * 예약 상세
+	 */
+	@Override
+	public Appointment getAppointment(String resno) {
+		Appointment appointment = new Appointment();
+		appointment = rd.getAppointment(resno);
+		return appointment;
+	}
+
+	/**
+	 * 후기 작성
+	 */
+	@Override
+	public void writeReview(Board board, List<String> imgPathList) {
+		rd.writeReview(board, imgPathList);
 		
 	}
 

@@ -78,7 +78,7 @@
 	
 	<!-- 예약 상세 -->
 	<select id="HR_SelectAppointmentDetail" parameterType="String" resultType="Appointment">
-		SELECT a.resno, a.rdate, c1.content as item, d.aname, m.mname, p.petno, p.petname, c2.content as species, c3.content as gender, p.petweight
+		SELECT a.resno, a.rdate, c1.content as item, c5.content as item_bcd, d.aname, m.mname, p.petno, p.petname, c2.content as species, c3.content as gender, p.petweight
 				, c4.content as status, a.memo, a.rstatus_mcd, a.start_time, a.rtime, ch.resno as cresno, m.memail
 		FROM APPOINTMENT a
 		    JOIN ADMIN d ON a.ano = d.ano
@@ -86,6 +86,7 @@
 		    JOIN MEDICAL_ITEM t ON a.mcode = t.mcode
 		    JOIN PET p ON a.petno = p.petno
 		    JOIN COMMON c1 ON c1.bcd = t.mtitle_bcd AND c1.mcd = t.mtitle_mcd
+		    JOIN COMMON c5 ON c5.bcd = t.mtitle_bcd AND c5.mcd = 999
 		    JOIN COMMON c2 ON c2.bcd = p.PETSPECIES_BCD AND c2.mcd = p.PETSPECIES_MCD
 		    JOIN COMMON c3 ON c3.bcd = p.PETGENDER_BCD AND c3.mcd = p.PETGENDER_MCD
 		    JOIN COMMON c4 ON c4.bcd = a.RSTATUS_BCD AND c4.mcd = a.RSTATUS_MCD
@@ -185,6 +186,7 @@
 			JOIN MEMBER m ON a.MEMNO = m.MEMNO
 		    JOIN PET p ON a.PETNO = p.PETNO
 		    JOIN ADMIN d ON a.ANO = d.ANO
+		    JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
 			JOIN COMMON c ON c.BCD = t.MTITLE_BCD and c.MCD = t.MTITLE_MCD
 		WHERE  a.rstatus_mcd = 400
 			<if test="(type4 != null and type4 != 0)">

@@ -170,4 +170,20 @@
 		WHERE BGROUP = #{bno}
 	</update>
 	
+	<!-- 후기작성 
+		프로시저 사용
+	-->
+	<select id="JS_InsertReview" parameterType="Map" statementType="CALLABLE">
+		{
+			CALL insert_board_with_images(
+	            #{board.btitle,		mode=IN}, 
+	            #{board.bcontents, 	mode=IN}, 
+	            #{board.resno, 		mode=IN}, 
+	            #{board.memno, 		mode=IN},
+	            #{imgList, 			mode=IN, jdbcType=ARRAY, typeHandler=org.apache.ibatis.type.ArrayTypeHandler}
+	        )
+        }
+	</select>
+	
+	
 </mapper>

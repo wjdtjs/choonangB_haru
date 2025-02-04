@@ -19,7 +19,7 @@
 		<!-- 4. 게시판 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-clipboard-list"></i></span>
 	</a>
-	<a class="menu-icon" id="mypage">
+	<a class="menu-icon" id="mypage" href="/user/myPage">
 		<!-- 5. 마이페이지 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-user"></i></span>
 	</a>

@@ -191,7 +191,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 			<!-- 예약 내역, 구매 내역 -->
 			<div class="menu-card">
 				<ul class="menu-list">
-			        <li class="menu-item" onclick="">
+			        <li class="menu-item" onclick="location.href='/user/reservation'">
 						예약 내역
 			            <i class="fa-solid fa-chevron-right page-btn"></i> 
 			        </li>

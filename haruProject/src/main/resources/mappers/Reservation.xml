@@ -25,8 +25,8 @@
 		FROM (
 		    SELECT ROWNUM rn, aa.*
 		    FROM (
-		        SELECT a.RESNO, a.RDATE, p.PETNAME, d.ANAME, c2.CONTENT as item, c3.CONTENT as item_bcd, c1.CONTENT as status, a.rstatus_mcd
-		        		, a.start_time
+		        SELECT a.RESNO, a.RDATE, p.PETIMG, p.PETNAME, d.ANAME, c2.CONTENT as item, c3.BCD as mtitle_bcd, c3.CONTENT as item_bcd, c1.CONTENT as status, a.rstatus_mcd
+		        		, a.start_time, ch.resno as cresno
 		        FROM APPOINTMENT a 
 		            JOIN MEMBER m ON a.MEMNO = m.MEMNO
 		            JOIN PET p ON a.PETNO = p.PETNO
@@ -35,16 +35,17 @@
 		            JOIN COMMON c1 ON c1.BCD = a.RSTATUS_BCD and c1.MCD = a.RSTATUS_MCD			<!-- 예약 상태 -->
 		            JOIN COMMON c2 ON c2.BCD = t.MTITLE_BCD and c2.MCD = t.MTITLE_MCD			<!-- 진료 항목 -->
 		            JOIN COMMON c3 ON c3.BCD = t.MTITLE_BCD and c3.MCD = 999
+		            LEFT OUTER JOIN CHART ch ON a.resno = ch.resno
 		           
-       			WHERE RSTATUS_BCD = 800 AND MEMNO = #{memno}
+       			WHERE a.RSTATUS_BCD = 800 AND a.MEMNO = #{memno}
 			    <if test="petno != null and petno != 0">
-			    	AND PETNO = #{petno}
+			    	AND a.PETNO = #{petno}
 			    </if>
 			    <if test="start != null and start != '' and end != null and end != ''">
 			    	AND rdate BETWEEN TO_DATE(#{start}, 'yyyy-mm-dd') 
 			                    AND TO_DATE(#{end}, 'yyyy-mm-dd')
 			    </if>
-				ORDER BY a.RDATE desc
+				ORDER BY a.RDATE desc, a.START_TIME ASC
 		    )aa
 		)
 		WHERE rn BETWEEN #{page.startRow} AND #{page.endRow} 

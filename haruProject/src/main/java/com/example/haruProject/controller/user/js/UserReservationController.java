@@ -1,6 +1,8 @@
 package com.example.haruProject.controller.user.js;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +75,26 @@ public class UserReservationController {
 		resList = rs.getReservation(params);
 		System.out.println("reservationView() 예약내역 "+resList);
 		
+		//현재 날짜
+		Date now = new Date();
+		
+		List<Appointment> pre_list  = new ArrayList<>(); //앞둔 예약 리스트
+		List<Appointment> past_list = new ArrayList<>(); //이전 예약 리스트
+		for(Appointment a: resList) {
+			if(a.getRdate().before(now) ) { //이전 예약
+				past_list.add(a);
+			} else { //앞둔 예약
+				pre_list.add(a);
+			}
+		}
+		
+	
+		model.addAttribute("petno", petno);
+		model.addAttribute("start", start);
+		model.addAttribute("end", end);
 		model.addAttribute("pet", petList);
-		model.addAttribute("reservation", resList);
+		model.addAttribute("pre", pre_list);
+		model.addAttribute("past", past_list);
 		
 		return "user/reservation";
 	}

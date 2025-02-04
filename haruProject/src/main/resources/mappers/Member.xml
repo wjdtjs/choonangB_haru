@@ -201,8 +201,7 @@
 		WHERE MEMAIL = #{memail} AND MSTATUS_MCD = 100
 	</select>
 	
-	   
-   <!--  내 정보 수정  -->
+	   <!--  내 정보 수정  -->
    <!--  저장된 정보 불러오기  -->
    <select id="HR_getMyinfo" parameterType="int" resultType="Member">
       SELECT MEMNO, MNAME, MEMAIL, MPASSWD, MTEL 
@@ -224,4 +223,5 @@
       </set>
       WHERE memno = #{memno}
    </update>
+	
 </mapper>

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.BoardImg;
 import com.example.haruProject.dto.Pagination;
@@ -178,6 +179,41 @@ public class ReviewDaoImp implements ReviewDao {
 			session.update("JS_UpdateReviewStatusDelete", bno);
 		} catch (Exception e) {
 			log.error("deleteReviews() query error -> ", e);
+		}
+		
+	}
+
+	/**
+	 * 예약 상세
+	 */
+	@Override
+	public Appointment getAppointment(String resno) {
+		Appointment appointment = new Appointment();
+		try {
+			appointment = session.selectOne("HR_SelectAppointmentDetail", resno);
+		} catch (Exception e) {
+			log.error("getAppointment() query error -> ", e);
+		}
+		return appointment;
+	}
+
+	/**
+	 * 후기 작성
+	 */
+	@Override
+	public void writeReview(Board board, List<String> imgPathList) {
+		Map<String, Object> pMap = new HashMap<>();
+		System.out.println("이미지 리스트 "+imgPathList);
+		int arrListSize = imgPathList.size();        
+		String arr[] = imgPathList.toArray(new String[arrListSize]);
+		
+		pMap.put("board", board);
+		pMap.put("imgList", arr);
+		
+		try {
+			session.selectOne("JS_InsertReview", pMap);
+		} catch (Exception e) {
+			log.error("writeReview() query error -> ", e);
 		}
 		
 	}

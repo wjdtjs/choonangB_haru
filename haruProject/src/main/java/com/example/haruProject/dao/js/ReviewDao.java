@@ -3,6 +3,7 @@ package com.example.haruProject.dao.js;
 import java.util.List;
 import java.util.Map;
 
+import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.BoardImg;
 import com.example.haruProject.dto.Pagination;
@@ -20,5 +21,7 @@ public interface ReviewDao {
 	int writeComment(Board board);
 	void plusViewCount(int bno);
 	void deleteReviews(int bno);
+	Appointment getAppointment(String resno);
+	void writeReview(Board board, List<String> imgPathList);
 
 }
