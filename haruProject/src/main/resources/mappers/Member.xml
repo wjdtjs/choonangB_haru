@@ -204,7 +204,7 @@
 	   <!--  내 정보 수정  -->
    <!--  저장된 정보 불러오기  -->
    <select id="HR_getMyinfo" parameterType="int" resultType="Member">
-      SELECT MEMNO, MNAME, MEMAIL, MPASSWD, MTEL 
+      SELECT MEMNO, MNAME, MEMAIL, MPASSWD, MTEL, MID 
       FROM MEMBER WHERE MEMNO = #{memno} 
    </select>
    
@@ -223,5 +223,25 @@
       </set>
       WHERE memno = #{memno}
    </update>
+   
+   <!-- 카카오 회원 가입 -->
+<!--    <insert id="JS_InsertKakaoUser" parameterType="Member"> -->
+<!-- 	   INSERT INTO MEMBER (MEMNO, MID, MNAME, MEMAIL) -->
+<!-- 			SELECT SEQ_MEM.NEXTVAL, #{mid}, #{mname}, #{memail} -->
+<!-- 			FROM DUAL -->
+<!-- 			WHERE NOT EXISTS ( -->
+<!-- 		    	SELECT 1 FROM MEMBER WHERE MEMAIL = #{memail} AND MID = #{mid} -->
+<!-- 		); -->
+<!--    </insert> -->
+   <select id="JS_InsertKakaoUser" parameterType="Member" statementType="CALLABLE">
+		{
+			CALL GET_OR_CREATE_MEMBER(
+	            #{memail,		mode=IN,	jdbcType=VARCHAR}, 
+	            #{mid,		 	mode=IN,	jdbcType=VARCHAR}, 
+	            #{mname, 		mode=IN,	jdbcType=VARCHAR}, 
+	            #{memno, 		mode=OUT,	jdbcType=INTEGER}
+	        )
+        }
+	</select>
 	
 </mapper>

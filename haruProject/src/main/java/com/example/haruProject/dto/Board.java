@@ -38,4 +38,6 @@ public class Board {
 	private int re_count = 0;	// 댓글 수 -> 댓글이 없을 경우에 null이 들어오지 않게 기본값 0 설정해둠!
 	
 	private String otitle; 		// 해당 댓글이 달린 원글의 제목
+	
+	private int [] imgno;	// 후기 - 삭제할 이미지 번호
 }

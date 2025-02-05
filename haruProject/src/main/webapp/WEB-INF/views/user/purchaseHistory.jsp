@@ -127,39 +127,46 @@ a{
 			</div>
 			<div  style="margin-top: 0.5rem; ">
 				<!-- 구매번호별 내역 -->
-				<c:forEach var="purchase" items="${purchaseList}">
-					<div class="purchase-info" data-ostatus="${purchase.ostatus_mcd }">
-						<div class="purchase-info-top">
-							<div><fmt:formatDate value="${purchase.odate}" pattern="yyyy-MM-dd"/></div>
-							<div class="status-content">${purchase.ostatus_content}</div>
-						</div>
-						<c:forEach var="product" items="${purchase.productList }">
-							<div class="purchase-product">
-								
-								<input type="hidden" value="${product.orderno }">
-								<input type="hidden" value="${product.pno }">
-								<div class="purchase-product-info">
-									<img alt="prodictimg" src="${product.pimg_main }">
-									<div class="productInfo">
-										<div >${product.pbrand }</div>
-										<div><a href="/user/details-product?pno=${product.pno}"> ${product.pname }</a></div>
-										<div>${product.oquantity }개 / ${product.pprice }</div>
+				<c:choose>
+					<c:when test="${not empty purchaseList }">
+						<c:forEach var="purchase" items="${purchaseList}">
+							<div class="purchase-info" data-ostatus="${purchase.ostatus_mcd }">
+								<div class="purchase-info-top">
+									<div><fmt:formatDate value="${purchase.odate}" pattern="yyyy-MM-dd"/></div>
+									<div class="status-content">${purchase.ostatus_content}</div>
+								</div>
+								<c:forEach var="product" items="${purchase.productList }">
+									<div class="purchase-product">
+										
+										<input type="hidden" value="${product.orderno }">
+										<input type="hidden" value="${product.pno }">
+										<div class="purchase-product-info">
+											<img alt="prodictimg" src="${product.pimg_main }">
+											<div class="productInfo">
+												<div >${product.pbrand }</div>
+												<div><a href="/user/details-product?pno=${product.pno}"> ${product.pname }</a></div>
+												<div>${product.oquantity }개 / ${product.pprice }</div>
+											</div>
+										</div>
+										<div class="btn-review" style="display: hidden;">
+											<c:choose>
+												<c:when test="${product.bno == 0 }">
+													<button class="border-btn" onclick="location.href='/user/writeProductReview?orderno=${product.orderno}&pno=${product.pno }'" > 리뷰작성  </button>
+												</c:when>
+												<c:when test="${product.bno != 0 }">
+													<button class="bgcolor-btn" onclick="location.href='/user/productReview?orderno=${product.orderno}&pno=${product.pno }'"> 리뷰보기  </button>
+												</c:when>
+											</c:choose>
+										</div>
 									</div>
-								</div>
-								<div class="btn-review" style="display: hidden;">
-									<c:choose>
-										<c:when test="${product.bno == 0 }">
-											<button class="border-btn" onclick="location.href='/user/writeProductReview?orderno=${product.orderno}&pno=${product.pno }'" > 리뷰작성  </button>
-										</c:when>
-										<c:when test="${product.bno != 0 }">
-											<button class="bgcolor-btn" onclick="location.href='/user/productReview?orderno=${product.orderno}&pno=${product.pno }'"> 리뷰보기  </button>
-										</c:when>
-									</c:choose>
-								</div>
+								</c:forEach>
 							</div>
 						</c:forEach>
-					</div>
-				</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<div style="margin-top: 30px; text-align: center; color: #6F7173">구매 내역이 없습니다.</div>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 		<!-- menu bar -->

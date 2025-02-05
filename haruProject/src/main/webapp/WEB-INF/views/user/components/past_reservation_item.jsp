@@ -117,7 +117,7 @@
 		<!-- 리뷰 -->
 		<c:choose>
 			<c:when test="${res.resno ne null and res.resno eq res.bresno }">
-				<button class="res-btn-b" onclick="location.href=''">리뷰 보러가기</button>
+				<button class="res-btn-b" onclick="location.href='/user/details-review?bno=${res.bno}'">리뷰 보러가기</button>
 			</c:when>
 			<c:otherwise>
 			 	<button class="res-btn-b" onclick="location.href='/user/write-review?resno=${res.resno}'">리뷰 작성하기</button>							
@@ -127,7 +127,7 @@
 		<!-- 차트 -->
 		<c:choose>
 			<c:when test="${res.resno ne null and res.resno eq res.cresno }">
-				<button class="res-btn-c" onclick="location.href=''">차트 확인하기</button>
+				<button class="res-btn-c" onclick="location.href='/user/detailConsultation?cno=${res.cno}'">차트 확인하기</button>
 			</c:when>
 			<c:otherwise>
 				<button class="res-btn-c">차트 준비중</button>

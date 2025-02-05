@@ -18,6 +18,7 @@
 
 <script type="text/javascript">// 비활동 회원 
 	$(document).on('click','#dataTable .adminTable tr',function(){
+		
 		const ano = $(this).find('td:nth-child(1)').text();
 		
 		console.log('클릭된 행의 ano 값:',ano);
@@ -28,6 +29,10 @@
 	let search1 = "";
 	
 	$(async ()=>{
+		if(${result==0}) {
+			alert('비밀번호가 일치하지 않아 관리자 수정이 실패했습니다.');
+		}
+		
 		await listShow('1');
 		
 		//검색
@@ -112,7 +117,6 @@
 	}
 	
 	
-	
 </script>
 
 <body id="page-top"> 
@@ -155,7 +159,9 @@
 	                            	</div>                            
 	                            </div>
 	                            <div class="haru-right">
-	                           		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn">관리자 추가</button>
+	                            	<c:if test="${sessionScope.role eq 100 }">
+		                           		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn">관리자 추가</button>                            	
+	                            	</c:if>
 	                           	</div>                           	                         
                             </div>
                         </div>

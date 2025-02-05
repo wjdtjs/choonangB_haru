@@ -7,6 +7,9 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Board;
@@ -23,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewDaoImp implements ReviewDao {
 	
 	private final SqlSession session;
+	private final PlatformTransactionManager ptm;
 
 	/**
 	 * 커뮤니티 분류 조회
@@ -202,20 +206,88 @@ public class ReviewDaoImp implements ReviewDao {
 	 */
 	@Override
 	public void writeReview(Board board, List<String> imgPathList) {
-		Map<String, Object> pMap = new HashMap<>();
-		System.out.println("이미지 리스트 "+imgPathList);
-		int arrListSize = imgPathList.size();        
-		String arr[] = imgPathList.toArray(new String[arrListSize]);
+		System.out.println("writeReview() dao imgPathList -> "+imgPathList);
+		System.out.println("writeReview() dao board -> "+board);
 		
-		pMap.put("board", board);
-		pMap.put("imgList", arr);
+		TransactionStatus txStatus = ptm.getTransaction(new DefaultTransactionDefinition());
 		
 		try {
-			session.selectOne("JS_InsertReview", pMap);
+			//프로시저로 board insert 후 bno(pk) 받아오기
+			session.selectOne("JS_InsertReview", board);
+			System.out.println("out 변수 값? "+ board.getBno());
+			int new_bno = board.getBno();
+			
+			//이미지가 있을 경우
+			if(imgPathList.size() > 0) {
+				for(String img : imgPathList) {
+					Map<String, Object> pMap = new HashMap<>();
+
+					pMap.put("bno", new_bno);
+					pMap.put("url", img);
+					
+					System.out.println("dao writeReview() pmap -> "+pMap);
+					
+					//이미지url db 저장
+					session.insert("JS_InsertReviewImg", pMap);
+				}
+				
+			}
+			
+			ptm.commit(txStatus);
+			
 		} catch (Exception e) {
+			ptm.rollback(txStatus);
 			log.error("writeReview() query error -> ", e);
 		}
 		
+	}
+
+	/**
+	 * 후기 수정
+	 */
+	@Override
+	public void updateReview(Board board, List<String> imgPathList) {
+		System.out.println("updateReview() dao imgPathList -> "+imgPathList);
+		System.out.println("updateReview() dao board -> "+board);
+		
+		TransactionStatus txStatus = ptm.getTransaction(new DefaultTransactionDefinition());
+		
+		try {
+			//update
+			session.update("JS_UpdateReview", board);
+			
+			//boardimg에서 삭제할 이미지 있는지 확인
+			int [] arr = board.getImgno();
+			int bno = board.getBno();
+			if(arr.length>0) {
+				for(int i : arr) {
+					Map<String, Object> delMap = new HashMap<>();
+					delMap.put("imgno", i);
+					delMap.put("bno", bno);
+					session.delete("JS_DeleteReviewImg", delMap);
+				}
+			}
+			
+			//추가할 이미지가 있을 경우
+			if(imgPathList.size() > 0) {
+				for(String img : imgPathList) {
+					Map<String, Object> insertMap = new HashMap<>();
+
+					insertMap.put("bno", bno);
+					insertMap.put("url", img);
+					
+					//이미지url db 저장
+					session.insert("JS_InsertReviewImg", insertMap);
+				}
+				
+			}
+			
+			ptm.commit(txStatus);
+			
+		} catch (Exception e) {
+			ptm.rollback(txStatus);
+			log.error("writeReview() query error -> ", e);
+		}
 	}
 
 }

@@ -15,7 +15,7 @@ $("#modal_open_btn.admin_modal").click((e) => {
 				str += `<option value="\${this.MCD}">\${this.CONTENT}</option>`;
 			})
 			
-			$('.sub-mcd-select').append(str);
+			$('.sub-mcd-select').html(str);
 		}
 	})
 })
@@ -63,7 +63,7 @@ select {
     	<div class="modal_l_detail">
     		
     		<!-- 모달에 들어갈 컨텐츠 -->
-    		<form action="/api/addAdmin" method="post" name="frm" id="add_ad">
+    		<form action="/api/addAdmin" method="post" name="frm" id="add_ad" onsubmit="return validateForm()">
 
 		        <table class="inputTable">
 		        	<colgroup>
@@ -75,11 +75,11 @@ select {
 		        	<tr>
 		        		<!-- <th>사번</th>		<td><input class="form-input" type="number" name="ano" required="required"></td> -->
 		        		<th>이름</th>		<td><input class="form-input" type="text" name="aname" required="required"></td>
-		        		<th>비밀번호</th>	<td><input class="form-input" type="text" name="apasswd" required="required"></td>
+		        		<th>비밀번호</th>	<td><input class="form-input" type="password" name="apasswd" required="required"></td>
 		        	</tr>
 		        	<tr>
 		        		<th>전화번호</th>	<td><input class="form-input" type="text" name="atel" required="required" placeholder="000-0000-0000"></td>
-		        		<th>비밀번호확인</th><td><input class="form-input" type="text" name="re_apasswd" required="required"></td>
+		        		<th>비밀번호확인</th><td><input class="form-input" type="password" name="re_apasswd" required="required"></td>
 		        	</tr>
 		        	<tr>
 		        		<th>이메일</th>	<td><input class="form-input" type="text" name="aemail"></td>
@@ -116,8 +116,41 @@ select {
 	
    	/* 모달 닫기 */
    	$('#modal_close_btn.admin_modal').click(function() {
+   		$('.form-input').val('');
+   		
    		$("#modal_l").css("display","none");
    	})
 
+   	
+   	function validateForm() {
+		let result = true;
+		
+		let pw 	  = $('.form-input[name=apasswd]').val();
+		let re_pw = $('.form-input[name=re_apasswd]').val();
+		let tel   = $('.form-input[name=atel]').val();
+		
+		console.log('tel ',tel)
+		
+		let str = "";
+		
+		if(pw != re_pw) {
+			str+='비밀번호가 일치하지 않습니다.\n';
+			result = false;
+		}
+		if(!checkRegex(pw, '^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,}$')) {
+	    	str+='비밀번호는 영문, 숫자, 특수문자를 최소 1개씩 조합하여 8자 이상\n'; //비밀번호 체크
+	        result = false;
+     	}
+
+      	if(!checkRegex(tel, '^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$')) {
+    	  	str+='잘못된 핸드폰번호 입니다.\n';
+         	result = false;
+      	}
+      	
+      	if(!result)
+       	  	alert(str);
+		
+		return result;
+	}t
 </script>
 

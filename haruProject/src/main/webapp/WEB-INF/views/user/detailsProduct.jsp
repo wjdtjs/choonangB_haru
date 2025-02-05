@@ -15,7 +15,7 @@
 				<i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
 				쇼핑
 				<div class="cart-shopping">
-					<img src="/img/Cart.png" alt="shopping_cart" style="width: 27px" onclick="location.href='/user/shopping-cart'">
+					<img src="/img/Cart.png" alt="shopping_cart" style="width: 27px" onclick="location.href='/user/shoppingCart'">
 					<c:if test="${cart_count > 0 }">
 						<div class="sc_count">${cart_count }</div>
 					</c:if>			
@@ -42,14 +42,15 @@
 				
 				<!-- 품절이면 수량변경 안보이게 -->
 				<c:if test="${product.pquantity ne 0 }">
-					<div class="product-shop-quantity">
+					<form class="product-shop-quantity" id="productForm" method="post">
+						<input type="hidden" value="${product.pno }" name="pno">
 						<div><fmt:formatNumber value="${product.pprice }" pattern="#,###" />원</div>
 						<div class="product-quantity-btn">
 					        <button type="button" onclick="fnCalCount('m', this);">-</button>
-					        <input type="text" name="pop_out" value="0" readonly="readonly"/>
+					        <input type="text" name="pquantity" value="0" readonly="readonly"/>
 							<button type ="button" onclick="fnCalCount('p',this);">+</button>
 						</div>
-					</div>				
+					</form>				
 				</c:if>
 				
 				
@@ -113,8 +114,8 @@
 		<!-- 품절이면 구매버튼 안보이게 -->
 		<c:if test="${product.pquantity ne 0 }">
 			<div class="js-shop-btn-div">
-				<button class="btn-sub">장바구니</button>
-				<button class="btn-primary">구매하기</button>
+				<button class="btn-sub" type="submit" form="productForm" onclick="javascript: form.action='/user/updateCart'">장바구니</button>
+				<button class="btn-primary" form="productForm" onclick="javascript: form.action=''">구매하기</button>
 			</div>			
 		</c:if>
 		
@@ -125,6 +126,12 @@
 	<script type="text/javascript">
 	
 		$(()=>{
+			if(${result==0}){
+				alert('이미 장바구니에 추가된 상품입니다.\n장바구니에서 수량을 변경 해주세요.');
+			} else if(${result==1}){
+				alert('해당 상품이 장바구니에 추가되었습니다.');
+			}
+			
 			
 			/* 스크롤 내리면 버튼div 숨기기 */
 			let lastScroll = 0;
@@ -164,7 +171,7 @@
 		 */
 		function fnCalCount(type, ths){
 			
-		    let $input = $('.product-quantity-btn').find("input[name='pop_out']");
+		    let $input = $('.product-quantity-btn').find("input[name='pquantity']");
 		    let tCount = Number($input.val());
 		    let tEqCount = ${product.pquantity}; //해당 상품의 남은 수량
 		    

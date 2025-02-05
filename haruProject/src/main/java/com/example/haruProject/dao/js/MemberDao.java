@@ -1,5 +1,6 @@
 package com.example.haruProject.dao.js;
 
+import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Member;
 
 public interface MemberDao {
@@ -11,5 +12,7 @@ public interface MemberDao {
 	String findEmail(Member member);
 	void updatePassword(String encodedPassword, Member member);
 	Member getRealPasswd(Member member);
+	Admin chkAdminExist(Admin admin);
+	int chkKakaoUser(Member member);
 
 }

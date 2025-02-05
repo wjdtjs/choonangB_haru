@@ -7,10 +7,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.haruProject.common.utils.SessionUtil;
+import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.AgreementTerms;
 import com.example.haruProject.dto.Member;
 import com.example.haruProject.dto.UserVO;
@@ -58,12 +63,12 @@ public class LoginController {
 	
 	/**
 	 * 카카오 로그인 redirect url
+	 * @throws ParseException 
 	 */
 	@GetMapping("/oauth/api/kakao")
-	public String kakaoRedirect(@RequestParam(value="code") String code, HttpSession session) {
+	public String kakaoRedirect(@RequestParam(value="code") String code, HttpSession session, HttpServletRequest request) throws ParseException {
 		// SETP1 : 인가코드 받기
         // (카카오 인증 서버는 서비스 서버의 Redirect URI로 인가 코드를 전달합니다.)
-         System.out.println(code);
 
          String reqURL = "https://kauth.kakao.com/oauth/token";
 
@@ -95,21 +100,50 @@ public class LoginController {
              String result = "";
 
              while ((line = br.readLine()) != null) {
+            	 System.out.println("***** "+line);
                  result += line;
              }
-             System.out.println("response body : " + result);
-
+             
+             JSONParser par = new JSONParser();
+             JSONObject jsonObj = (JSONObject) par.parse(result);
+             String id_token = (String) jsonObj.get("id_token");
+             String access_token = (String) jsonObj.get("access_token");
+             String refresh_token = (String) jsonObj.get("refresh_token");
              //TODO: access token, refresh token db 저장
-             //TODO: id token의 payload에서 유저 정보 찾기
-             //TODO: sub: ID 토큰에 해당하는 사용자의 회원번호 -> mid에 저장, 이걸로 판단해서 로그인인지 회원가입인지 확인
-             //TODO: 없는 sub이면 회원가입
-             //TODO: session에 저장
+             
+             String[] splitToken = id_token.split("\\.");
+             
+             byte[] decodedBytes = Base64.getDecoder().decode(splitToken[1]);
+             String decodedStr = new String(decodedBytes);
+
+             jsonObj = (JSONObject) par.parse(decodedStr);
+             String sub = (String) jsonObj.get("sub");
+             String name = (String) jsonObj.get("nickname");
+             String email = (String) jsonObj.get("email");
+             
+             //회원 여부 확인하고 없으면 insert
+             Member member = new Member(email, sub, name);
+//             member.setMemail(email);
+//             member.setMid(sub);
+//             member.setMname(name);
+             int memno = ms.chkKakaoUser(member);
+
+             //session에 저장
+             Map<String, Object> mem_info = new HashMap<>();
+             mem_info.put("no", memno);
+			 mem_info.put("name", member.getMname());
+			 mem_info.put("email", member.getMemno());
+			 mem_info.put("type", "G");
+				
+			 SessionUtil.login(request, mem_info);
+             
              //TODO: 인터셉터에서 토큰 검증
 
              br.close();
              bw.close();
          } catch (IOException e) {
              e.printStackTrace();
+             return "user/login";
          }
 
         return "user/main";                                        
@@ -361,11 +395,12 @@ public class LoginController {
 	@PostMapping("/all/api/login")
 	public ResponseEntity<LoginEntity> loginAction(HttpServletRequest request, @RequestBody UserVO userVO){
         LoginEntity loginEntity = new LoginEntity();
+        Map<String, Object> mem_info = new HashMap<>();
         
         System.out.println("userVO: "+userVO);
         
         if(userVO.getType().equals("G")) { //사용자 로그인
-        	System.out.println("== 로그인 한 사람 : 유저");
+        	System.out.println("loginAction() 로그인 한 사람 : 유저");
         	
         	Member member = new Member(userVO.getId(), userVO.getPasswd());
         	//이메일 존재하는지 확인
@@ -373,47 +408,87 @@ public class LoginController {
     		
     		if(!result) { //존재함	
     			Member real_mem = ms.getRealPasswd(member); //암호화된 비밀번호 가져오기
-    			System.out.println("== real_mem : "+real_mem);
+    			System.out.println("loginAction() User real_mem : "+real_mem);
 
     			//비밀번호가 맞는지 확인
     			if(passwordEncoder.matches(member.getMpasswd(), real_mem.getMpasswd())) {
+    				System.out.println("loginAction() User 로그인성공 "+ real_mem.getMemail());
     				
-    				System.out.println("== 로그인성공 "+ real_mem.getMemail());
-    				
-    				Map<String, Object> mem_info = new HashMap<>();
     				mem_info.put("no", real_mem.getMemno());
     				mem_info.put("name", real_mem.getMname());
     				mem_info.put("email", real_mem.getMemail());
+    				mem_info.put("type", userVO.getType());
     				
     				SessionUtil.login(request, mem_info);
     				
     	            loginEntity.setCode(200);
-    	            return new ResponseEntity<>(loginEntity, HttpStatus.OK);
     			} else {
     				loginEntity.setCode(401);
-    	            return new ResponseEntity<>(loginEntity, HttpStatus.OK);
     			}
     		} else {
+    			System.out.println("loginAction() User 없음");
     			loginEntity.setCode(401);
-	            return new ResponseEntity<>(loginEntity, HttpStatus.OK);
     		}
         	
         	
         } else { // 관리자 로그인 (슈퍼관리자, 일반관리자, 의사 포함)
+        	System.out.println("loginAction() 로그인 한 사람 : 관리자");
+        	Admin admin = new Admin(Integer.parseInt(userVO.getId()), userVO.getPasswd());
         	
-        	loginEntity.setCode(401);
-            return new ResponseEntity<>(loginEntity, HttpStatus.OK);
-        	
+        	//존재여부 확인
+        	Admin ad_info = ms.chkAdminExist(admin);
+        	if(ad_info != null) { //존재함
+        		System.out.println("loginAction() admin info -> "+ad_info);
+        		
+        		//비밀번호 확인
+        		if(passwordEncoder.matches(admin.getApasswd(), ad_info.getApasswd())) {
+        			System.out.println("loginAction() Admin 로그인성공 "+ ad_info.getAno());
+        			
+        			mem_info.put("no", ad_info.getAno());
+    				mem_info.put("name", ad_info.getAname());
+    				mem_info.put("email", ad_info.getAemail());
+    				mem_info.put("type", userVO.getType());
+    				mem_info.put("role", ad_info.getAlevel_mcd());
+    				
+    				SessionUtil.login(request, mem_info);
+        			
+        			loginEntity.setCode(200);
+        		} else {
+        			loginEntity.setCode(401);
+        		}
+        		
+        		
+        	} else { //존재 안함
+        		System.out.println("loginAction() Admin 없음");
+        		
+        		loginEntity.setCode(401);
+        	}
         }
+        
+        return new ResponseEntity<>(loginEntity, HttpStatus.OK);
     }
 		
 	
+	/**
+	 * 로그인 api response
+	 */
 	@Getter
 	@Setter
 	static public class LoginEntity {
 		private int code;
 	}
 	
+	
+	/**
+	 * 로그아웃
+	 * @return
+	 */
+	@RequestMapping("/admin/logout")
+	public String logoutAction(HttpServletRequest request) {
+		System.out.println("logoutAction() 관리자 로그아웃");
+		SessionUtil.logout(request);
+		return "redirect:/all/admin/login";
+	}
 	
 	
 }

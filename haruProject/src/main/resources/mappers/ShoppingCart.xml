@@ -9,4 +9,30 @@
 		    JOIN product p ON s.pno = p.pno
 		WHERE memno = #{memno}
 	</select>
+	
+	<!-- 장바구니에 추가 -->
+	<insert id="JS_UpdateShoppingCart">
+		INSERT INTO SHOPPING_CART
+		(
+		 	MEMNO,
+			PNO,
+			SQUANTITY
+		)
+		SELECT
+		  #{memno},
+		  #{product.pno},
+		  #{product.pquantity}
+		FROM DUAL
+		WHERE NOT EXISTS
+		(
+		  SELECT
+		  1
+		  FROM
+		  SHOPPING_CART
+		  WHERE
+		  MEMNO = #{memno} AND PNO = #{product.pno}
+		)
+	</insert>
+	
+	
 </mapper>

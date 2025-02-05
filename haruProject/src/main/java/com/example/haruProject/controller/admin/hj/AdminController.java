@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.hj.AdminService;
+import com.example.haruProject.service.js.MemberService;
 
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 	
 	private final AdminService as;
+	private final MemberService ms;
+	private final PasswordEncoder passwordEncoder;
 	
 	// 관리자 리스트
 	@ResponseBody
@@ -83,6 +87,15 @@ public class AdminController {
 	public ModelAndView addAdminAPI(Admin admin) {
 		System.out.println("AdminController addAdmin Start,,,");
 		
+		System.out.println("관리자 추가 -> "+admin);
+		String passwd = admin.getApasswd();
+		
+		String encodedPassword = passwordEncoder.encode(passwd);
+		System.out.println("pw 암호화: "+encodedPassword);
+		
+		admin.setApasswd(encodedPassword); //암호화된 패스워드 저장
+		admin.setRe_apasswd(encodedPassword);
+		
 		// 관리자추가
 		int addAdminResult = as.adminAdd(admin);
 		System.out.println("AdminController addAdmin addAdmin ->"+ addAdminResult);
@@ -127,10 +140,18 @@ public class AdminController {
 	
 	// 관리자 정보 수정
 	@PostMapping(value = "/admin/updateAdmin")
-	public String updateAdmin (Admin admin) {
+	public String updateAdmin (Admin admin, Model model) {
 		System.out.println("AdminController updateAdmin...");
 		System.out.println("AdminController updateAdmin admin->"+admin);
-		int result = as.updateAdmin(admin);
+		
+		Admin info = ms.chkAdminExist(admin);
+		if(passwordEncoder.matches(admin.getApasswd(), info.getApasswd())) {
+			System.out.println("일치");
+			int result = as.updateAdmin(admin);			
+		} else {
+			System.out.println("불일치");
+			model.addAttribute("result", 0);
+		}
 		
 		return "/admin/doctor";
 		

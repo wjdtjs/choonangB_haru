@@ -25,7 +25,7 @@ public class AdminViewController {
 	 * 관리자페이지 로그인 뷰
 	 * @return
 	 */
-	@GetMapping("/admin/login")
+	@GetMapping("/all/admin/login")
 	public String loginView() {
 		
 		return "admin/login";

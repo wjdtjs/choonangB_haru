@@ -6,6 +6,7 @@
 <!-- 	<settings> -->
 <!-- 		<setting name="logImpl" value="STDOUT_LOGGING"/> -->
 <!-- 	</settings> -->
+
 	<typeAliases>
 		<typeAlias alias="Product" type="com.example.haruProject.dto.Product"/>
 		<typeAlias alias="SearchItem" type="com.example.haruProject.dto.SearchItem"/>
@@ -25,4 +26,5 @@
 		<typeAlias alias="Weight" type="com.example.haruProject.dto.Weight"/>
 		<typeAlias alias="ShoppingCart" type="com.example.haruProject.dto.ShoppingCart"/>
 	</typeAliases>
+
 </configuration>

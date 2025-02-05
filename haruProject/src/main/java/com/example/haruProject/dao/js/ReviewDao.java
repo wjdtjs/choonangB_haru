@@ -23,5 +23,6 @@ public interface ReviewDao {
 	void deleteReviews(int bno);
 	Appointment getAppointment(String resno);
 	void writeReview(Board board, List<String> imgPathList);
+	void updateReview(Board board, List<String> imgPathList);
 
 }

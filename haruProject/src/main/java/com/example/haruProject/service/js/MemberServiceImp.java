@@ -3,6 +3,7 @@ package com.example.haruProject.service.js;
 import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.js.MemberDao;
+import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -77,6 +78,27 @@ public class MemberServiceImp implements MemberService {
 	public Member getRealPasswd(Member member) {
 		Member m = md.getRealPasswd(member);
 		return m;
+	}
+
+	
+	/**
+	 * 관리자 정보 확인
+	 */
+	@Override
+	public Admin chkAdminExist(Admin admin) {
+		Admin ad_info = new Admin();
+		ad_info = md.chkAdminExist(admin);
+		
+		return ad_info;
+	}
+
+	/**
+	 * 카카오 로그인 -> insert
+	 */
+	@Override
+	public int chkKakaoUser(Member member) {
+		int memno = md.chkKakaoUser(member);
+		return memno;
 	}
 
 

@@ -322,4 +322,56 @@ public class UserReviewController {
 		return imgPathList;
 	}
 	
+	
+	/**
+	 * 후기 수정 뷰
+	 * @param board
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@GetMapping("/user/update-review")
+	public String updateCommunityView(Board board, Model model, HttpServletRequest request) {
+		log.info("updateCommunityView() start..");
+		
+		int bno = board.getBno(); //후기 번호
+		
+		// 글 상세 불러오기
+		Board detail = new Board();
+		detail = rs.getBoardDetail(bno);
+		
+		//진료 정보
+		Appointment appointment = new Appointment();
+		appointment = rs.getAppointment(detail.getResno());
+		
+		// 글 이미지 불러오기
+		List<BoardImg> imgList = new ArrayList<>();
+		imgList = rs.getBoardImg(bno);
+		
+		model.addAttribute("board", detail);
+		model.addAttribute("imgList", imgList);
+		model.addAttribute("bcd", appointment.getItem_bcd());
+		model.addAttribute("mcd", appointment.getItem());
+		
+		return "user/updateReview";
+	}
+	
+	/**
+	 * 후기 수정
+	 * @return
+	 */
+	@PostMapping("/user/UpdateReview")
+	public String updateReview(Board board, Model model, HttpServletRequest request) {
+		log.info("updateReview() start..");
+		
+		System.out.println("updateReview() board -> "+board);
+		
+		//이미지 저장
+		List<String> imgPathList = saveImage("review", request);
+		//board 업데이트, 수정한 이미지 삭제
+		rs.updateReview(board, imgPathList);
+		
+		return "redirect:details-review?bno="+board.getBno(); 
+	}
+	
 }

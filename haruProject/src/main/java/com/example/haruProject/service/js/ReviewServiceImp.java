@@ -141,5 +141,14 @@ public class ReviewServiceImp implements ReviewService {
 		
 	}
 
+	/**
+	 * 후기 수정
+	 */
+	@Override
+	public void updateReview(Board board, List<String> imgPathList) {
+		rd.updateReview(board, imgPathList);
+		
+	}
+
 
 }

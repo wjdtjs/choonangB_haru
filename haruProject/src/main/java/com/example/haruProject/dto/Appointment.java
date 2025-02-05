@@ -41,6 +41,8 @@ public class Appointment {
 	private String cresno;		// 차트가 작성됐는지 확인하기 위함
 	private String mtel;		// 보호자 전화 번호
 	private String bresno;		// 후기가 작성됐는지 확인하기 위함
+	private String cno;
+	private int bno;
 	
 	// 검색
 	private String start_date;	// 검색 시작 날짜

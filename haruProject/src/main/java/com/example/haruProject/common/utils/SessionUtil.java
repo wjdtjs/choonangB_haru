@@ -14,6 +14,8 @@ public class SessionUtil {
             session.setAttribute("no", user.get("no"));
             session.setAttribute("name", user.get("name"));
             session.setAttribute("email", user.get("email"));
+            session.setAttribute("type", user.get("type"));
+            session.setAttribute("role", user.get("role"));
             System.out.println("session 세션에 정보 저장 : "+user);
         }
     }
@@ -35,11 +37,22 @@ public class SessionUtil {
     	HttpSession session = request.getSession(true);
     	return (String) session.getAttribute("name");
     }
-  //세션에 있는 user email 정보를 반환
+    //세션에 있는 user email 정보를 반환
     public static String getEmail(HttpServletRequest request){
     	HttpSession session = request.getSession(true);
     	return (String) session.getAttribute("email");
     }
+    //세션에 있는 로그인 타입 정보를 반환
+    public static String getType(HttpServletRequest request){
+    	HttpSession session = request.getSession(true);
+    	return (String) session.getAttribute("type");
+    }
+    //세션에 있는 관리자 타입 정보를 반환
+    public static int getRole(HttpServletRequest request){
+    	HttpSession session = request.getSession(true);
+    	return (int) session.getAttribute("role");
+    }
+    
     
 	//로그아웃
     public static void logout(HttpServletRequest request){

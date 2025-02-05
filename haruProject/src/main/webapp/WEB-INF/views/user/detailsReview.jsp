@@ -197,7 +197,8 @@
 			</div>
 
 			<div class="write-comment-div">
-				<textarea class="js-comment-input" rows="1" oninput="autoResize(this)"></textarea>
+				<textarea class="js-comment-input" rows="1" oninput="autoResize(this)" 
+					onkeypress="if (event.key === 'Enter') sendComment(event)"></textarea>
 				<img src="/img/Send.png" style="width: 26px; margin-bottom: 5px;" onclick="sendComment()">
 			</div>
 		</div>
@@ -210,7 +211,7 @@
 		<div class="menu-modal-bg" style="display: none">
 			<div class="menu-modal-div">
 				<div class="menu-modal-btn-div">
-					<button style="margin-right: 10px" type="button" onclick="alert('수정하러가기')">수정</button>
+					<button style="margin-right: 10px" type="button" onclick="location.href='/user/update-review?bno=${board.bno}'">수정</button>
 					<button type="submit" form="delete-form">삭제</button>
 				</div>
 				<div class="menu-modal-close" onclick="modal_close()">닫기</div>

@@ -32,4 +32,9 @@ public class Admin {
 	
 	private String level_content;
 	private String status_content;
+	
+	public Admin(int ano, String apasswd) {
+		this.ano = ano;
+		this.apasswd = apasswd;
+	}
 }

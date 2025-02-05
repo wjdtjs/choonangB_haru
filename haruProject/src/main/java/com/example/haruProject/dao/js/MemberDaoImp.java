@@ -8,6 +8,7 @@ import java.util.HashMap;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -153,6 +154,35 @@ public class MemberDaoImp implements MemberDao {
 		}
 		
 		return m;
+	}
+
+	/**
+	 * 관리자 정보 확인
+	 */
+	@Override
+	public Admin chkAdminExist(Admin admin) {
+		Admin ad_info = new Admin();
+		try {
+			ad_info = session.selectOne("HJSelectAdmin", admin);
+		} catch (Exception e) {
+			log.error("chkAdminExist() query error -> ", e);
+		}
+		return ad_info;
+	}
+
+	/**
+	 * 카카오 로그인 -> insert
+	 */
+	@Override
+	public int chkKakaoUser(Member member) {
+		int memno = 0;
+		try {
+			session.selectOne("JS_InsertKakaoUser", member);
+			memno = member.getMemno();
+		} catch (Exception e) {
+			log.error("chkKakaoUser() query error -> ", e);
+		}
+		return memno;
 	}
 
 }

@@ -90,7 +90,7 @@ input[type=text]:focus, textarea:focus {
 				<input type="hidden" value="${resno }" name="resno">
 				<div class="review-title">
 					<label>제목</label>
-					<input type="text" name="btitle" style="height: 35px">				
+					<input type="text" name="btitle" style="height: 35px" required="required">				
 				</div>
 				<div class="review-image" style="margin-top: 10px;">
 					<label>사진첨부</label>
@@ -102,7 +102,7 @@ input[type=text]:focus, textarea:focus {
 				</div>
 				<div class="review-content" style="margin-top: 10px;">
 					<label>내용</label>
-					<textarea name="bcontents" style="height: 350px"></textarea>			
+					<textarea name="bcontents" style="height: 350px" required="required"></textarea>			
 				</div>
 				
 			</form>
@@ -119,7 +119,8 @@ input[type=text]:focus, textarea:focus {
 		function validateForm() {
 			let result = false;
 			
-			return true;
+			result = confirm('이대로 작성하시겠습니까?');
+			return result;
 		}
 		
 		/* 사진 선택 시 미리보기 */

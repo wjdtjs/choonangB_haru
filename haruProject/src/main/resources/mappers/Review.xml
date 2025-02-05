@@ -101,7 +101,7 @@
 	
 	<!-- 후기 이미지 -->
 	<select id="JS_SelectReviewImgList" parameterType="int" resultType="BoardImg">
-		SELECT CONTENT FROM BOARDIMG WHERE BNO = #{bno}
+		SELECT * FROM BOARDIMG WHERE BNO = #{bno}
 	</select>
 	
 	<!-- 후기 댓글 전체 수 -->
@@ -172,18 +172,34 @@
 	
 	<!-- 후기작성 
 		프로시저 사용
+		https://sillydev.tistory.com/47
 	-->
-	<select id="JS_InsertReview" parameterType="Map" statementType="CALLABLE">
+	<select id="JS_InsertReview" parameterType="Board" statementType="CALLABLE">
 		{
-			CALL insert_board_with_images(
-	            #{board.btitle,		mode=IN}, 
-	            #{board.bcontents, 	mode=IN}, 
-	            #{board.resno, 		mode=IN}, 
-	            #{board.memno, 		mode=IN},
-	            #{imgList, 			mode=IN, jdbcType=ARRAY, typeHandler=org.apache.ibatis.type.ArrayTypeHandler}
+			CALL insert_board_with_image(
+	            #{btitle,		mode=IN,	jdbcType=VARCHAR}, 
+	            #{bcontents, 	mode=IN,	jdbcType=VARCHAR}, 
+	            #{resno, 		mode=IN,	jdbcType=VARCHAR}, 
+	            #{memno, 		mode=IN,	jdbcType=INTEGER},
+	            #{bno, 			mode=OUT,	jdbcType=INTEGER}
 	        )
         }
 	</select>
 	
+	<!-- 후기 수정 -->
+	<update id="JS_UpdateReview">
+		UPDATE BOARD SET BTITLE = #{btitle}, BCONTENTS = #{bcontents}, UPDATE_DATE = SYSDATE
+		WHERE BNO = #{bno}
+	</update>
+	
+	<!-- 후기 이미지 저장 -->
+	<insert id="JS_InsertReviewImg" parameterType="Map">
+		INSERT INTO BOARDIMG VALUES (#{bno}, (select nvl(max(imgno), 0)+1 from boardimg), #{url})
+	</insert>
+	
+	<!-- 후기 이미지 삭제 -->
+	<delete id="JS_DeleteReviewImg" parameterType="Map">
+		DELETE FROM BOARDIMG WHERE BNO = #{bno} AND IMGNO = #{imgno}
+	</delete>
 	
 </mapper>

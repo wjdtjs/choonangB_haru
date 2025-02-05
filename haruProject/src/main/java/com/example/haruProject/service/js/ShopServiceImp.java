@@ -194,5 +194,15 @@ public class ShopServiceImp implements ShopService {
 		return count;
 	}
 
+
+	/**
+	 * 장바구니 추가
+	 */
+	@Override
+	public int updateShoppingCart(Product product, int memno) {
+		int result = sd.updateShoppingCart(product, memno);
+		return result;
+	}
+
 	
 }

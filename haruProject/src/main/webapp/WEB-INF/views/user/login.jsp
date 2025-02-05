@@ -115,11 +115,13 @@ button[type=button] {
             <div id="loginForm">
                <div>
                   <label>아이디</label>
-                  <input type="text" class="memail" name="memail" required="required">            
+                  <input type="text" class="memail" name="memail" required="required" 
+                  	onkeypress="if (event.key === 'Enter') login(event)">            
                </div>
                <div>
                   <label>비밀번호</label>
-                  <input type="password" class="mpasswd" name="mpasswd" required="required">
+                  <input type="password" class="mpasswd" name="mpasswd" required="required"
+					onkeypress="if (event.key === 'Enter') login(event)"> 
                </div>
             </div>
             <div class="find-account-div">

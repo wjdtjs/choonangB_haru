@@ -7,22 +7,9 @@ import com.example.haruProject.common.utils.SessionUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 @Component
-public class LoginInterceptor implements HandlerInterceptor {
-	
-//	@Override
-//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//		
-//        if (!SessionUtil.isLogin(request)) {
-//            response.sendRedirect("/all/user/login");
-//
-//            return false;
-//        }
-//
-//        return true;
-//    }
+public class AdminLoginInterceptor implements HandlerInterceptor {
 	
 	 @Override
 	    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -41,9 +28,15 @@ public class LoginInterceptor implements HandlerInterceptor {
 	                return false;
 	            } else {
 	                // 일반 요청이면 로그인 페이지로 리다이렉트
-	                response.sendRedirect("/all/user/login");
+	                response.sendRedirect("/all/admin/login");
 	                return false;
 	            }
+	        } else {
+	        	String type = SessionUtil.getType(request);
+	        	if(type.equals("G")) { //세션이 있지만 관리자 타입이 아닐 때 로그인 페이지 이동
+	        		response.sendRedirect("/all/admin/login");
+	        		return false;
+	        	}
 	        }
 	        return true;
 	    }

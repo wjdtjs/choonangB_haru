@@ -26,7 +26,7 @@
 		    SELECT ROWNUM rn, aa.*
 		    FROM (
 		        SELECT a.RESNO, a.RDATE, p.PETIMG, p.PETNAME, d.ANAME, c2.CONTENT as item, c3.BCD as mtitle_bcd, c3.CONTENT as item_bcd, c1.CONTENT as status, a.rstatus_mcd
-		        		, a.start_time, ch.resno as cresno
+		        		, a.start_time, ch.resno as cresno, b.resno as bresno, ch2.CNO as cno, b2.BNO as bno
 		        FROM APPOINTMENT a 
 		            JOIN MEMBER m ON a.MEMNO = m.MEMNO
 		            JOIN PET p ON a.PETNO = p.PETNO
@@ -36,6 +36,9 @@
 		            JOIN COMMON c2 ON c2.BCD = t.MTITLE_BCD and c2.MCD = t.MTITLE_MCD			<!-- 진료 항목 -->
 		            JOIN COMMON c3 ON c3.BCD = t.MTITLE_BCD and c3.MCD = 999
 		            LEFT OUTER JOIN CHART ch ON a.resno = ch.resno
+		            LEFT OUTER JOIN BOARD b ON a.resno = b.resno
+		            LEFT OUTER JOIN CHART ch2 ON ch2.RESNO = a.RESNO 
+		            LEFT OUTER JOIN BOARD b2 ON b2.RESNO = a.RESNO
 		           
        			WHERE a.RSTATUS_BCD = 800 AND a.MEMNO = #{memno}
 			    <if test="petno != null and petno != 0">
@@ -45,7 +48,7 @@
 			    	AND rdate BETWEEN TO_DATE(#{start}, 'yyyy-mm-dd') 
 			                    AND TO_DATE(#{end}, 'yyyy-mm-dd')
 			    </if>
-				ORDER BY a.RDATE desc, a.START_TIME ASC
+				ORDER BY a.RDATE desc, a.START_TIME desc
 		    )aa
 		)
 		WHERE rn BETWEEN #{page.startRow} AND #{page.endRow} 

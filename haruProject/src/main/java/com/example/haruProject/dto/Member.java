@@ -36,4 +36,10 @@ public class Member {
 		this.mpasswd = mpasswd;
 	}
 	
+	public Member(String memail, String mid, String mname) {
+		this.memail = memail;
+		this.mid = mid;
+		this.mname = mname;
+	}
+	
 }

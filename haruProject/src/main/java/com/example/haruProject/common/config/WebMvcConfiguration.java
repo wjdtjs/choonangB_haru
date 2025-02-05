@@ -5,7 +5,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.example.haruProject.common.handler.LoginInterceptor;
+import com.example.haruProject.common.handler.AdminLoginInterceptor;
+import com.example.haruProject.common.handler.UserLoginInterceptor;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,26 +15,23 @@ import lombok.RequiredArgsConstructor;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 	
 	/**
-	 * 유저 로그인 세션 확인 인터셉터
+	 * 로그인 세션 확인 인터셉터
 	 */
-    private final LoginInterceptor loginInterCeptor;
+    private final UserLoginInterceptor userLoginInterCeptor;
+    private final AdminLoginInterceptor adminLoginInterCeptor;
 
     public void addInterceptors(InterceptorRegistry registry) {
-        System.out.println("인터셉터 등록");
-        registry.addInterceptor(loginInterCeptor)
-        		.addPathPatterns("/**")
-        		.excludePathPatterns("/all/**",
-    								"/oauth/**",
-        							"/css/**",
-        							"/error",
-        							"/img/**",
-        							"/js/**",
-        							"/vendor/**",
-        							"/admin/**"
-        				)
+        registry.addInterceptor(userLoginInterCeptor)
+        		.addPathPatterns("/user/**")
         		;
-        											
+        System.out.println("유저 로그인 인터셉터 등록");
+        
+        registry.addInterceptor(adminLoginInterCeptor)
+				.addPathPatterns("/admin/**")
+		;
+        System.out.println("관리자 로그인 인터셉터 등록");
     }
+    
     
     /**
      * cors

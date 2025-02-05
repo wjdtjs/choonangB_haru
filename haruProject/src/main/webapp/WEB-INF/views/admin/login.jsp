@@ -34,15 +34,17 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">관리자 로그인</h1>
                                     </div>
-                                    <form class="user" action="/admin/index">
+                                    <form class="user">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
+                                            <input type="text" class="form-control form-control-user"
                                                 id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="ID">
+                                                placeholder="ID"
+                                                onkeypress="if (event.key === 'Enter') login(event)">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                                id="exampleInputPassword" placeholder="Password"
+                                                onkeypress="if (event.key === 'Enter') login(event)">
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
@@ -50,20 +52,14 @@
                                                 <label class="custom-control-label" for="customCheck">아이디 기억하기</label>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        <button type="button" class="btn btn-primary btn-user btn-block" onclick="login()">
                                             Login
                                         </button>
-                                        <!-- <hr>
-                                        <a href="index.html" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-google fa-fw"></i> Login with Google
-                                        </a>
-                                        <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
-                                        </a>
-                                    </form> -->
+                                        
+                                    </form>
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small" href="forgot-password.html">비밀번호 찾기</a>
+                                        <a class="small" href="">비밀번호 찾기</a>
                                     </div>
 
                                 </div>
@@ -78,6 +74,87 @@
 
     </div>
 
+<script type="text/javascript">
+	
+	function login() {
+		let email = $('#exampleInputEmail').val();
+		let passwd = $('#exampleInputPassword').val();
+		console.log(email, passwd);
+		
+		//아이디 기억하기 체크
+		if($("#customCheck").is(":checked")){
+            setCookie("key" , email , 3);
+        }else{
+            deleteCookie("key");
+        }
+		
+		$.ajax({
+				url: "<%=request.getContextPath()%>/all/api/login",
+				method: 'POST',
+				contentType:"application/json",
+				data: JSON.stringify({
+					id: email,
+					passwd: passwd,
+					type: 'A'
+				}),
+				success: function(data){
+					console.log(data)
+					
+					if(data.code != 200) alert('로그인 실패');
+					else location.href="/admin/index";
+				}
+			})
+	}
+	
+	$(()=>{
+		let cookieId = getCookie("key");
+
+        // 저장된 cookie 가 있다면
+        if(cookieId != ''){
+            $("#exampleInputEmail").val(cookieId);
+            $("#customCheck").attr("checked" , true);
+        }
+        
+	})
+	
+	
+	// 쿠키 불러오기
+    function getCookie(key) {
+        key = key + "=";
+        let cookieData = document.cookie;
+        let firstCookie = cookieData.indexOf(key);
+        let cookieValue = "";
+
+        if(firstCookie != -1){
+            firstCookie += key.length;
+            let endCookie = cookieData.indexOf(';', firstCookie);
+            if(endCookie == -1){
+                endCookie = cookieData.length;
+                cookieValue = cookieData.substring(firstCookie , endCookie);
+            }
+        }
+        return unescape(cookieValue);
+    }
+
+    // 쿠키 설정하기
+    // key = cookie 불러올때 사용할 key 값 , value = 저장할 id 값 , day = 유지할 날짜
+    function setCookie(key , value , day){
+        let currentTime = new Date();
+        currentTime.setDate(currentTime.getDate() + day);
+        let cookieValue = escape(value) + ((day == null) ? "" : "; expires=" + currentTime.toGMTString());
+
+        document.cookie = key + "=" + cookieValue;
+    }
+
+    // 쿠키 삭제하기
+    function deleteCookie(key){
+        let currentTime = new Date();
+        // 현재시간에서 1일을 빼서 없는 시간으로 만든다
+        currentTime.setDate(currentTime.getDate() - 1);
+        document.cookie = key + "=" + "; expires=" + currentTime.toGMTString();
+    }
+	
+</script>
 
 </body>
 </html>

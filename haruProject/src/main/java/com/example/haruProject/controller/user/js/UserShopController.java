@@ -7,7 +7,10 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.Board;
@@ -124,11 +127,19 @@ public class UserShopController {
 		product.setUpdate_date(null);
 		product.setReg_date(null);
 		
-		
 		model.addAttribute("cart_count", cart_count);
 		model.addAttribute("product", product);
 		model.addAttribute("reivew", reviews);
 		model.addAttribute("pagination", pagination);
+		
+		if (model.containsAttribute("result")) {
+			int result = 1;
+	        System.out.println("Flash Attribute: " + model.getAttribute("result"));
+	        if(model.getAttribute("result").equals(0)) {
+	        	result = 0;	        	
+	        }
+	        model.addAttribute("result", result);
+		} 
 		
 		return "user/detailsProduct";
 	}
@@ -165,6 +176,28 @@ public class UserShopController {
 		model.addAttribute("review", reviews);
 		
 		return "user/productReview";
+	}
+	
+	/**
+	 * 장바구니에 추가
+	 * @param product
+	 * @return
+	 */
+	@PostMapping("/user/updateCart")
+	public String updateShoppingCart(Product product, HttpServletRequest request, RedirectAttributes attr) {
+		log.info("updateShoppingCart() start..");
+		
+		int memno = SessionUtil.getNo(request);
+		
+		System.out.println("updateShoppingCart() product -> "+product);
+		
+		int result = ss.updateShoppingCart(product, memno);
+		System.out.println("장바구니 결과 : "+result);
+		
+		attr.addFlashAttribute("result", result); //상품상세에 장바구니 추가 결과 전달
+		attr.addAttribute("pno", product.getPno());
+		
+		return "redirect:details-product";
 	}
 	
 }

@@ -22,5 +22,6 @@ public interface ShopDao {
 	List<Product> cdProductList(int startRow, int endRow, SearchItem si);
 	List<Board> productReviewList(int startRow, int endRow, int pno);
 	int getProductReviewTotCnt(int pno);
+	int updateShoppingCart(Product product, int memno);
 
 }

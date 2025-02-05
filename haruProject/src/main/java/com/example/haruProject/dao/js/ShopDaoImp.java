@@ -264,4 +264,24 @@ public class ShopDaoImp implements ShopDao {
 		}
 		return count;
 	}
+
+	/**
+	 * 장바구니 추가
+	 */
+	@Override
+	public int updateShoppingCart(Product product, int memno) {
+		Map<String, Object> pMap = new HashMap<>();
+		pMap.put("product", product);
+		pMap.put("memno", memno);
+		
+		int result = 0;
+		try {
+			result = session.insert("JS_UpdateShoppingCart", pMap);
+		} catch (Exception e) {
+			log.error("updateShoppingCart() query error -> {}", e);
+		}
+		
+		return result;
+		
+	}
 }

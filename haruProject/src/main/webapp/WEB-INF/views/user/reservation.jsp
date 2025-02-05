@@ -177,14 +177,13 @@ li, select, td, span {
 		
 		$(()=>{
 			chooseDate();
-
 		    
 		    /* 예약 내역 버튼 토글 */
-		    $(".page-btn").click(function() {
+		    $(".pet-res-content").click(function() {
 		        // 클릭한 버튼과 같은 부모 `.pet-res-content` 내부의 `.res-re`를 토글
 		        $(this).closest(".pet-res-content").next(".res-re").slideToggle();
 		       
-		        var tr = $(this).css('transform');
+		        var tr = $(this).children('.page-btn').css('transform');
 		        var values = tr.split('(')[1].split(')')[0].split(',');
 		        var a = values[0];
 		        var b = values[1];
@@ -197,7 +196,7 @@ li, select, td, span {
 		        
 		        var cur = angle + 180;
 		        
-		        $(this).css('transform', `rotate(\${cur}deg)`);
+		        $(this).children('.page-btn').css('transform', `rotate(\${cur}deg)`);
 		    });
 		    
 		    
@@ -217,7 +216,7 @@ li, select, td, span {
 	    $('.js-pet-selector').change(function() {
 	    	pet = $(this).val();
 	    	console.log(pet);
-	    	location.href="/user/reservation?petno="+pet+"&start="+start_date+"&end="+end_date;
+	    	location.replace("/user/reservation?petno="+pet+"&start="+start_date+"&end="+end_date);
 	    })
 	    
 	    
@@ -232,12 +231,12 @@ li, select, td, span {
 		    	start_date = start.format('YYYY-MM-DD');
 		    	end_date = end.format('YYYY-MM-DD');
 		    	
-		    	location.href="/user/reservation?petno="+pet+"&start="+start_date+"&end="+end_date;
+		    	location.replace("/user/reservation?petno="+pet+"&start="+start_date+"&end="+end_date);
 	    	} else {
 	    		$('#reportrange span').html(' 전체 ');
 	    		console.log('전체선택');
 	    		
-	    		location.href="/user/reservation?petno="+pet;
+	    		location.replace("/user/reservation?petno="+pet);
 	    	} 
 	    }
 	    
@@ -246,6 +245,10 @@ li, select, td, span {
 		function chooseDate() {
 	    	var start = '${start}';
 			var end = '${end}';
+			if(!start || !end) {
+				start = moment();
+				end = moment();
+			}
 
 		    $('#reportrange').daterangepicker({
 		        startDate: start,
@@ -273,7 +276,6 @@ li, select, td, span {
 		            ],
 		        },
 		        ranges: {
-		        	'전체': [null, null],
 		           	'오늘': [moment(), moment()],
 		           	'지난 7일': [moment().subtract(6, 'days'), moment()],
 		           	'지난 30일': [moment().subtract(29, 'days'), moment()],
@@ -285,7 +287,7 @@ li, select, td, span {
 		    }, cb);
 
 	    }	    
-	    
+	
 
 	</script>
 </body>
