@@ -12,97 +12,134 @@
     <meta name="author" content="">
     
      <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.1/locales/ko.global.js"></script>
     
     <title>근무 관리</title>
 
 </head>
+<style>
+	.calendar {
+	 	width: 60%;
+	}
+	.fc-toolbar-chunk{
+	 	font-size: 14px;
+	}
+	.fc-col-header-cell-cushion, .fc-daygrid-day-number {
+	    text-decoration: none;
+	}
+	
+	.fc-scrollgrid-sync-inner > .fc-col-header-cell-cushion,
+	.fc-day-mon .fc-daygrid-day-number,
+	.fc-day-tue .fc-daygrid-day-number,
+	.fc-day-wed .fc-daygrid-day-number,
+	.fc-day-thu .fc-daygrid-day-number,
+	.fc-day-fri .fc-daygrid-day-number {
+	    color: black;
+	    font-size: 14px;
+	}
+	
+	.fc-day-sun .fc-col-header-cell-cushion,
+	.fc-day-sun a{
+	    color : red;
+	    font-size: 14px;
+	}
+	
+	.fc-day-sat .fc-col-header-cell-cushion,
+	.fc-day-sat a {
+	    color : blue;
+	    font-size: 14px;
+	}
+	.fc-event-time{
+		display: none;
+	}
+	/* .fc-event-title {
+		color: "#333";
+	} */
+</style>
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function() {
-	  var calendarEl = document.getElementById('calendar');
-
-	  var calendar = new FullCalendar.Calendar(calendarEl, {
-	    initialView: 'dayGridMonth',
+	var calendarEl = document.getElementById('calendar');
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		initialView: 'dayGridMonth',
 	    headerToolbar: {
-	      left: 'title',
-	      left: 'title',
-	      right: 'prev,next today'
+	    	left: 'prev,next today',
+	    	center: 'title',
+	    	right: 'addSchedule'
 	    },
-	    
-	    events: [
-	      {
-	        title: 'All Day Event',
-	        start: '2025-01-01'
-	      },
-	      {
-	        title: 'Long Event',
-	        start: '2025-01-07',
-	        end: '2025-01-10'
-	      },
-	      {
-	        groupId: '999',
-	        title: 'Repeating Event',
-	        start: '2025-01-09T16:00:00'
-	      },
-	      {
-	        groupId: '999',
-	        title: 'Repeating Event',
-	        start: '2025-01-16T16:00:00'
-	      },
-	      {
-	        title: 'Conference',
-	        start: '2025-01-11',
-	        end: '2025-01-13'
-	      },
-	      {
-	        title: 'Meeting',
-	        start: '2025-01-12T10:30:00',
-	        end: '2025-01-12T12:30:00'
-	      },
-	      {
-	        title: 'Lunch',
-	        start: '2025-01-12T12:00:00'
-	      },
-	      {
-	        title: 'Meeting',
-	        start: '2025-01-12T14:30:00'
-	      },
-	      {
-	        title: 'Birthday Party',
-	        start: '2025-01-13T07:00:00'
-	      },
-	      {
-	        title: 'Click for Google',
-	        url: 'https://google.com/',
-	        start: '2025-01-28'
-	      }
-	    ]
-	  });
-
-	  calendar.render();
+	    customButtons:{
+	    	addSchedule: {
+	    		text: "일정등록",
+	    		click: function(){
+	    			location.href= '/admin/addScheduleView'
+	    		}
+	    	}
+	    },
+	    titleFormat: function (date) {
+	    	return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월';
+	    },
+	    selectable: true,
+	    droppable: true,
+	    navLinks: true,
+	    editable: true,
+	    nowIndicator: true,
+	    locale: 'ko',
+	    datesSet: function (info) {
+	    	let currentDate = info.view.currentStart;
+	        let formattedDate = currentDate.getFullYear() + '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2); // "YYYY-MM" 형태
+	                  
+	        $.ajax({
+	        	url: '<%=request.getContextPath()%>/admin/api/getSchedule',
+	            type: 'GET',
+	            data: {
+	            	formattedDate :formattedDate
+	            },
+	            dataType: 'json',
+	            success: function(response) {
+	            	var events = [];
+	            	console.log('response: '+ JSON.stringify(response));
+	            	console.log('response: '+ response.length);
+	                      	
+	                // 서버에소 받은 데이터를 이벤트 객체로 변환하여 배열에 추가
+	                var offdays = response.offdays;
+	                for(var i = 0; i<response.schedules.length; i++){
+	                	var res = response.schedules[i];
+	                	var event = {};
+	                      		
+	                    if(res.schtype_mcd == 100){
+	                    	event= {            					
+	          		        	title: res.sch_content,
+	          		            start: res.schdate,
+	          	            	color: '#F08D7F',
+	          	            	allDay: true,
+	          	            }
+	                    } else if(res.schtype_mcd == 200){
+	                    	event = {
+	                    		title: res.aname+' '+res.sch_content,
+	                    		start: i,
+	                    		color: "#d0e4e8",
+	                    		textColor: "#333333",
+	                    		allDay: true,
+	          	            }
+	                     }else if(res.schtype_mcd == 300){
+	                      	event = {
+	                          	title: res.aname+' '+res.sch_content,
+	              	            start: res.schdate,
+	                          	color: "#254d64",
+	                          	allDay: true,
+	            			}
+	                     }
+	                    calendar.addEvent(event);
+	            	} // end for
+	            },
+	            error: function () {
+	            	console.log('Failed to fetch data from the server.');
+	          	}
+	        }); //ajax end
+	    } //data end
 	});
-/* var calendar = $('#calendar').fullCalendar({
-    header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-    },
-    selectable: true, // 사용자가 날짜 선택
-    selectHelper: true, // 날짜 선택 시 시각적
-    editable: true, // 이벤트를 드래그 하여 이동
-    eventLimit: true, // 한 날자에 표시할 수 있는 이벤트 수 제한
-    events: function(start, end, timezone, callback) { // 서버에서 일정 데이터를 가져옴
-        // AJAX를 통해 서버에서 일정 데이터를 가져옵니다.
-        $.ajax({
-            url: '/schedule/all',
-            type: 'GET',
-            dataType: 'json',
-            success: function(events) {
-                callback(events);
-            }
-        });
-    },
-    // 기타 이벤트 핸들러...
-}); */
+	calendar.render();
+});
+
 </script>
 <body id="page-top"> 
 
