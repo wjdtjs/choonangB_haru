@@ -3,12 +3,35 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.haruProject.ScheduleMapper">
-	<select id="HJSelectScheduleList" resultType="Schedule">
+	<select id="HJSelectScheduleList" parameterType="java.lang.String" resultType="Schedule">
 		SELECT sd.*, cm.content sch_content, ad.aname
 		FROM schedule sd
 		JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
 		LEFT JOIN admin ad ON sd.ano = ad.ano
 		WHERE cm.mcd IN (100,300)
+		AND
+		<if test="current == null">
+			sd.schdate LIKE to_char(sysdate,'yy/mm') || '%'
+		</if>
+		<if test="current != null">
+			sd.schdate LIKE #{current} || '%'
+		</if>
+	</select>
+	
+	<select id="HJRegScheduleList" parameterType="java.lang.String" resultType="schedule">
+	<![CDATA[
+		SELECT *
+		FROM(
+				SELECT sd.*, cm.content sch_content, ad.aname,
+						ROW_NUMBER() OVER (PARTITION BY sd.ano ORDER BY sd.schdate DESC) AS rn
+				FROM schedule sd
+				JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
+				LEFT JOIN admin ad ON sd.ano = ad.ano
+				WHERE cm.mcd = 200
+				AND sd.schdate < #{currentStart}
+			) t
+		where t.rn in (1,2)
+	]]>
 	</select>
 	
 	<select id="HJSelectSchtype" resultType="Common">
@@ -17,71 +40,55 @@
 		WHERE bcd = 600 AND MCD !=999
 	</select>
 	
- 	<select id="HJGetDocOffInfo" resultType="ScheRegularOff">
+ 	<select id="HJGetChangedOff" parameterType="Schedule" resultType="java.util.Date">
  	<![CDATA[
-		SELECT t1.ano, t1.nowoff, t2.newoff
+		SELECT schdate as newoff
 		FROM (
-		    SELECT ano, schdate as nowoff, 
-		           rank() over(partition by ano order by schdate desc) as rn
-		    FROM schedule
-		    WHERE schdate < sysdate
-		) t1
-		LEFT JOIN (
-		    SELECT *
-		    FROM (
-		        SELECT ano, schdate as newoff,
-		               rank() over(partition by ano order by schdate) as rn
-		        FROM schedule
-		        WHERE schdate > sysdate
-		    ) sub_t2
-		    WHERE sub_t2.rn = 1
-		) t2
-		ON t1.ano = t2.ano
-		WHERE t1.rn = 1
-		AND t1.ano IS NOT NULL
+    		SELECT schdate
+    		FROM schedule
+    		WHERE schtype_mcd = #{schtype_mcd}
+      		AND ano = #{ano}
+      		AND schdate > #{schdate}
+    		ORDER BY schdate ASC
+		)
+		WHERE ROWNUM = 2;
+
+
+
 		]]>
 	</select>
 	
-	<select id="HJGetDocOffdays" parameterType="Map" resultType="java.util.Date">
-	<if test="(regOffnfo.newoff == null) or (regOffnfo.newoff gt after2m)">
+	<select id="HJGetDocOffdays" parameterType="Map" resultType="java.lang.String">
+	<if test="(sche.newoff == null) or (sche.newoff gt currentEnd)">
 		<![CDATA[
-			SELECT  nowoff + (level - 1) *7
+			SELECT  schdate + (level - 1) *7
 			FROM (
 	            SELECT *
-	            FROM docoffinfo
-	            WHERE ano = #{regOffnfo.ano}
+	            FROM schedule
+	            WHERE schno = #{sche.schno}
 	            )
-			connect by nowoff + (level - 1) *7  <= #{after2m}
+			connect by schdate + (level - 1) *7  < #{currentEnd}
 		]]>
 	</if>
-	<if test="(regOffnfo.newoff != null) and (regOffnfo.newoff lt after2m)">
+	<if test="(sche.newoff != null) and (sche.newoff lt currentEnd)">
 		<![CDATA[
-			SELECT  nowoff + (level - 1) *7
+			SELECT  schdate + (level - 1) *7
 			FROM    (
                 SELECT *
-                FROM docoffinfo
-                WHERE ano = #{regOffnfo.ano}
+                FROM schedule
+                WHERE schno = #{sche.schno}
                 )
-			connect by nowoff + (level - 1) *7 <= newoff
+			connect by schdate + (level - 1) *7 <= #{sche.newoff}
 			UNION
-			SELECT  newoff + (level - 1) *7
+			SELECT  #{sche.newoff} + (level - 1) *7
 			FROM    (
                 SELECT *
-                FROM docoffinfo
-                WHERE ano = #{regOffnfo.ano}
+                FROM schedule
+                WHERE schno = #{sche.schno}
                 )
-			connect by newoff + (level - 1) *7 <= #{after2m}
+			connect by #{sche.newoff} + (level - 1) *7 < #{currentEnd}
 		]]>
 	</if>
 	</select>
 	
-	<select id="HJDocRegOffs" resultType="schedule">
-	<![CDATA[
-		SELECT sd.*, cm.content sch_content, ad.aname
-		FROM schedule sd
-		JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
-		LEFT JOIN admin ad ON sd.ano = ad.ano
-		WHERE cm.mcd = 200 AND sd.schdate < sysdate
-	]]>
-	</select>
 </mapper>

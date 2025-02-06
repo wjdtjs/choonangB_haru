@@ -19,9 +19,15 @@ public class ScheduleServiceImpl implements ScheduleService{
 	private final ScheduleDao sd;
 
 	@Override
-	public List<Schedule> getScheduleList() {
-		List<Schedule> schedule = sd.getScheduleList();
+	public List<Schedule> getScheduleList(String current) {
+		List<Schedule> schedule = sd.getScheduleList(current);
 		return schedule ;
+	}
+
+	@Override
+	public List<Schedule> getRegScheduleList(String current) {
+		List<Schedule> reg_schedules = sd.getRegScheduleList(current);
+		return reg_schedules;
 	}
 
 	@Override
@@ -31,22 +37,17 @@ public class ScheduleServiceImpl implements ScheduleService{
 	}
 
 	@Override
-	public List<ScheRegularOff> getDocOffInfo() {
-		List<ScheRegularOff> offInfo = sd.getDocOffInfo();
+	public Date getChangedOff(Schedule schedule) {
+		Date offInfo = sd.getChangedOff(schedule);
 		return offInfo;
 	}
 
 	@Override
-	public List<Date> getDocOffdays(ScheRegularOff regOffnfo) {
-		List<Date> offdays = sd.getDocOffdays(regOffnfo);
+	public List<String> getDocOffdays(Schedule schedule, String currentEnd) {
+		List<String> offdays = sd.getDocOffdays(schedule, currentEnd);
 		return offdays;
 	}
 
-	@Override
-	public List<Schedule> getRegScheduleList() {
-		List<Schedule> reg_schedules = sd.getRegScheduleList();
-		return reg_schedules;
-	}
 
 
 }

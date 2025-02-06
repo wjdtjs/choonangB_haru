@@ -3,6 +3,7 @@ package com.example.haruProject.dto;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.mail.internet.ParseException;
 import lombok.Data;
 
 @Data
@@ -21,11 +22,9 @@ public class Schedule {
 	// admin Join
 	private String aname;
 	
-	private String title;
-	
-	private Date nowoff;			// 현재 휴무일
+
 	private Date newoff;			// 변경된 휴무일
 	
-	private List<Date> persoffdays; // 휴무일 리스트
-
+	private List<String> persoffdays; // 휴무일 리스트
+	
 }

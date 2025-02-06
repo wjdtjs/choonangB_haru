@@ -29,42 +29,59 @@ public class ScheduleController {
 	
 	@ResponseBody
 	@GetMapping(value = "/admin/api/getSchedule")
-	public Map<String, Object> getSchedule(@RequestParam(value = "current", required = false) String current) {
+	public Map<String, Object> getSchedule(
+											@RequestParam(value = "formattedDate", required = false) String current,
+											@RequestParam(value = "formattedDateStart", required = false) String currentStart,
+											@RequestParam(value = "formattedDateEnd", required = false) String currentEnd
+											) {
 		System.out.println("ScheduleController getSchedule ....");
 		System.out.println("ScheduleController getSchedule current=->"+current);
+		System.out.println("ScheduleController getSchedule currentEnd=->"+currentEnd);
+		
 		List<Schedule> schedules = new ArrayList();
 		List<Schedule> reg_schedules = new ArrayList();
 		// 병원휴무와 개인휴무
-		schedules = ss.getScheduleList();
-		reg_schedules = ss.getRegScheduleList();
+		schedules = ss.getScheduleList(current);
+		// 의사 정기 휴무
+		reg_schedules = ss.getRegScheduleList(currentEnd);
 		
 		// 의사 정기휴무 정보 (ano,현재휴무,변경휴무)
-		List<ScheRegularOff> docRegOff = ss.getDocOffInfo();
-		// 오늘부터 두달간 의사 휴무
-		for(int i = 0; i < docRegOff.size(); i++) {
-			ScheRegularOff regOffnfo = docRegOff.get(i);
-			
-			List<Date> offdays = ss.getDocOffdays(regOffnfo);
-			
-			regOffnfo.setPersoffdays(offdays);
+		for (int i = 0; i<reg_schedules.size();i++) {
+			// 변경 날짜 가져오기
+			Date docChangedOff = ss.getChangedOff(reg_schedules.get(i));
+			reg_schedules.get(i).setNewoff(docChangedOff);
+			System.out.println("ScheduleController getSchedule docChangedOff=->"+docChangedOff);
+			List<String> offdays = ss.getDocOffdays(reg_schedules.get(i) ,currentEnd);
+			reg_schedules.get(i).setPersoffdays(offdays);
 		}
 		
 
 		
 		Map<String, Object> schedule_map = new HashMap<>();
 		schedule_map.put("schedules", schedules);
-		schedule_map.put("docRegOff", docRegOff);
+		
+			
+		schedule_map.put("reg_schedules", reg_schedules);
 		
 		System.out.println("ScheduleController getSchedule schedules-> " + schedules);
-		System.out.println("ScheduleController getSchedule docRegOff-> " + docRegOff);
+		System.out.println("ScheduleController getSchedule reg_schedules-> " + reg_schedules);
 		
 		return schedule_map;
 	}
 
+	
 	@GetMapping(value = "/admin/addScheduleView")
 	public String addScheduleView(Model model) {
 		List<Common> schtypes = ss.getSchtypes();
 		model.addAttribute("schtypes",schtypes);
 		return "admin/addScheduleView";
+	}
+	
+	@PostMapping(value = "/admin/addSchedule")
+	public String addSchedule(Schedule schedule) {
+		System.out.println("ScheduleController addSchedule");
+		System.out.println("ScheduleController addSchedule schedule->"+schedule);
+		
+		return "admin/schedule";
 	}
 }

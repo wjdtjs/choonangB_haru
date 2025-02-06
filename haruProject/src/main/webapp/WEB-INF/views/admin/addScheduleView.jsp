@@ -31,6 +31,7 @@
 	height: 50px;
 
 }
+
 td > button {
 	border-radius: 10px;
 	border: none;
@@ -42,7 +43,6 @@ td > button {
 }
 
 .form-input{
-	width: 50%;
 	height: 35px;
 	border: 1.5px solid var(--haru);
 	border-radius: 10px;
@@ -84,29 +84,42 @@ em {
                     <!-- Page Heading -->
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold">일정 추가</h1>
                     <div class="modal_l_detail">
-                    <form action="/admin/addSchedule" method="post" name="frm" id="add_mb" onsubmit="return valid()">
+                    <form action="/admin/addSchedule" method="post" name="frm" id="add_schedule" >
 				       <table class="inputTable">
 			        	<colgroup>
-	                    	<col width="20%" />
+			        		
+			        	</colgroup>
+				        <tr>
+				        	<th>구분<em>*</em></th>		<td><select class="form-input sub-schetype-mcd-select" name="schtype_mcd">
+				        											<c:forEach var="schtype" items="${schtypes}">
+				        												<option value="${schtype.mcd }">${schtype.content  }</option>
+				        											</c:forEach>
+				        										</select></td>
+				        	<th>휴무날짜<em>*</em></th>	<td><input class="form-input" type="date" name="offday1" required="required"></td>
+				        
+				        </tr>
+	                    <tr >
+				        	<th class="add-input-aname" style="opacity: 0">사원이름<em>*</em></th>
+				        	<td class="add-input-aname" style="opacity: 0"><input class="form-input" type="text" name="aname" required="required"></td>
+				        	<th></th>
+				        	<td class="add-input-offday" style="opacity: 0">
+				        								<input class="form-input" type="date" name="offday1" required="required">
+			        		</td>
+				        </tr>
+	                    <tr>
+			        		<th></th>				
+			        	</tr>			        
+				      
+			        
 
-	                    </colgroup>
-			        	<tr>
-			        		<th>휴무날짜<em>*</em></th>	<td><input class="form-input" type="date" name="mtel" required="required" placeholder="-없이 입력"></td>
-			        	</tr>
-			        	<tr>
-			        		<th>구분<em>*</em></th>		<td><select class="form-input sub-alevel-mcd-select" name="schtype_mcd">
-			        											<c:forEach var="schtype" items="schtypes">
-			        												<option value="${schtype.mcd }">${schtype.content  }</option>
-			        											</c:forEach>
-			        										</select></td>
-			        	</tr>
-			        	<tr>
-			        		<th>사원번호<em>*</em></th>		<td><input class="form-input" type="text" name="aname" required="required"></td>
-			        	</tr>
-			        	
 			        </table>
 	       			 </form>
 	       			 </div>
+	       			 <!-- 모달 버튼 -->
+			       	<div class="modal_l-content-btn">
+				       	<button type="button" class="to_list" id="detail_close_btn" onclick="history.back()">목록으로</button>
+			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="add_schedule">등록하기</button>
+			       	</div> 
                 </div>
                 <!-- /.container-fluid -->
 
@@ -132,4 +145,21 @@ em {
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
 
 </body>
+<script type="text/javascript">
+ $(document).on('change','.sub-schetype-mcd-select',function(){
+	 const schtype = $(this).val();
+	 if(schtype == 100){
+		 $('.add-input-offday').css('opacity','0').prop('disabled', true);
+		 $('.add-input-aname').css('opacity','0').prop('disabled', true);
+	 }else if(schtype == 200){
+		 $('.add-input-offday').css('opacity','100');
+		 $('.add-input-aname').css('opacity','100');
+	 }else if(schtype == 300){
+		 $('.add-input-offday').css('opacity','0').prop('disabled', true);
+		 $('.add-input-aname').css('opacity','100');
+	 }
+ })
+ 
+ $(document).on('',)
+</script>
 </html>

@@ -2,6 +2,7 @@ package com.example.haruProject.dao.hj;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,17 +26,35 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	private final SqlSession session;
 
 	@Override
-	public List<Schedule> getScheduleList() {
-		List<Schedule> schedules = new ArrayList<>();
+	public List<Schedule> getScheduleList(String current) {
+		List<Schedule> schedules = null;
+		System.out.println("Dao getScheduleList current->" + current);
 		
 	try {
-		schedules = session.selectList("HJSelectScheduleList");
+		schedules = session.selectList("HJSelectScheduleList",current);
+		System.out.println("Dao getScheduleList schedules->" + schedules);
 	} catch (Exception e) {
 		System.out.println("ScheduleDao getScheduleList() Error-> "+e.getMessage());
 	}
 		return schedules;
 	}
+	
+	// 의사 정기 휴무
+	@Override
+	public List<Schedule> getRegScheduleList(String current) {
+		List<Schedule> reg_schedules = new ArrayList<>();
+		try {
+			reg_schedules = session.selectList("HJRegScheduleList" ,current);
 
+			System.out.println("ScheduleDao getRegScheduleList reg_schedules-> "+current);
+			System.out.println("ScheduleDao getRegScheduleList reg_schedules-> "+reg_schedules);
+		} catch (Exception e) {
+			System.out.println("ScheduleDao getRegScheduleList() Error-> "+e.getMessage());
+			}
+		return reg_schedules;
+	}
+	
+	/* 중분류 */
 	@Override
 	public List<Common> getSchtypes() {
 		List<Common> schTypeList = new ArrayList<>();
@@ -49,52 +68,40 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	}
 
 	@Override
-	public List<ScheRegularOff> getDocOffInfo() {
-		List<ScheRegularOff> offInfo = null;
+	public Date getChangedOff(Schedule schedule) {
+		Date changedoff= null;
 		try {
-			offInfo = session.selectList("HJGetDocOffInfo");
-			System.out.println("ScheduleDao getDocOffInfo() offdays-> "+offInfo);
+			changedoff = session.selectOne("HJGetChangedOff",schedule);
+			System.out.println("ScheduleDao getChangedOff() changedoff-> "+changedoff);
 		} catch (Exception e) {
-			System.out.println("ScheduleDao getDocOffInfo() Error-> "+e.getMessage());
+			System.out.println("ScheduleDao getChangedOff() Error-> "+e.getMessage());
 
 		}
-		return offInfo;
+		return changedoff;
 	}
 
 	@Override
-	public List<Date> getDocOffdays(ScheRegularOff regOffnfo) {
-		List<Date> offdays = null;
-		Map<String, Object> paramMap = new HashMap();
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date()); // 현재 날짜 기준
-		cal.add(Calendar.MONTH, 2); // 2개월 추가
-		Date currentDatePlus2Months = cal.getTime();
-		
-		
-		paramMap.put("regOffnfo", regOffnfo);
-		paramMap.put("after2m", currentDatePlus2Months); 
-		System.out.println("ScheduleDao getDocOffdays paramMap-> "+paramMap);
+	public List<String> getDocOffdays(Schedule schedule,String currentEnd) {
+		List<String> offdays = null;
+		Map<String,Object> parammap = new HashMap<>();
+		Date currentEndStr = null;
 		try {
-			offdays = session.selectList("HJGetDocOffdays",paramMap);
+            SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd"); // 날짜 포맷 지정
+            currentEndStr = sdf.parse(currentEnd); // 문자열을 Date로 변환
+		} catch (Exception e) {
+			System.out.println("currentEnd 변환 실패");
+		}
+		parammap.put("currentEnd", currentEndStr);
+		parammap.put("sche", schedule);
+		
+		System.out.println("ScheduleDao getDocOffdays paramMap-> "+parammap);
+		try {
+			offdays = session.selectList("HJGetDocOffdays",parammap);
 			System.out.println("ScheduleDao getDocOffdays offdays-> "+offdays);
 		} catch (Exception e) {
 			System.out.println("ScheduleDao getDocOffdays() Error-> "+e.getMessage());
 		}
 		return offdays;
-	}
-
-	@Override
-	public List<Schedule> getRegScheduleList() {
-		List<Schedule> reg_schedules = new ArrayList<>();
-		try {
-			reg_schedules = session.selectList("HJDocRegOffs");
-			System.out.println("ScheduleDao getRegScheduleList reg_schedules-> "+reg_schedules);
-		} catch (Exception e) {
-			System.out.println("ScheduleDao getRegScheduleList() Error-> "+e.getMessage());
-
-		}
-		return reg_schedules;
 	}
 
 }

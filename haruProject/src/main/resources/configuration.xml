@@ -25,6 +25,7 @@
 		<typeAlias alias="BoardImg" type="com.example.haruProject.dto.BoardImg"/>
 		<typeAlias alias="Weight" type="com.example.haruProject.dto.Weight"/>
 		<typeAlias alias="ShoppingCart" type="com.example.haruProject.dto.ShoppingCart"/>
+		<typeAlias alias="ScheRegularOff" type="com.example.haruProject.dto.ScheRegularOff"/>
 	</typeAliases>
 
 </configuration>

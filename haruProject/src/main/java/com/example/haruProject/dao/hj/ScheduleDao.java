@@ -9,10 +9,10 @@ import com.example.haruProject.dto.Schedule;
 
 public interface ScheduleDao {
 
-	List<Schedule> 			getScheduleList();
+	List<Schedule> 			getScheduleList(String current);
+	List<Schedule> 			getRegScheduleList(String current);
 	List<Common> 			getSchtypes();
-	List<ScheRegularOff> 	getDocOffInfo();
-	List<Date> 				getDocOffdays(ScheRegularOff regOffnfo);
-	List<Schedule> 			getRegScheduleList();
+	Date			 		getChangedOff(Schedule schedule);
+	List<String> 			getDocOffdays(Schedule schedule, String currentEnd);
 
 }

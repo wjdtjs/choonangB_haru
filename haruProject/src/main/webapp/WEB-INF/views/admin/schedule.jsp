@@ -52,9 +52,7 @@
 	.fc-event-time{
 		display: none;
 	}
-	/* .fc-event-title {
-		color: "#333";
-	} */
+	
 </style>
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function() {
@@ -85,24 +83,42 @@ document.addEventListener('DOMContentLoaded', function() {
 	    locale: 'ko',
 	    datesSet: function (info) {
 	    	let currentDate = info.view.currentStart;
-	        let formattedDate = currentDate.getFullYear() + '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2); // "YYYY-MM" 형태
-	                  
+	    	let currentDateEnd = info.view.currentEnd;
+	    	
+	        let formattedDate = currentDate.getFullYear()%100 + '/' + ('0' + (currentDate.getMonth() + 1)).slice(-2); // "YYYY-MM" 형태
+	        let formattedDateStart = currentDate.getFullYear()%100 + '/' + ('0' + (currentDate.getMonth() + 1)).slice(-2) + '/' + ('0' + currentDateEnd.getDate()).slice(-2); // "YYYY-MM" 형태
+	        let formattedDateEnd = currentDateEnd.getFullYear()%100 + '/' + ('0' + (currentDateEnd.getMonth() + 1)).slice(-2) + '/' + ('0' + currentDateEnd.getDate()).slice(-2); // "YYYY-MM" 형태
+
+
+	        
+	        console.log("currentDate - >"+currentDate);
+	        console.log("currentDateEnd - >"+currentDateEnd);
+	        console.log("formattedDate - >"+formattedDate);
+	        console.log("formattedDateEnd - >"+formattedDateEnd);
 	        $.ajax({
 	        	url: '<%=request.getContextPath()%>/admin/api/getSchedule',
 	            type: 'GET',
 	            data: {
-	            	formattedDate :formattedDate
+	            	formattedDate: formattedDate,
+	            	formattedDateStart,formattedDateStart,
+	            	formattedDateEnd : formattedDateEnd
 	            },
 	            dataType: 'json',
 	            success: function(response) {
+	            	calendar.removeAllEvents();
 	            	var events = [];
 	            	console.log('response: '+ JSON.stringify(response));
-	            	console.log('response: '+ response.length);
+	            	console.log('response.schedules: '+ response.schedules.length);
 	                      	
-	                // 서버에소 받은 데이터를 이벤트 객체로 변환하여 배열에 추가
-	                var offdays = response.offdays;
-	                for(var i = 0; i<response.schedules.length; i++){
-	                	var res = response.schedules[i];
+	                // 서버에서 받은 데이터를 이벤트 객체로 변환하여 배열에 추가
+	                var schedules = response.schedules;
+	                var reg_schedules = response.reg_schedules;
+	                console.log('reg_schedules.length: '+reg_schedules.length);
+
+
+	            	
+	                for(var i = 0; i<schedules.length; i++){
+	                	var res = schedules[i];
 	                	var event = {};
 	                      		
 	                    if(res.schtype_mcd == 100){
@@ -112,15 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	          	            	color: '#F08D7F',
 	          	            	allDay: true,
 	          	            }
-	                    } else if(res.schtype_mcd == 200){
-	                    	event = {
-	                    		title: res.aname+' '+res.sch_content,
-	                    		start: i,
-	                    		color: "#d0e4e8",
-	                    		textColor: "#333333",
-	                    		allDay: true,
-	          	            }
-	                     }else if(res.schtype_mcd == 300){
+	                    } else if(res.schtype_mcd == 300){
 	                      	event = {
 	                          	title: res.aname+' '+res.sch_content,
 	              	            start: res.schdate,
@@ -130,6 +138,23 @@ document.addEventListener('DOMContentLoaded', function() {
 	                     }
 	                    calendar.addEvent(event);
 	            	} // end for
+	            	for (var j = 0 ; j < reg_schedules.length ; j ++){
+	            		var res1 = reg_schedules[j];
+	            		console.log('response: '+ JSON.stringify(res1));
+	            		if(res1.persoffdays){	            			
+	            			console.log("res1.persoffdays.length : "+res1.persoffdays.length)
+	            			
+		            		for( var k = 0 ;  k < res1.persoffdays.length; k++){
+		            			event = {
+		            					title: res1.aname+' '+res1.sch_content,
+			              	            start: res1.persoffdays[k],
+			                          	color: "#254d64",
+
+			            		};
+		            		calendar.addEvent(event);
+		            		}
+	            		}
+	            	}
 	            },
 	            error: function () {
 	            	console.log('Failed to fetch data from the server.');
