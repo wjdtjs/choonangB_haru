@@ -17,9 +17,20 @@ public interface UserPetService {
 	Pet getPetDetail(int petno);
 
 	List<Weight> getPetWeightList(int petno);
+	List<Weight> getPetWeightList(int petno, int startRow, int endRow);
 
 	List<Appointment> getPAppointmentList(int petno);
 
 	int deletePet(int petno);
+
+	void addPet(Pet pet);
+
+	void updatePet(Pet pet, boolean img_change);
+
+	void updateWeight(Weight weight);
+
+	int getWeightCnt(int petno);
+
+
 
 }

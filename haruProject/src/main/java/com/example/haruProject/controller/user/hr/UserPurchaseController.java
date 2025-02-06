@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.ShoppingCart;
@@ -38,5 +40,16 @@ public class UserPurchaseController {
 		model.addAttribute("sList", sList);
 		
 		return "user/shoppingCart";
+	}
+	
+	@ResponseBody
+	@RequestMapping("/api/updateSquantity")
+	public void updateSquantity(@RequestParam(value = "pno", required = true) int pno,
+							@RequestParam(value = "squantity", required = true) int squantity)
+	{
+		System.out.println("UserPurchaseController updateSquantity() start ,,,");
+		System.out.println("UserPurchaseController updateSquantity() pno ->"+pno);
+		System.out.println("UserPurchaseController updateSquantity() squantity ->"+squantity);
+		
 	}
 }

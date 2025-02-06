@@ -224,6 +224,13 @@
       WHERE memno = #{memno}
    </update>
    
+   <!--  비밀번호 가져오기  -->
+	<select id="HR_SelectPassword" parameterType="int" resultType="Member"> 
+		SELECT MEMNO, MNAME, MPASSWD, MEMAIL, MTEL 
+		FROM MEMBER 
+		WHERE MEMNO = #{memno} AND MSTATUS_MCD = 100 
+	</select>
+	   
    <!-- 카카오 회원 가입 -->
 <!--    <insert id="JS_InsertKakaoUser" parameterType="Member"> -->
 <!-- 	   INSERT INTO MEMBER (MEMNO, MID, MNAME, MEMAIL) -->

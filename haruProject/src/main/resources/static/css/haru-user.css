@@ -147,7 +147,7 @@ select {
 	-webkit-appearance:none; /* for chrome */
    	-moz-appearance:none; /*for firefox*/
    	appearance:none;
-   	
+   	background-color: white;
    	background-image: url("/img/drop_arrow.png");  
 	background-repeat: no-repeat;  
 	background-position: 89% center;  
@@ -572,6 +572,7 @@ body > .haru-user-container {
 }
 
 
-
-
+.haru-required {
+	color: red;
+}
 

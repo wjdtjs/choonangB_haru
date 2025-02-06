@@ -202,4 +202,71 @@
 		DELETE FROM BOARDIMG WHERE BNO = #{bno} AND IMGNO = #{imgno}
 	</delete>
 	
+	
+	<!--  내가 쓴 글  -->
+<!--  후기 중분류 select 
+		(MCD=999: 전체)
+	 -->
+	<select id="HR_SelectBoardMcd" resultType="Map"> 
+		SELECT MCD, CONTENT 
+		FROM COMMON 
+		WHERE BCD = 350 AND MCD != 999 
+	</select>
+	
+	<!--  후기 전체 수  -->
+	<select id="HR_SelectReviewCnt" parameterType="SearchItem" resultType="int">
+		SELECT COUNT(*) 
+		FROM BOARD 
+		WHERE BSTATUS_MCD = 100 
+			AND MEMNO = #{type5}
+		<if test="type4 != 999"> 
+			AND BOARD_TYPE_MCD = #{type4} 
+		</if>
+		<if test="search1 != null and !search1.equals('')"> 
+			AND (BTITLE LIKE '%' || #{search1} || '%' OR dbms_lob.instr(BCONTENTS, #{search1}) > 0) 
+		</if>
+	</select>
+	
+	<!--  후기 리스트  -->
+	<select id="HR_SelectReviewList" parameterType="Map" resultType="Board">
+		SELECT * 
+		FROM ( 
+			SELECT ROWNUM rn, bb.* 
+			FROM ( 
+				SELECT 
+					b.BNO, 
+					b.BTITLE, 
+					b.BCONTENTS, 
+					b.REG_DATE, 
+					b.RESNO, 
+					b.BOARD_TYPE_MCD, 
+					b.MEMNO, 
+					b.BGROUP, 
+					mask_email(m.MEMAIL) memail 
+				FROM BOARD b 
+					JOIN MEMBER m ON b.MEMNO = m.MEMNO 
+				WHERE b.BSTATUS_MCD = 100 AND b.MEMNO = #{si.type5}
+				<if test="si.type4 != 999"> 
+					AND b.BOARD_TYPE_MCD = #{si.type4} 
+				</if>
+				<if test="si.search1 != null and !si.search1.equals('')"> 
+					AND (b.BTITLE LIKE '%' || #{si.search1} || '%' 
+					OR dbms_lob.instr(b.BCONTENTS, #{si.search1}) > 0) 
+				</if>
+		ORDER BY b.BNO DESC )bb ) WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<select id="HR_SelectTitleList" resultType="Board"> 
+		SELECT btitle, bno, bgroup 
+		FROM board 
+		where bseq = 0 
+	</select>
+	
+	<!--  댓글 삭제 > 상태 변경  -->
+	<update id="HR_deleteRe"> 
+		UPDATE BOARD 
+		SET BSTATUS_MCD = 200 
+		WHERE BNO = #{bno} 
+	</update>
+	
 </mapper>

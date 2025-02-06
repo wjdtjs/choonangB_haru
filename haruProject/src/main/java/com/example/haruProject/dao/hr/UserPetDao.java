@@ -16,10 +16,22 @@ public interface UserPetDao {
 
 	Pet getPetDetail(int petno);
 
+	List<Weight> getPetWeightList(int petno, int startRow, int endRow);
 	List<Weight> getPetWeightList(int petno);
 
 	List<Appointment> getPAppointmentList(int petno);
 
 	int deletePet(int petno);
+
+	void addPet(Pet pet);
+
+	void updatePet(Pet pet, boolean img_change);
+
+	void updateWeight(Weight weight);
+
+	int getWeightCnt(int petno, int startRow, int endRow);
+
+	int getWeightCnt(int petno);
+
 
 }

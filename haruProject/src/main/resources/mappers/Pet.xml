@@ -27,6 +27,7 @@
 		    JOIN COMMON c1 ON p.PETGENDER_BCD = c1.BCD AND p.PETGENDER_MCD = c1.MCD
 		    JOIN COMMON c2 ON p.PETSPECIES_BCD = c2.BCD AND p.PETSPECIES_MCD = c2.MCD
 		WHERE p.MEMNO = #{memno} AND p.petstatus_mcd = 100
+		ORDER BY p.PETNO ASC
 	</select>
 	
 	<select id="HR_getPetSpeciesBcd" resultType="Pet">
@@ -45,7 +46,7 @@
 	<!-- 동물 상세 페이지 -->
 	<!-- 동물 정보 불러오기 -->
 	<select id="HR_getPetDetail" parameterType="int" resultType="Pet">
-		SELECT p.PETNO, p.PETNAME, p.PETIMG, c1.CONTENT as GENDER, p.PETGENDER_MCD, c2.CONTENT as SPECIES, p.PETBIRTH,
+		SELECT p.MEMNO, p.PETNO, p.PETNAME, p.PETIMG, c1.CONTENT as GENDER, p.PETGENDER_MCD, c2.CONTENT as SPECIES, p.PETBIRTH,
 				p.PETSPECIES_BCD, p.PETSPECIES_MCD, p.PETSTATUS_MCD, p.PETHEIGHT, w.PETWEIGHT, p.PETSPECIAL
 		FROM PET p
 		    JOIN COMMON c1 ON p.PETGENDER_BCD = c1.BCD AND p.PETGENDER_MCD = c1.MCD
@@ -60,14 +61,14 @@
 	</select>
 	<!-- 동물 몸무게 불러오기 -->
 	<select id="HR_getPetWeightList" parameterType="int" resultType="Weight">
-		SELECT reg_date, petweight
+		SELECT reg_date, petweight, petno, memno
 		FROM WEIGHT
 		WHERE petno = #{petno}
 		ORDER BY reg_date desc
 	</select>
 	<!-- 동물별 예약 정보 불러오기 -->
 	<select id="HR_getPAppointmentList" parameterType="int" resultType="Appointment">
-		SELECT DISTINCT a.petno, a.resno, a.rdate, a.start_time, c2.content as mitem, m.mtitle_bcd, c.content as item, ch.resno as cresno, b.resno as bresno
+		SELECT DISTINCT a.petno, a.resno, a.rdate, a.start_time, c2.content as mitem, m.mtitle_bcd, c.content as item, ch.resno as cresno, b.resno as bresno, ch.cno, b.bno
 		FROM APPOINTMENT a
 		    JOIN MEDICAL_ITEM m ON m.mcode = a.mcode
 		    JOIN COMMON c ON m.mtitle_bcd = c.bcd AND m.mtitle_mcd = c.mcd
@@ -84,5 +85,83 @@
 		WHERE petno = #{petno}
 	</update>
 
-
+	<!-- 동물 추가 -->
+	<insert id="HR_AddPet" parameterType="Pet">
+		INSERT INTO PET (memno, petno, petname, petbirth, petheight, petweight, petspecial, petimg, ano,
+						reg_date, update_date, petspecies_bcd, petspecies_mcd, petstatus_bcd, petstatus_mcd, petgender_bcd, petgender_mcd)
+		VALUES(#{memno},
+		        SEQ_PET.nextval,
+		        #{petname},
+				#{petbirth},
+		        #{petheight},
+		        #{petweight},
+		       	<choose>
+		       		<when test="petspecial != null and petspecial != ''">#{petspecial}</when>
+		       		<otherwise>NULL</otherwise>
+		       	</choose>
+		        ,
+		        #{petimg},
+		        NULL,
+		        sysdate,
+		        NULL,
+		        #{petspecies_bcd},
+		        #{petspecies_mcd},
+		        200,
+		        100,
+		        550,
+		        #{petgender_mcd})
+	</insert>
+	<!-- 동물 추가 > 몸무게 추가 -->
+	<insert id="HR_AddPetWeight" parameterType="Pet">
+		INSERT INTO WEIGHT (MEMNO, PETNO, REG_DATE, PETWEIGHT)
+		VALUES(#{memno}, SEQ_PET.currval, sysdate, #{petweight})
+	</insert>
+	
+	<!-- 동물 수정 -->
+	<update id="HR_updatePet" parameterType="Map">
+		UPDATE PET SET
+			MEMNO = #{pet.memno},
+			PETNAME = #{pet.petname},
+			PETBIRTH = #{pet.petbirth},
+			PETSPECIAL = #{pet.petspecial},
+			<if test="ic == true">
+				PETIMG = #{pet.petimg},		
+			</if>
+			PETSPECIES_BCD = #{pet.petspecies_bcd},
+			PETSPECIES_MCD = #{pet.petspecies_mcd},
+			PETGENDER_MCD = #{pet.petgender_mcd}
+		WHERE PETNO = #{pet.petno}
+	</update>
+	
+	<!-- 몸무게 > 새롭게 update 된 몸무게 추가해주기 -->
+	<insert id="HR_insertWeight" parameterType="Weight">
+		INSERT INTO WEIGHT(MEMNO, PETNO, REG_DATE, PETWEIGHT)
+		VALUES(#{memno}, #{petno}, sysdate, #{petweight})
+	</insert>
+	<!-- 몸무게 > pet 테이블에 petweight 업데이트 -->
+	<update id="HR_updateWeight" parameterType="Weight">
+		UPDATE PET SET
+			PETWEIGHT = #{petweight}
+		WHERE PETNO = #{petno}
+	</update>
+	
+	<!-- 몸무게 페이지네이션 -->
+	<select id="HR_selectWeightCnt" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM WEIGHT
+		WHERE PETNO = #{petno}
+	</select>
+	<select id="HR_getPetWeightList_pn" parameterType="Map" resultType="Weight">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM rn, ww.*
+		    FROM (
+		        SELECT PETNO, MEMNO, REG_DATE, PETWEIGHT
+				FROM WEIGHT
+			WHERE PETNO = #{petno}
+				ORDER BY reg_date DESC
+		    )ww
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow}
+	</select>
 </mapper>

@@ -11,7 +11,7 @@
 <style>
 #pet-add-img-icon {
 	position: absolute;
-    bottom: 8px;
+    bottom: 0px;
     right: 112px;
     background: white;
     border-radius: 50%;
@@ -35,14 +35,16 @@
 	font-size: 16px;
 }
 
-.pro-thumbnail {
+
+label.img_upload {
+    background-color: #f0f0f0;
+    cursor: pointer;
+    text-align: center;
     width: 7rem;
     height: 7rem;
-    border-radius: 50%;  /* 원형 이미지 */
-    object-fit: cover;   /* 이미지 비율 유지하면서 영역에 맞게 조정 */
-    border: 2px solid #ccc; /* 테두리 추가 (선택 사항) */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 살짝 그림자 효과 */
-    transition: transform 0.2s ease-in-out; /* 부드러운 확대 효과 */
+    line-height: 7rem;
+    font-size: 1.5rem;
+    border-radius: 50%;
 }
 
 
@@ -110,59 +112,85 @@ function getMcd(val) {
 }
 
 
-/* 이미지 선택 */
-// 아이콘 클릭 시 파일 업로드 창 열기
-/* $(document).on('click', '#pet-add-img-icon', function() {
-	console.log("버튼 눌림");
-    $('#petimg').click();
-});
-
-// 파일 선택 후 미리보기 업데이트
-$(document).on('change', '#petimg', function(e) {
-	console.log("파일 선택");
-    const files = e.target.files; // 변경 이벤트에서 파일 목록 가져오기
-	console.log(files);
-    
-    if (files && files[0]) {
-    	const file = files[0];
-    	const objectURL = URL.createObjectURL(file);
-        console.log("임시 이미지 URL:", objectURL);
-        
-        console.log("pet-mainimg-div 개수:", $('.pet-mainimg-div').length);
-        
-     // 파일 로드 완료 시 실행
-        $('.pet-mainimg-div').css('display', 'inline'); // 이미지 보이기
-        $('.pet-mainimg-div').append(`<img src="${objectURL}" alt="pet-image" style="width: 7rem; height: 7rem; border-radius: 50%;"/>`);
-
-
-        // file.readAsDataURL(files[0]); // 파일 읽기
-    }
-});
- */
 /**
- * 이미지 삭제
- */
-/* document.querySelector('.pet-mainimg-div').addEventListener('click', () => {
-	console.log('썸네일 삭제');
-	$('#petimg').val('');
-    $('.pet-mainimg-div').css('display', 'none');
-}); */
+	* 첨부파일 추가
+	*/
+	
+	$(()=>{
+		$('#main_img').on('change', function(e) {
+		    const files = e.target.files; // 변경 이벤트에서 파일 목록 가져오기
+			console.log("실행");
+		    
+		    if (files && files[0]) {
+		        const reader = new FileReader();
+		        console.log("파일 실행 files ->",files);
+		        // 파일 로드 완료 시 실행
+		        reader.onload = function(event) {
+		            // 파일의 데이터 URL을 가져와 이미지 태그 생성
+		            const imgTag = `<img src="\${event.target.result}" alt="product-image" style="width: 7rem; height: 7rem; border-radius: 50%;"/>`;
+					
+		            
+		            $('.pro-label-div').css('display', 'none');
+		            $('.pro-mainimg-div').css('display', 'block');
+		            $('.pro-mainimg-div').html(imgTag);
+		            //$('.pro-mainimg-div').addClass('pro-thumbnail');
+		        };
+	
+		        reader.readAsDataURL(files[0]); // 파일 읽기
+		    }
+		});
+		
+		/**
+		 * 썸네일 이미지 삭제
+		 */
+	 	document.querySelector('.pro-mainimg-div').addEventListener('click', () => {
+			console.log('썸네일 삭제');
+			$('#main_img').val('');
+		    $('.pro-mainimg-div').css('display', 'none');
+		 	$('.pro-label-div').css('display', 'block');
+		});
+	})
 
 
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const objectURL = URL.createObjectURL(file);
-        document.querySelector('.pet-mainimg-div').innerHTML = `<img src="${objectURL}" alt="pet-image" style="width: 7rem; height: 7rem; border-radius: 50%;" />`;
-    }
+function validationCheck() {
+	let result = false;
+	
+	let img = $("#main_img").val();
+	let name = $(".input-pet-name").val();
+	let birth = $(".input-pet-birth").val();
+	let bcd = $(".input-pet-sbcd").val();
+	let mcd = $(".input-pet-smcd").val();
+	let gender1 = $(".input-pet-gender1:checked").val();
+	let gender2 = $(".input-pet-gender2:checked").val();
+	let height = $(".input-pet-height").val();
+	let weight = $(".input-pet-weight").val();
+	
+	console.log(`이미지: \${img}, 이름: \${name}, 생일: \${birth}, 대분류: \${bcd}, 중분류: \${mcd}, 성별: \${gender1}, 중성화유무: \${gender2}, 키: \${height}, 몸무게: \${weight}`);
+	
+	// 필수 입력 체크
+	if(isEmpty(img) && isEmpty(name) && isEmpty(birth) && isEmpty(bcd) && isEmpty(mcd) && 
+			isEmpty(gender1) && isEmpty(gender2) && isEmpty(height) && isEmpty(weight)) {
+		console.log("validation check 성공!");
+		if(confirm("동물 정보를 추가하시겠습니까?")) {
+			result = true;
+		} 
+		
+	} else {
+		alert("필수값을 입력하세요.");
+		result = false;
+	}
+	
+	return result;
 }
 
 
-
-
-
 // 추가하기 버튼
-
+function addPet(){
+	if(validationCheck()) {
+		document.getElementById("addPetForm").action = "/user/addPet";
+		document.getElementById("addPetForm").submit();
+	}
+}
       
 </script>
 
@@ -182,68 +210,71 @@ function previewImage(event) {
 		<!-- body contents -->
 		<div class="user-body-container" id="mypage-background">
 		
-		<form action="/admin/addPet" method="POST" enctype="multipart/form-data">
+		<form action="/admin/addPet" id="addPetForm" method="POST" enctype="multipart/form-data">
+			<input type="hidden" name="memno" value="${memno}">
 		
 			<!-- 동물 이미지 petimg -->
 		    <div class="pet-add-img" style="text-align: center;margin: 0 auto;display: flex;justify-content: center;align-items: flex-end; position: relative;">
-		        <div style="margin-top: 1rem; background-color: #D9D9D9; border-radius: 50%;width: 7rem; height: 7rem;">
-		            <div class="pet-label-div">
-		                <div id="pet-add-img-icon">
-		                    <i class="fa-solid fa-camera" style="color: var(--haru); cursor: pointer;"></i>
-		                </div>
-		                <input type="file" id="petimg" name="petimg" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="previewImage(event);">
-		            </div>
-		            <div class="pet-mainimg-div">
-		            <!-- 이미지 등록 -->
-		            </div>
-		        </div>
+				 <div style="margin-top: 1rem">
+					<div class="pro-label-div">
+						<label for="main_img" class="img_upload">
+							<div id="pet-add-img-icon">
+	                   			<i class="fa-solid fa-camera" style="color: var(--haru); font-size: 20px; margin: 2px;"></i>
+	                		</div>
+						</label>
+						<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none"> 							
+					</div>
+					<div class="pro-mainimg-div" style="display: none">
+					</div>
+				</div>
+					 
 		    </div>
 			
 			<div class="user-pet-add">
 				<!-- 이름 -->
-				<p>이름</p>
-				<input name="petname" type="text" class="input-pet-info" required>
+				<p>이름 <span class="haru-required">*</span></p>
+				<input name="petname" type="text" class="input-pet-info input-pet-name" required>
 				<!-- 생년 월일 -->
-				<p>생년월일</p>
-				<input name="petbirth" class="input-pet-info" id="datePicker" autocomplete="off" required>
+				<p>생년월일 <span class="haru-required">*</span></p>
+				<input name="petbirth" class="input-pet-info input-pet-birth" id="datePicker" autocomplete="off" required>
 				<!-- 종 -->
-				<p>종</p>
+				<p>종 <span class="haru-required">*</span></p>
 				<div style="display: flex;">
-					<select class="input-pet-info" id="species-bcd" name="petspecies_bcd" style="margin: 0 8px 0 0; width: 120px;" required>
+					<select class="input-pet-info input-pet-sbcd" id="species-bcd" name="petspecies_bcd" style="margin: 0 8px 0 0; width: 120px;" required>
 						<option disabled selected value="0">선택</option>
 						<c:forEach var="p" items="${pList }">
 							<option value="${p.bcd}">${p.species }</option>
 						</c:forEach>
 					</select>
-					<select class="input-pet-info" id="species-mcd" name="petspecies_mcd" required>
+					<select class="input-pet-info input-pet-smcd" id="species-mcd" name="petspecies_mcd" required>
 						<option disabled selected value="0">선택</option>
 					</select>
 				</div>
 				
 				<!-- 성별 -->
-				<p>성별</p>
+				<p>성별 <span class="haru-required">*</span></p>
 				<label style="margin: 0 8px 0 0;">
-					<input type="radio" name="gender1" value="female"><span>&nbsp;여자</span>
+					<input type="radio" name="gender1" value="female" class="input-pet-gender1"><span>&nbsp;여자</span>
 				</label>
 				<label>
-					<input type="radio" name="gender1" value="male"><span>&nbsp;남자</span>
+					<input type="radio" name="gender1" value="male" class="input-pet-gender1"><span>&nbsp;남자</span>
 				</label>
 				<!-- 중성화 유무 -->
-				<p>중성화 유무</p>
+				<p>중성화 유무 <span class="haru-required">*</span></p>
 				<label>
-					<input type="radio" name="gender2" value="O"><span>&nbsp;O</span>
+					<input type="radio" name="gender2" value="O" class="input-pet-gender2"><span>&nbsp;O</span>
 				</label>
 				<label>
-					<input type="radio" name="gender2" value="X"><span>&nbsp;X</span>
+					<input type="radio" name="gender2" value="X" class="input-pet-gender2"><span>&nbsp;X</span>
 				</label>
 				
-				<p>키 / 몸무게</p>
+				<p>몸길이 / 몸무게 <span class="haru-required">*</span></p>
 				<div style="display: flex;">
-					<!-- 키 -->
-					<input name="petheight" type="number" class="input-pet-info" style="margin: 0 4px 0 0; width: 80%" required>
+					<!-- 키(몸길이) -->
+					<input name="petheight" type="number" class="input-pet-info input-pet-height"  style="margin: 0 4px 0 0; width: 80%" required>
 					<p style="align-self: flex-end;">cm</p>
 					<!-- 몸무게 -->
-					<input name="petweight" type="number" class="input-pet-info" style="margin: 0 8px 0 4px; width: 80%" required>
+					<input name="petweight" type="number" step="0.01" class="input-pet-info input-pet-weight" style="margin: 0 8px 0 4px; width: 80%" required>
 					<p style="align-self: flex-end;">kg</p>				
 				</div>
 				
@@ -257,7 +288,7 @@ function previewImage(event) {
 			</div>		
 		</form>		
 		
-			<button class="user-btn-primary" >등록하기</button>
+			<button class="user-btn-primary" onclick="addPet()">등록하기</button>
 		
 		</div>
 		<!-- body contents end -->

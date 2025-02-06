@@ -15,6 +15,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <style>
+
 .menu-card {
     background-color: white; /* 배경색 */
     border-radius: 12px; /* 모서리 둥글게 */
@@ -51,7 +52,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 #mypage-background {
-	background: linear-gradient(to bottom, white 30%, rgba(208, 227, 231, 0.3) 30%);
+	background: linear-gradient(to bottom, var(--haru) 33%, white 30%);
 	height: 100vh;
 }
 
@@ -79,7 +80,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 }
 
 .pet-card {
-	background-color: #D0E3E7;
+	background-color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
     height: 150px;
 	width: 350px;
@@ -122,10 +123,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <div class="haru-user-container">
 		<!-- header -->
-		<div class="haru-user-topbar">
+		<div class="haru-user-topbar" style="
+										    border: none;
+										    color: white;
+										    background-color: var(--haru);">
 			<div class="topbar-title">
 				<!-- 뒤로가기 버튼 없어도 될 것 같은데,,,, -->
-				<i class="fa-solid fa-chevron-left" onclick="history.back()"></i> 
+				<i class="fa-solid fa-chevron-left" onclick="history.back()" style="color: white;"></i> 
 				마이페이지
 				<div style="width:30px"></div>
 			</div>

@@ -11,7 +11,7 @@ public class Pet {
 	private String petname;		// 동물 이름
 	private Date petbirth;		// 생일
 	private String petheight;	// 몸길이
-	private float petweight;	// 몸무게
+	private Double petweight;	// 몸무게
 	private String petspecial;	// 특이사항
 	private String petimg;		// 프로필이미지
 	private int ano;			// 주치의번호
@@ -31,4 +31,10 @@ public class Pet {
 	private int mcd;
 	private int scd;
 
+	// add pet
+	private String gender1;		// 성별
+	private String gender2;		// 중성화 여부
+	
+	// edit pet
+	private String fpetbirth;
 }

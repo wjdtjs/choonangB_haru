@@ -105,6 +105,37 @@ public class UserPetDaoImp implements UserPetDao {
 		
 		return wList;
 	}
+	// 몸무게 > 동물 몸무게 불러오기 (페이지네이션)
+	@Override
+	public List<Weight> getPetWeightList(int petno, int startRow, int endRow) {
+		List<Weight> wList = new ArrayList<>();
+		
+		Map<String, Object> wMap = new HashMap<>();
+		wMap.put("petno", petno);
+		wMap.put("startRow", startRow);
+		wMap.put("endRow", endRow);
+		
+		try {
+			wList = session.selectList("HR_getPetWeightList_pn", wMap);
+		} catch (Exception e) {
+			log.error("getPetWeightList() error ->", e);
+		}
+		
+		return wList;
+	}
+	// 몸무게 수 불러오기
+	@Override
+	public int getWeightCnt(int petno) {
+		int totalCnt = 0;
+		try {
+			totalCnt = session.selectOne("HR_selectWeightCnt", petno);
+		} catch (Exception e) {
+			log.error("getWeightCnt() query error -> ", e);
+		}
+		
+		return totalCnt;
+	}
+
 
 	// 동물페이지 > 예약 정보 불러오기
 	@Override
@@ -139,4 +170,73 @@ public class UserPetDaoImp implements UserPetDao {
 		
 		return result;
 	}
+
+	// 동물 추가
+	@Override
+	public void addPet(Pet pet) {
+		System.out.println("UserPetDaoImp deletePet start ,,,");
+		System.out.println("UserPetDaoImp deletePet pet ->"+pet);
+		
+		try {
+			session.insert("HR_AddPet", pet);			// pet 테이블에 데이터 추가
+			session.insert("HR_AddPetWeight", pet);		// petweight 따로 weight 테이블에 추가
+		} catch (Exception e) {
+			log.error("addPet() error ->", e);
+		}
+	}
+
+	// 동물 수정
+	@Override
+	public void updatePet(Pet pet, boolean img_change) {
+		System.out.println("UserPetDaoImp updatePet start ,,,");
+		System.out.println("UserPetDaoImp updatePet pet ->"+pet);
+		System.out.println("UserPetDaoImp updatePet img_change ->"+img_change);
+		
+		Map<String, Object> uMap = new HashMap<>();
+		uMap.put("pet", pet);
+		uMap.put("ic", img_change);
+		
+		try {
+			session.update("HR_updatePet", uMap);
+			session.insert("HR_UpdatePetWeight", pet);
+		} catch (Exception e) {
+			log.error("addPet() error ->", e);
+		}
+
+	}
+
+	// 동물 몸무게 수정(추가)
+	@Override
+	public void updateWeight(Weight weight) {
+		System.out.println("UserPetDaoImp updateWeight start ,,,");
+		System.out.println("UserPetDaoImp updateWeight weight ->"+weight);
+		
+		try {
+			session.insert("HR_insertWeight", weight);
+			session.update("HR_updateWeight", weight);
+		} catch (Exception e) {
+			log.error("addPet() error ->", e);
+		}
+	}
+
+	// 몸무게 totalCnt
+	@Override
+	public int getWeightCnt(int petno, int startRow, int endRow) {
+		int totalCnt = 0;
+		
+		Map<String, Object> wMap = new HashMap<>();
+		wMap.put("petno", petno);
+		wMap.put("startRow", startRow);
+		wMap.put("endRow", endRow);
+		
+		try {
+			totalCnt = session.selectOne("HR_selectWeightCnt_pn", wMap);
+		} catch (Exception e) {
+			log.error("getWeightCnt() error ->", e);
+		}
+		return totalCnt;
+	}
+
+
+
 }

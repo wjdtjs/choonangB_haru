@@ -62,7 +62,7 @@ public class UserPetServiceImp implements UserPetService {
 		return pet;
 	}
 
-	// 동물페이지 > 몸무게 불러오기
+	// 동물페이지 > 몸무게 불러오기 
 	@Override
 	public List<Weight> getPetWeightList(int petno) {
 		System.out.println("UserPetServiceImp getPetWeightList() start ,,,");
@@ -72,6 +72,7 @@ public class UserPetServiceImp implements UserPetService {
 		
 		return wList;
 	}
+	
 
 	// 동물페이지 > 예약정보 불러오기
 	@Override
@@ -94,5 +95,50 @@ public class UserPetServiceImp implements UserPetService {
 		
 		return result;
 	}
+
+	// 동물 추가하기
+	@Override
+	public void addPet(Pet pet) {
+		System.out.println("UserPetServiceImp deletePet() start ,,,");
+		System.out.println("UserPetServiceImp deletePet() pet ->"+pet);
+		
+		pd.addPet(pet);
+	}
+
+	// 동물 수정하기
+	@Override
+	public void updatePet(Pet pet, boolean img_change) {
+		System.out.println("UserPetServiceImp addPet() start ,,,");
+		pd.updatePet(pet, img_change);
+	}
+
+	// 동물 몸무게 수정(weight DB에 추가)
+	@Override
+	public void updateWeight(Weight weight) {
+		System.out.println("UserPetServiceImp updateWeight() start ,,,");
+		System.out.println("UserPetServiceImp updateWeight() weight ->"+weight);
+		
+		pd.updateWeight(weight);
+	}
+
+	// 몸무게 > 전체 몸무게 리스트 수
+	@Override
+	public int getWeightCnt(int petno) {
+		int totalCnt = pd.getWeightCnt(petno);
+		return totalCnt;
+	}
+
+	// 몸무게 > 몸무게 불러오기 (페이지네이션)
+	@Override
+	public List<Weight> getPetWeightList(int petno, int startRow, int endRow) {
+		System.out.println("UserPetServiceImp getPetWeightList() start ,,,");
+		System.out.println("UserPetServiceImp getPetWeightList() petno ->"+petno);
+		
+		List<Weight> wList = pd.getPetWeightList(petno, startRow, endRow);
+		
+		return wList;
+	}
 	
+	
+
 }
