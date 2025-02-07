@@ -22,9 +22,12 @@ public class Schedule {
 	// admin Join
 	private String aname;
 	
-
+	// 정기휴무
 	private Date newoff;			// 변경된 휴무일
-	
 	private List<String> persoffdays; // 휴무일 리스트
+	
+	// 
+	private String offday1;
+	private String offday2;
 	
 }

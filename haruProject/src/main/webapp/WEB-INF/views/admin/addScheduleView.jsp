@@ -43,6 +43,7 @@ td > button {
 }
 
 .form-input{
+	width: 90%;
 	height: 35px;
 	border: 1.5px solid var(--haru);
 	border-radius: 10px;
@@ -87,7 +88,10 @@ em {
                     <form action="/admin/addSchedule" method="post" name="frm" id="add_schedule" >
 				       <table class="inputTable">
 			        	<colgroup>
-			        		
+			        		<col width="15%">
+			        		<col width="35%">
+			        		<col width="15%">
+			        		<col width="35%">
 			        	</colgroup>
 				        <tr>
 				        	<th>구분<em>*</em></th>		<td><select class="form-input sub-schetype-mcd-select" name="schtype_mcd">
@@ -98,16 +102,22 @@ em {
 				        	<th>휴무날짜<em>*</em></th>	<td><input class="form-input" type="date" name="offday1" required="required"></td>
 				        
 				        </tr>
-	                    <tr >
-				        	<th class="add-input-aname" style="opacity: 0">사원이름<em>*</em></th>
-				        	<td class="add-input-aname" style="opacity: 0"><input class="form-input" type="text" name="aname" required="required"></td>
+	                    <tr>
+				        	<th class="add-input-aname" style="opacity: 0">의사이름<em>*</em></th>
+				        	<td class="add-input-aname" style="opacity: 0">
+				        		<input class="form-input search-aname-input" type="text" name="aname">
+				        		
+				        	</td>
 				        	<th></th>
 				        	<td class="add-input-offday" style="opacity: 0">
-				        								<input class="form-input" type="date" name="offday1" required="required">
+				        								<input class="form-input" type="date" name="offday2" >
 			        		</td>
 				        </tr>
 	                    <tr>
-			        		<th></th>				
+			        		<th></th>
+			        		<td>
+			        			<select class="form-input search-aname-result" name="ano"  style="display:none"></select>
+			        		</td>			
 			        	</tr>			        
 				      
 			        
@@ -148,18 +158,78 @@ em {
 <script type="text/javascript">
  $(document).on('change','.sub-schetype-mcd-select',function(){
 	 const schtype = $(this).val();
-	 if(schtype == 100){
-		 $('.add-input-offday').css('opacity','0').prop('disabled', true);
-		 $('.add-input-aname').css('opacity','0').prop('disabled', true);
-	 }else if(schtype == 200){
-		 $('.add-input-offday').css('opacity','100');
-		 $('.add-input-aname').css('opacity','100');
-	 }else if(schtype == 300){
-		 $('.add-input-offday').css('opacity','0').prop('disabled', true);
-		 $('.add-input-aname').css('opacity','100');
+	 
+	 const $offdayInput = $('.add-input-offday input[name="offday2"]');
+	 const $anameInput = $('.add-input-aname input[name="aname"]');
+
+	 if (schtype == 100) {
+	     $('.add-input-offday, .add-input-aname').css('opacity', '0').prop('disabled', true);
+	     $offdayInput.removeAttr('required');
+	     $anameInput.removeAttr('required');
+	 } else if (schtype == 200) {
+	     $('.add-input-offday, .add-input-aname').css('opacity', '1').prop('disabled', false);
+	     $offdayInput.attr('required', 'required');
+	     $anameInput.attr('required', 'required');
+	 } else if (schtype == 300) {
+	     $('.add-input-offday').css('opacity', '0').prop('disabled', true);
+	     $('.add-input-aname').css('opacity', '1').prop('disabled', false);
+	     $offdayInput.removeAttr('required');
+	     $anameInput.attr('required', 'required');
 	 }
- })
+ });
  
- $(document).on('',)
+ // 사원명 검색
+ $(document).on('keydown','.search-aname-input',function(event){
+	 if(event.keyCode === 13){
+		 event.preventDefault(); // 기본 엔터 동작(폼 제출) 방지
+		 
+		 const keyword = $('.search-aname-input').val().trim();
+		 console.log('keyword: '+keyword);
+		 
+		 const dropAname = document.querySelector(".search-aname-result");
+
+	    
+		$.ajax({
+			 url: '<%=request.getContextPath()%>/api/searchAname',
+			 type: 'Get',
+			 data: {
+				 keyword: keyword
+			 },
+			 dataType: 'json',
+			 success: function(response) {
+				 console.log('response->'+response);
+				 console.log('response.length ->'+response.length);
+				 console.log('response-> '+ JSON.stringify(response));
+				 
+				 if (response.length > 0) {
+			    	 dropAname.style.display = "block";
+			     }else {
+			    	 dropAname.style.display = "none";
+			    	 alert('사원정보가 없습니다. 다시 입력해주세요.');
+			    	 return;
+			     }
+				 
+			 	 let str = '<option value="" selected disabled>사원선택</option>';
+			 	 
+			 	$(response).each(function(index, item) {
+			 		str += `<option value="\${item.ANO}">\${item.ANAME} (\${item.ANO})</option>`;
+			 	 })
+
+			 	 $('.search-aname-result').html(str);
+			 },
+			 error: function(xhr, status, error) {
+		            console.error("사원 이름 데이터를 가져오는 중 오류 발생:", error);
+		        }
+		 }) 
+	 }
+ });
+  $(document).on('change','.search-aname-result',function(){
+	  const selectedMem = $(this).find('option:selected').text();;
+	  $('.search-aname-input').val(selectedMem);
+	  $('.search-aname-result').css('display','none');
+	  
+	  
+	  
+ }) 
 </script>
 </html>

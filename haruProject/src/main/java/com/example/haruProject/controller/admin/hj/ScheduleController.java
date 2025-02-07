@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.ScheRegularOff;
 import com.example.haruProject.dto.Schedule;
@@ -28,7 +29,7 @@ public class ScheduleController {
 	private final ScheduleService ss;
 	
 	@ResponseBody
-	@GetMapping(value = "/admin/api/getSchedule")
+	@GetMapping(value = "/api/getSchedule")
 	public Map<String, Object> getSchedule(
 											@RequestParam(value = "formattedDate", required = false) String current,
 											@RequestParam(value = "formattedDateStart", required = false) String currentStart,
@@ -82,6 +83,16 @@ public class ScheduleController {
 		System.out.println("ScheduleController addSchedule");
 		System.out.println("ScheduleController addSchedule schedule->"+schedule);
 		
+		int result = ss.insertSchedule(schedule);
+		
 		return "admin/schedule";
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/api/searchAname")
+	public List<Admin> searchAname( @RequestParam("keyword") String keyword){
+		List<Admin> adminList = ss.searchAdmin(keyword);
+		
+		return adminList;
 	}
 }

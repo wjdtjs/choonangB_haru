@@ -42,13 +42,27 @@
 	.fc-day-sun a{
 	    color : red;
 	    font-size: 14px;
-	}
-	
+	} 
 	.fc-day-sat .fc-col-header-cell-cushion,
 	.fc-day-sat a {
 	    color : blue;
 	    font-size: 14px;
 	}
+	
+	.fc-day-sun a >.fc-event-title,
+	.fc-day-mon a >.fc-event-title,
+	.fc-day-tue a >.fc-event-title,
+	.fc-day-wed a >.fc-event-title,
+	.fc-day-thu a >.fc-event-title,
+	.fc-day-fri a >.fc-event-title,
+	.fc-day-sat a >.fc-event-title
+	{
+		color : #254d64;
+	    font-size: 14px;
+	    font-weight: 500;
+	}
+	
+	
 	.fc-event-time{
 		display: none;
 	}
@@ -96,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	        console.log("formattedDate - >"+formattedDate);
 	        console.log("formattedDateEnd - >"+formattedDateEnd);
 	        $.ajax({
-	        	url: '<%=request.getContextPath()%>/admin/api/getSchedule',
+	        	url: '<%=request.getContextPath()%>/api/getSchedule',
 	            type: 'GET',
 	            data: {
 	            	formattedDate: formattedDate,

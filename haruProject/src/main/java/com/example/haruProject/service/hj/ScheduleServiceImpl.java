@@ -2,10 +2,12 @@ package com.example.haruProject.service.hj;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.hj.ScheduleDao;
+import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.ScheRegularOff;
 import com.example.haruProject.dto.Schedule;
@@ -46,6 +48,18 @@ public class ScheduleServiceImpl implements ScheduleService{
 	public List<String> getDocOffdays(Schedule schedule, String currentEnd) {
 		List<String> offdays = sd.getDocOffdays(schedule, currentEnd);
 		return offdays;
+	}
+
+	@Override
+	public List<Admin> searchAdmin(String keyword) {
+		List<Admin> adminList = sd.searchAdmin(keyword);
+		return adminList;
+	}
+
+	@Override
+	public int insertSchedule(Schedule schedule) {
+		int result = sd.insertSchedule(schedule);
+		return 0;
 	}
 
 

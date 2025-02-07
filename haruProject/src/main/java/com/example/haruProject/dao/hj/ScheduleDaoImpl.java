@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.ScheRegularOff;
 import com.example.haruProject.dto.Schedule;
@@ -102,6 +103,33 @@ public class ScheduleDaoImpl implements ScheduleDao {
 			System.out.println("ScheduleDao getDocOffdays() Error-> "+e.getMessage());
 		}
 		return offdays;
+	}
+
+	@Override
+	public List<Admin> searchAdmin(String keyword) {
+		List<Admin> adminList = null;
+		System.out.println("ScheduleDao searchAdmin keyword->"+keyword);
+		try {
+			adminList = session.selectList("HJSearchAdminList", keyword);
+			System.out.println("ScheduleDao searchAdmin adminList->"+adminList);
+		} catch (Exception e) {
+			System.out.println("ScheduleDao searchAdmin Error ->"+e.getMessage());
+		}
+		return adminList;
+	}
+
+	@Override
+	public int insertSchedule(Schedule schedule) {
+		System.out.println("ScheduleDao insertSchedule schedule ->"+schedule);
+		int result = 0;
+		try {
+			result = session.insert("GJInsertSchedule",schedule);
+			System.out.println("ScheduleDao insertSchedule result ->"+result);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("ScheduleDao insertSchedule Error ->"+e.getMessage());
+		}
+		return 0;
 	}
 
 }
