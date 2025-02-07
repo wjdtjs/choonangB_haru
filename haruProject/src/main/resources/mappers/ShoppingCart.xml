@@ -4,7 +4,16 @@
 
 <mapper namespace="com.example.haruProject.ShoppingCartMapper">
 	<select id="HR_getshoppingCartList" parameterType="int" resultType="ShoppingCart">
-		SELECT s.memno, s.squantity, p.pno, p.pname, p.pprice, p.pimg_main, p.pbrand, p.pquantity, p.pstatus_mcd
+		SELECT 
+			s.memno, 
+			s.squantity, 
+			p.pno, 
+			p.pname, 
+			p.pprice, 
+			p.pimg_main, 
+			p.pbrand, 
+			p.pquantity, 
+			p.pstatus_mcd
 		FROM shopping_cart s
 		    JOIN product p ON s.pno = p.pno
 		WHERE memno = #{memno}
@@ -34,5 +43,27 @@
 		)
 	</insert>
 	
+	<!-- 장바구니 수량 변경에 따른 DB update -->
+	<update id="HR_updateSquantity" parameterType="Map">
+		UPDATE SHOPPING_CART
+		SET SQUANTITY = #{squantity}
+		WHERE MEMNO = #{memno} AND PNO = #{pno}
+	</update>
 	
+	<!-- 장바구니 품목 삭제 -->
+	<delete id="HR_deleteShoppingProduct" parameterType="Map">
+		DELETE FROM SHOPPING_CART
+		WHERE PNO = #{pno} AND MEMNO = #{memno}
+	</delete>
+	
+	<!-- 선택된 주문 상품 정보 불러오기 -->
+	<select id="HR_getOrderList" parameterType="Map" resultType="ShoppingCart">
+		SELECT p.pbrand, p.pname, p.pprice, s.squantity, p.pimg_main, p.pno
+		FROM PRODUCT p
+		    JOIN SHOPPING_CART s ON p.pno = s.pno
+		WHERE s.memno = #{memno}
+			AND s.pno IN <foreach collection="pnoList" item="pno" open="(" separator="," close=")">
+					        #{pno}
+					    </foreach>
+	</select>
 </mapper>

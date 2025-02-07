@@ -30,7 +30,7 @@ public class UserPetDaoImp implements UserPetDao {
 		List<Pet> pList = new ArrayList<>();
 		
 		try {
-			pList = session.selectList("HR_getPetList",1);
+			pList = session.selectList("HR_getPetList",memno);
 			System.out.println("UserPetDaoImp getPetList() pList ->"+pList);
 		} catch (Exception e) {
 			log.error("getPetList() error ->", e);

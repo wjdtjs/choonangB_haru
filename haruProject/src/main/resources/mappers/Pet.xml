@@ -40,7 +40,8 @@
 	<select id="HR_getPetSpeciesMcd" parameterType="int" resultType="Pet">
 		SELECT c.bcd, c.mcd, c.content as species
 		FROM common c
-		WHERE c.bcd = #{bcd}
+		WHERE c.bcd = #{bcd} and c.mcd != 999
+		ORDER BY species
 	</select>
 	
 	<!-- 동물 상세 페이지 -->

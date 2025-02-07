@@ -101,7 +101,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 .add-pet {
-	background-color: #D0E3E7;
+	background-color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
     height: 150px;
 	width: 350px;

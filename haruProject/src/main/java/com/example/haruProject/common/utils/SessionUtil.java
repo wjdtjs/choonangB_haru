@@ -1,6 +1,10 @@
 package com.example.haruProject.common.utils;
 
 import java.util.Map;
+import java.util.Objects;
+
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -51,6 +55,20 @@ public class SessionUtil {
     public static int getRole(HttpServletRequest request){
     	HttpSession session = request.getSession(true);
     	return (int) session.getAttribute("role");
+    }
+    
+    
+    // 카카오페이
+    public static void addAttribute(String name, Object value) {
+        Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).setAttribute(name, value, RequestAttributes.SCOPE_SESSION);
+    }
+
+    public static String getStringAttributeValue(String name) {
+        return String.valueOf(getAttribute(name));
+    }
+
+    public static Object getAttribute(String name) {
+        return Objects.requireNonNull(RequestContextHolder.getRequestAttributes()).getAttribute(name, RequestAttributes.SCOPE_SESSION);
     }
     
     

@@ -553,7 +553,7 @@ body > .haru-user-container {
 .user-btn-primary {
 	position: fixed;
 	bottom: 88px;
-	width: 90%;
+	width: 350px;
 	height: 44px;
 	background-color: var(--haru);
 	border: none;

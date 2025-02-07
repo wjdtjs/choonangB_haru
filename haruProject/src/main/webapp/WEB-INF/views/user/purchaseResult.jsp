@@ -13,10 +13,8 @@
 <div class="haru-user-container">
 		<!-- header -->
 		<div class="haru-user-topbar">
-			<div class="topbar-title">
-				<i class="fa-solid fa-chevron-left" onclick="history.back()"></i> 
+			<div class="topbar-title" style="justify-content: center !important;">
 				주문 완료
-				<div style="width:30px"></div>
 			</div>
 		</div>	
 		
@@ -33,7 +31,7 @@
 				
 		
 			<div>
-				<button class="user-btn-primary" onclick="">주문 내역 확인</button>
+				<button class="user-btn-primary" onclick="location.href='/user/purchaseHistory'">주문 내역 확인</button>
 			</div>
 		 
 		</div>
