@@ -90,12 +90,26 @@
 			b.BOARD_TYPE_MCD,
 			c.CONTENT content,
 			b.MEMNO,
-			mask_email(m.MEMAIL) memail
-		FROM BOARD b JOIN COMMON c
+			mask_email(m.MEMAIL) memail,
+			a.ANAME as aname, <!-- 담당의 이름 -->
+			c2.CONTENT as bcd_content, <!-- 진료항목 bcd -->
+			c3.CONTENT as mcd_content <!-- 진료항목 mcd -->
+		FROM BOARD b 
+		JOIN COMMON c
 			ON b.BOARD_TYPE_BCD = c.BCD
 			AND	b.BOARD_TYPE_MCD = c.MCD
 		JOIN MEMBER m
 			ON b.MEMNO = m.MEMNO
+		JOIN APPOINTMENT ap
+			ON b.RESNO = ap.RESNO
+		JOIN ADMIN a
+			ON ap.ANO = a.ANO
+		JOIN MEDICAL_ITEM mi
+			ON ap.MCODE = mi.MCODE
+		INNER JOIN COMMON c2
+			ON mi.MTITLE_BCD = c2.BCD AND c2.MCD = 999
+		INNER JOIN COMMON c3
+			ON mi.MTITLE_MCD = c3.MCD AND mi.MTITLE_BCD = c3.BCD
 		WHERE BNO = #{bno}
 	</select>
 	

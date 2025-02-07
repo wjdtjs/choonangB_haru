@@ -7,7 +7,7 @@
 		<!-- 1. 쇼핑 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-cart-shopping"></i></span>
 	</a>
-	<a class="menu-icon" id="reservation">
+	<a class="menu-icon" id="reservation" href="/user/appointment">
 		<!-- 2. 예약 아이콘 -->
 		<span style="color:#6F7173"><i class="fa-solid fa-calendar-check"></i></span>
 	</a>

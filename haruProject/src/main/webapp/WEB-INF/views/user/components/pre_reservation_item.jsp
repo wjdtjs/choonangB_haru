@@ -38,6 +38,10 @@
 }
 .res-item {
 	font-size: 14px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
 }
 .res-re {
 	margin-top: 8px;
@@ -108,15 +112,18 @@
 				${res.petname }
 			</div>
 			<div class="res-item"> 
-				<span style="font-weight: 600; 
-					<c:choose>
-						<c:when test="${res.mtitle_bcd eq 110 }">color: var(--haru)</c:when>
-						<c:when test="${res.mtitle_bcd eq 120 }">color: #F18D7E</c:when>
-						<c:when test="${res.mtitle_bcd eq 130 }">color: var(--haru)</c:when>
-						<c:when test="${res.mtitle_bcd eq 140 }">color: var(--haru)</c:when>
-					</c:choose>
+				<span>
+					<span style="font-weight: 600; 
+						<c:choose>
+							<c:when test="${res.mtitle_bcd eq 110 }">color: var(--haru)</c:when>
+							<c:when test="${res.mtitle_bcd eq 120 }">color: #F18D7E</c:when>
+							<c:when test="${res.mtitle_bcd eq 130 }">color: var(--haru)</c:when>
+							<c:when test="${res.mtitle_bcd eq 140 }">color: var(--haru)</c:when>
+						</c:choose>
 					"
 					>${res.item_bcd }</span>&nbsp;-&nbsp;${res.item }
+				</span>
+				<span>${res.aname } 선생님</span>
 			</div>
 		</div>
 	</div>

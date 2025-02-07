@@ -2,6 +2,8 @@ package com.example.haruProject.controller.admin.hr;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -123,12 +125,25 @@ public class AppointmentController {
 	// 예약 불가능 날짜 불러오기
 	@ResponseBody
 	@GetMapping("/api/disabled-dates")
-	public List<Schedule> getDisabledDates(@RequestParam(value = "ano", required = true) int ano) {
+	public List<Schedule> getDisabledDates(@RequestParam(value = "ano", required = true) int ano,
+										@RequestParam(value="month", required = false) int month) 
+	{
 		System.out.println("AppointmentController getDisabledDates() start ,,,");
 		System.out.println("AppointmentController getDisabledDates() ano ->"+ano);
 		
-		List<Schedule> sList = as.getDisabledDatesList(ano);
-		
+		//TODO: 이번달 것만 가지고오기
+		List<Schedule> sList = as.getDisabledDatesList(ano, month);
+
+		Date today = new Date();
+		int today_date = today.getDate();
+		for (int day = 1; day < today_date; day++) {
+			Schedule prevToday = new Schedule();
+			Date dd = new Date(today.getYear(), today.getMonth(), day);
+
+			prevToday.setSchdate(dd);
+			sList.add(prevToday);
+        }
+        
 		return sList;
 	}
 	

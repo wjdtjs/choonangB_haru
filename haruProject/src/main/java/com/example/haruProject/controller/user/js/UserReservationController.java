@@ -9,12 +9,16 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.Appointment;
+import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.Pet;
+import com.example.haruProject.dto.Schedule;
+import com.example.haruProject.service.hr.AppointmentService;
 import com.example.haruProject.service.js.ReservationService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserReservationController {
 	
 	private final ReservationService rs;
+	private final AppointmentService as;
 	
 	/**
 	 * 예약내역 리스트 조회
@@ -96,5 +101,90 @@ public class UserReservationController {
 		model.addAttribute("past", past_list);
 		
 		return "user/reservation";
+	}
+	
+	
+	/**
+	 * 예약 
+	 * step1 : 동물, 예약 항목 선택 페이지
+	 * @param appointment
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@GetMapping("/user/appointment")
+	public String appointmentStep1View(Appointment appointment, Model model, HttpServletRequest request) {
+		log.info("appointmentStep1 start..");
+		int memno = SessionUtil.getNo(request);
+		
+		//예약 항목 가져오기 (bcd)
+		List<Common> bcdList = new ArrayList<>();
+		bcdList = rs.getBCDList();
+		System.out.println("예약항목=== "+bcdList);
+		
+		//동물 정보 가져오기
+		List<Pet> petList = new ArrayList<>();
+		petList = rs.getPetList(memno);
+		
+		model.addAttribute("bcd", bcdList);
+		model.addAttribute("pet", petList);
+		
+		return "user/appointment";
+	}
+	
+	
+	/**
+	 * 예약
+	 * step2 : 선생님, 날짜, 시간 선택 페이지
+	 * @param bcd
+	 * @param mcd
+	 * @param memo
+	 * @param pet
+	 * @return
+	 */
+	@PostMapping("/user/appointmentStep1")
+	public String appointmentStep2View(@RequestParam(value = "apt_bcd") String bcd,
+									@RequestParam(value = "apt_mcd") String mcd,
+									@RequestParam(value = "memo", required = false) String memo,
+									Pet pet, Model model, HttpServletRequest request) 
+	{
+		log.info("appointmentStep2View() start..");
+		
+		System.out.println("appointmentStep2View() bcd -> "+bcd);
+		System.out.println("appointmentStep2View() mcd -> "+mcd);
+		System.out.println("appointmentStep2View() memo -> "+memo);
+		System.out.println("appointmentStep2View() pet -> "+pet);
+		
+		String name = SessionUtil.getName(request);
+		
+		List<Map<String, Object>> docList = new ArrayList<>(); 	//의사 정보
+		List<List<Schedule>> dayOffList = new ArrayList<>();	//의사 휴무 정보
+		List<Schedule> docDayOffList = new ArrayList<>();		//
+		
+		docList = as.getDocList();
+		
+		for(Map<String, Object> d : docList) {
+			docDayOffList = rs.getDayOffSchedule(d);	
+			dayOffList.add(docDayOffList);
+		}
+		System.out.println("appointmentStep2View() doctorList -> "+docList);
+		System.out.println("appointmentStep2View() dayOffList -> "+dayOffList);
+		
+		Map<String, Object> am = new HashMap<>();
+		
+		am.put("name", name);
+		am.put("bcd_cont", bcd);
+		am.put("mcd_cont", mcd);
+		am.put("bcd", pet.getBcd());
+		am.put("mcd", pet.getMcd());
+		am.put("memo", memo);
+		am.put("petname", pet.getPetname());
+		am.put("petno", pet.getPetno());
+		am.put("ano", pet.getAno());
+		am.put("doctor", docList);
+		
+		model.addAttribute("apt", am);
+		model.addAttribute("dayoff", dayOffList);
+		return "user/appointment2";
 	}
 }

@@ -40,4 +40,8 @@ public class Board {
 	private String otitle; 		// 해당 댓글이 달린 원글의 제목
 	
 	private int [] imgno;	// 후기 - 삭제할 이미지 번호
+	
+	private String aname; 		//담당의 이름
+	private String bcd_content; //진료항목 대분류
+	private String mcd_content; //진료항목 중분류
 }

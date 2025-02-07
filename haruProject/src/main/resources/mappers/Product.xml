@@ -120,7 +120,7 @@
 	
 	<!-- 쇼핑카트에 담아둔 상품 수 조회 -->
 	<select id="JS_SelectCartCount" parameterType="int" resultType="int">
-		SELECT SUM(SQUANTITY) FROM SHOPPING_CART WHERE MEMNO = #{memno}
+		SELECT NVL(SUM(SQUANTITY), 0) FROM SHOPPING_CART WHERE MEMNO = #{memno}
 	</select>
 	
 	<select id="JS_ProductReviesCount" parameterType="int" resultType="int">

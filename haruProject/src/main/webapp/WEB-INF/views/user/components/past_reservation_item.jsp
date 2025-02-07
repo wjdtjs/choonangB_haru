@@ -38,6 +38,10 @@
 }
 .res-item {
 	font-size: 14px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
 }
 .res-re {
 	margin-top: 8px;
@@ -107,7 +111,7 @@
 				<img src="${res.petimg }" style="width:40px; height: 40px; border-radius: 50%; margin-right: 10px">
 				${res.petname }
 			</div>
-			<div class="res-item">${res.item_bcd }&nbsp;-&nbsp;${res.item }</div>
+			<div class="res-item"><span>${res.item_bcd }&nbsp;-&nbsp;${res.item }</span><span>${res.aname } 선생님</span></div>
 		</div>
 		<i class="fa-solid fa-chevron-right page-btn" style="transform: rotate(90deg);"></i> 
 	</div>

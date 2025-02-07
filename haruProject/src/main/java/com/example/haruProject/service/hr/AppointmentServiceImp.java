@@ -107,12 +107,12 @@ public class AppointmentServiceImp implements AppointmentService {
 	}
 	// 선택한 담당의에 따른 선택 불가능 날짜 불러오기
 	@Override
-	public List<Schedule> getDisabledDatesList(int ano) {
+	public List<Schedule> getDisabledDatesList(int ano, int month) {
 		System.out.println("AppointmentServiceImp getDisabledDatesList() start ,,,");
 		System.out.println("AppointmentServiceImp getDisabledDatesList() ano ->"+ano);
 		
 		List<Schedule> sList = new ArrayList<>();
-		sList = ad.getDisabledDatesList(ano);
+		sList = ad.getDisabledDatesList(ano, month);
 		
 		return sList;
 	}

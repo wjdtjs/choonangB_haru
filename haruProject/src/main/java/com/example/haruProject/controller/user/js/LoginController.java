@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.Base64;
 import java.util.HashMap;
@@ -56,10 +57,7 @@ public class LoginController {
 	private final PasswordEncoder passwordEncoder;
 	
 	@Value("${kakao.client.id}")
-    String clientId;
-    @Value("${kakao.redirect.uri}")
-    String redirectUri;
-	
+    String clientId;	
 	
 	/**
 	 * 카카오 로그인 redirect url
@@ -75,6 +73,8 @@ public class LoginController {
          try {
              URL url = new URL(reqURL);
              HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+             String redirectUri = "http://"+InetAddress.getLocalHost().getHostAddress()+":8399/oauth/api/kakao";
+             System.out.println(redirectUri);
 
              //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
              conn.setRequestMethod("POST");
@@ -132,7 +132,7 @@ public class LoginController {
              Map<String, Object> mem_info = new HashMap<>();
              mem_info.put("no", memno);
 			 mem_info.put("name", member.getMname());
-			 mem_info.put("email", member.getMemno());
+			 mem_info.put("email", member.getMemail());
 			 mem_info.put("type", "G");
 				
 			 SessionUtil.login(request, mem_info);

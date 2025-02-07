@@ -154,14 +154,18 @@ public class AppointmentDaoImp implements AppointmentDao {
 	}
 	// 진료 불가 날짜 불러오기
 	@Override
-	public List<Schedule> getDisabledDatesList(int ano) {
+	public List<Schedule> getDisabledDatesList(int ano, int month) {
 		System.out.println("AppointmentDaoImp getDisabledDatesList() start ,,, ");
 		System.out.println("AppointmentDaoImp getDisabledDatesList() ano ->"+ano);
+		
+		Map<String, Object> pMap = new HashMap<>();
+		pMap.put("ano", ano);
+		pMap.put("month", month);
 		
 		List<Schedule> sList = new ArrayList<>();
 		
 		try {
-			sList = session.selectList("HR_SelectDisabledDatesList", ano);
+			sList = session.selectList("HR_SelectDisabledDatesList", pMap);
 		} catch (Exception e) {
 			log.error("getDisabledDatesList() error ->", e);
 		}

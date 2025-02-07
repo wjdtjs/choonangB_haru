@@ -24,7 +24,7 @@ public interface AppointmentService {
 	List<Map<String, Object>> getBCDList();
 	List<Map<String, Object>> getMCDList(int bcd);
 	List<Map<String, Object>> getDocList();
-	List<Schedule> getDisabledDatesList(int ano);
+	List<Schedule> getDisabledDatesList(int ano, int month);
 	List<Map<String, Object>> getMnameList(String search1);
 	List<Map<String, Object>> getPetnameList(int memno);
 	List<Appointment> getDisabledTimesList(String rdate, int ano);

@@ -125,12 +125,13 @@
 		WHERE  alevel_mcd = 200 AND astatus_mcd = 100
 	</select>
 	<!-- 진료 불가능 날짜 불러오기 -->
-	<select id="HR_SelectDisabledDatesList" parameterType="int" resultType="Schedule">
+	<select id="HR_SelectDisabledDatesList" parameterType="Map" resultType="Schedule">
 		SELECT SCHDATE, SCHTYPE_MCD, ANO
 		FROM SCHEDULE
 		WHERE SCHTYPE_MCD = 100 
 		    OR (SCHTYPE_MCD = 200 AND ANO = #{ano})
 		    OR (SCHTYPE_MCD = 300 AND ANO = #{ano})
+<!-- 		    AND TRUNC(SCHDATE, 'MM') = TRUNC(#{month}, 'MM') -->
 	</select>
 	<!-- 선택한 날짜에 따른 예약 불가능 시간 불러오기 -->
 	<select id="HR_SelectDisabledTimesList" parameterType="Map" resultType="Appointment">

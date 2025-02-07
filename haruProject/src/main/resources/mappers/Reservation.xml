@@ -54,4 +54,25 @@
 		WHERE rn BETWEEN #{page.startRow} AND #{page.endRow} 
 	</select>
 
+	<!-- 진료항목 공통코드 (수술 제외)
+		(bcd = 120 : 수술) -->
+	<select id="JS_SelectConsultationBcdList" resultType="Common">
+		SELECT BCD, MCD, CONTENT
+		FROM COMMON
+		WHERE SCD = 100 AND MCD = 999 AND BCD != 120
+	</select>
+	
+	<!-- 의사 정기 휴무 - 최근 2건
+		(schtype_mcd = 200 : 의사정기휴무) -->
+	<select id="JS_SelectDoctorDayOff" parameterType="Map" resultType="Schedule">
+	    SELECT ROWNUM, aa.*
+	    FROM (
+	        SELECT SCHNO, SCHDATE, REG_DATE, ANO
+	        FROM SCHEDULE S 
+      			WHERE S.ANO = #{ANO} AND S.SCHTYPE_MCD = 200
+			ORDER BY S.SCHDATE desc
+	    )aa
+        WHERE ROWNUM BETWEEN 1 AND 2
+	</select>
+
 </mapper>

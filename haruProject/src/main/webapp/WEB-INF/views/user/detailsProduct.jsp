@@ -42,7 +42,7 @@
 				
 				<!-- 품절이면 수량변경 안보이게 -->
 				<c:if test="${product.pquantity ne 0 }">
-					<form class="product-shop-quantity" id="productForm" method="post">
+					<form class="product-shop-quantity" id="productForm" method="post" onsubmit="return validateForm()">
 						<input type="hidden" value="${product.pno }" name="pno">
 						<div><fmt:formatNumber value="${product.pprice }" pattern="#,###" />원</div>
 						<div class="product-quantity-btn">
@@ -124,15 +124,32 @@
 	</div>
 	
 	<script type="text/javascript">
+		window.onpageshow = function (event){     //뒤로가기로 페이지 접근했는지 확인
+		    if(!event.persisted && !(window.performance && window.performance.navigation.type == 2) && !(window.performance.getEntriesByType("navigation")[0].type == "back_forward")){
 	
-		$(()=>{
-			if(${result==0}){
-				alert('이미 장바구니에 추가된 상품입니다.\n장바구니에서 수량을 변경 해주세요.');
-			} else if(${result==1}){
-				alert('해당 상품이 장바구니에 추가되었습니다.');
+		    	if(${result==0}){
+					alert('이미 장바구니에 추가된 상품입니다.\n장바구니에서 수량을 변경 해주세요.');
+				} else if(${result==1}){
+					alert('해당 상품이 장바구니에 추가되었습니다.');
+				}
+		        
+		    }
+		}
+		
+		function validateForm() {
+			let result = true;
+			
+			let quantity = $('input[name=pquantity]').val();
+			if(quantity == null || quantity == 0) {
+				alert('수량을 선택해 주세요.');
+				result = false;
 			}
 			
-			
+			return result;
+		}
+	
+		$(()=>{
+
 			/* 스크롤 내리면 버튼div 숨기기 */
 			let lastScroll = 0;
 			$('.user-body-container').on('scroll', function(){

@@ -78,6 +78,15 @@
 .js-review-img:last-of-type {
 	margin-right: 0;
 }
+.review-info {
+	font-size: 0.8rem;
+	color: #6F7173;
+	background: #f2f2f2;
+	border-radius: 5px;
+	padding: 6px;
+	margin-top: 4px;
+	margin-bottom: 20px; 
+}
 .js-writer-div {
 	width: 100%;
 	font-size: 0.8rem;
@@ -107,6 +116,7 @@
 	border: none;
 	background-color: #EFEFEF;
 	font-family: "Noto Sans KR", serif;
+	resize: none;
 }
 .js-comment-input:focus {
 	outline: none;
@@ -171,6 +181,10 @@
 				<span class="js-review-writer">${board.memail }</span>										
 				<span class="js-review-regdate"><fmt:formatDate value="${board.reg_date }" pattern="yyyy-MM-dd"/></span>
 			</div>
+			<div class="review-info">
+				<div><span style="font-weight: 600;">담당의</span> &nbsp;&nbsp;&nbsp;${board.aname } 선생님</div>			
+				<div><span style="font-weight: 600;">항목&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ${board.bcd_content } - ${board.mcd_content }</div>			
+			</div>
 			
 			<!-- 이미지 -->
 			<c:if test="${fn:length(imgList) > 0 }">
@@ -197,8 +211,7 @@
 			</div>
 
 			<div class="write-comment-div">
-				<textarea class="js-comment-input" rows="1" oninput="autoResize(this)" 
-					onkeypress="if (event.key === 'Enter') sendComment(event)"></textarea>
+				<textarea class="js-comment-input" rows="1" oninput="autoResize(this)"></textarea>
 				<img src="/img/Send.png" style="width: 26px; margin-bottom: 5px;" onclick="sendComment()">
 			</div>
 		</div>
@@ -229,6 +242,14 @@
 		
 		$(()=>{
 			readComment();
+			
+			$('textarea').on('keydown', function(event) {
+		        if (event.keyCode == 13)
+		            if (!event.shiftKey){
+		                event.preventDefault();
+		                sendComment();
+		            }
+		    });
 		})
 		
 		/* 후기 삭제 */

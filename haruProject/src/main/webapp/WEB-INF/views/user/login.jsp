@@ -170,7 +170,7 @@ button[type=button] {
 	
 	/* 카카오 로그인 */
 	function kakaoLogin() {
-		location.href="https://kauth.kakao.com/oauth/authorize?client_id=efe8479005b06cbc1480277bd66620d9&redirect_uri=http://localhost:8399/oauth/api/kakao&response_type=code";
+		location.href="https://kauth.kakao.com/oauth/authorize?client_id=efe8479005b06cbc1480277bd66620d9&redirect_uri=http://172.30.1.99:8399/oauth/api/kakao&response_type=code";
 	}
 	
 	</script>
