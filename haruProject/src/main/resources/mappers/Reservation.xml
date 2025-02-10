@@ -71,8 +71,31 @@
 	        FROM SCHEDULE S 
       			WHERE S.ANO = #{ANO} AND S.SCHTYPE_MCD = 200
 			ORDER BY S.SCHDATE desc
-	    )aa
+	    )aa 
         WHERE ROWNUM BETWEEN 1 AND 2
 	</select>
 
+	<select id="HJ_SelectCommingRes" parameterType="int" resultType="Appointment">
+		SELECT *
+		FROM(
+			SELECT ap.resno, ap.rdate,ap.start_time,
+					ad.aname,
+					pt.petname,pt.petimg,
+					cm1.content status,
+                    cm2.content item,cm3.content item_bcd
+			FROM appointment ap
+			JOIN admin ad ON ap.ano = ad.ano
+			JOIN member mb ON ap.memno = mb.memno
+			JOIN pet pt ON ap.petno = pt.petno
+			JOIN common cm1 ON (ap.rstatus_bcd = cm1.bcd AND ap.rstatus_mcd = cm1.mcd)
+			JOIN medical_item mi ON ap.mcode = mi.mcode
+			JOIN common cm2 ON (mi.mtitle_bcd = cm2.bcd AND mi.mtitle_mcd = cm2.mcd)
+            JOIN common cm3 ON (mi.mtitle_bcd = cm3.bcd AND cm3.mcd = 999)
+			WHERE ap.memno = #{memno}
+			AND (ap.rdate BETWEEN sysdate AND sysdate+7)
+			AND ap.rstatus_mcd = 200
+			ORDER BY rdate
+		)
+		WHERE ROWNUM = 1
+	</select>
 </mapper>

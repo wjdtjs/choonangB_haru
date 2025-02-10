@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Notice;
 import com.example.haruProject.dto.Pet;
 
@@ -37,5 +38,17 @@ public class UserMainDaoImpl implements UserMainDao {
 			System.out.println("UserMainDao getPetList e.getMessage()" + e.getMessage());
 		}
 		return pets;
+	}
+
+	@Override
+	public Appointment getCommingRes(int memno) {
+		Appointment commingRes= null;
+		try {
+			commingRes = session.selectOne("HJ_SelectCommingRes",memno);
+			System.out.println("UserMainDao gerCommingRes commingRes-> "+commingRes);
+		} catch (Exception e) {
+			System.out.println("UserMainDao getCommingAppointment Error->"+e.getMessage());
+		}
+		return commingRes;
 	}
 }

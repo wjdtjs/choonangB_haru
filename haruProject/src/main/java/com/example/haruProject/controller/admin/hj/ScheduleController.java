@@ -1,5 +1,7 @@
 package com.example.haruProject.controller.admin.hj;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,5 +96,46 @@ public class ScheduleController {
 		List<Admin> adminList = ss.searchAdmin(keyword);
 		
 		return adminList;
+	}
+	
+	@GetMapping(value = "/admin/detailSchedule")
+	public String detailSchedule(@RequestParam("schno") int schno,
+												Model model ) {
+		Schedule schedule = ss.getSchedule(schno);
+		
+		System.out.println("ScheduleController detailSchedule");
+		model.addAttribute("schedule",schedule);
+		return "admin/detailSchedule";
+	}
+	
+	@RequestMapping(value = "/admin/deleteSchedule")
+	public String deleteSchedule(@RequestParam("schno") int schno) {
+		System.out.println("ScheduleController deleteSchedule() ,,,");
+		System.out.println("ScheduleController deleteSchedule() schno->"+schno);
+		int result = ss.deleteSchedule(schno);
+		System.out.println("ScheduleController deleteSchedule() result->"+result);
+		
+		return "admin/schedule";
+	}
+	
+	@RequestMapping(value = "/admin/updateSchedule")
+	public String updateSchedule(@RequestParam("schno") int schno,
+								@RequestParam("schdate") String schdate,
+								Model model) throws ParseException {
+		System.out.println("ScheduleController updateSchedule() ,,,");
+		
+        
+		Schedule sch = new Schedule();
+		sch.setSchno(schno);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // String을 Date로 형변환
+		sch.setSchdate(sdf.parse(schdate)); 
+		
+		int result = ss.updateSchedule(sch);
+		System.out.println("ScheduleController updateSchedule() result->"+result);
+		
+		// 수정된 날짜를 모델에 추가
+	    model.addAttribute("updatedDate", schdate);
+		
+		return "admin/schedule";
 	}
 }

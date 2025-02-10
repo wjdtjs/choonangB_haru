@@ -89,9 +89,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	    titleFormat: function (date) {
 	    	return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월';
 	    },
-	    selectable: true,
-	    droppable: true,
-	    navLinks: true,
+	    //selectable: true,
+	    //droppable: true,
+	    //navLinks: true,
 	    editable: true,
 	    nowIndicator: true,
 	    locale: 'ko',
@@ -136,18 +136,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	                	var event = {};
 	                      		
 	                    if(res.schtype_mcd == 100){
-	                    	event= {            					
-	          		        	title: res.sch_content,
-	          		            start: res.schdate,
-	          	            	color: '#F08D7F',
-	          	            	allDay: true,
+	                    	event= {  
+		                    		id: res.schno,
+		          		        	title: res.sch_content,
+		          		            start: res.schdate,
+		          	            	color: '#F08D7F',
+		          	            	allDay: true,
+		          	            	url: '/admin/detailSchedule?schno='+res.schno,
 	          	            }
 	                    } else if(res.schtype_mcd == 300){
 	                      	event = {
-	                          	title: res.aname+' '+res.sch_content,
-	              	            start: res.schdate,
-	                          	color: "#254d64",
-	                          	allDay: true,
+	                      			id: res.schno,
+		                          	title: res.aname+' '+res.sch_content,
+		              	            start: res.schdate,
+		                          	color: "#254d64",
+		                          	allDay: true,
+		                          	url: '/admin/detailSchedule?schno='+res.schno,
 	            			}
 	                     }
 	                    calendar.addEvent(event);
@@ -160,10 +164,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	            			
 		            		for( var k = 0 ;  k < res1.persoffdays.length; k++){
 		            			event = {
+		            					id: res1.schno,
 		            					title: res1.aname+' '+res1.sch_content,
 			              	            start: res1.persoffdays[k],
 			                          	color: "#254d64",
-
+			                          	url: '/admin/detailSchedule?schno='+res1.schno,
 			            		};
 		            		calendar.addEvent(event);
 		            		}
@@ -174,9 +179,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	            	console.log('Failed to fetch data from the server.');
 	          	}
 	        }); //ajax end
-	    } //data end
+	    }, //data end
+	    
 	});
+	// 수정된 날짜로 이동
+    var updatedDate = '${updatedDate}';  // JSP에서 전달된 수정된 날짜
+    if (updatedDate) {
+        calendar.gotoDate(updatedDate);
+    }
+    
 	calendar.render();
+	// 수정된 날짜로 이동
 });
 
 </script>

@@ -1,4 +1,4 @@
-package com.example.haruProject.dao.hj;
+ package com.example.haruProject.dao.hj;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
@@ -32,7 +32,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
 		System.out.println("Dao getScheduleList current->" + current);
 		
 	try {
-		schedules = session.selectList("HJSelectScheduleList",current);
+		schedules = session.selectList("HJ_SelectScheduleList",current);
 		System.out.println("Dao getScheduleList schedules->" + schedules);
 	} catch (Exception e) {
 		System.out.println("ScheduleDao getScheduleList() Error-> "+e.getMessage());
@@ -45,7 +45,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	public List<Schedule> getRegScheduleList(String current) {
 		List<Schedule> reg_schedules = new ArrayList<>();
 		try {
-			reg_schedules = session.selectList("HJRegScheduleList" ,current);
+			reg_schedules = session.selectList("HJ_RegScheduleList" ,current);
 
 			System.out.println("ScheduleDao getRegScheduleList reg_schedules-> "+current);
 			System.out.println("ScheduleDao getRegScheduleList reg_schedules-> "+reg_schedules);
@@ -60,7 +60,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	public List<Common> getSchtypes() {
 		List<Common> schTypeList = new ArrayList<>();
 		try {
-			schTypeList = session.selectList("HJSelectSchtype");
+			schTypeList = session.selectList("HJ_SelectSchtype");
 			System.out.println("ScheduleDao getSchtypes() schTypeList-> "+schTypeList);
 		} catch (Exception e) {
 			System.out.println("ScheduleDao getSchtypes() Error-> "+e.getMessage());
@@ -72,7 +72,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	public Date getChangedOff(Schedule schedule) {
 		Date changedoff= null;
 		try {
-			changedoff = session.selectOne("HJGetChangedOff",schedule);
+			changedoff = session.selectOne("HJ_GetChangedOff",schedule);
 			System.out.println("ScheduleDao getChangedOff() changedoff-> "+changedoff);
 		} catch (Exception e) {
 			System.out.println("ScheduleDao getChangedOff() Error-> "+e.getMessage());
@@ -97,7 +97,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
 		
 		System.out.println("ScheduleDao getDocOffdays paramMap-> "+parammap);
 		try {
-			offdays = session.selectList("HJGetDocOffdays",parammap);
+			offdays = session.selectList("HJ_GetDocOffdays",parammap);
 			System.out.println("ScheduleDao getDocOffdays offdays-> "+offdays);
 		} catch (Exception e) {
 			System.out.println("ScheduleDao getDocOffdays() Error-> "+e.getMessage());
@@ -110,7 +110,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
 		List<Admin> adminList = null;
 		System.out.println("ScheduleDao searchAdmin keyword->"+keyword);
 		try {
-			adminList = session.selectList("HJSearchAdminList", keyword);
+			adminList = session.selectList("HJ_SearchAdminList", keyword);
 			System.out.println("ScheduleDao searchAdmin adminList->"+adminList);
 		} catch (Exception e) {
 			System.out.println("ScheduleDao searchAdmin Error ->"+e.getMessage());
@@ -123,13 +123,51 @@ public class ScheduleDaoImpl implements ScheduleDao {
 		System.out.println("ScheduleDao insertSchedule schedule ->"+schedule);
 		int result = 0;
 		try {
-			result = session.insert("GJInsertSchedule",schedule);
+			result = session.insert("HJ_InsertSchedule",schedule);
 			System.out.println("ScheduleDao insertSchedule result ->"+result);
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("ScheduleDao insertSchedule Error ->"+e.getMessage());
 		}
-		return 0;
+		return result;
+	}
+
+	@Override
+	public Schedule getSchedule(int schno) {
+		System.out.println("SchduleDao getSchedule schno-> "+schno);
+		
+		Schedule schedule = null;
+		try {
+			schedule = session.selectOne("HJ_SelectSchedule",schno);
+			System.out.println("SchduleDao getSchedule schedule-> "+schedule);
+		} catch (Exception e) {
+			System.out.println("SchduleDao getSchedule e.getMessage()-> "+e.getMessage());
+		}
+		return schedule;
+	}
+
+	@Override
+	public int deleteSchedule(int schno) {
+		int result = 0;
+		try {
+			result = session.delete("HJ_deleteSchedule",schno);
+			System.out.println("SchduleDao deleteSchedule result-> "+result);
+			
+		} catch (Exception e) {
+			System.out.println("SchduleDao deleteSchedule e.getMessage()-> "+e.getMessage());
+		}
+		return result;
+	}
+
+	@Override
+	public int updateSchedule(Schedule sch) {
+		int result = 0;
+		try {
+			result = session.update("HJ_updateSchedule",sch);
+		} catch (Exception e) {
+			System.out.println("SchduleDao updateSchedule e.getMessage()-> "+e.getMessage());
+		}
+		return result;
 	}
 
 }

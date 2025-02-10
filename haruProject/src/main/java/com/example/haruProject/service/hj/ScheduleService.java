@@ -18,5 +18,8 @@ public interface ScheduleService {
 	List<String> 			getDocOffdays(Schedule schedule, String currentEnd);
 	List<Admin> 			searchAdmin(String keyword);
 	int						insertSchedule(Schedule schedule);
+	Schedule 				getSchedule(int schno);
+	int						deleteSchedule(int schno);
+	int						updateSchedule(Schedule sch);
 
 }

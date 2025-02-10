@@ -3,7 +3,8 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.haruProject.ScheduleMapper">
-	<select id="HJSelectScheduleList" parameterType="java.lang.String" resultType="Schedule">
+	<!-- 병원휴뮤, 의사 개인휴무 리스트 -->
+	<select id="HJ_SelectScheduleList" parameterType="java.lang.String" resultType="Schedule">
 		SELECT sd.*, cm.content sch_content, ad.aname
 		FROM schedule sd
 		JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
@@ -18,7 +19,8 @@
 		</if>
 	</select>
 	
-	<select id="HJRegScheduleList" parameterType="java.lang.String" resultType="schedule">
+	<!-- 의사정기휴무 정보 리스트 -->
+	<select id="HJ_RegScheduleList" parameterType="java.lang.String" resultType="schedule">
 	<![CDATA[
 		SELECT *
 		FROM(
@@ -29,18 +31,21 @@
 				LEFT JOIN admin ad ON sd.ano = ad.ano
 				WHERE cm.mcd = 200
 				AND sd.schdate < #{currentStart}
+				AND ad.astatus_mcd = 100
 			) t
 		where t.rn in (1,2)
 	]]>
 	</select>
 	
-	<select id="HJSelectSchtype" resultType="Common">
+	<!-- 일정추가: 휴무 구분 -->
+	<select id="HJ_SelectSchtype" resultType="Common">
 		SELECT *
 		FROM common
 		WHERE bcd = 600 AND MCD !=999
 	</select>
 	
- 	<select id="HJGetChangedOff" parameterType="Schedule" resultType="java.util.Date">
+	<!-- 의사정기휴무 변경날짜 -->
+ 	<select id="HJ_GetChangedOff" parameterType="Schedule" resultType="java.util.Date">
  	<![CDATA[
 		SELECT schdate as newoff
 		FROM (
@@ -55,7 +60,9 @@
 		]]>
 	</select>
 	
-	<select id="HJGetDocOffdays" parameterType="Map" resultType="java.lang.String">
+	<!-- 의사정기휴무 :  월별 휴무 리스트 -->
+	<!-- currentEnd -->
+	<select id="HJ_GetDocOffdays" parameterType="Map" resultType="java.lang.String">
 	<if test="(sche.newoff == null) or (sche.newoff gt currentEnd)">
 		<![CDATA[
 			SELECT  schdate + (level - 1) *7
@@ -88,14 +95,17 @@
 	</if>
 	</select>
 	
-	<select id="HJSearchAdminList" parameterType="java.lang.String" resultType="Map">
+	<!-- 일정등록 : 의사 이름 검색 -->
+	<select id="HJ_SearchAdminList" parameterType="java.lang.String" resultType="Map">
 		SELECT ano, aname
 		FROM admin
 		WHERE aname LIKE '%' || #{keyword} || '%'
 		AND alevel_mcd = 200
 	</select>
 	
-	<insert id="GJInsertSchedule" parameterType="Schedule">
+	<!-- 일정등록 -->
+	<!-- 정기휴무 X: offday2 = null -->
+	<insert id="HJInsertSchedule" parameterType="Schedule">
 	    INSERT INTO schedule (schdate, reg_date, ano, schtype_mcd)
 	    <choose>
 	        <when test="offday1 != null and (offday2 == null or offday2.equals(''))">
@@ -109,4 +119,27 @@
 	        <otherwise/>
 	    </choose>
 	</insert>
+	
+	<!-- 휴무상세 -->
+	<select id="HJ_SelectSchedule" parameterType="int" resultType="Schedule">
+		SELECT sd.*, cm.content sch_content, ad.aname
+		FROM schedule sd
+		LEFT JOIN admin ad ON sd.ano = ad.ano
+		JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
+		WHERE sd.schno = #{schno}
+	</select>
+	
+	<!-- 휴무삭제 -->
+	<delete id="HJ_deleteSchedule" parameterType="int">
+		DELETE FROM schedule
+		WHERE schno = #{schno}
+	</delete>
+	
+	<!-- 휴무수정 -->
+	<update id="HJ_updateSchedule" parameterType="Schedule">
+		update schedule
+		set schdate = #{schdate},
+			update_date = sysdate
+		where schno = #{schno}
+	</update>
 </mapper>

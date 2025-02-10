@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.haruProject.common.utils.SessionUtil;
+import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Notice;
 import com.example.haruProject.dto.Pet;
 import com.example.haruProject.service.hj.UserMainService;
@@ -29,12 +30,20 @@ public class MainController {
 		
 		int memno = SessionUtil.getNo(request);
 		
+		/* 상단고정 공지사항 */
 		List<Notice> notices = us.getNoticeList();
+		
+		/* 내 동물정보 */
 		List<Pet> pets = us.getPetList(memno);
 		System.out.println("pets->"+pets);
 		
+		/* 다가오는 예약 */
+		Appointment commingRes = us.getCommingRes(memno);
+		System.out.println("commingRes->"+commingRes);
+		
 		model.addAttribute("notices",notices);
 		model.addAttribute("pets",pets);
+		model.addAttribute("res",commingRes);
 		
 		return "user/main";
 	}

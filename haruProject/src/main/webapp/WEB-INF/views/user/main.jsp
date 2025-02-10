@@ -10,6 +10,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
 integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
 crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Swiper.js : 슬라이드 -->
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+</head>
 </head>
 <style>
 	.haru-user-topbar {
@@ -52,20 +55,23 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	.user-body-container{
 		padding-top: 1rem;
 	}
-	 .user-body-container .slider{
-	 	width: 350px;
+	 .user-body-container .swiper-container{
+	 	width: 100%;
 	 	height: 320px;
 	 	position: relative;
-	 	overflow: hidden;
+	 	overflow: auto;
+	 	 white-space: nowrap; /* 가로 스크롤 허용 */
 	}
-	.user-body-container .slider .petlist{
+	.user-body-container .swiper-container .swiper-wrapper{
 		width: auto;
 		height: 100%;
 		position: absolute;
 		padding: 0;
-		
+		display: flex; /* 가로 방향으로 정렬 */
+    flex-wrap: nowrap; /* 줄바꿈 방지 */
 	}
-	 .user-body-container .slider .petlist .mypet ,.add_pet{
+	
+	.user-body-container .swiper-container .swiper-wrapper .mypet {
 		width: 100%;
 		height: 100%;
 		border-radius: 20px;
@@ -73,16 +79,28 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 		background-color: var(--haru);
 		padding: 20px;
 		float: left;
+		list-style: none;
+	}
+	 .user-body-container .swiper-container .swiper-wrapper .add_pet{
+		width: 350px;
+		height: 320px;
+		line-height: 290px;
+		text-align: center;
+		border-radius: 20px;
+		color: white;
+		background-color: var(--haru);
+		padding: 20px;
+		float: left;
+		list-style: none;
 	}
 	
-	
-	
-	.mypet  img{
+	.mypet img{
 		width: 310px;
 		height: 206px;
 		object-fit : cover;
 		margin-bottom: 8px;
 	}
+	
 	.mypet .petinfo {
 	 width: 100%;
 	 display: flex;
@@ -93,11 +111,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 		font-size: 14px;
 	}
 	
-	.shortcut{
+	.shortcut , .reservation{
 		margin-top: 1rem;
 		color: #6F7173;
 	}
-	.shortcut .title{
+	.title{
 		font-size: 16px;
 	}
 	.shortcut .shortcut_list{
@@ -127,6 +145,49 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	.shortcut .shortcut_list .shortcut_item .service-title{
 		font-size: 14px;
 	}
+
+	.resinfo .no-res{
+		text-align: center;
+		padding : 20px;
+		font-size: 14px;
+	}
+	.pet-res {
+	border: 2px solid #D0E3E7;
+	border-radius: 12px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+	margin: 12px 0;
+	padding: 10px;
+	}
+	.pet-res-content .res-date,
+	.pet-res-content .res-petname,
+	.pet-res-content .res-item,
+	.pet-res-content .res-number {
+		margin: 4px;
+		color: #6F7173;	
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.res-number {
+		font-size: 12px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.res-petname {
+		color: black !important;
+		font-weight: 600;
+		font-size: 14px;
+		margin-top: 8px !important;
+	}
+	.res-item {
+		font-size: 14px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
 </style>
 <body>
 	<div class="haru-user-container">
@@ -149,38 +210,44 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 			</div>
 		</div>
 		<div class="user-body-container">
-			<div class="slider">
-				<ul class="petlist">				
-					<c:forEach var="pet" items="${pets}">
-						<li class="mypet">
-							 <img src="${pet.petimg }" >
-							 <div class="petinfo">
-							 	<div class="petinfo-left">
-									 <div>${pet.petname }</div>
-									 <div class="petinfo-content">
-										 <c:choose>
-											 <c:when test="${pet.petgender_mcd eq '110' || pet.petgender_mcd eq '120' }">
-													<i class="fa-solid fa-venus" style="align-content: center"></i> <!-- 여 -->
-											</c:when>
-											<c:when test="${pet.petgender_mcd eq '210' || pet.petgender_mcd eq '220' }">
-													<i class="fa-solid fa-mars" style="align-content: center"></i> <!-- 남 -->
-											</c:when>
-										 </c:choose>
-										 ${pet.species }
-									 </div>
-									 <div class="petinfo-content">${pet.petbirth }</div>					 
-							 	</div>
-							 	<div class="petinfo-right" onclick="location.href='/user/detailPet?petno=${pet.petno}'">
-							 		<i class="fa-solid fa-chevron-right"></i>
-							 	</div>
-							 </div>
-						</li>
-					</c:forEach>
-					<li class="add_pet">
-						<i class="fa-light fa-circle-plus" style="color: #ffffff;"></i>동물추가하기
-					</li>
-				</ul>
+			<!-- 슬라이더 -->
+			<div class="swiper-container">
+    			<div class="swiper-wrapper">
+       				 <c:forEach var="pet" items="${pets}">
+            			<div class="swiper-slide" onclick="location.href='/user/detailPet?petno=${pet.petno}'">
+                			<li class="mypet">
+                    			<img src="${pet.petimg }">
+                   				<div class="petinfo">
+                        			<div class="petinfo-left">
+                            			<div>${pet.petname }</div>
+                           				<div class="petinfo-content">
+                              				<c:choose>
+                                    			<c:when test="${pet.petgender_mcd eq '110' || pet.petgender_mcd eq '120' }">
+                                       				<i class="fa-solid fa-venus"></i>
+                                    			</c:when>
+                                   				<c:when test="${pet.petgender_mcd eq '210' || pet.petgender_mcd eq '220' }">
+                                        			<i class="fa-solid fa-mars"></i>
+                                   				</c:when>
+                                			</c:choose>
+                                			${pet.species}
+                           				</div>
+                            			<div class="petinfo-content">${pet.petbirth}</div>                     
+                        			</div>
+                        			<div class="petinfo-right">
+                           				<i class="fa-solid fa-chevron-right"></i>
+                       				</div>
+                    			</div>
+                			</li>
+            			</div>
+        			</c:forEach>
+        			<div class="swiper-slide">
+            			<li class="add_pet">
+                			<i class="fa-solid fa-circle-plus" style="color: #ffffff;"></i> 동물추가하기
+            			</li>
+			        </div>
+			    </div>
 			</div>
+			<!-- 슬라이더 끝 -->
 		
 			<div class="shortcut">
 				<div class="title">바로가기</div>
@@ -208,10 +275,47 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 				</ul>
 			</div>
 			<div class="reservation">
-			
+				<div class="title">다가오는 예약</div>
+				<div class="resinfo">
+					<c:if test="${not empty res }">
+						<div class="pet-res">
+							<div class="pet-res-content" style="display: flex; position: relative;">
+								<div style="width: 100%">
+									<div class="res-number">
+										<span style="color: black; font-weight: 600;">${res.resno }</span>
+											<div class="past-type">${res.status }</div>
+									</div>
+									<div class="res-date">
+										<fmt:formatDate value="${res.rdate}" pattern="yyyy.MM.dd" />
+										<span style="margin-left: 10px; color: black; font-size: 14px; font-weight: 500">${fn:substring(res.start_time, 0, 2) }:${fn:substring(res.start_time, 2, 4) }</span>
+									</div>
+									<div class="res-petname">
+											${res.petname }
+									</div>
+									<div class="res-item"> 
+									<span>
+										<span style="font-weight: 600;">${res.item_bcd }</span>&nbsp;-&nbsp;${res.item }
+									</span>
+									<span>${res.aname } 선생님</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					</c:if>
+					<c:if test="${empty res }">
+						<div class="no-res">
+							예약정보가 없습니다.
+						</div>
+					</c:if>
+				</div>
 			</div>
 			<div class="shop">
-			
+				<div class="title">인기있는 상품</div>
+				<div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
 			</div>
 		</div>
 		<!-- menu bar -->
@@ -241,6 +345,18 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 		$(".rolling").append($(".rolling li").first().clone()); //
 	});
 	
-	
+	/* 슬라이드 */
+	var swiper = new Swiper('.swiper-container', {
+		 slidesPerView: 'auto',  // 자동 크기 조절
+        spaceBetween: 10,
+        loop: false,
+        freeMode: true,  // 자유롭게 스크롤 가능하게 함
+        scrollbar: {
+            el: ".swiper-scrollbar",
+            hide: false,
+        },
+        grabCursor: true,  // 마우스 커서 손모양
+        touchRatio: 1,  // 터치 민감도
+    })
 </script>
 </html>

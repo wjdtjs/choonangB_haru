@@ -59,7 +59,25 @@ public class ScheduleServiceImpl implements ScheduleService{
 	@Override
 	public int insertSchedule(Schedule schedule) {
 		int result = sd.insertSchedule(schedule);
-		return 0;
+		return result;
+	}
+
+	@Override
+	public Schedule getSchedule(int schno) {
+		Schedule schedule = sd.getSchedule(schno);
+		return schedule;
+	}
+
+	@Override
+	public int deleteSchedule(int schno) {
+		int result = sd.deleteSchedule(schno);
+		return result;
+	}
+
+	@Override
+	public int updateSchedule(Schedule sch) {
+		int result = sd.updateSchedule(sch);
+		return result;
 	}
 
 
