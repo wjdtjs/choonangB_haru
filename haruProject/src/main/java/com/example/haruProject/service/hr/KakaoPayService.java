@@ -1,36 +1,55 @@
 package com.example.haruProject.service.hr;
 
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.ApproveResponse;
+import com.example.haruProject.dto.KakaoCancelResponse;
 import com.example.haruProject.dto.ReadyResponse;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class KakaoPayService {
+	
+	// private final KakaoPayProperties payProperties;
+    private RestTemplate restTemplate = new RestTemplate();
+    private ApproveResponse kakaoReady;
+	
+	
 	// 카카오페이 결제창 연결
-    public ReadyResponse payReady(String name, int totalPrice) {
-    
+    public ReadyResponse payReady(String name, int totalPrice, int orderno, int memno) throws Exception {
+    	
+        String reUri = "http://"+InetAddress.getLocalHost().getHostAddress()+":8399";
+        
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");                                    // 가맹점 코드(테스트용)
-        parameters.put("partner_order_id", "1234567890");                       // 주문번호
-        parameters.put("partner_user_id", "roommake");                          // 회원 아이디
+        parameters.put("partner_order_id", String.valueOf(orderno));         // 주문번호
+        parameters.put("partner_user_id", String.valueOf(memno));               // 회원 아이디
         parameters.put("item_name", name);                                      // 상품명
         parameters.put("quantity", "1");                                        // 상품 수량
         parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
         parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
-        parameters.put("approval_url", "http://localhost:8399/user/kakaopay/completed"); // 결제 성공 시 URL
-        parameters.put("cancel_url", "http://localhost:8399/user/kakaopay/cancel");      // 결제 취소 시 URL
-        parameters.put("fail_url", "http://localhost:8399/user/kakaopay/fail");          // 결제 실패 시 URL
+        parameters.put("approval_url", reUri + "/user/kakaopay/completed?orderno="+orderno); // 결제 성공 시 URL
+        parameters.put("cancel_url", reUri + "/user/kakaopay/cancel");      // 결제 취소 시 URL
+        parameters.put("fail_url", reUri + "/user/kakaopay/fail");          // 결제 실패 시 URL
 
         // HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
@@ -42,20 +61,29 @@ public class KakaoPayService {
         String url = "https://open-api.kakaopay.com/online/v1/payment/ready";
         // RestTemplate의 postForEntity : POST 요청을 보내고 ResponseEntity로 결과를 반환받는 메소드
         ResponseEntity<ReadyResponse> responseEntity = template.postForEntity(url, requestEntity, ReadyResponse.class);
+        
+        ReadyResponse readyResponse = responseEntity.getBody();
+        
+        // tid 값을 세션에 저장
+        SessionUtil.addAttribute("tid", readyResponse.getTid());
+        
+        // orderno 값을 추가해 반환
+        readyResponse.setOrderno(orderno);
+        
         log.info("결제준비 응답객체: " + responseEntity.getBody());
-
+        
         return responseEntity.getBody();
     }
 
     // 카카오페이 결제 승인
     // 사용자가 결제 수단을 선택하고 비밀번호를 입력해 결제 인증을 완료한 뒤,
     // 최종적으로 결제 완료 처리를 하는 단계
-    public ApproveResponse payApprove(String tid, String pgToken) {
+    public ApproveResponse payApprove(String tid, String pgToken, int orderno, int memno) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");              // 가맹점 코드(테스트용)
         parameters.put("tid", tid);                       // 결제 고유번호
-        parameters.put("partner_order_id", "1234567890"); // 주문번호
-        parameters.put("partner_user_id", "roommake");    // 회원 아이디
+        parameters.put("partner_order_id", String.valueOf(orderno)); // 주문번호
+        parameters.put("partner_user_id", String.valueOf(memno));    // 회원 아이디
         parameters.put("pg_token", pgToken);              // 결제승인 요청을 인증하는 토큰
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
@@ -71,9 +99,45 @@ public class KakaoPayService {
     // 카카오페이 측에 요청 시 헤더부에 필요한 값
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "DEVFEA8245798D4C9A0873EE06226446AE8E1063");
+        headers.set("Authorization", "SECRET_KEY " + "DEVFEA8245798D4C9A0873EE06226446AE8E1063");
         headers.set("Content-type", "application/json");
 
         return headers;
+    }
+    
+    
+    
+    /**
+     * 결제 환불
+     * @param ototal_price 
+     */
+    public KakaoCancelResponse kakaoCancel(String tid, String ototal_price) {
+
+        // 카카오페이 요청
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("cid", "TC0ONETIME");
+        parameters.put("tid", tid);
+        parameters.put("cancel_amount", ototal_price);
+        parameters.put("cancel_tax_free_amount", "0");
+        parameters.put("cancel_vat_amount", "0");
+
+        // 파라미터, 헤더
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+
+        // 외부에 보낼 url
+        RestTemplate restTemplate = new RestTemplate();
+
+        KakaoCancelResponse cancelResponse = restTemplate.postForObject(
+                "https://open-api.kakaopay.com/online/v1/payment/cancel",
+                requestEntity,
+                KakaoCancelResponse.class);
+
+        System.out.println();
+        System.out.println();
+        System.out.println(cancelResponse);
+        System.out.println();
+        System.out.println();
+
+        return cancelResponse;
     }
 }

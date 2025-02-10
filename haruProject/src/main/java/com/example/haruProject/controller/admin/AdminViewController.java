@@ -37,6 +37,9 @@ public class AdminViewController {
 	 */
 	@GetMapping("/admin/index")
 	public String indexView() {
+		
+		
+		
 		return "admin/main";
 	}
 	

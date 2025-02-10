@@ -1,5 +1,6 @@
 package com.example.haruProject.controller.user.hr;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.ApproveResponse;
@@ -25,6 +27,7 @@ import com.example.haruProject.service.hr.KakaoPayService;
 import com.example.haruProject.service.hr.UserPurchaseService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -124,87 +127,53 @@ public class UserPurchaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/api/user/s-purchase")
-	public String storePurchase(@RequestBody List<Purchase> pList,
+	public Map<String, Object> storePurchase(@RequestBody List<Purchase> pList,
 												HttpServletRequest request,
 												Model model)
 	{
 		System.out.println("UserPurchaseController storePurchase() start ,,, ");
-		for (Purchase purchase : pList) {
-	        System.out.println("상품 번호: " + purchase.getPno());
-	        System.out.println("상품 이름: " + purchase.getPname());
-	        System.out.println("구매 수량: " + purchase.getSquantity());
-	        System.out.println("상품 가격: " + purchase.getPprice());
-	        System.out.println("결제 방법 코드: " + purchase.getOpayment_mcd());
-	        System.out.println("총 결제 금액: " + purchase.getOtotal_price());
-	    }
+//		for (Purchase purchase : pList) {
+//	        System.out.println("상품 번호: " + purchase.getPno());
+//	        System.out.println("상품 이름: " + purchase.getPname());
+//	        System.out.println("구매 수량: " + purchase.getSquantity());
+//	        System.out.println("상품 가격: " + purchase.getPprice());
+//	        System.out.println("결제 방법 코드: " + purchase.getOpayment_mcd());
+//	        System.out.println("총 결제 금액: " + purchase.getOtotal_price());
+//	    }
 		
 		int memno = SessionUtil.getNo(request);
 		int opayment_mcd = pList.get(0).getOpayment_mcd();
 		int ototal_price = pList.get(0).getOtotal_price();
+		System.out.println("memno: "+memno);
+		System.out.println("opayment_mcd: "+opayment_mcd);
+		System.out.println("ototal_price: "+ototal_price);
 		
-		Map<String, Object> pMap = new HashMap<>();
+		int orderno = 0;
 		
-		pMap = ps.skPurchase(pList, memno, opayment_mcd, ototal_price);
+		orderno = ps.skPurchase(pList, memno, opayment_mcd, ototal_price);
+		System.out.println("purchase controller orderno ->"+orderno);
 		
-		model.addAttribute(pMap);
+		Map<String, Object> response = new HashMap<>();
+		response.put("orderno", orderno);
+		response.put("redirectUrl", "/user/purchaseResult?orderno="+orderno);
 		
-		return "redirect:/user/purchaseResult";
+		return response;
 	}	
-	
-	
-	
-	private final KakaoPayService ks;
-	
-	/*
-	 * 주문하기
-	 * 
-	 * 카카오페이
-	 */
-	@PostMapping("/api/user/k-purchase")
-	public @ResponseBody ReadyResponse kakaoPurchaseReady(@RequestBody List<Purchase> pList,
-										HttpServletRequest request,
-										Model model)
-	{
-	// 상품 이름 (2개 이상이면 ~외 ~개)
-		String pname = null;
-		if(pList.size() == 1) {
-			pname = pList.get(0).getPname();
-		} else if(pList.size() >= 2) {
-			String firstPname = pList.get(0).getPname();
-			int aCount = pList.size() - 1;
-			pname = firstPname + " 외 " + aCount + " 개";
-		}		
-		
-		int ototal_price = pList.get(0).getOtotal_price();
-		
-		ReadyResponse readyResponse = ks.payReady(pname, ototal_price);
-		
-		return readyResponse;	
-	}
-	@GetMapping("/user/kakaopay/completed")
-	public String kakaoPurchaseCompleted(@RequestParam("pg_token") String pgToken) {
-		String tid = SessionUtil.getStringAttributeValue("tid");
-		log.info("결제승인 요청을 인증하는 토큰: " + pgToken);
-        log.info("결제 고유번호: " + tid);
-
-        // 카카오 결제 요청하기
-        ApproveResponse approveResponse = ks.payApprove(tid, pgToken);
-        
-		return "redirect:/user/purchaseResult";
-	}
-
-	
 	
 	
 	/*
 	 * 주문완료 뷰
 	 * orderno
 	 */
-	@RequestMapping("/user/purchaseResult")
-	public String purchaseResultView() {
+	@GetMapping("/user/purchaseResult")
+	public String purchaseResultView(@RequestParam(value = "orderno", required = true) int orderno,
+									 Model model) {
 		System.out.println("UserPurchaseController purchaseResultView() start ,,,");
-		System.out.println("");
+		System.out.println("UserPurchaseController purchaseResultView() orderno ->"+orderno);
 		
+		model.addAttribute("orderno", orderno);
+		// 카카오페이 결제하고 나서 결제할 때 tid 안 뜨게 세션에 있는 tid를 null로 설정
+		SessionUtil.addAttribute("tid", null);
 		
 		return "user/purchaseResult";
 	}

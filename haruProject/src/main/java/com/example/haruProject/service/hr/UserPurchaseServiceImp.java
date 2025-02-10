@@ -1,5 +1,6 @@
 package com.example.haruProject.service.hr;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,21 +67,32 @@ public class UserPurchaseServiceImp implements UserPurchaseService {
 
 	// 주문
 	@Override
-	public Map<String, Object> skPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
+	public int skPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
 		System.out.println("UserPurchaseServiceImp storePurchase() start ,,,");
 		System.out.println("UserPurchaseServiceImp storePurchase() pList ->"+pList);
 		System.out.println("UserPurchaseServiceImp storePurchase() memno ->"+memno);
 		
-		Map<String, Object> pMap = new HashMap<>();
+		
+		int orderno = 0;
 		
 		if (opayment_mcd == 300) {
 			// 카카오페이
-			pMap = pd.kPurchase(pList, memno, opayment_mcd, ototal_price);
+			orderno = pd.kPurchase(pList, memno, opayment_mcd, ototal_price);
 		} else if (opayment_mcd == 400) {
 			// 매장결제
-			pMap = pd.sPurchase(pList, memno, opayment_mcd, ototal_price);			
+			orderno = pd.sPurchase(pList, memno, opayment_mcd, ototal_price);			
 		}
 		
-		return pMap;
+		return orderno;
+	}
+
+	// 카카오페이 > 결제 성공시 주문상태 100으로 update
+	@Override
+	public void updateKStatus(int orderno, String tid) {
+		System.out.println("UserPurchaseServiceImp updateStatus start ,,,");
+		System.out.println("UserPurchaseServiceImp updateStatus orderno ->"+orderno);
+		System.out.println("UserPurchaseServiceImp updateStatus tid ->"+tid);
+		
+		pd.updateKStatus(orderno, tid);
 	}
 }

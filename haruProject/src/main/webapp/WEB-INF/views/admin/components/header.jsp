@@ -31,6 +31,6 @@
 <script src="/js/validation.js?v=0.05"></script>
 
 <!-- Custom styles for this template-->
-<link href="/css/sb-admin-2.css?v=0.44" rel="stylesheet">
+<link href="/css/sb-admin-2.css?v=0.47" rel="stylesheet">
 <link href="/css/haru-admin.css?v=0.46" rel="stylesheet">
 <link href="/css/js.css?v=0.02" rel="stylesheet">

@@ -1,5 +1,6 @@
 package com.example.haruProject.dao.hr;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,9 +82,9 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 	// 선택된 주문 상품 정보 불러오기
 	@Override
 	public List<ShoppingCart> getorderList(int memno, List<Integer> pnoList) {
-		System.out.println("UserPurchaseServiceImp getorderList() start ,,,");
-		System.out.println("UserPurchaseServiceImp getorderList() memno ->"+memno);
-		System.out.println("UserPurchaseServiceImp getorderList() pnoList ->"+pnoList);
+		System.out.println("UserPurchaseDaoImp getorderList() start ,,,");
+		System.out.println("UserPurchaseDaoImp getorderList() memno ->"+memno);
+		System.out.println("UserPurchaseDaoImp getorderList() pnoList ->"+pnoList);
 		
 		List<ShoppingCart> sList = new ArrayList<>();
 		
@@ -102,41 +103,55 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 
 	// 매장 결제 주문 
 	@Override
-	public Map<String, Object> sPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
-		System.out.println("UserPurchaseServiceImp storePurchase() start ,,,");
-		System.out.println("UserPurchaseServiceImp storePurchase() memno ->"+memno);
-		System.out.println("UserPurchaseServiceImp storePurchase() pList ->"+pList);
+	public int sPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
+		System.out.println("UserPurchaseDaoImp storePurchase() start ,,,");
+		System.out.println("UserPurchaseDaoImp storePurchase() memno ->"+memno);
+		System.out.println("UserPurchaseDaoImp storePurchase() pList ->"+pList);
 		
-		List<Purchase> List = new ArrayList<>();
+		// List<Purchase> List = new ArrayList<>();
 		
 		Map<String, Object> pMap = new HashMap<>();
-		pMap.put("pList", pList);
+		// pMap.put("pList", pList);
 		pMap.put("memno", memno);
 		pMap.put("opayment_mcd", opayment_mcd);
 		pMap.put("ototal_price", ototal_price);
 		pMap.put("ostatus_mcd", 100);
 		
 		pMap.put("orderno", null);
-		pMap.put("outMemno", null);
+		
+		System.out.println("pMap ->"+pMap);
+		
+		int orderno = 0;
 		
 		try {
-			session.selectOne("HR_addPurchase", pMap);
-			session.selectOne("HR_processOrderProducts", pMap);
+			session.update("HR_addPurchase", pMap);  // 프로시저 실행
+			BigDecimal ordernoDecimal = (BigDecimal) pMap.get("orderno");  // BigDecimal로 캐스팅
+			orderno = ordernoDecimal != null ? ordernoDecimal.intValue() : null;
+			System.out.println("dao out orderno ->"+orderno);
+			
+			for (Purchase purchase : pList) {
+				Map<String, Object> insertMap = new HashMap<>();
+				
+				insertMap.put("purchase", purchase);
+				insertMap.put("memno", memno);
+				insertMap.put("orderno", orderno);
+				session.update("HR_processOrderProducts", insertMap);
+			}
 		} catch (Exception e) {
-			log.error("deleteSP() error ->", e);
+			log.error("sPurchase() error ->", e);
 		}
 		
-		return pMap;
+		return orderno;
 	}
 	
 	// 카카오페이 주문
 	@Override
-	public Map<String, Object> kPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
+	public int kPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
 		System.out.println("UserPurchaseServiceImp storePurchase() start ,,,");
 		System.out.println("UserPurchaseServiceImp storePurchase() memno ->"+memno);
 		System.out.println("UserPurchaseServiceImp storePurchase() pList ->"+pList);
 		
-		List<Purchase> List = new ArrayList<>();
+		int orderno = 0;
 		
 		Map<String, Object> pMap = new HashMap<>();
 		pMap.put("pList", pList);
@@ -146,14 +161,40 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 		pMap.put("ostatus_mcd", 0);
 		
 		try {
+			session.update("HR_addPurchase", pMap);  // 프로시저 실행
+			BigDecimal ordernoDecimal = (BigDecimal) pMap.get("orderno");  // BigDecimal로 캐스팅
+			orderno = ordernoDecimal != null ? ordernoDecimal.intValue() : null;
+			System.out.println("dao out orderno ->"+orderno);
 			
-			
-			
+			for (Purchase purchase : pList) {
+				Map<String, Object> insertMap = new HashMap<>();
+				
+				insertMap.put("purchase", purchase);
+				insertMap.put("memno", memno);
+				insertMap.put("orderno", orderno);
+				session.update("HR_processOrderProducts", insertMap);
+			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			log.error("kPurchase() error ->", e);
 		}
 		
-		return pMap;
+		return orderno;
+	}
+
+	@Override
+	public void updateKStatus(int orderno, String tid) {
+		System.out.println("UserPurchaseServiceImp updateKStatus start ,,,");
+		
+		Map<String, Object> uMap = new HashMap<>();
+		
+		uMap.put("orderno", orderno);
+		uMap.put("tid", tid);
+		
+		try {
+			session.update("HR_updateKState", uMap);
+		} catch (Exception e) {
+			log.error("updateKStatus() error ->", e);
+		}
 	}
 	
 	

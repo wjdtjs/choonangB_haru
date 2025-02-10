@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>주문완료</title>
+<title>카카오페이 결제 실패</title>
 
 <!-- 폰트어썸 -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
@@ -35,7 +35,7 @@ h4, h5 {
 		<!-- header -->
 		<div class="haru-user-topbar">
 			<div class="topbar-title" style="justify-content: center !important;">
-				주문 완료
+				카카오페이 결제 실패
 			</div>
 		</div>	
 		
@@ -46,16 +46,13 @@ h4, h5 {
 		<div style="width: 100%; height: 85%; display: flex;">
 			<div style="width: 100%; margin: auto 0;">
 				<div style="display: flex;">
-					<img alt="purchaseResult" src="/img/purchaseResult.png" class="prImg">
+					<i class="fa-solid fa-triangle-exclamation"></i>
 				</div>
 				
 				<div class="pr-text">
-					<h3 style="margin: 8px;">주문 완료</h3>
-				 	<h4 style="margin-bottom: 4px;">픽업 준비 완료시 픽업 알림 메일을 보내드립니다.</h4>
-				 	<h5>주문번호 : ${orderno}</h5>
-				 	<c:if test="${tid ne null}">
-				 		<p style="font-size: 12px; margin-top: 4px;">카카오페이 결제 고유번호 : ${tid}</p>
-				 	</c:if>
+					<h3 style="margin: 8px;">카카오페이 - 결제 취소</h3>
+				 	<h4 style="margin-bottom: 4px;">${error_code}</h4>
+				 	<h4 style="margin-bottom: 4px;">${error_msg}</h4>
 				</div>	
 			</div>	
 		</div>
@@ -63,7 +60,7 @@ h4, h5 {
 		
 		
 			<div>
-				<button class="user-btn-primary" onclick="location.href='/user/purchaseHistory'">주문 내역 확인</button>
+				<button class="user-btn-primary" onclick="location.href='/user/shoppingCart'">장바구니로 돌아가기</button>
 			</div>
 		 
 		</div>

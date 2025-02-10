@@ -75,7 +75,7 @@ public class OrderController {
 		
 		// 주문 상품 정보
 		List<OrderProduct> products = os.getOrderProducts(orderno);
-		//주문상태값 대중분류
+		// 주문상태값 대중분류
 		List<Common> ostatus = os.getOrderStatus();
 		// 총결제금액
 		int totalPrice = os.TotalPrice(orderno);

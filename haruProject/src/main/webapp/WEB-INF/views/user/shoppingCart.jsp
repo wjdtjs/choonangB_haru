@@ -59,7 +59,7 @@
 #order-total {
     position: fixed;
     bottom: 130px;
-    width: 90%;
+    width: 350px;
     padding: 10px 0;
     background-color: white;
 }
@@ -167,12 +167,19 @@ $(() => {
     
     // 체크박스 상태가 변경될 때마다 실행
     $(".sc-checkbox").on("change", function() {
+    	console.log("체크박스 상태 변경");
     	updateButtonState();
    	    updateTotalPrice();
+   	    
+   	    // 모든 개별 체크박스 중 하나라도 해제되면 전체 체크박스 해제,
+   	    // 모든 개별 체크박스 체크되면 자동으로 전체 상품 선택 체크박스 checked
+   	    const allChecked = $(".sc-checkbox").length === $(".sc-checkbox:checked").length;
+   	    $(".sc-total-checkbox").prop("checked", allChecked);
     });
     
     // 체크박스 상태가 checked이면 실행
    	$(".sc-checkbox:checked").each(function() {
+   		console.log("체크박스 checked");
    		updateButtonState();
    	    updateTotalPrice();
    	});
@@ -207,9 +214,12 @@ function selectAll(ths) {
 		console.log("체크");
 	})
 	
+	updateButtonState();
+	updateTotalPrice();
+	
 }
 
-// 체크박스 선택시 선택된 품목 총 금액 표시
+// 선택된 품목 총 금액 표시
 function updateTotalPrice() {
 	let totalPrice = 0;
 	
@@ -282,7 +292,7 @@ function orderProduct() {
 			<c:when test="${fn:length(sList) > 0 }">
 				<div class="total-check" id="total-check" style="display: flex; /* justify-content: flex-end; */">
 					<label style="display: flex;">
-						<input type="checkbox" class="sc-checkbox" style="width: 16px; height: 16px;" onclick="selectAll(this)">
+						<input type="checkbox" class="sc-total-checkbox" style="width: 16px; height: 16px;" onclick="selectAll(this)">
 						<p style="margin: 0 4px; font-size: 14px;">전체 상품 선택하기</p>
 					</label>
 				</div>

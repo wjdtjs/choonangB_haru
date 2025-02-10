@@ -16,6 +16,8 @@ public interface UserPurchaseService {
 
 	List<ShoppingCart> getorderList(int memno, List<Integer> pnoList);
 
-	Map<String, Object> skPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price);
+	int skPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price);
+
+	void updateKStatus(int orderno, String tid);
 
 }

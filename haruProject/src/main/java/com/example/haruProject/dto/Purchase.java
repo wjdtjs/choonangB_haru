@@ -11,4 +11,5 @@ public class Purchase {
 	private int opayment_mcd;
 	private int ototal_price;
 	private String pname;
+	private int orderno;
 }

@@ -204,6 +204,7 @@ function purchase() {
     		} else if(opayment_mcd === "400") {
 		    	// 매장결제 api
 				console.log("매장결제 주문 완료");
+		    	location.href = response.redirectUrl;    	
     		}
     		
     	},

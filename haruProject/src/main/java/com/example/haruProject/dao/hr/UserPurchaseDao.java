@@ -16,8 +16,10 @@ public interface UserPurchaseDao {
 
 	List<ShoppingCart> getorderList(int memno, List<Integer> pnoList);
 
-	Map<String, Object> sPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price);
+	int sPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price);
 
-	Map<String, Object> kPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price);
+	int kPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price);
+
+	void updateKStatus(int orderno, String tid);
 
 }

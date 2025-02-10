@@ -79,6 +79,54 @@ select {
 }
 </style>
 
+<script type="text/javascript">
+
+function psUpdate() {
+	console.log("주문 상태 변경 시작");
+	const ostatus_mcd = document.querySelector("select[name='ostatus_mcd']").value;
+	const orderno = document.querySelector("input[name='orderno']").value;
+	alert("수정될 주문 상태 ->"+ostatus_mcd+", 주문 번호 ->"+orderno);
+	
+	// 주문취소일시 
+	if(ostatus_mcd === "400") {
+		if (confirm("카카오페이 승인을 취소하시겠습니까?")) {
+			console.log("카카오페이 승인 취소");
+			
+			const tid = document.querySelector("input[name='tid']").value;
+			const ototal_price = document.querySelector("input[name='ototal_price']").value;
+			alert("카카오페이 환불 가격 : "+ ototal_price + ", tid : " + tid);
+			
+			$.ajax({
+				type: 'POST',
+				url: `${contextPath}/api/kakaopay/refund`,
+				contentType: "application/json",
+				data: JSON.stringify({
+					tid: tid,
+					ototal_price: ototal_price,
+					ostatus_mcd: ostatus_mcd,
+					orderno: orderno
+				}),
+				success: function(response) {
+					console.log("환불 요청 성공");
+					location.href = "/admin/shop";
+				},
+				error: function(error) {
+		            alert("카카오페이 환불 중 오류가 발생했습니다.");
+		            console.error("환불 실패:", error);
+		        }
+			})
+			
+		}
+	} else {
+		// 주문 상태가 400이 아닐 경우, 기존의 폼을 submit() 해서 기본적인 수정 기능 실행
+        console.log("주문 상태가 400이 아님. 기본적인 수정 실행");
+        document.getElementById("upd_op").submit();
+	}
+	
+}
+
+</script>
+
 <body> 
 
     <!-- Page Wrapper -->
@@ -119,6 +167,14 @@ select {
 				        	<tr>
 				        		<td class="form-input-title">결제방법</td>	<td>:</td> <td>${sale.opayment_content}</td>
 				        	</tr>
+				        	
+				        	<c:if test="${sale.opayment_mcd eq 300}">
+				        		<input type="hidden" name="tid" value="${sale.tid}">
+				        		<tr>
+				        			<td class="form-input-title">카카오페이 <br> 승인 번호</td>	<td>:</td> <td>${sale.tid}</td>
+				        		</tr>
+				        	</c:if>
+				        	
 				        </table>
 				        <table class="orderTable">
 				        	<colgroup>
@@ -138,6 +194,7 @@ select {
 				        
 				        <form action="/admin/updateOrder" method="post" name="frm" id="upd_op" class="orderTable" >
 				        	<input type="hidden" name="orderno" value="${sale.orderno}">
+				        	
 				        	<div class="row">
 				        		<div class="form-input-title" style="width: 80px">주문상태</div>
 				        		<div><select class="form-input-1 sub-alevel-mcd-select" name="ostatus_mcd">
@@ -188,6 +245,7 @@ select {
 				        <div class = "bottomInfo">
 				        	<div class="form-input-title">총결제금액</div>
 				        	<div style="width: 100px; text-align: center;">:</div> 
+				        	<input type="hidden" name="ototal_price" value="${totalPrice}">
 				        	<div><fmt:formatNumber value="${totalPrice}" pattern="#,###"/>원</td>
 				        </div>
 				        
@@ -196,7 +254,7 @@ select {
 					<!-- 모달 버튼 -->
 			       	<div class="modal_l-content-btn">
 				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/shop'">목록으로</button>
-			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="upd_op">수정하기</button>
+			            <button type="button" class="admin_modal update_btn" id="update_btn" onclick="psUpdate()">수정하기</button>
 			       	</div> 
                 </div>
                 <!-- /.container-fluid -->

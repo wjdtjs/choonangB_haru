@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.haruProject.dto.Board;
+import com.example.haruProject.dto.BoardImg;
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.hr.BoardService;
+import com.example.haruProject.service.js.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BoardController {
 	private final BoardService bs;
+	private final ReviewService rs;
 
 	// 게시판 글 조회
 
@@ -95,6 +98,10 @@ public class BoardController {
 		// 게시글 불러오기
 		Board board_c = bs.boardDetailContent(board1.getBno());
 		System.out.println("BoardController boardDetailList() boardDetailContent board ->"+board_c);
+		
+		// 글 이미지 불러오기
+		List<BoardImg> imgList = new ArrayList<>();
+		imgList = rs.getBoardImg(board1.getBno());
 
 		// 댓글 불러오기
 		List<Board> bdList_re = bdList.stream().filter(board -> board.getBseq() != 0).collect(Collectors.toList());
@@ -102,8 +109,10 @@ public class BoardController {
 
 		if (bdList_re == null) {
 			model.addAttribute("board", board_c);
+			model.addAttribute("imgList", imgList);
 		} else if (bdList_re != null) {
 			model.addAttribute("board", board_c);
+			model.addAttribute("imgList", imgList);
 			model.addAttribute("bdList_re", bdList_re);
 		}
 		

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="components/header.jsp" %>    
+<%@ include file="components/header.jsp" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -160,8 +161,20 @@ table#board_detail_re_table {
 	margin: auto 0;
 }
 
+/* 이미지 */
+.hr-review-img-div {
+	width: 100%;
+	height: auto;
+	padding-block: 10px;
+}
 
-
+.hr-review-img {
+	width: 200px;
+	height: auto;
+	border-radius: 10px;
+	margin-right: 10px;
+	display: inline-block;
+}
 
 </style>
 
@@ -248,42 +261,58 @@ table#board_detail_re_table {
 			                        	
 		                        	<!-- 글 내용 -->
 			                        	<div class="board_detail_content">
-				                        	<p>글 제목</p>
+				                        	<p>글 제목 <span style="font-weight: normal; margin-left: 12px;">${board.btitle }</span></p>
+				                        	
+				                        	<!-- 이미지 -->
+				                        	<c:if test="${fn:length(imgList) > 0 }">
+				                        		<p>이미지</p>
+												<div class="hr-review-img-div">
+													<c:forEach var="i" items="${imgList }">
+														<img class="hr-review-img" src="${i.content }">
+													</c:forEach>
+												</div>
+											</c:if>
+				                        	
+				                        	<p>글 내용</p>
 									        <div class="hr-board-text">
 									        ${board.bcontents }
 									        </div>
 			                        	</div>			                        			
 		                        </div>                	
 	                        	
+	                        	<c:if test="${board.board_type_mcd ne 300}">
 	                        	
-	                        	<!-- 댓글 -->
-	                        	<div class="board_detail_re">
-	                        		<h5 style="display: inline">댓글</h5>
-	                        		<p style="display: inline">${board.re_count -1}</p>	                        			
-		                        			<c:forEach var="re" items="${bdList_re}">
-			                        			<c:if test="${re.bseq != null && re.bseq ne ''}">								  
-										            <div class="board_detail_re_table">
-										                <!-- 작성자 정보 -->		    
-										                <table id="board_detail_table_re">
-										              	<colgroup>
-					                        		 		<col width="10%" />
-					                        		 		<col width="90%" />			                        		 		
-					                        		 	</colgroup>							              						                
-										                    <tr>
-										                        <td colspan="2"><p>${re.bcontents }</p></td>
-										                    </tr>
-										                    <tr id="re_writer">
-										                        <td>${re.mname }</td>							               
-										                        <td><fmt:formatDate value="${re.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-										                    </tr>
-										                </table>								                
-										                	<i id="re_del_btn" class="fa-solid fa-xmark" alt="re_del" onclick="location.href='/boardDelete_re?bno=${re.bno}&bgroup=${re.bgroup }'" ></i>
-										            </div>
-										            <hr>
-										        </c:if>
-									    	</c:forEach>                        		
-	                        		
-	                        	</div>
+		                        	<!-- 댓글 -->
+		                        	<div class="board_detail_re">
+		                        		<h5 style="display: inline">댓글</h5>
+		                        		<p style="display: inline">${board.re_count -1}</p>	                        			
+			                        			<c:forEach var="re" items="${bdList_re}">
+				                        			<c:if test="${re.bseq != null && re.bseq ne ''}">								  
+											            <div class="board_detail_re_table">
+											                <!-- 작성자 정보 -->		    
+											                <table id="board_detail_table_re">
+											              	<colgroup>
+						                        		 		<col width="20%" />
+						                        		 		<col width="80%" />			                        		 		
+						                        		 	</colgroup>							              						                
+											                    <tr>
+											                        <td colspan="2"><p>${re.bcontents }</p></td>
+											                    </tr>
+											                    <tr id="re_writer">
+											                        <td>${re.mid }</td>							               
+											                        <td><fmt:formatDate value="${re.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+											                    </tr>
+											                </table>								                
+											                	<i id="re_del_btn" class="fa-solid fa-xmark" alt="re_del" onclick="location.href='/boardDelete_re?bno=${re.bno}&bgroup=${re.bgroup }'" ></i>
+											            </div>
+											            <hr>
+											        </c:if>
+										    	</c:forEach>                        		
+		                        		
+		                        	</div>	                        	
+	                        	
+	                        	</c:if>
+	                        	
 	                        	<div class="modal_l-content-btn">	                        	 
 								    <button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/board'">목록으로</button>
 	                      	        <button type="button" class="update_btn" onclick="location.href='/boardDelete?bno=${board.bno}'">삭제하기</button>

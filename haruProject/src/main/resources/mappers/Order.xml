@@ -134,4 +134,36 @@
 		FROM product
 		WHERE pno = #{pno}
 	</select>
+	
+	
+	<!-- 주문하기 > orderno 불러오기 -->
+	<!-- ADD_PURCHASE 프로시저 실행 -->
+    <update id="HR_addPurchase" parameterType="Map" statementType="CALLABLE">
+        { CALL ADD_PURCHASE(
+            #{memno, 		mode=IN, 	jdbcType=NUMERIC},
+            #{opayment_mcd, mode=IN, 	jdbcType=NUMERIC},
+            #{ostatus_mcd, 	mode=IN, 	jdbcType=NUMERIC},
+            #{ototal_price, mode=IN, 	jdbcType=NUMERIC},
+            #{orderno, 		mode=OUT, 	jdbcType=NUMERIC}
+        ) }
+    </update>
+
+    <!-- PROCESS_ORDER_PRODUCTS 프로시저 실행 -->
+    <update id="HR_processOrderProducts" parameterType="Map" statementType="CALLABLE">
+	        CALL PROCESS_ORDER_PRODUCTS(
+	            #{memno, mode=IN, jdbcType=NUMERIC},
+	            #{purchase.pno, mode=IN, jdbcType=NUMERIC},
+	            #{purchase.squantity, mode=IN, jdbcType=NUMERIC},
+	            #{purchase.pprice, mode=IN, jdbcType=NUMERIC},
+	            #{orderno, mode=IN, jdbcType=NUMERIC}
+	        )
+    </update>
+    
+    <!-- 카카오페이 결제 완료시 주문완료로 update -->
+    <update id="HR_updateKState" parameterType="Map">
+    	UPDATE PURCHASE
+		SET ostatus_mcd = 100 , tid = #{tid}
+		WHERE orderno = #{orderno}
+    </update>
+	
 </mapper>
