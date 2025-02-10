@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PurchaseHistoryController {
 	private final PurchaseHistoryService ps;
 	
+	/* 구매내역 가져오기 */
 	@GetMapping(value = "/user/purchaseHistory")
 	public String getPurchaseHistory(	
 										HttpServletRequest request,
@@ -62,6 +63,7 @@ public class PurchaseHistoryController {
 		return "user/purchaseHistory";
 	}
 	
+	/* 상품후기 작성 뷰*/
 	@RequestMapping(value = "/user/writeProductReview")
 	public String writeReviewForm(	
 									HttpServletRequest request,
@@ -77,7 +79,7 @@ public class PurchaseHistoryController {
 		return "user/writeProductReviewForm";
 	}
 	
-	
+	/* 상품후기 작성*/
 	@PostMapping(value = "/user/addProductReview")
 	public String addProducrReview(
 									HttpServletRequest request,
@@ -152,6 +154,7 @@ public class PurchaseHistoryController {
 		return imgPath;
 	}
 	
+	/* 상품후기 뷰*/
 	@GetMapping(value = "/user/productReview")
 	public String ProductReviewView(OrderProduct op, Model model) {
 		System.out.println("PurchaseHistoryController ProductReviewView ...");
@@ -164,6 +167,7 @@ public class PurchaseHistoryController {
 		return "user/productReviewView";
 	}
 	
+	/* 상품후기 수정 뷰*/
 	@GetMapping(value = "/user/updateProductReviewView")
 	public String updateProductReviewView(OrderProduct op, Model model) {
 		System.out.println("PurchaseHistoryController ProductReviewView ...");
@@ -177,6 +181,7 @@ public class PurchaseHistoryController {
 		return "user/updateProductReviewForm";
 	}
 	
+	/* 상품후기 수정*/
 	@PostMapping(value = "/user/updateProductReview")
 	public String updateProductReview(
 										HttpServletRequest request,

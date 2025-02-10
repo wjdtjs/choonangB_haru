@@ -52,9 +52,6 @@
     		ORDER BY schdate ASC
 		)
 		WHERE ROWNUM = 2;
-
-
-
 		]]>
 	</select>
 	
@@ -99,17 +96,17 @@
 	</select>
 	
 	<insert id="GJInsertSchedule" parameterType="Schedule">
-    INSERT INTO schedule (schdate, reg_date, ano, schtype_mcd)
-    <choose>
-        <when test="offday1 != null and (offday2 == null or offday2.equals(''))">
-    		VALUES (to_date(#{offday1}, 'yyyy/mm/dd'), sysdate, #{ano}, #{schtype_mcd})
-        </when>
-        <when test="offday1 != null and offday2 != null">
-           SELECT to_date(#{offday1}, 'yyyy/mm/dd'), sysdate, #{ano}, #{schtype_mcd} FROM dual
-			UNION ALL
-			SELECT to_date(#{offday2}, 'yyyy/mm/dd'), sysdate, #{ano}, #{schtype_mcd} FROM dual
-        </when>
-        <otherwise/>
-    </choose>
-</insert>
+	    INSERT INTO schedule (schdate, reg_date, ano, schtype_mcd)
+	    <choose>
+	        <when test="offday1 != null and (offday2 == null or offday2.equals(''))">
+	    		VALUES (to_date(#{offday1}, 'yyyy/mm/dd'), sysdate, #{ano}, #{schtype_mcd})
+	        </when>
+	        <when test="offday1 != null and offday2 != null">
+	           SELECT to_date(#{offday1}, 'yyyy/mm/dd'), sysdate, #{ano}, #{schtype_mcd} FROM dual
+				UNION ALL
+				SELECT to_date(#{offday2}, 'yyyy/mm/dd'), sysdate, #{ano}, #{schtype_mcd} FROM dual
+	        </when>
+	        <otherwise/>
+	    </choose>
+	</insert>
 </mapper>

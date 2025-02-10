@@ -6,16 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class UserViewController {
-
-	/**
-	 * 사용자페이지 메인 뷰
-	 * @return
-	 */
-	@GetMapping("/user/index")
-	public String mainView() {
-		
-		return "user/main";
-	}
 	
 	/**
 	 * 로그인 페이지
