@@ -1,6 +1,9 @@
 package com.example.haruProject.dao.js;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,12 +91,56 @@ public class ReservationDaoImp implements ReservationDao {
 	@Override
 	public List<Schedule> getDayOffSchedule(Map<String, Object> d) {
 		List<Schedule> list = new ArrayList<>();
+		
+		System.out.println("getDayOffSchedule new Date ======>"+ new Date());
+		
 		try {
 			list = session.selectList("JS_SelectDoctorDayOff", d);
 		} catch (Exception e) {
 			log.error("getDayOffSchedule() query error -> ", e);
 		}
 		return list;
+	}
+
+	/**
+	 * 의사 정기 휴무
+	 */
+	@Override
+	public List<Schedule> getRegScheduleList(int ano, String currentEnd) {
+		System.out.println("getRegScheduleList() ano ======> "+ano);
+		System.out.println("getRegScheduleList() currentEnd ======> "+currentEnd);
+		
+		List<Schedule> list = new ArrayList<>();
+		Map<String, Object> pMap = new HashMap<>();
+		
+//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//		String formattedDate = formatter.format(currentEnd); 
+//		System.out.println("formattedDate ====> "+ formattedDate);
+		
+		pMap.put("ANO", ano);
+		pMap.put("current", currentEnd);
+		
+		try {
+			list = session.selectList("JS_SelectDoctorDayOff2", pMap);
+		} catch (Exception e) {
+			log.error("getRegScheduleList() query error -> ", e);
+		}
+		
+		return list;
+	}
+
+	/**
+	 * 예약 하기
+	 */
+	@Override
+	public void doAppointmentAction(Appointment app) {
+		System.out.println("dao doAppointmentAction() application => "+app);
+		
+		try {
+			session.insert("JS_InsertAppointment", app);
+		} catch (Exception e) {
+			log.error("doAppointmentAction() query error -> ", e);
+		}
 	}
 
 }

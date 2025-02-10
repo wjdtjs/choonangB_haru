@@ -333,8 +333,12 @@ table#calendar {
 		<!-- body contents -->
 		<div class="user-body-container" style="padding-top: 3.8rem;">
 			
-			<!-- 동물 선택 -->
-			<form action="appointmentStep1" method="post" onsubmit="return validateForm();" id="AppointmentFormStep2">
+			<!-- 의사 선택 -->
+			<form action="appointmentStep2" method="post" onsubmit="return validateForm();" id="AppointmentFormStep2">
+				<input type='hidden' name='resno' value=''>
+				<input type='hidden' name='rdate' value=''>
+				<input type='hidden' name='start_time' value=''>
+				
 				<ul class="appointment-info-ul">
 					<li class="appointment-info-li">
 						<span class="info-title">보호자</span>
@@ -348,12 +352,12 @@ table#calendar {
 					<li class="appointment-info-li">
 						<span class="info-title">예약항목</span>
 						<span>${apt.bcd_cont }</span>
-						<input type="hidden" name="bcd" value="${apt.bcd }">
+						<input type="hidden" name="mtitle_bcd" value="${apt.bcd }">
 					</li>
 					<li class="appointment-info-li">
 						<span class="info-title">세부항목</span>
 						<span>${apt.mcd_cont }</span>
-						<input type="hidden" name="mcd" value="${apt.mcd }">
+						<input type="hidden" name="mtitle_mcd" value="${apt.mcd }">
 					</li>					
 					<li class="appointment-info-li">
 						<span class="info-title">예약메모</span>
@@ -477,7 +481,7 @@ table#calendar {
 		<jsp:include page="components/menubar.jsp"></jsp:include>
 	</div>
 
-<script src="/js/buildCalendar.js" ></script>	
+<script src="/js/buildCalendar.js?v=0.13" ></script>	
 <script type="text/javascript">	
 
 	var today = new Date(); //오늘 날짜//내 컴퓨터 로컬을 기준으로 today에 Date 객체를 넣어줌
@@ -497,26 +501,71 @@ table#calendar {
 
 	/* submit 전 검증 */
 	function validateForm() {
-		let result = false;
+		let result = confirm('이대로 예약하시겠습니까?');
+		
+		const selected_date = $('td.selected-date').text();
+		const start_time = $('.cal_time_btn.selected_time').val();
+
+		let str = '';
+		if(!$('input:radio[name=ano]').is(':checked')) {
+			str += '담당의를 선택하세요.\n';
+			result = false;
+		}
+		if(!selected_date) {
+			str += '날짜 선택은 필수입니다.\n';
+			result = false;
+		}
+		if(!start_time) {
+			str += '진료시간을 선택하세요.';
+			result = false;
+		}
+		
+		if(!result) {
+			alert(str);
+		} else {
+			let rdate = today.getFullYear()+'-'+(today.getMonth() + 1)+'-'+selected_date;
+			
+			alert("선택한 날짜 : "+ rdate);
+			alert("선택한 시간 : "+ start_time);
+			
+			$('input:hidden[name=rdate]').val(rdate);
+			$('input:hidden[name=start_time]').val(start_time);
+			
+			const now = new Date();
+			$('input:hidden[name=resno]').val(now.getTime());
+			
+// 			result = confirm(`담당의 : \${$('input:radio[name=ano]:checked').data('key')}\n
+// 					예약 동물 : \${apt.petname}\n
+// 					예약 날짜 : \${rdate}\n
+// 					예약 시간 : \${start_time}\n\n
+// 					이대로 예약하시겠습니까?
+					
+// 					`)
+		}
+
 		
 		return result;
 	}
+	
 	
 	$(()=>{
 		/* 의사 선택 시 */
 		desVet();
 		$('input:radio[name=ano]').change(function() {
+			$('button[type=submit]').css('background', '#d9d9d9');
 			desVet();
 			let seldoc = $('input:radio[name=ano]:checked').val();
 			selected_vet = seldoc;
-			console.log("*****", selected_vet);
 			selectDoctor(); // /js/buildCalendar.js 
 			
 			$(".date-choice-toggle").next(".res-re").css('display', 'block');
 			$(".date-choice-toggle").children('.page-btn').css('transform', `rotate(270deg)`);
 	        $(".user-body-container").animate({ scrollTop: $(document).height() }, 500); //페이지 제일 하단으로 이동
 	        $('#cal_time').css("display", "none"); //시간 선택 안보이게
+	        
 		})
+		
+		
 		function desVet() {
 			let vet = $('input:radio[name=ano]:checked').data('key');
 			if(vet) {
@@ -548,39 +597,11 @@ table#calendar {
 	        var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
 	        
 	        var cur = angle + 180;
-	        console.log(cur)
 	        
 	        $(toggleItem).children('.page-btn').css('transform', `rotate(\${cur}deg)`);
 		}
 	})
 	
-	
-	
-	
-	
-// 	/* 예약 세부 항목 가져오기 */
-// 	$('.item-bcd-select').change(function() {
-//     	var bcd = $(this).val();
-//     	console.log(bcd);
-    	
-//     	if($('.item-bcd-select').val()!=null) {
-//     		$.ajax({
-<%--     			url: "<%=request.getContextPath()%>/api/res-mcd/"+bcd, --%>
-//     			method: 'GET',
-//     			success: function(data){
-//     				console.log(data)
-    				
-//     				let str = "<option disabled selected>선택</option>";
-//     				$(data).each (function(){
-//     					str += `<option value="\${this.MCD }">\${this.CONTENT }</option>`
-//     				});
-    				
-//     				$('.item-mcd-select').html(str);
-//     			}
-//     		})
-//     	}
-    	
-//     })
 
 
 

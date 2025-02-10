@@ -15,5 +15,7 @@ public interface ReservationDao {
 	List<Appointment> getReservation(Map<String, Object> params);
 	List<Common> getBCDList();
 	List<Schedule> getDayOffSchedule(Map<String, Object> d);
+	List<Schedule> getRegScheduleList(int ano, String currentEnd);
+	void doAppointmentAction(Appointment app);
 
 }

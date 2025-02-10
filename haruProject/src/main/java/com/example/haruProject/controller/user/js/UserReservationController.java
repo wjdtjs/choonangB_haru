@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.Appointment;
@@ -18,6 +19,7 @@ import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.Pet;
 import com.example.haruProject.dto.Schedule;
+import com.example.haruProject.service.hj.ScheduleService;
 import com.example.haruProject.service.hr.AppointmentService;
 import com.example.haruProject.service.js.ReservationService;
 
@@ -32,6 +34,7 @@ public class UserReservationController {
 	
 	private final ReservationService rs;
 	private final AppointmentService as;
+	private final ScheduleService ss;
 	
 	/**
 	 * 예약내역 리스트 조회
@@ -187,4 +190,63 @@ public class UserReservationController {
 		model.addAttribute("dayoff", dayOffList);
 		return "user/appointment2";
 	}
+	
+	/**
+	 * 의사 정기 휴무 날짜
+	 * @param ano
+	 * @param current
+	 * @param currentEnd
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping(value = "/api/vet-regular-holiday")
+	public List<Schedule> getSchedule(@RequestParam(value = "ano", required = true) int ano,
+									@RequestParam(value = "formattedDateEnd", required = false) String currentEnd) 
+	{
+		System.out.println("getSchedule() start...");
+		System.out.println("getSchedule() ano=->"+ano);
+		System.out.println("getSchedule() currentEnd=->"+currentEnd);
+		
+		List<Schedule> reg_schedules = new ArrayList<>();
+
+		// 의사 정기 휴무
+		reg_schedules = rs.getRegScheduleList(ano, currentEnd);
+		System.out.println("getSchedule() 의사 휴무 일정 리스트 : " + reg_schedules);
+		
+		// 의사 정기휴무 정보 (ano,현재휴무,변경휴무)
+		for (int i = 0; i<reg_schedules.size();i++) {
+			// 변경 날짜 가져오기
+			Date docChangedOff = ss.getChangedOff(reg_schedules.get(i));
+			reg_schedules.get(i).setNewoff(docChangedOff);
+			List<String> offdays = ss.getDocOffdays(reg_schedules.get(i) ,currentEnd);
+			reg_schedules.get(i).setPersoffdays(offdays);
+			System.out.println("ScheduleController getSchedule docChangedOff=->"+docChangedOff);
+		}
+		
+		System.out.println("getSchedule() reg_schedules-> " + reg_schedules);
+		
+		return reg_schedules;
+	}
+	
+	/**
+	 * 예약 하기
+	 * @param request
+	 * @param app
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/user/appointmentStep2")
+	public String appointmentAction(HttpServletRequest request, Appointment app, Model model) {
+		log.info("appointmentAction() start..");
+		System.out.println("appointmentAction() 예약=> "+app);
+		
+		int memno = SessionUtil.getNo(request);
+		app.setMemno(memno);
+		rs.doAppointmentAction(app);
+		
+		//TODO: 첫 등록이면 담당의 update 해주기
+		
+		return "redirect:/user/reservation";
+	}
+
 }

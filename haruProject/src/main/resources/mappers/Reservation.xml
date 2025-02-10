@@ -65,16 +65,76 @@
 	<!-- 의사 정기 휴무 - 최근 2건
 		(schtype_mcd = 200 : 의사정기휴무) -->
 	<select id="JS_SelectDoctorDayOff" parameterType="Map" resultType="Schedule">
-	    SELECT ROWNUM, aa.*
-	    FROM (
-	        SELECT SCHNO, SCHDATE, REG_DATE, ANO
-	        FROM SCHEDULE S 
-      			WHERE S.ANO = #{ANO} AND S.SCHTYPE_MCD = 200
-			ORDER BY S.SCHDATE desc
-	    )aa 
-        WHERE ROWNUM BETWEEN 1 AND 2
+	    <![CDATA[
+		    SELECT ROWNUM, aa.*
+		    FROM (
+		        SELECT SCHNO, SCHDATE, REG_DATE, ANO
+		        FROM SCHEDULE S 
+	      			WHERE S.ANO = #{ANO} AND S.SCHTYPE_MCD = 200
+	      			AND S.SCHDATE < LAST_DAY(sysdate)
+				ORDER BY S.SCHDATE DESC
+		    )aa
+	        WHERE ROWNUM BETWEEN 1 AND 2
+	        ORDER BY TO_CHAR(aa.SCHDATE-1,'D') ASC
+        ]]>
 	</select>
 
+
+	<!-- 의사 정기 휴무 - 최근 2건
+		(schtype_mcd = 200 : 의사정기휴무) -->
+	<select id="JS_SelectDoctorDayOff2" parameterType="Map" resultType="Schedule">
+		<![CDATA[
+	      SELECT *
+	      FROM(
+	            SELECT sd.*, cm.content sch_content, ad.aname,
+	                  ROW_NUMBER() OVER (PARTITION BY sd.ano ORDER BY sd.schdate DESC) AS rn
+	            FROM schedule sd
+	            JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
+	            LEFT JOIN admin ad ON sd.ano = ad.ano
+	            WHERE cm.mcd = 200
+	            AND sd.schdate < #{current}
+	            AND ad.astatus_mcd = 100
+	            AND ad.ano = #{ANO}
+	         ) t
+	      where t.rn in (1,2)
+	   ]]>
+	</select>
+	
+	
+	<!-- 예약 등록 -->
+	<insert id="JS_InsertAppointment">
+		INSERT INTO APPOINTMENT(
+			RESNO,
+			RDATE,
+			START_TIME,
+			MCODE,
+			ANO,
+			MEMNO,
+			PETNO,
+			MEMO
+		) VALUES (
+		 	<choose>
+	       		<when test="mtitle_bcd = 110">CONCAT('JR', #{resno})</when>
+	       		<when test="mtitle_bcd = 120">CONCAT('SS', #{resno})</when>
+	       		<when test="mtitle_bcd = 130">CONCAT('HC', #{resno})</when>
+	       		<when test="mtitle_bcd = 140">CONCAT('VC', #{resno})</when>
+	       </choose>,	
+	       #{rdate},
+	       #{start_time},
+			(SELECT mcode
+		        FROM MEDICAL_ITEM
+		        WHERE mtitle_bcd = #{mtitle_bcd} AND mtitle_mcd = #{mtitle_mcd}
+		    ),
+		    #{ano},
+		    #{memno},
+		    #{petno},
+		    #{memo}
+		)
+		
+		
+	</insert>
+	
+	
 	<select id="HJ_SelectCommingRes" parameterType="int" resultType="Appointment">
 		SELECT *
 		FROM(
@@ -98,4 +158,5 @@
 		)
 		WHERE ROWNUM = 1
 	</select>
+
 </mapper>

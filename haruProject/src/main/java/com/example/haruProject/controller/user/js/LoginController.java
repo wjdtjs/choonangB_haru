@@ -100,7 +100,6 @@ public class LoginController {
              String result = "";
 
              while ((line = br.readLine()) != null) {
-            	 System.out.println("***** "+line);
                  result += line;
              }
              
@@ -146,7 +145,7 @@ public class LoginController {
              return "user/login";
          }
 
-        return "user/main";                                        
+        return "redirect:/user/index";                                        
          
 	}	
 	

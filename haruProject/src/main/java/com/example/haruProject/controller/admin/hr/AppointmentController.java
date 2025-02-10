@@ -126,23 +126,28 @@ public class AppointmentController {
 	@ResponseBody
 	@GetMapping("/api/disabled-dates")
 	public List<Schedule> getDisabledDates(@RequestParam(value = "ano", required = true) int ano,
-										@RequestParam(value="month", required = false) int month) 
+										@RequestParam(value="month", defaultValue = "0") int month) 
 	{
 		System.out.println("AppointmentController getDisabledDates() start ,,,");
 		System.out.println("AppointmentController getDisabledDates() ano ->"+ano);
+		System.out.println("AppointmentController getDisabledDates() month ->"+month);
 		
-		//TODO: 이번달 것만 가지고오기
+		//이번달 것만 가지고오기
 		List<Schedule> sList = as.getDisabledDatesList(ano, month);
 
 		Date today = new Date();
+		
+		int mm = today.getMonth()+1;
 		int today_date = today.getDate();
-		for (int day = 1; day < today_date; day++) {
-			Schedule prevToday = new Schedule();
-			Date dd = new Date(today.getYear(), today.getMonth(), day);
-
-			prevToday.setSchdate(dd);
-			sList.add(prevToday);
-        }
+		if(mm == month) {
+			for (int day = 1; day < today_date; day++) {
+				Schedule prevToday = new Schedule();
+				Date dd = new Date(today.getYear(), today.getMonth(), day);
+				
+				prevToday.setSchdate(dd);
+				sList.add(prevToday);
+			}			
+		}
         
 		return sList;
 	}

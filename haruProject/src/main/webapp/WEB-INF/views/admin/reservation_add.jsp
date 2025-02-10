@@ -139,6 +139,8 @@ table#calendar {
 	border: none;
 	padding: 8px;
 	height: 50px;
+	
+	background-clip: content-box;
 }
 
 
@@ -193,24 +195,53 @@ input#res-mname {
 	var today = new Date();//오늘 날짜//내 컴퓨터 로컬을 기준으로 today에 Date 객체를 넣어줌
     var date = new Date();//today의 Date를 세어주는 역할
     var disabledDates = [];
+    var diff = 0;			//현재 날짜와 달력의 개월 차이
     
  	let selectedDateGlobal = null;
+    let selected_vet = 0;
     
-    function prevCalendar() {//이전 달
-    // 이전 달을 today에 값을 저장하고 달력에 today를 넣어줌
-    //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일 
-    //getMonth()는 현재 달을 받아 오므로 이전달을 출력하려면 -1을 해줘야함
-     today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-     buildCalendar(disabledDates); //달력 cell 만들어 출력 
-    }
+ 	/**
+ 	 * 이전달
+ 	 */
+ 	function prevCalendar() {
+ 	    // 이전 달을 today에 값을 저장하고 달력에 today를 넣어줌
+ 	    //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일 
+ 	    //getMonth()는 현재 달을 받아 오므로 이전달을 출력하려면 -1을 해줘야함
 
-    function nextCalendar() {//다음 달
-        // 다음 달을 today에 값을 저장하고 달력에 today 넣어줌
-        //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일 
-        //getMonth()는 현재 달을 받아 오므로 다음달을 출력하려면 +1을 해줘야함
-         today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
-         buildCalendar(disabledDates);//달력 cell 만들어 출력
-    }
+ 	     //오늘 기준 달 이전 달은 그리지 않음
+ 	    if(diff != 0) {
+ 			$(".cal-prev-btn").css('display', 'block');
+ 			$(".cal-next-btn").css('display', 'block');
+ 		    today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+ 			selectDoctor();
+ 			diff--;
+ 		} 
+ 		if(diff == 0) {
+ 			$(".cal-prev-btn").css('display', 'none');
+ 		}
+ 	}
+
+ 	/**
+ 	 * 다음달
+ 	 */
+ 	function nextCalendar() {
+ 	    // 다음 달을 today에 값을 저장하고 달력에 today 넣어줌
+ 	    //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일 
+ 	    //getMonth()는 현재 달을 받아 오므로 다음달을 출력하려면 +1을 해줘야함
+ 	       
+ 	    //오늘 기준 최대 6개월까지만 그려줌	
+ 	    if(diff < 5) {
+ 			$(".cal-prev-btn").css('display', 'block');
+ 			$(".cal-next-btn").css('display', 'block');
+ 		    today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+ 		    
+ 		    selectDoctor();
+ 		    diff++;
+ 		} 
+ 		if(diff == 5) {
+ 			$(".cal-next-btn").css('display', 'none');
+ 		}
+ 	}
 	
     function buildCalendar(disabledDates) {
     	console.log("buildCalendar start ,,,");
@@ -284,7 +315,7 @@ input#res-mname {
                 	const padZero = (num) => (num < 10 ? `0\${num}` : `\${num}`);
                 	
                 	// yy/MM/dd로 변환
-                    const selectedDate = `\${today.getFullYear()}/\${padZero(today.getMonth() + 1)}/\${padZero(currentDay)}`;
+                    const selectedDate = `\${today.getFullYear()}-\${padZero(today.getMonth() + 1)}-\${padZero(currentDay)}`;
                     selectedDateGlobal = selectedDate
                     alert("선택된 날짜: " + selectedDateGlobal);
 
@@ -322,10 +353,11 @@ input#res-mname {
     
     // 비활성화 날짜 불러오기
     async function getDisabledDates(docValue) {
+    	var current_m = today.getMonth()+1;
     	try {
     		console.log("getDisabledDates docValue ->"+docValue);
-    		console.log("getDisabledDates api url ->", `/api/disabled-dates?ano=\${docValue}`);
-            const response = await fetch(`/api/disabled-dates?ano=\${docValue}`, {
+    		console.log("getDisabledDates api url ->", `/api/disabled-dates?ano=\${docValue}&month=\${current_m}`);
+            const response = await fetch(`/api/disabled-dates?ano=\${docValue}&month=\${current_m}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -343,31 +375,125 @@ input#res-mname {
         }
     }
     
+    /**
+     * 병원/의사 정기 휴무 불러오기
+     */
+    async function getRegularDisabledDates(docValue) {
+    	var lastdate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        var formatted_lastdate = lastdate.getFullYear()%100 + '/' + ('0' + (lastdate.getMonth() + 1)).slice(-2) + '/' + ('0' + lastdate.getDate()).slice(-2); // "YYYY-MM" 형태
+        
+        try {
+    		console.log("getRegularDisabledDates docValue ->"+docValue);
+            const response = await fetch(`/api/vet-regular-holiday?ano=\${docValue}&formattedDateEnd=\${formatted_lastdate}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch disabled dates");
+            }
+            const data = await response.json();
+            console.log("getRegularDisabledDates data -> ", data)
+            
+            return data || [];
+        } catch (error) {
+            console.error("Error fetching disabled dates:", error);
+            return [];
+        }
+    }
+    
+    
     // 선생님 선택시 진료 불가능 날짜 받아오기
     $(document).ready(function () {
     	$('#res-doc').change(async function() {
     		const selectedValue = $(this).val();	// 선택된 선생님 val 가져오기
     		console.log("selectedValue ->"+selectedValue);
+    		selected_vet = selectedValue;
+    		selectDoctor();
     		
-    		if (selectedValue && selectedValue != "0") {
-				const dDates = await getDisabledDates(selectedValue);
-    			console.log("if selectedValue ->"+selectedValue);
-    			console.log("if dDates ->"+dDates);
+//     		if (selectedValue && selectedValue != "0") {
+// 				const dDates = await getDisabledDates(selectedValue);
+// 				const dDates2 = await getRegularDisabledDates(selectedValue);
+//     			console.log("if selectedValue ->"+selectedValue);
+//     			console.log("if dDates ->"+dDates);
     			
-    			for (var i = 0; i < dDates.length; i++) {
-    				disabledDates.push(dDates[i].schdate);
-				}
-    			console.log("disabledDates ->", disabledDates);
+//     			disabledDates = [];
+//     			if(dDates) {
+//     				for (var i = 0; i < dDates.length; i++) {
+//     					disabledDates.push(dDates[i].schdate);
+//     				}
+//     			}
+//     			if(dDates2) {
+//     				for (var i = 0; i < dDates2.length; i++) {
+//     					if(dDates2[i].persoffdays) {
+//     						for(var j = 0; j < dDates2[i].persoffdays.length; j++) {
+//     							disabledDates.push(dDates2[i].persoffdays[j]);			
+//     						}					
+//     					}
+//     					if(dDates2[i].newoff) {
+//     						for(var j = 0; j < dDates2[i].newoff.length; j++) {
+//     							disabledDates.push(dDates2[i].newoff[j]);			
+//     						}					
+//     					}
+//     				}			
+//     			}
 				
-				if (disabledDates) {
-					console.log("disabledDates ->",disabledDates);
-					console.log("buildCalendar ready,,,");
-					buildCalendar(disabledDates);					// 진료 불가능 날짜 적용된 달력 함수 호출
-					$('#res-calendar').css("display", "block");		// 달력 보이게
-				}
-			}
+// 				if (disabledDates) {
+// 					console.log("disabledDates ->",disabledDates);
+// 					console.log("buildCalendar ready,,,");
+// 					buildCalendar(disabledDates);					// 진료 불가능 날짜 적용된 달력 함수 호출
+// 					$('#res-calendar').css("display", "block");		// 달력 보이게
+// 				}
+// 			}
     	})
     })
+    
+    
+    /**
+	 * 진료 불가능 날짜 받아오기
+	 */
+	async function selectDoctor() {
+		console.log("selectedValue ->"+selected_vet);
+		
+	//	if (selected_vet && selected_vet != "0") {
+			const dDates = await getDisabledDates(selected_vet);
+			const dDates2 = await getRegularDisabledDates(selected_vet);
+			console.log("if selectedValue ->"+selected_vet);
+	//		console.log("if dDates ->"+dDates);
+			
+			disabledDates = [];
+			if(dDates) {
+				for (var i = 0; i < dDates.length; i++) {
+					disabledDates.push(dDates[i].schdate);
+				}
+			}
+			if(dDates2) {
+				for (var i = 0; i < dDates2.length; i++) {
+					if(dDates2[i].persoffdays) {
+						for(var j = 0; j < dDates2[i].persoffdays.length; j++) {
+							disabledDates.push(dDates2[i].persoffdays[j]);			
+						}					
+					}
+					if(dDates2[i].newoff) {
+						for(var j = 0; j < dDates2[i].newoff.length; j++) {
+							disabledDates.push(dDates2[i].newoff[j]);			
+						}					
+					}
+				}			
+			}
+			console.log("disabledDates ->", disabledDates);
+			
+			if (disabledDates) {
+	//			console.log("disabledDates ->",disabledDates);
+				console.log("buildCalendar ready,,,");
+				buildCalendar(disabledDates);					// 진료 불가능 날짜 적용된 달력 함수 호출
+				$('#res-calendar').css("display", "block");		// 달력 보이게
+			}
+	//	}
+	}
+    
+
     
     // 날짜 선택에 따른 시간들 불러오기
     // 선택한 날짜에 따른 시간 불러오기 전에 모든 버튼 활성화
@@ -664,31 +790,43 @@ input#res-mname {
 	
 	
 	// 예약 추가하기
-	$(function() {
-		$('.update_btn').click(function() {
-			if(confirm("예약을 추가하시겠습니까?") == true) {
-				var sendData = $('form').serialize();
-				// sendData에 1차로 들어오는 데이터: rtime, ano, mtitle_bcd, mtitle_mcd, petno, memo
-				console.log("sendData : ", sendData);
-				// 추가로 넣어줘야 할 것들: rdate, start_time				
-                const rdate = selectedDateGlobal;
-				const start_time = document.querySelector(".cal_time_btn.selected_time").value;
-				const now = new Date();
-				const resno = now.getTime();
+	function validateForm() {
+// 		$('.update_btn').click(function() {
+
+			var sendData = $('form').serialize();
+			// sendData에 1차로 들어오는 데이터: rtime, ano, mtitle_bcd, mtitle_mcd, petno, memo
+			console.log("sendData : ", sendData);
+			// 추가로 넣어줘야 할 것들: rdate, start_time				
+            const rdate = selectedDateGlobal;
+			const start_time = document.querySelector(".cal_time_btn.selected_time").value;
+			const now = new Date();
+			const resno = now.getTime();
+			
+			console.log("rdate : ", rdate, " start_time : ", start_time, "resno : ", resno);
+			
+			sendData = sendData + ('&rdate='+rdate) + ('&start_time='+start_time) + ('&resno='+resno);
+			
+			console.log("sendData : ", sendData);
+			alert("sendData :"+ sendData);
+			
+			$('input:hidden[name=resno]').val(resno);
+			$('input:hidden[name=rdate]').val(rdate);
+			$('input:hidden[name=start_time]').val(start_time);
 				
-				console.log("rdate : ", rdate, " start_time : ", start_time, "resno : ", resno);
-				
-				sendData = sendData + ('&rdate='+rdate) + ('&start_time='+start_time) + ('&resno='+resno);
-				
-				console.log("sendData : ", sendData);
-				alert("sendData :"+ sendData);
-				
-				location.href = "/admin/insertReservation?"+sendData;
-			}
-		})
-	})
+// 				location.href = "/admin/insertReservation?"+sendData;
+
+			let result = confirm("예약을 추가하시겠습니까?") ;
+			return result;
+			
+// 		})
+	}
 	
 	
+	document.getElementById("pro-update-form").addEventListener("keydown", function(event) {
+		  if (event.key === "Enter" && event.target.tagName === "INPUT") {
+		    event.preventDefault();
+		  }
+		});
 	
 </script>
 
@@ -713,8 +851,11 @@ input#res-mname {
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid modal_">
-                <form action="" method="POST">             
-                
+                <form action="insertReservation" method="POST" onsubmit="return validateForm();" id="pro-update-form">             
+                	<input type='hidden' name='resno' value=''>
+                	<input type='hidden' name='rdate' value=''>
+                	<input type='hidden' name='start_time' value=''>
+                	
                 	
                 	<!-- Page Heading -->
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >예약 추가</h1>
@@ -731,9 +872,14 @@ input#res-mname {
 				        		<div id="res-calendar" style="display: none">
 				        			<table id="calendar" border="3" align="center" style="border-color:#3333FF ">
 									    <tr><!-- label은 마우스로 클릭을 편하게 해줌 -->
-									        <td><label onclick="prevCalendar()"><</label></td>
+									        <td><label onclick="prevCalendar()" class="cal-prev-btn" style="display: none">
+									        	<i class="fa-solid fa-chevron-left"></i> 
+									        </label></td>
 									        <td align="center" id="tbCalendarYM" colspan="5">yyyy년 m월</td>
-									        <td><label onclick="nextCalendar()">></label></td>
+									        <td><label onclick="nextCalendar()" class="cal-next-btn">
+							        		<i class="fa-solid fa-chevron-right"></i> 
+							        	</label>
+							        </td>
 									    </tr>
 									    <tr>
 									        <td align="center"><font color ="red">일</td>
@@ -836,7 +982,7 @@ input#res-mname {
 						        					<div style="display: flex">
 						        						<input type="text" name="search1" id="res-mname"
 						        								onkeypress="console.log('onkeypress 실행됨'); if (event.key === 'Enter') search_mname(event)"
-						        								value="${search1 }">
+						        								value="${search1 }" required="required">
 								                       	<select id="res-select-mname" name="memno" style="display:none" required>
 								                       		<option disabled selected value="0">선택</option>
 								                    	</select>

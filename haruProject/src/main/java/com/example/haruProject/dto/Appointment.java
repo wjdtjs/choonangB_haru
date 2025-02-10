@@ -2,6 +2,8 @@ package com.example.haruProject.dto;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 // 예약
@@ -9,6 +11,7 @@ import lombok.Data;
 @Data
 public class Appointment {
 	private String resno;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date rdate;
 	private String mcode;
 	private int ano;

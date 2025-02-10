@@ -72,6 +72,25 @@ public class ReservationServiceImp implements ReservationService {
 		return list;
 	}
 
+	/**
+	 * 의사 정기 휴무
+	 */
+	@Override
+	public List<Schedule> getRegScheduleList(int ano, String currentEnd) {
+		List<Schedule> list = new ArrayList<>();
+		list = rd.getRegScheduleList(ano, currentEnd);
+		return list;
+	}
+
+	/**
+	 * 예약 하기
+	 */
+	@Override
+	public void doAppointmentAction(Appointment app) {
+		rd.doAppointmentAction(app);
+		
+	}
+
 
 
 }
