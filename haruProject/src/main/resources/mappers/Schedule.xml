@@ -56,7 +56,7 @@
       		AND schdate > #{schdate}
     		ORDER BY schdate ASC
 		)
-		WHERE ROWNUM = 2;
+		WHERE ROWNUM = 2
 		]]>
 	</select>
 	

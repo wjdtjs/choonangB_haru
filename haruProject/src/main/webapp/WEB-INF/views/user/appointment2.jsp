@@ -347,17 +347,17 @@ table#calendar {
 					<li class="appointment-info-li">
 						<span class="info-title">예약동물</span>
 						<span>${apt.petname }</span>
-						<input type="hidden" name="petno" value="${apt.petno }">
+						<input type="hidden" name="petno" value="${apt.petno }" data-key="${apt.petname }">
 					</li>
 					<li class="appointment-info-li">
 						<span class="info-title">예약항목</span>
 						<span>${apt.bcd_cont }</span>
-						<input type="hidden" name="mtitle_bcd" value="${apt.bcd }">
+						<input type="hidden" name="mtitle_bcd" value="${apt.bcd }" data-key="${apt.bcd_cont }">
 					</li>
 					<li class="appointment-info-li">
 						<span class="info-title">세부항목</span>
 						<span>${apt.mcd_cont }</span>
-						<input type="hidden" name="mtitle_mcd" value="${apt.mcd }">
+						<input type="hidden" name="mtitle_mcd" value="${apt.mcd }" data-key="${apt.mcd_cont }">
 					</li>					
 					<li class="appointment-info-li">
 						<span class="info-title">예약메모</span>
@@ -501,50 +501,47 @@ table#calendar {
 
 	/* submit 전 검증 */
 	function validateForm() {
-		let result = confirm('이대로 예약하시겠습니까?');
+		var vet = $('input:radio[name=ano]:checked').data('key');
+		var pet_name = $('input:hidden[name=petno]').data('key');
+		var bcd = $('input:hidden[name=mtitle_bcd]').data('key');
+		var mcd = $('input:hidden[name=mtitle_mcd]').data('key');
+		var memo = $('input:hidden[name=memo]').val();
+		var selected_date = $('td.selected-date').text();
+		var time = $('.cal_time_btn.selected_time').text()
+		var start_time = $('.cal_time_btn.selected_time').val();
+		var rdate = today.getFullYear()+'-'+(today.getMonth() + 1)+'-'+selected_date;
+		var result = confirm(`담당의 : \${vet}
+예약 항목 : \${bcd} - \${mcd}
+예약 동물 : \${pet_name}
+예약 날짜 : \${rdate}
+예약 시간 : \${time}
+예약 메모 : \${memo}
+이대로 예약하시겠습니까?`);
 		
-		const selected_date = $('td.selected-date').text();
-		const start_time = $('.cal_time_btn.selected_time').val();
+		$('input:hidden[name=rdate]').val(rdate);
+		$('input:hidden[name=start_time]').val(start_time);
+		
+		var now = new Date();
+		$('input:hidden[name=resno]').val(now.getTime());
 
 		let str = '';
 		if(!$('input:radio[name=ano]').is(':checked')) {
 			str += '담당의를 선택하세요.\n';
-			result = false;
 		}
 		if(!selected_date) {
 			str += '날짜 선택은 필수입니다.\n';
-			result = false;
 		}
 		if(!start_time) {
 			str += '진료시간을 선택하세요.';
+		}
+		
+		if(str!='') {
+			alert(str);
 			result = false;
 		}
 		
-		if(!result) {
-			alert(str);
-		} else {
-			let rdate = today.getFullYear()+'-'+(today.getMonth() + 1)+'-'+selected_date;
-			
-			alert("선택한 날짜 : "+ rdate);
-			alert("선택한 시간 : "+ start_time);
-			
-			$('input:hidden[name=rdate]').val(rdate);
-			$('input:hidden[name=start_time]').val(start_time);
-			
-			const now = new Date();
-			$('input:hidden[name=resno]').val(now.getTime());
-			
-// 			result = confirm(`담당의 : \${$('input:radio[name=ano]:checked').data('key')}\n
-// 					예약 동물 : \${apt.petname}\n
-// 					예약 날짜 : \${rdate}\n
-// 					예약 시간 : \${start_time}\n\n
-// 					이대로 예약하시겠습니까?
-					
-// 					`)
-		}
-
-		
 		return result;
+
 	}
 	
 	
