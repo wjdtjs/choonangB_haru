@@ -68,11 +68,11 @@ public class ConsultationDaoImpl implements ConsultationDao {
 		System.out.println("ConcultationDao addChart ...");
 		System.out.println("ConcultationDao imgPaths ->"+imgPaths);
 		System.out.println("ConcultationDao ch.getResno() ->"+ch.getResno());
-		
+		String cno = 'C'+ch.getResno();
 		int result = 0;
 		for(String imgPath : imgPaths) {
 			Map<String, Object> paramMap = new HashMap<>();
-			paramMap.put("resno", ch.getResno());
+			paramMap.put("cno", cno);
 			paramMap.put("imgPath", imgPath);
 			try {
 				result = session.insert("HJSaveChartImg", paramMap);
@@ -129,6 +129,53 @@ public class ConsultationDaoImpl implements ConsultationDao {
 			System.out.println("Consultation userChartImages e.getMessage()"+e.getMessage());
 		}
 		return chartImages;
+	}
+
+	@Override
+	public void updateConsultation(Chart ch, List<String> imgPaths) {
+		System.out.println("ConsultationDao updateConsultation ...");
+		System.out.println("ConsultationDao updateConsultation ch-> "+ch);
+		System.out.println("ConsultationDao updateConsultation imgPaths->"+imgPaths);
+		int upResult = 0;
+		int delResult = 0;
+		int addResult = 0;
+		try {
+			// update
+			upResult = session.update("HJ_UpdateConsulataion",ch);
+			System.out.println("upResult-> "+upResult);
+			
+			//boardimg에서 삭제할 이미지 있는지 확인
+			int [] arr = ch.getImgno();
+			String cno = ch.getCno();
+			if(arr.length > 0) {
+				for (int i : arr) {
+					Map<String, Object> delMap = new HashMap<>();
+					delMap.put("cno", cno);
+					delMap.put("imgno", i);
+					delResult=session.delete("HJ_DeleteChartImg",delMap);
+					System.out.println("delResult-> "+delResult);
+				}
+			}
+			//추가할 이미지가 있을 경우
+			if(imgPaths.size() > 0) {
+				for(String imgPath : imgPaths) {
+					Map<String, Object> paramMap = new HashMap<>();
+					paramMap.put("cno", ch.getCno());
+					paramMap.put("imgPath", imgPath);
+					System.out.println("ConsultationDao chartImgSave paramMap-> "+paramMap);
+					try {
+						addResult = session.insert("HJSaveChartImg", paramMap);
+						System.out.println("addResult-> "+addResult);
+					} catch (Exception e) {
+						System.out.println("ConsultationDao chartImgSave error->"+e.getMessage());
+					}		
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 
 

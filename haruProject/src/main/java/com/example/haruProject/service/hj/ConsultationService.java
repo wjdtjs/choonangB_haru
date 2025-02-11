@@ -17,6 +17,7 @@ public interface ConsultationService {
 	Appointment 		userDetailConsultation(String cno);
 	Chart 				getUserChart(String cno);
 	List<ChartDetail> 	getUserImages(String cno);
+	void 				updateConsultation(Chart ch, List<String> imgPaths);
 
 	
 

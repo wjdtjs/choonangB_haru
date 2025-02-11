@@ -105,7 +105,7 @@
 	
 	<!-- 일정등록 -->
 	<!-- 정기휴무 X: offday2 = null -->
-	<insert id="HJInsertSchedule" parameterType="Schedule">
+	<insert id="HJ_InsertSchedule" parameterType="Schedule">
 	    INSERT INTO schedule (schdate, reg_date, ano, schtype_mcd)
 	    <choose>
 	        <when test="offday1 != null and (offday2 == null or offday2.equals(''))">

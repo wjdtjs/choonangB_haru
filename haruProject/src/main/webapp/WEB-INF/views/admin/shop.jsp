@@ -40,6 +40,19 @@
 			location.href = '/admin/shop?type4='+type4+'&type5='+type5+'&search1='+search1;
 		}
 	})
+	
+	// 취소 주문건
+	document.addEventListener("DOMContentLoaded",function(){
+		const rows = document.querySelectorAll("#dataTable .saleTable tr");
+		
+		rows.forEach((row) => {
+			const statusCell = row.querySelector("td:nth-child(7)");
+			if (statusCell && statusCell.textContent.trim() === "주문 취소") {
+	            row.style.backgroundColor = "#f2f2f2";
+	            row.style.color = "#666"
+	        }
+		})
+	})
 </script>
 <body id="page-top"> 
 
@@ -103,6 +116,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
+                            	<div style="float: right; margin-bottom: 4px;">총 ${totalCnt }건</div>
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>

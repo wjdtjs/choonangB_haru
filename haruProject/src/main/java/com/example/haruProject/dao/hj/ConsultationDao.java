@@ -17,5 +17,6 @@ public interface ConsultationDao {
 	Appointment			userDetailConsultation(String cno);
 	Chart 				userChart(String cno);
 	List<ChartDetail>	userChartImages(String cno);
+	void				updateConsultation(Chart ch, List<String> imgPaths);
 
 }

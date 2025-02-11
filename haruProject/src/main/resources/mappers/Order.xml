@@ -3,9 +3,36 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.haruProject.ShopMapper">
-	<select id="HJTotalCnt" resultType="int">
+	<select id="HJTotalCnt" parameterType="SearchItem" resultType="int">
 		select count(*)
-		FROM purchase
+		FROM purchase pc
+		JOIN member mb ON pc.memno = mb.memno
+		<if test="(type4 != 0 and !type4.equals('')) or ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">		
+			WHERE
+		</if>
+		<if test="type4 != 0 and !type4.equals('')">
+			pc.ostatus_mcd = #{type4}
+		</if>
+		<if test="(type4 != 0 and !type4.equals('')) and ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">
+			AND
+		</if>
+		<if test="(type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals(''))">
+			<choose>
+				<when test="type5 == 1">
+					pc.orderno LIKE '%' || #{search1} || '%'
+			  	</when>
+			  	<when test="type5 == 2">
+			  		mb.mname LIKE '%' || #{search1} || '%'
+			  	</when>
+			  	<when test="type5 == 3">
+			  		pc.orderno IN (	SELECT orderno
+			  						FROM orderproduct op1
+			  						JOIN product pd1 ON op1.pno = pd1.pno
+			  						WHERE pd1.pname LIKE '%' || #{search1} || '%'
+			  					   )
+			  	</when>
+			 </choose>
+		</if>
 	</select>
 
 	<select id="HJSelectShopList" parameterType="Map" resultType="Order">

@@ -12,6 +12,7 @@ public class Order {
 	private Date odate;				// 주문날짜
 	private int memno;				// 회원번호
 	private String mtel;			// 전화번호
+	private String memail;			// 전화번호
 	private String mname;			// 회원명
 	private int opayment_bcd;		// 결제 대분류
 	private int opayment_mcd;		// 결제 중분류

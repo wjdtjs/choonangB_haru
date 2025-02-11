@@ -74,5 +74,8 @@ public class ConsultationServiceImpl implements ConsultationService {
 		return imageLists;
 	}
 
-
+	@Override
+	public void updateConsultation(Chart ch, List<String> imgPaths) {
+		cd.updateConsultation(ch, imgPaths);
+	}
 }

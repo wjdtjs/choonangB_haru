@@ -10,7 +10,7 @@ import com.example.haruProject.dto.OrderProduct;
 public interface OrderService {
 
 	List<Order> 		getShopList(int startRow, int endRow, SearchItem si);
-	int					getTotalCnt();
+	int					getTotalCnt(SearchItem si);
 	Order				getOrderInfo(int orderno);
 	List<OrderProduct> 	getOrderProducts(int orderno);
 	List<Common>		getOrderStatus();

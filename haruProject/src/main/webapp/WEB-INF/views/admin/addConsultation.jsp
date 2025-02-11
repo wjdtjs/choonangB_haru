@@ -13,12 +13,14 @@
     <meta name="author" content="">
 
     <title>차트 등록</title>
-
+	
+	<!-- 폰트어썸 -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+	integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+	
 </head>
 
-
-
-<!-- style -->
 <style>
 
 .modal_l_detail, table{
@@ -29,6 +31,10 @@
 	height: 40px;
 }
 
+.petInfo_1 {
+	width: 100%;
+}
+
 .infoTitle {
 	font-size: 1.15rem;
 	font-weight: 500;
@@ -36,6 +42,7 @@
 }
 
 .contents{
+	width: 100%;
 	height: 50px;
 	text-align: center;
 	line-height: 50px;
@@ -43,7 +50,6 @@
 	grid-template-columns: 1fr 1fr 3fr 3fr 2fr;
 	margin: 5px 0;
 }
-
 .contents .content:first-child{
 	border-top-left-radius:10px;
 	border-bottom-left-radius:10px;
@@ -52,10 +58,11 @@
 	border-top-right-radius:10px;
 	border-bottom-right-radius:10px;
 }
-
 .content{
-	/* border: 1px solid #aaa; */
 	background-color: #E7F3F4;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .box{
@@ -67,11 +74,9 @@
  
 }
 
-
 .form-input-title {
 	font-weight: 500;
 }
-
 
 .form-input-box{
 	width: 100%;
@@ -82,29 +87,23 @@
 	margin-bottom: 20px;
 	margin-top: 5px;
 }
-/* .form-input{
-	width: 100%;
-	height: 200px;
-	border: 1.5px solid var(--haru);
-	border-radius: 10px;
-	padding: 10px;
-	margin-bottom: 20px;
-} */
-.pro-imgList-div{
+
+.pre-img-div{
 	width: fit-content;
 	height: fit-content;
 
 }
-.pro-imgList-div>img{
+.pre-img-div>img{
 	width: 112px;
 	height: 112px;
 	position: relative;
-	margin-right: 8px;
+	border-radius: 8px;
+	margin: 4px;
 }
 
 
 /* SELECT 버튼 위치 수정*/
-label.img_upload {
+.file-input-label {
     background-color: #f0f0f0;
     cursor: pointer;
     text-align: center;
@@ -153,6 +152,7 @@ em {
 				        	<colgroup>
 		                    	<col width="8%" />
 		                        <col width="3%" />
+		   
 		                    </colgroup>
 				        	<tr>
 				        		<td class="form-input-title">예약번호</td> <td>:</td> <td>${apm.resno}</td>
@@ -164,7 +164,10 @@ em {
 				        		<td class="form-input-title">진료과목</td>	<td>:</td> <td>${apm.item}</td>
 				        	</tr>
 				        	<tr>
-				        		<td class="form-input-title">담당의</td>	<td>:</td> <td>${apm.aname}</td>
+				        		<td class="form-input-title">주치의</td>	<td>:</td> <td>${apm.aname}</td>
+				        	</tr>
+				        	<tr>
+				        		<td class="form-input-title">보호자</td>	<td>:</td> <td onclick="location.href='/admin/detailMember?memno='+${apm.memno}">${apm.mname} <i class="fa-solid fa-file-lines"></i></td>
 				        	</tr>
 				        </table>
 				        <div class="petInfo_1">
@@ -182,25 +185,16 @@ em {
 				        	</div>
 				        </div>
 				        
-				        <form action="/admin/addChart" method="post" name="frm" id="add_chart" enctype="multipart/form-data">
+				        <form action="/admin/addChart" method="post" onsubmit="return vaildateForm()" id="add_chart" enctype="multipart/form-data">
 				        	<input type="hidden" name="resno" value="${apm.resno}">
-				        	<div class="infoTitle">이미지</div>
-				        	<div style="margin-top: 1rem" class="imgList">
-							<%-- <c:choose> 
-									<c:when test="${not empty savedName }"> 
-										<img alt="UpLoad Image" src="">	        		
-									</c:when>
-								 <c:otherwise>  --%>
-								 <div class="pro-imgList-div" style="display: none"></div>
-								 <div class = "pro-labels-div">
-									 <div class="pro-label-div">
-									 	<label for="upload" class="img_upload">+</label>
-										<input type="file" id="upload" name="upload" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
-									 </div>
-								 </div>
-							<%-- </c:otherwise> 
-								</c:choose>  --%>
-					       </div>
+				        	<div class="consultation-image">
+					        	<div class="infoTitle">이미지</div>
+					        	<div class="file-name-div" style="margin-top: 1rem" >
+									 <div class="pre-img-div"></div>
+									 <label for="img-input" class="file-input-label">+</label>
+									 <input type="file" id="img-input" name="file" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple>
+						       </div>
+				        	</div>
 					       
 					       <div class="infoTitle">차트 내용<em>*</em></div>
 				        	<div>
@@ -246,75 +240,41 @@ em {
 </body>
 
 <script type="text/javascript">
-	
+
+	function validateForm() {
+		let result = false;
+		
+		result = confirm('이대로 작성하시겠습니까?');
+		return result;
+	}
 	
 	/**
 	* 첨부파일 추가
 	*/
-	var fileNo = 1;
-	var filesArr = new Array();
-	var maxFileCnt = 5; //최대 첨부파일 개수
-	
  	function addFile(obj) {
+		var maxFileCnt = 5; 				//최대 첨부파일 개수
+		var curFileCnt = obj.files.length; 	// 현재 첨부된 파일 개수
 		
-		var attFileCnt = document.querySelectorAll(".pro-imgList-div img").length;	// 기존 추가된 첨부파일 개수
-		var remainFileCnt = maxFileCnt-attFileCnt; 											// 추가로 첨부가능한 개수
-		var curFileCnt = obj.files.length; 													// 현재 첨부된 파일 개수
-		console.log('attFileCnt->'+attFileCnt)
-		// 최대 첨부파일수 초과시 
-		if(curFileCnt > remainFileCnt){
+		if(curFileCnt > maxFileCnt){ 		// 최대 첨부파일수 초과시 
 			alert('최대 첨부파일 수는 '+maxFileCnt+'개 입니다.');
 			return false;
 		}
 		
-		
-		/* if(attFileCnt+curFileCnt >= maxFileCnt){
-			$('.pro-label-div').css('display', 'none');
-		}else {
-			$('.pro-label-div').css('display', 'inline');
-		} */
-		
-		
-		for (var i = 0; i< Math.min(curFileCnt, remainFileCnt); i++){
-			
-			const file = obj.files[i];
-			/* const files = obj.target.files; */
-			
-			// 파일 배열에 담기
+		for (var i = 0; i< Math.min(curFileCnt, maxFileCnt); i++){
+
 			var reader = new FileReader();
-			reader.onload = function (event) {
-				filesArr.push(file);
-				// 목록 추가
-				let htmlData = '';
+			const file = obj.files[i];
+			
+			reader.onload = function(event) {
+				var htmlData = '';
+				htmlData += `<img src="\${event.target.result}" style="width: 7rem; height: 7rem" />`;
 				
-				
-				htmlData += `<img src="\${event.target.result}" alt="product-image" id="img\${fileNo}" onclick="deleteFile(\${fileNo})" style="width: 7rem; height: 7rem" />`;
-				
-				
-				
-				console.log(htmlData)
-				$('.pro-imgList-div').css('display', 'inline');
-				$('.pro-imgList-div').append(htmlData);
-				$('.pro-label-div').css('display', 'none');
-				fileNo++;
+				$('.pre-img-div').css('display', 'inline');
+				$('.pre-img-div').append(htmlData);
+				$('.file-input-label').css('display', 'none');
 			};
 			reader.readAsDataURL(file);
 		}
 	} 
-
- 	/**
- 	 * 첨부된 이미지 삭제
- 	 */
-	function deleteFile(num){
- 		if(confirm("이미지를 삭제하시겠습니까?")){
-			$('#img' + num).remove(); // 클릭한 이미지만 삭제
-			filesArr.splice(num, 1); // 파일 배열에서 해당 파일 삭제
- 		}
- 		
-		// 이미지 수가 미만이면 .pro-lavel-div 다시 보이기ㅐ
-		if(document.querySelectorAll(".pro-imgList-div img").length < maxFileCnt){
-			$('.pro-label-div').css('display', 'inline');
-		}
-	}
 </script>
 </html>

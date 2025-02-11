@@ -27,9 +27,9 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public int getTotalCnt() {
+	public int getTotalCnt(SearchItem si) {
 		System.out.println("ShopService getTotalCnt");
-		int totalCnt = od.getTotalCnt();
+		int totalCnt = od.getTotalCnt(si);
 		return totalCnt;
 	}
 

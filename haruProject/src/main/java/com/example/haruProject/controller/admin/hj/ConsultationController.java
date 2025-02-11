@@ -33,7 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ConsultationController {
 	
 	private final ConsultationService cs;
-	
+
+	/* 차트작성 뷰 */
 	@RequestMapping(value = "/admin/addConsultationView")
 	public String addConsultation(@RequestParam("resno") String resno, Model model) {
 		
@@ -46,20 +47,19 @@ public class ConsultationController {
 		return "admin/addConsultation";
 	}
 	
+	/* 차트 추가 */
 	@PostMapping(value = "/admin/addChart")
 	public String addChart(Chart ch,
-							@RequestParam("upload") List<MultipartFile> files,
+							@RequestParam("file") List<MultipartFile> files,
 							HttpServletRequest request, Model model) {
 		System.out.println("ConsultController addChart Start ...");
 		System.out.println("ConsultController addChart files->"+files);
 		
-		
 		String type = "chart";
 		List<String> imgPaths = saveImages(type,files,request);
 
-		
-		int addChart = 	cs.addChart(ch);
-		int imgSave  = 	cs.chartImgSave(imgPaths,ch);
+		cs.addChart(ch);
+		cs.chartImgSave(imgPaths,ch);
 		
 		return "redirect:/admin/consultation";
 	}
@@ -104,6 +104,7 @@ public class ConsultationController {
 		return imgPaths;
 	}
 	
+	/* 차트수정 뷰 */
 	@RequestMapping(value = "/admin/detailConsultation")
 	public String detailConsulatation(@RequestParam("resno") String resno, Model model) {
 		System.out.println("ConsultationController detailConsulatation ...");
@@ -119,6 +120,20 @@ public class ConsultationController {
 		model.addAttribute("chartImgs",chartImgs);
 		
 		return "admin/detailConsultation";
+	}
+	
+	/* 차트수정 */
+	@RequestMapping(value = "/admin/updChart")
+	public String updateConsultation(Chart ch,
+									@RequestParam("file") List<MultipartFile> files,
+									HttpServletRequest request, Model model) {
+		
+		// 이미지저장
+		List<String> imgPaths = saveImages("chart",files,request);
+		// 업데이트, 수정한 이미지 삭제
+		cs.updateConsultation(ch, imgPaths);
+		
+		return "redirect:/admin/consultation";
 	}
 
 }

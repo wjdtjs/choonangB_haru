@@ -52,16 +52,15 @@ public class OrderDaoImpl implements OrderDao{
 			 */
 		} catch (Exception e) {
 			System.out.println("ShopDao getShopList error->"+e.getMessage());
-			
 		}
 		return shopList;
 	}
 
 	@Override
-	public int getTotalCnt() {
+	public int getTotalCnt(SearchItem si) {
 		int result = 0;
 		try {
-			result = session.selectOne("HJTotalCnt");
+			result = session.selectOne("HJTotalCnt",si);
 			System.out.println("ShopDao getShopList result -> "+result);
 		} catch (Exception e) {
 			System.out.println("ShopDao getTotalCnt error->"+e.getMessage());

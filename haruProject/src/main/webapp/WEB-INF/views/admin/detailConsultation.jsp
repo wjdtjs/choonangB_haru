@@ -16,11 +16,7 @@
 
 </head>
 
-<!-- style -->
 <style>
-
-
-
 .apmTable tr{
 	height: 40px;
 	color: black;
@@ -57,25 +53,25 @@
 }
 
 .content{
-	/* border: 1px solid #aaa; */
 	background-color: #E7F3F4;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .box{
-	height: 50px;
+	min-height: 50px;
 	margin: 5px 0;
 	border-radius: 10px;
 	/* border: 1px solid #aaa; */
 	background-color: #E7F3F4;
+	padding: 16px;
  
 }
-
 
 .form-input-title {
 	font-weight: 500;
 }
-
-
 
 .form-input-box{
 	width: 100%;
@@ -86,11 +82,21 @@
 	margin-bottom: 20px;
 	margin-top: 5px;
 }
-.pro-imgList-div, .pro-label-div{
-	display: inline;
+.pre-img-div {
+	display: inline-block;
 }
-/* SELECT 버튼 위치 수정*/
-label.img_upload {
+.consul-imgitem-div, .file-input-label{
+	display: inline-block;
+}
+.pre-img-div .consul-imgitem-div img{
+	width: 7rem;
+    height: 7rem;
+	position: relative;
+	border-radius: 0.625rem;
+	margin: 4px;
+}
+
+.file-input-label {
     background-color: #f0f0f0;
     cursor: pointer;
     text-align: center;
@@ -99,17 +105,13 @@ label.img_upload {
     line-height: 7rem;
     font-size: 1.5rem;
     border-radius: 0.625rem;
+    margin: 4px;
 }
 
 em {
 	color: red;
 	justify-content: center;
 
-}
-
-img {
-	width: 7rem;
-	height: 7rem
 }
 </style>
 
@@ -156,8 +158,10 @@ img {
 				        		<td class="form-input-title">진료과목</td>	<td>:</td> <td>${apm.item}</td>
 				        	</tr>
 				        	<tr>
-				        		<td class="form-input-title">담당의</td>	<td>:</td> <td>${apm.aname}</td>
+				        		<td class="form-input-title">주치의</td>	<td>:</td> <td>${apm.aname}</td>
 				        	</tr>
+				        	<tr>
+				        		<td class="form-input-title">보호자</td>	<td>:</td> <td onclick="location.href='/admin/detailMember?memno='+${apm.memno}">${apm.mname} <i class="fa-solid fa-file-lines"></i></td>
 				        </table>
 				        <div class="petInfo_1">
 						    <div class="infoTitle">동물 정보</div>
@@ -170,32 +174,29 @@ img {
 				        	</div>
 				        	<div class="infoTitle">특이사항</div>
 				        	<div>
-				        		<div class="box">${apm.petspecial }</div>
+				        		<div class="box">
+				        			${apm.petspecial }
+				        			<c:if test="${apm.petspecial == null}">
+				        				특이사항 없습니다.
+				        			</c:if>
+				        		
+				        		</div>
 				        	</div>
 				        </div>
 				        
-				        <form action="/admin/updChart" method="post" name="frm" id="upd_chart">
-				        	<input type="hidden" name="resno" value="${apm.resno}">
+				        <form action="/admin/updChart" method="post" onsubmit="return validateForm()" id="upd_chart" enctype="multipart/form-data">
+				        	<input type="hidden" name="cno" value="${chart.cno}">
 				        	<div class="infoTitle">이미지</div>
-				        	<div style="margin-top: 1rem" class="imgList">
-						        <c:if test="${not empty chartImgs}">
-									 <div class="pro-imgList-div">
-										<c:forEach var="chartImg" items="${chartImgs}">
-											<img src="${chartImg.content}" id="img${chartImg.imgno }" >
-										</c:forEach>
-									 </div>
-									 <div class="pro-label-div" style="display: none;">
-									 	<label for="main_img" class="img_upload">+</label>
-										<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple>
-									</div>
-						        </c:if>
-						        <c:if test="${empty chartImgs }">
-						        	<div class="pro-imgList-div" style="display: none"></div>
-									<div class="pro-label-div" style="display: none;">
-										<label for="main_img" class="img_upload">+</label>
-										<input type="file" id="main_img" name="main_img" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple> 							
-									</div>
-						        </c:if>
+				        	<div class="file-name-div" style="margin-top: 1rem" >
+								<div class="pre-img-div">
+									<c:forEach var="chartImg" items="${chartImgs}">
+										<div class="consul-imgitem-div">
+											<img src="${chartImg.content}" class="preroad-img img-del" data-val="${chartImg.imgno }" >
+										</div>
+									</c:forEach>
+								</div>
+								<label for="img-input" class="file-input-label">+</label>
+								<input type="file" id="img-input" name="file" accept=".jpg, .jpeg, .png, .gif" style="display: none" multiple>
 						    </div>
 					       
 					       <div class="infoTitle">차트 내용<em>*</em></div>
@@ -204,7 +205,9 @@ img {
 				        	</div>
 				        	<div class="infoTitle">기타/전달사항</div>
 				        	<div>
-				        		<textarea class="form-input-box" name="cect_con" >${chart.cect_con }</textarea>
+				        		<textarea class="form-input-box" name="cect_con" >
+				        			${chart.cect_con }
+				        		</textarea>
 				        	</div>
 				        </form>
 				     </div>
@@ -212,7 +215,7 @@ img {
 					<!-- 모달 버튼 -->
 			       	<div class="modal_l-content-btn">
 				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/consultaion'">목록으로</button>
-			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="up_chart">수정하기</button>
+			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="upd_chart">수정하기</button>
 			       	</div> 
                 </div>
                 <!-- /.container-fluid -->
@@ -240,80 +243,112 @@ img {
     
 </body>
 <script type="text/javascript">
-	/**
-	* 첨부파일 추가
-	*/
-	var fileNo = 1;
-	var filesArr = new Array();
+	var delete_img = [];
 	var maxFileCnt = 5; //최대 첨부파일 개수
-	var attFileCnt = document.querySelectorAll(".pro-imgList-div img").length;	// 기존 추가된 첨부파일 개수		
+	var attFileCnt = document.querySelectorAll(".consul-imgitem-div").length;	// 기존 첨부파일 개수		
 	
 	document.addEventListener("DOMContentLoaded", function(){
 		if (attFileCnt == maxFileCnt){
-	    	$('.pro-label-div').css('display', 'none');
+	    	$('.file-input-label').css('display', 'none');
 		}else {
-			$('.pro-label-div').css('display', 'inline');
+			$('.file-input-label').css('display', 'inline-block');
 		}
-
-		
 	});
 	
-	function addFile(obj) {
-	
-	
-		var remainFileCnt = maxFileCnt-attFileCnt; 											// 추가로 첨부가능한 개수
-		var curFileCnt = obj.files.length; 													// 현재 첨부된 파일 개수
-	
-		// 최대 첨부파일수 초과시 
-		if(curFileCnt > remainFileCnt){
-			alert('최대 첨부파일 수는 '+maxFileCnt+'개 입니다.');
-		}
-	
-	
-		if(attFileCnt+curFileCnt >= maxFileCnt){
-			$('.pro-label-div').css('display', 'none');
-		}else {
-			$('.pro-label-div').css('display', 'inline');
-		}
-	
+	function validateForm() {
+		let result = false;
 		
-		for (var i = 0; i< Math.min(curFileCnt, remainFileCnt); i++){
-			
-			const file = obj.files[i];
-
+		var input_str = "";
 		
-			// 파일 배열에 담기
-			var reader = new FileReader();
-			reader.onload = function (event) {
-				filesArr.push(file);
-				// 목록 추가
-				let htmlData = '';
-			
-				htmlData += `<img src="\${event.target.result}" alt="product-image" name="img\${fileNo}" id="img\${fileNo}" onclick="deleteFile(\${fileNo})" style="width: 7rem; height: 7rem" />`;
-					
-				console.log(htmlData)
-				$('.pro-imgList-div').css('display', 'inline');
-				$('.pro-imgList-div').append(htmlData);
-				/* $('.pro-mainimg-div').addClass('pro-thumbnail'); */
-				fileNo++;
-			};
-			reader.readAsDataURL(file);
+		for(let i=0; i<delete_img.length; i++) {
+			input_str += `<input type='hidden' value='\${delete_img[i]}' name='imgno'>`;
 		}
-	} 
+		console.log('input_str-> '+input_str)
+		$('#upd_chart').append(input_str);
+		
+		result = confirm('이대로 수정하시겠습니까?');
+		
+		return result;
+	}
+	/**
+	* 첨부파일 추가 -> 미리보기
+	*/
+	$('#img-input').on('change', function(e) {
+		var str = "";					
+		$('.img-input').html('');
+	
+		var fileInput = e.target;
+		const files  =  Array.from(fileInput.files); // FileList를 배열로 변환
+		var curFileCount = $('.consul-imgitem-div').length;
+		if(curFileCount+files.length > maxFileCnt){
+			alert('최대 첨부 파일수는'+ maxFileCnt+'개 입니다.');
+			return false;
+		}
+		if(files){
+			files.forEach((file)=>{
+				var reader = new FileReader();
+				reader.onload = function(event){
+					var htmlData = '';
+					htmlData += `
+						<div class="consul-imgitem-div">
+							<img src="\${event.target.result}" class="preroad-img img-del" data-index="\${file.lastModified}" />
+						</div>`;
+						
+					$('.pre-img-div').append(htmlData);
+					updateFileInputLabel(); // 버튼 상태 업데이트
+				};
+				reader.readAsDataURL(file);
+			});
+		}
+	});
 
 	/**
-	 * 첨부된 이미지 삭제
+	 * 이미지 삭제
 	 */
-	function deleteFile(num){
-		if(confirm("이미지를 삭제하시겠습니까?")){
-			$('#img' + num).remove(); // 클릭한 이미지만 삭제
-			filesArr.splice(num, 1); // 파일 배열에서 해당 파일 삭제
+	 $(document).on('click','.img-del', function () {
+		var imgno = $(this).data('val');
+		console.log("imgno: ",imgno);
+		
+		// 현재 이미지 요소 완전히 제거
+	    $(this).closest('.consul-imgitem-div').remove();
+		
+		if(imgno){ 	// 서버에서 가져온 이미지 삭제
+			$(this).closest('.consul-imgitem-div').css('display','none');
+			delete_img.push(imgno);
 		}
-			
-		// 이미지 수가 미만이면 .pro-lavel-div 다시 보이기ㅐ
-		if(document.querySelectorAll(".pro-mainimg-div-event img").length < maxFileCnt){
-			$('.pro-label-div').css('display', 'inline');
-		}
-	}
+		
+		// 현재 이미지 요소 완전히 제거
+	    $(this).closest('.consul-imgitem-div').remove();
+
+	    // 파일 리스트에서 삭제
+	    const dataTransfer = new DataTransfer(); // 변수를 먼저 선언
+	    
+	    var files = $('#img-input')[0].files;
+	    Array.from(files).forEach(file => {
+	        const removeTargetId = $(this).data('index');
+	        if (file.lastModified !== removeTargetId) { // 삭제할 파일 제외
+	            dataTransfer.items.add(file);
+	        }
+	    });
+
+	    document.querySelector('#img-input').files = dataTransfer.files;
+	    console.log(dataTransfer.files);
+	    
+		updateFileInputLabel(); // 삭제 후 버튼 상태 업데이트
+	});
+	
+	 /**
+	  * file-input-label의 display 속성 업데이트
+	  */
+	 function updateFileInputLabel() {
+	     var currentFileCount = $('.consul-imgitem-div').length; // 현재 업로드된 이미지 개수
+	     console.log("currentFileCount: "+currentFileCount);
+	     
+	     if (currentFileCount < maxFileCnt) {
+	         $('.file-input-label').css('display', 'inline-block');
+	     } else {
+	         $('.file-input-label').css('display', 'none');
+	     }
+	 }
 </script>
 </html>

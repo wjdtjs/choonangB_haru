@@ -12,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>판매 정보</title>
+    <title>회원 정보</title>
 
 </head>
 
@@ -26,7 +26,7 @@
 .inputTable {
 	color: black;
 	width: 100%;
-	margin-bottom: 15px;
+	margin-bottom: 24px;
 }
 .form-input-title {
 	height: 50px;
@@ -49,25 +49,27 @@
 }
 .myPetTitle{
 	display: flex;
-	margin-bottom: 5px
+	margin-bottom: 5px;
+	margin-top: 24px;
 }
 
 .myPetTitle > h5{
 	color: black;
 }
 .myPetTitle > button{
-	border-radius: 10px;
+	border-radius: 8px;
 	border: none;
 	margin-left: auto;
-	width: 90px;
-
+	width: 70px;
+	padding : 4px;
+	font-size: 14px;
 }
 
 .myPetTable{
 	width: 100%;
 	color: black;
 	text-align: center;
-	border: 1px solid #ccc;
+
 	border-collapse : collapse;
 }
 
@@ -75,12 +77,25 @@
 	height:20px;
 	line-height:20px;
 	background-color: #d0e4e8;
+	
 }
 .myPetTable th {
-	border: 1px solid #ccc;
+ 	/* border-radius: 8px; */ 
+	padding:  10px 0;
+	font-size: 1rem;
 }
 .myPetTable td {
-	border: 1px solid #ccc;
+	border-bottom: 1px solid #d0e4e8;
+	padding:  10px 0;
+	font-size: 1rem;
+}
+.myPetTable th:first-child{
+	border-top-left-radius:8px;
+	border-bottom-left-radius:8px;
+}
+.myPetTable th:last-child{
+	border-top-right-radius:8px;
+	border-bottom-right-radius:8px;
 }
 
 /* SELECT 버튼 위치 수정*/
@@ -171,10 +186,11 @@ em {
 				        		<td class="form-input-title">수정일</td>				<td><fmt:formatDate value="${member.update_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 				        	</tr>
 				        </table>
+				        
 					    <table class="myPetTable">
 					    	<div class="myPetTitle">
 					    		<h5>동물정보</h5>
-					    		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn" onclick="/admin/addPet">동물추가</button>
+					    		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn" onclick="/admin/addPet"><i class="fa-solid fa-plus" style="color: white;"></i> 추가</button>
 					    	</div>   
 				        	<tr class="infoTitle">	
 				        		<th>동물번호</th>
@@ -185,8 +201,9 @@ em {
 				        		<th>성별</th>
 				        		<th>상태</th>
 					        </tr>
-					        <tr class="contents">
-					        	<c:forEach var="pet" items="${myPets }">
+					       
+					        <c:forEach var="pet" items="${myPets }">
+					        	<tr class="contents" onclick="lication.href='/admin/detail?petno='+${pet.petno}">
 						        	<td class="content">${pet.petno }</td>
 						        	<td class="content">${pet.petname }</td>
 						        	<td class="content">${pet.petbirth }</td>
@@ -194,10 +211,14 @@ em {
 						       		<td class="content">${pet.species2 }</td>
 						       		<td class="content">${pet.gender }</td>
 						       		<td class="content">${pet.status }</td>
-					       		</c:forEach>
-					       	</tr>
-					      		
+					       		</tr>
+					       	</c:forEach>
 					        </table>
+					        <c:if test="${empty myPets}">
+					        	<div style="text-align: center; padding: 8px;">
+							        등록된 동물이 없습니다.
+					        	</div>
+					        </c:if>
 	       			 </form>
 	       			 </div>
 					<!-- 모달 버튼 -->

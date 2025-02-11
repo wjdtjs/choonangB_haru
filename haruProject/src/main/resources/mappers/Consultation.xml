@@ -38,7 +38,7 @@
 	
 	<insert id="HJSaveChartImg" parameterType="Map">
       	  INSERT INTO chartdetail (cno, imgno, content)
-      	  VALUES ('C' || #{resno}, seq_img.nextval, #{imgPath, jdbcType=VARCHAR})
+      	  VALUES (#{cno}, seq_img.nextval, #{imgPath, jdbcType=VARCHAR})
 	</insert>
 	
 	<select id="HJSelectChartImgs" parameterType="java.lang.String" resultType="ChartDetail">
@@ -82,4 +82,19 @@
 		WHERE cno = #{cno}
 	</select>
 	
+	<!-- 차트수정 -->
+	<update id="HJ_UpdateConsulataion" parameterType="Chart">
+		UPDATE chart
+		SET ccontents = #{ccontents},
+			cect_con = #{cect_con},
+			update_date = sysdate
+		WHERE cno = #{cno}
+	</update>
+	
+	<!-- 차트수정: 이미지 삭제 -->	
+	<delete id="HJ_DeleteChartImg" parameterType="Map">
+		DELETE FROM chartdetail
+		WHERE cno = #{cno}
+		AND imgno = #{imgno}
+	</delete>
 </mapper>

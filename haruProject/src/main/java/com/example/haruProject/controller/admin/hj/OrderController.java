@@ -41,8 +41,8 @@ public class OrderController {
 		// 검색 필터
 		SearchItem si = new SearchItem(type4,type5,search1);
 		
-		// 전체 주문건수
-		int totalCnt = os.getTotalCnt();
+		// 주문건수
+		int totalCnt = os.getTotalCnt(si);
 		
 		//페이지네이션
 		Pagination pagination = new Pagination(totalCnt, pageNum, Integer.parseInt(blockSize));
@@ -53,7 +53,7 @@ public class OrderController {
 		// 검색필터
 		List<Common> ostatus = os.getOrderStatus();
 		
-		
+		model.addAttribute("totalCnt",totalCnt);
 		model.addAttribute("pagination",pagination);
 		model.addAttribute("sales",shopList);
 		model.addAttribute("search",si);
@@ -72,6 +72,7 @@ public class OrderController {
 		
 		// 주문정보
 		Order orderInfo = os.getOrderInfo(orderno);
+		System.out.println("orderInfo: "+orderInfo);
 		
 		// 주문 상품 정보
 		List<OrderProduct> products = os.getOrderProducts(orderno);
@@ -93,6 +94,8 @@ public class OrderController {
 		
 		System.out.println("SaleController updateOStatus...");
 		System.out.println("SaleController updateOStatus order1->"+order1);
+		
+
 		
 		int result = os.updateOstatus(order1);
 		

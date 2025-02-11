@@ -32,7 +32,14 @@
 .order_info td{
 	padding: 7px 0;
 }
-
+.order_info .infotitle td:first-child{
+	border-top-left-radius:8px;
+	border-bottom-left-radius:8px;
+}
+.order_info .infotitle td:last-child{
+	border-top-right-radius:8px;
+	border-bottom-right-radius:8px;
+}
 .infotitle {
 	font-size: 1rem;
 	height: 35px;
@@ -50,7 +57,9 @@
 	border-radius: 10px;
 	padding-left: 10px;
 } 
-
+.send-info{
+	border: NONE;
+}
 /*주문상태 드롭박스*/
 .form-input-1{
 	width: 150px;
@@ -61,12 +70,11 @@
 	font-size: 14px;
 }
 
-.row {
+.form-row {
 	width:100%;
 	height: 35px;
 	line-height: 35px;
 	margin-left: 0.1rem;
-
 }
 
 /* SELECT 버튼 위치 수정*/
@@ -153,13 +161,14 @@ function psUpdate() {
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >판매 상세</h1>
                     
                     <div class="modal_l_detail">
+                    <form action="/admin/updateOrder" method="post" name="frm" id="upd_op" class="orderTable" >
 				        <table class="orderTable">
 				        	<colgroup>
 		                    	<col width="8%" />
 		                        <col width="3%" />
 		                    </colgroup>
 				        	<tr>
-				        		<td class="form-input-title">주문번호</td> <td>:</td> <td>${sale.orderno}</td>
+				        		<td class="form-input-title">주문번호</td> <td>:</td> <td><input class="send-info" type="text" value="${sale.orderno}" readonly="readonly"></td>
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">주문일시</td> <td>:</td> <td><fmt:formatDate value="${sale.odate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -190,13 +199,17 @@ function psUpdate() {
 				        	<tr>
 				        		<td class="form-input-title">전화번호</td>	<td>:</td> <td>${sale.mtel}</td>
 				        	</tr>
+				        	<tr>
+				        		<td class="form-input-title">이메일</td>	<td>:</td> <td>${sale.memail}</td>
+				        	</tr>
 				        </table>
 				        
-				        <form action="/admin/updateOrder" method="post" name="frm" id="upd_op" class="orderTable" >
+				        
 				        	<input type="hidden" name="orderno" value="${sale.orderno}">
+
 				        	
-				        	<div class="row">
-				        		<div class="form-input-title" style="width: 80px">주문상태</div>
+				        	<div class="form-row">
+				        		<div class="form-input-title" style="width: 80px;">주문상태</div>
 				        		<div><select class="form-input-1 sub-alevel-mcd-select" name="ostatus_mcd">
 						        		<c:forEach var="status" items="${ostatus }">
 						        			<c:choose>
@@ -211,9 +224,9 @@ function psUpdate() {
 				        			</select>
 				        		</div>
 				        	</div>
-				        	<div class="row">
+				        	<div class="form-row">
 				        		<div class="form-input-title">마지막 상태 변경 시간</div>
-				        		<div style="width: 100px; text-align: center;">:</div>
+				        		<div style="width: 50px; text-align: center;">:</div>
 				        		<div>${sale.update_date}</div>
 				        	</div>
 				        </form>
@@ -221,10 +234,10 @@ function psUpdate() {
 					    <h5>주문 상품 정보</h5>
 				        <table class="order_info">
 				        	<colgroup>
-				        		<col width="10%">
+				        		<col width="15%">
 				        		<col width="60%">
 				        		<col width="10%">
-				        		<col width="20%">				        		 
+				        		<col width="15%">				        		 
 				        	</colgroup>
 				        	<tr class="infotitle">
 				        		<td>상품번호</td>
