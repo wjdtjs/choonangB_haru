@@ -52,13 +52,22 @@ public class SearchItem {
 	public SearchItem(int type4) {
 		this.type4 = type4;
 	}
-
+	
 	public SearchItem(int type4, int type5, String search1, String start_date, String end_date) {
 		this.type4 = type4;
 		this.type5 = type5;
 		this.search1 = search1;
 		this.start_date = start_date;
 		this.end_date = end_date;
+	}
+
+	public SearchItem(int type4, int type5, String search1, String start_date, String end_date, int search4) {
+		this.type4 = type4;
+		this.type5 = type5;
+		this.search1 = search1;
+		this.start_date = start_date;
+		this.end_date = end_date;
+		this.search4 = search4;
 	}
 	
 	public SearchItem(int type4, int type5, int search4) {

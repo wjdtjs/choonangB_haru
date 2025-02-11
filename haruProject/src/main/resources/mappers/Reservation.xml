@@ -48,7 +48,7 @@
 			    	AND rdate BETWEEN TO_DATE(#{start}, 'yyyy-mm-dd') 
 			                    AND TO_DATE(#{end}, 'yyyy-mm-dd')
 			    </if>
-				ORDER BY a.RDATE desc, a.START_TIME desc
+				ORDER BY a.RDATE asc, a.START_TIME asc
 		    )aa
 		)
 		WHERE rn BETWEEN #{page.startRow} AND #{page.endRow} 
@@ -102,7 +102,7 @@
 	
 	
 	<!-- 예약 등록 -->
-	<insert id="JS_InsertAppointment">
+	<insert id="JS_InsertAppointment" parameterType="Appointment" statementType="CALLABLE">
 		INSERT INTO APPOINTMENT(
 			RESNO,
 			RDATE,
@@ -129,10 +129,16 @@
 		    #{memno},
 		    #{petno},
 		    #{memo}
-		)
-		
-		
+		)		
 	</insert>
+	
+	<!-- 담당의 수정 -->
+	<update id="JS_UpdatePetInChargeDoctor" parameterType="Appointment">
+		UPDATE pet
+	    SET ano = #{ano}
+	    WHERE petno = #{petno}
+	    AND (ano IS NULL OR ano != #{ano})
+	</update>
 	
 	
 	<select id="HJ_SelectCommingRes" parameterType="int" resultType="Appointment">

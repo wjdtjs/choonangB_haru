@@ -21,6 +21,7 @@
 
 <!-- Page level plugins -->
 <script src="/vendor/chart.js/Chart.min.js"></script>
+<script src="/vendor/chart.js/Chart.bundle.min.js"></script>
 
 <!-- include summernote css/js -->
 <link href="https://cdn.jsdelivr.net/npm/summernote/dist/summernote-lite.min.css" rel="stylesheet">

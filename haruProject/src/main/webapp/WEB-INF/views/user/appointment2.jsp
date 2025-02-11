@@ -490,7 +490,7 @@ table#calendar {
 	var diff = 0;			//현재 날짜와 달력의 개월 차이
 	
 	let selectedDateGlobal = null; //선택한 날짜
-	let selected_vet = 0;	//선택한 의사 ano
+	let selected_vet = $('input:radio[name=ano]:checked').val();	//선택한 의사 ano
 	
 	/*
 	 * 달력 그리기
@@ -546,6 +546,12 @@ table#calendar {
 	
 	
 	$(()=>{
+		if(!selected_vet || selected_vet != 0) {
+			selectDoctor();
+			$(".date-choice-toggle").next(".res-re").css('display', 'block');
+			$(".date-choice-toggle").children('.page-btn').css('transform', `rotate(270deg)`);
+		}
+		
 		/* 의사 선택 시 */
 		desVet();
 		$('input:radio[name=ano]').change(function() {

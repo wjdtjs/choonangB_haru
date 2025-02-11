@@ -9,6 +9,9 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Common;
@@ -24,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReservationDaoImp implements ReservationDao {
 	
 	private final SqlSession session;
+	private final PlatformTransactionManager ptm;
 	
 	/**
 	 * 반려동물 리스트
@@ -135,10 +139,17 @@ public class ReservationDaoImp implements ReservationDao {
 	@Override
 	public void doAppointmentAction(Appointment app) {
 		System.out.println("dao doAppointmentAction() application => "+app);
+		TransactionStatus txStatus = ptm.getTransaction(new DefaultTransactionDefinition());
 		
 		try {
+			//예약정보 insert
 			session.insert("JS_InsertAppointment", app);
+			//담당의 추가 및 수정
+			session.insert("JS_UpdatePetInChargeDoctor", app);
+			
+			ptm.commit(txStatus);
 		} catch (Exception e) {
+			ptm.rollback(txStatus);
 			log.error("doAppointmentAction() query error -> ", e);
 		}
 	}

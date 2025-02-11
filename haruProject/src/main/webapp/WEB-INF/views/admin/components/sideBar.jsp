@@ -94,7 +94,7 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="animals">
+        <a class="nav-link" href="pets">
             <i class="fas fa-fw fa-solid fa-shield-dog"></i>
             <span>동물 관리</span>
         </a>

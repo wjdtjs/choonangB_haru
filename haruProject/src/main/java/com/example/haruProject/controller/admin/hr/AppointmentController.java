@@ -46,6 +46,7 @@ public class AppointmentController {
 						@RequestParam(value = "search1", required = false, defaultValue = "") String search1,
 						@RequestParam(value = "type4", required = false, defaultValue = "0") int type4,
 						@RequestParam(value = "type5", required = true, defaultValue = "100") int type5,
+						@RequestParam(value = "search4", required = false, defaultValue = "0") int search4,
 						@RequestParam(value = "start_date", required = false, defaultValue="") String start_date,
 						@RequestParam(value = "end_date", required = false, defaultValue = "") String end_date,
 						Model model
@@ -61,7 +62,7 @@ public class AppointmentController {
 		
 		List<Appointment> aList = new ArrayList<>();
 		
-		SearchItem si = new SearchItem(type4, type5, search1, start_date, end_date);
+		SearchItem si = new SearchItem(type4, type5, search1, start_date, end_date, search4);
 		
 		int totalCnt = as.getTotalCnt(si);
 		
@@ -78,6 +79,7 @@ public class AppointmentController {
 	        }
 	    });
 		
+	    model.addAttribute("search4", search4);
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("aList", aList);
 		model.addAttribute("type4", type4);

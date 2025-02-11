@@ -119,17 +119,6 @@ public class AdminViewController {
 		return "admin/stock";
 	}
 	
-	
-
-	/**
-	 * 관리자페이지 동물관리 뷰
-	 * @return
-	 */
-	@GetMapping("/admin/animals")
-	public String animalView() {
-		return "admin/animals";
-	}
-	
 
 	
 	

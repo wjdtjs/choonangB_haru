@@ -466,7 +466,7 @@ button#res_change, #res_cancel, #res_del {
 									        		<button type="button" id="modal_close_btn" class="to_list res_modal" onclick="location.href='/admin/reservation'">목록으로</button>
 									        		<!-- 차트에 아직 작성되지 않은 상태면 목록으로만, 차트도 작성됐으면 차트보기 버튼 생성 -->
 									        		<c:if test="${appointment_d.cresno eq appointment_d.resno }">
-									        			<button type="button" id="res_to_chart" class="res_modal" onclick="location.href='/admin/consultation'">차트보기</button>							        		
+									        			<button type="button" id="res_to_chart" class="res_modal" onclick="location.href='/admin/detailConsultation?resno=${appointment_d.resno}'">차트보기</button>							        		
 									        		</c:if>
 								        		</c:when>
 								        	</c:choose>							        		        	

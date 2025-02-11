@@ -27,6 +27,9 @@ public class Pet {
 	private int petspecies_bcd;
 	private int petspecies_mcd;
 	
+	private Date reg_date;
+	private Date update_date;
+	
 	private int bcd;
 	private int mcd;
 	private int scd;
@@ -36,5 +39,7 @@ public class Pet {
 	private String gender2;		// 중성화 여부
 	
 	// edit pet
-	private String fpetbirth;
+
+	private String mname;
+	private String aname;
 }

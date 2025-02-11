@@ -17,6 +17,9 @@
 		    JOIN COMMON cm ON cm.BCD = t.MTITLE_BCD and cm.MCD = t.MTITLE_MCD
 		    	    
 		WHERE 1=1
+		<if test="search4 != null and search4 != 0">
+			AND a.petno = #{search4}
+		</if>
 			<if test="type4 != null and type4 != 0">
 				AND a.rstatus_mcd = #{type4}
 			</if>
@@ -54,6 +57,9 @@
 		            JOIN COMMON c4 ON c4.BCD = p.PETGENDER_BCD and c4.MCD = p.PETGENDER_MCD		<!-- 성별 -->
 		           
 		       	WHERE 1=1
+		       	<if test="si.search4 != null and si.search4 != 0">
+					AND a.petno = #{si.search4}
+				</if>
 				<if test="si.type4 != null and si.type4 != 0">
 					AND a.rstatus_mcd = #{si.type4}
 				</if>

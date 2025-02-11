@@ -656,6 +656,8 @@ input#res-mname {
     // 보호자 이름 입력시 드롭박스 display: none -> block
 	function search_mname(e) {
     	if(e.key === "Enter") {
+    		e.preventDefault(); //enter 쳤을때 form이 submit 되는거 막기
+    		
     		const searchInput = $("#res-mname").val();
     		console.log("searchInput(search1) : ", searchInput);
     		
