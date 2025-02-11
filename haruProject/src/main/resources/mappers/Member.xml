@@ -251,4 +251,15 @@
         }
 	</select>
 	
+	<select id="HR_chkMemberTime" resultType="Member">
+		SELECT memno, mid, valid_time
+		FROM MEMBER
+		WHERE VALID_TIME IS NOT NULL AND MPASSWD = ' '
+	</select>
+	
+	<delete id="HR_cancelMember" parameterType="Member">
+		DELETE
+		FROM MEMBER
+		WHERE MEMNO = #{memno}
+	</delete>
 </mapper>

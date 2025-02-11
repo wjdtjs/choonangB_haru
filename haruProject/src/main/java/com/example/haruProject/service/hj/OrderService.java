@@ -16,6 +16,8 @@ public interface OrderService {
 	List<Common>		getOrderStatus();
 	int					TotalPrice(int orderno);
 	int					updateOstatus(Order order);
-	
+	List<Order> 		getMainOList();
+	int 				getWaitPur();
+	List<Order> 		autoOrderCancel();
 
 }

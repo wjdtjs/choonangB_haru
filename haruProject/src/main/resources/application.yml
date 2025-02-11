@@ -4,6 +4,9 @@ server:
     jsp:
       init-parameters:
         development: true
+  tomcat:
+    connection-timeout: 60m     # 60분 동안 연결 유지
+    max-threads: 200            # 비동기 요청 처리를 위한 쓰레드 개수 증가
 
 spring:
   # Oracle Connect

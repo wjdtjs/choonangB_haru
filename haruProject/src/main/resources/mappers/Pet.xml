@@ -79,7 +79,7 @@
 		    JOIN COMMON c2 ON m.mtitle_bcd = c2.bcd AND c2.mcd = 999
 		    LEFT OUTER JOIN CHART ch ON a.resno = ch.resno
 		    LEFT OUTER JOIN BOARD b ON a.resno = b.resno
-		WHERE petno = #{petno}
+		WHERE a.petno = #{petno} AND a.rstatus_mcd = 400
 		ORDER BY rdate desc, start_time desc
 	</select>
 	

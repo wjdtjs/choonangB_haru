@@ -16,5 +16,7 @@ public interface OrderDao {
 	List<Common>		getOrderStatus();
 	int					totalPrice(int orderno);
 	int					updateOstatus(Order order);
-
+	List<Order> 		getMainOList();
+	int 				getWaitPur();
+	List<Order> 		autoOrderCancel();
 }

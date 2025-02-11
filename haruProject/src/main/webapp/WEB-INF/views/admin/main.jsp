@@ -21,7 +21,55 @@
 	display: flex;
 	flex-direction: row;
 }
+
+.hr-card-text {
+	font-size: 1rem;
+	margin: auto 0;
+	height: 20px;
+}
+
+.hr-con-card {
+    margin: 12px auto;
+    width: 400px;
+}
+
+p {
+	color: black;
+	font-weight: bold;
+}
+
+.hr-text {
+	margin: auto 0 auto 12px;	
+}
+
+.hr-main-table {
+	font-size: 12px;
+}
+
 </style>
+
+<script type="text/javascript">
+	
+// 예약 상세 페이지로 이동
+function goToDetail(resno) {
+	// alert("resno->"+resno);
+	console.log("resno 값:", resno);
+
+    if (!resno) {
+        alert("resno 값이 비어 있습니다.");
+        return;
+    }
+    location.href = '/admin/detailReservation?resno='+resno;
+}
+
+// detail페이지로 이동
+$(document).on('click','#dataTable .saleTable tr',function(){
+	const orderno = $(this).find('td:nth-child(1)').text();
+	console.log('클릭된 행의 orderno:' + orderno);
+	
+	window.location.href = `<%=request.getContextPath()%>/admin/detailShop?orderno=\${orderno}`;
+});
+</script>
 
 <body id="page-top"> 
 
@@ -43,33 +91,33 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid" style="/* display: flex; */">
 
                     <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                   <!--  <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h4 mb-0 text-gray-800 font-weight-bold">예약 현황</h1>
-                        <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
-                    </div>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    </div> -->
 
-					<div style="display: flex;">			
+					<div style="display: flex; width: 1400px; margin: 0;">
 					
 	                    <!-- Content Row -->
-	                    <div class="row">
+	                    <div class="row" style="">
 	
 	                        <!-- Earnings (Monthly) Card Example -->
-	                        <div class="col-xl-3 col-md-6 mb-4">
-	                            <div class="card border-left-primary shadow h-100 py-2">
+	                        <div class="hr-con-card">
+	                            <div class="card border-left-primary shadow py-2" style="height: 50px;">
 	                                <div class="card-body">
 	                                    <div class="row no-gutters align-items-center hr-card">
-	                                        <div class="col mr-2">
-	                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+	                                        <div class="col mr-2" style="display: flex;">
+	                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1 hr-card-text">
 	                                                오늘의 예약
 	                                            </div>
-	                                            <div class="h5 mb-0 font-weight-bold text-gray-800">오늘의 예약 수</div>
+	                                            <p class="hr-text">${today_res}&nbsp; 건</p>
 	                                        </div>
 	                                        <div class="col-auto">
-	                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+	                                            <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
 	                                        </div>
 	                                    </div>
 	                                </div>
@@ -77,48 +125,37 @@
 	                        </div>
 	
 	                        <!-- Earnings (Monthly) Card Example -->
-	                        <div class="col-xl-3 col-md-6 mb-4">
-	                            <div class="card border-left-success shadow h-100 py-2">
+	                        <div class="hr-con-card">
+	                            <div class="card border-left-success shadow py-2" style="height: 50px;">
 	                                <div class="card-body">
 	                                    <div class="row no-gutters align-items-center hr-card">
-	                                        <div class="col mr-2">
-	                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+	                                        <div class="col mr-2" style="display: flex;">
+	                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1 hr-card-text">
 	                                                대기중 예약
 	                                            </div>
-	                                            <div class="h5 mb-0 font-weight-bold text-gray-800">예약 대기 예약 수</div>
+	                                            <p class="hr-text">${wait_res}&nbsp; 건</p>
 	                                        </div>
 	                                        <div class="col-auto">
-	                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+	                                            <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
 	                                        </div>
 	                                    </div>
 	                                </div>
 	                            </div>
 	                        </div>
 	
-	                        <!-- Earnings (Monthly) Card Example -->
-	                        <div class="col-xl-3 col-md-6 mb-4">
-	                            <div class="card border-left-info shadow h-100 py-2">
+	                         <!-- Earnings (Monthly) Card Example -->
+	                        <div class="hr-con-card">
+	                            <div class="card border-left-info shadow py-2" style="height: 50px;">
 	                                <div class="card-body">
 	                                    <div class="row no-gutters align-items-center hr-card">
-	                                        <div class="col mr-2">
-	                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-	                                            	픽업대기
+	                                        <div class="col mr-2" style="display: flex;">
+	                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1 hr-card-text" style="color: #36b9cc;">
+	                                                픽업 대기
 	                                            </div>
-	                                            <div class="row no-gutters">
-	                                                <div class="col-auto">
-	                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">픽업 대기 수</div>
-	                                                </div>
-	                                                <!-- <div class="col">
-	                                                    <div class="progress progress-sm mr-2">
-	                                                        <div class="progress-bar bg-info" role="progressbar"
-	                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-	                                                            aria-valuemax="100"></div>
-	                                                    </div>
-	                                                </div> -->
-	                                            </div>
+	                                            <p class="hr-text">${wait_pur}&nbsp; 건</p>
 	                                        </div>
 	                                        <div class="col-auto">
-	                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+	                                            <i class="fas fa-box-archive fa-2x text-gray-300"></i>
 	                                        </div>
 	                                    </div>
 	                                </div>
@@ -126,12 +163,12 @@
 	                        </div>
 	
 	                        <!-- Pending Requests Card Example -->
-	                        <div class="col-xl-3 col-md-6 mb-4">
-	                            <div class="card border-left-warning shadow h-100 py-2">
+	                        <!-- <div class="hr-con-card">
+	                            <div class="card border-left-warning shadow py-2" style="height: 80px;">
 	                                <div class="card-body">
 	                                    <div class="row no-gutters align-items-center hr-card">
 	                                        <div class="col mr-2">
-	                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+	                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1 hr-card-text">
 	                                                Pending Requests</div>
 	                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
 	                                        </div>
@@ -141,87 +178,80 @@
 	                                    </div>
 	                                </div>
 	                            </div>
-	                        </div>
-	                    </div>
-	
-	                    <!-- Content Row -->
-	
-	                    <div class="row">
-	
-	                        <!-- Area Chart -->
-	                        <!-- <div class="col-xl-8 col-lg-7">
-	                            <div class="card shadow mb-4">
-	                                Card Header - Dropdown
-	                                <div
-	                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-	                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-	                                    <div class="dropdown no-arrow">
-	                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-	                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-	                                        </a>
-	                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-	                                            aria-labelledby="dropdownMenuLink">
-	                                            <div class="dropdown-header">Dropdown Header:</div>
-	                                            <a class="dropdown-item" href="#">Action</a>
-	                                            <a class="dropdown-item" href="#">Another action</a>
-	                                            <div class="dropdown-divider"></div>
-	                                            <a class="dropdown-item" href="#">Something else here</a>
-	                                        </div>
-	                                    </div>
-	                                </div>
-	                                Card Body
-	                                <div class="card-body">
-	                                    <div class="chart-area">
-	                                        <canvas id="myAreaChart"></canvas>
-	                                    </div>
-	                                </div>
-	                            </div>
 	                        </div> -->
-	
-	                        <!-- Pie Chart -->
-	                        <div class="col-xl-4 col-lg-5">
-	                            <div class="card shadow mb-4">
-	                                <!-- Card Header - Dropdown -->
-	                                <div
-	                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-	                                    <h6 class="m-0 font-weight-bold text-primary">오늘의 예약 현황</h6>
-	                                    <div class="dropdown no-arrow">
-	                                        <!-- <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-	                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-	                                        </a>
-	                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-	                                            aria-labelledby="dropdownMenuLink">
-	                                            <div class="dropdown-header">Dropdown Header:</div>
-	                                            <a class="dropdown-item" href="#">Action</a>
-	                                            <a class="dropdown-item" href="#">Another action</a>
-	                                            <div class="dropdown-divider"></div>
-	                                            <a class="dropdown-item" href="#">Something else here</a>
-	                                        </div> -->
-	                                    </div>
-	                                </div>
-	                                <!-- Card Body -->
-	                                <div class="card-body">
-	                                    <div class="chart-pie pt-4 pb-2">
-	                                        <canvas id="myPieChart"></canvas>
-	                                    </div>
-	                                    <div class="mt-4 text-center small">
-	                                        <span class="mr-2">
-	                                            <i class="fas fa-circle text-primary"></i> Direct
-	                                        </span>
-	                                        <span class="mr-2">
-	                                            <i class="fas fa-circle text-success"></i> Social
-	                                        </span>
-	                                        <span class="mr-2">
-	                                            <i class="fas fa-circle text-info"></i> Referral
-	                                        </span>
-	                                    </div>
-	                                </div>
-	                            </div>
-	                        </div>
+	                        
+	                        
+	                        
 	                    </div>
+	
+	                    
                     
+                    </div>
+                    
+                    
+                    <div style="display: flex; width: 1600px;margin: 0 auto;">
+                    
+	                    <div style="margin: 12px 16px;">
+	                    	<div>
+		                    	<p>픽업 대기</p>
+	                    	</div>
+	                    	<table class="table table-bordered hr-main-table" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>주문번호</th>
+                                        <th>주문자</th>
+                                        <th>주문 상품</th>
+                                        <th>구매일</th>
+                                        <th>결제 방법</th>
+                                        <th>최근 상태 변경 시간</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="saleTable">
+                                	<c:forEach var="sale" items="${sales}">
+                                		<tr>
+                                			<td>${sale.orderno }</td>
+                                			<td>${sale.mname }</td>
+                                			<td>${sale.pname1 }</td>
+                                			<td><fmt:formatDate value="${sale.odate }" pattern="yyyy-MM-dd"/></td>
+                                			<td>${sale.opayment_content }</td>
+                                			<td><fmt:formatDate value="${sale.update_date}" pattern="yyyy-MM-dd"/></td>
+                                		</tr>
+                                	</c:forEach>
+                                </tbody>
+                             </table>
+	                    
+	                    </div>
+	                    
+	                    <div style="margin: 12px 40px;">
+	                    	<p>대기 중 예약</p>
+	                    	<table class="table table-bordered hr-main-table" id="dataTable" width="100%" cellspacing="0">
+                               <thead>
+                                    <tr>
+                                        <th>번호</th>
+                                        <th>예약 날짜</th>
+                                        <th>보호자</th>
+                                        <th>동물 정보</th>
+                                        <th>주치의</th>
+                                        <th>진료 과목</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	<c:forEach var="appointment" items="${aList}">
+	                                	<tr onclick="goToDetail('${appointment.resno}')" style="cursor: pointer;">
+	                                		<td>${appointment.resno } </td>
+	                                  		<td><fmt:formatDate value="${appointment.rdate}" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;${appointment.start_time }</td>
+	                                  		<td>${appointment.mname } </td>
+	                                   		<td>${appointment.petname }&nbsp;&nbsp;/&nbsp;&nbsp;${appointment.species }&nbsp;&nbsp;/&nbsp;&nbsp;${appointment.gender } </td>
+	                               		    <td>${appointment.aname } </td>
+	                                  		<td>${appointment.item } </td>
+	                                   	</tr>
+									                                    
+	                                </c:forEach>                                    
+                                </tbody>
+                            </table>
+	                    
+	                    </div>
+	                    
                     </div>
 
                 </div>

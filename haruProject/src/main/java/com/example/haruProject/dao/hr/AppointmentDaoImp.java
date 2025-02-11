@@ -285,6 +285,52 @@ public class AppointmentDaoImp implements AppointmentDao {
 		return clist;
 	}
 
+	// 메인페이지 > 대기 중 예약 불러오기
+	@Override
+	public List<Appointment> getMainAList() {
+		System.out.println("AppointmentDaoImp getMainAList() start ,,,");
+		List<Appointment> aList = new ArrayList<>();
+		
+		try {
+			aList = session.selectList("HR_getMainAList");
+			System.out.println("AppointmentDaoImp getMainAList() aList ->"+aList);
+		} catch (Exception e) {
+			log.error("getMainAList() error ->", e);
+		}
+		
+		return aList;
+	}
+
+	@Override
+	public int getTodayRes() {
+		System.out.println("AppointmentDaoImp getTodayRes() start ,,,");
+		
+		int today_res = 0;
+		
+		try {
+			today_res = session.selectOne("HR_getTodayRes");
+		} catch (Exception e) {
+			log.error("getTodayRes() error ->", e);
+		}
+		
+		return today_res;
+	}
+
+	@Override
+	public int getWaitRes() {
+		System.out.println("AppointmentDaoImp getWaitRes() start ,,,");
+		
+		int wait_res = 0;
+		
+		try {
+			wait_res = session.selectOne("HR_getWaitRes");
+		} catch (Exception e) {
+			log.error("getWaitRes() error ->", e);
+		}
+		
+		return wait_res;
+	}
+
 	
 
 	

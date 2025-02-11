@@ -69,6 +69,36 @@ public class OrderServiceImpl implements OrderService{
 		
 	}
 
-	
+	// 관리자 메인 페이지 > 픽업 대기 리스트
+		@Override
+		public List<Order> getMainOList() {
+			System.out.println("service getMainOList start ,,,");
+			
+			List<Order> sList = od.getMainOList();
+			System.out.println("service getMainOList sList ->"+sList);
+			
+			return sList;
+		}
+
+		// 관리자 메인 페이지 > 픽업 대기 수
+		@Override
+		public int getWaitPur() {
+			System.out.println("service getWaitPur start ,,,");
+			
+			int wait_pur = od.getWaitPur();
+			
+			return wait_pur;
+		}
+
+		
+		// scheduled > 픽업대기로 상태 변경 후 3일 지난 주문 리스트 불러오기
+		@Override
+		public List<Order> autoOrderCancel() {
+			System.out.println("service autoOrderCancel start ,,,");
+			
+			List<Order> oList = od.autoOrderCancel();
+			
+			return oList;
+		}
 
 }

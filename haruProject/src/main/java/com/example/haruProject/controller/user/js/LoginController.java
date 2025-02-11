@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -489,5 +491,35 @@ public class LoginController {
 		return "redirect:/all/admin/login";
 	}
 	
+	
+	
+	/**
+	 * 
+	 * @Scheduled
+	 * 이메일 인증요청 후 
+	 * 10분이 지나도 회원가입이 되지 않았을 경우 
+	 * -> 데이터 삭제
+	 * 
+	 */
+	@Scheduled(fixedRate = 3600000)
+	public void autoMemberCancel() {
+		log.info("auto member cancel start ,,,");
+		
+		List<Member> mList = ms.chkMemberTime();
+		
+		for (Member member : mList) {			
+			long current_time = System.currentTimeMillis();
+			long timeDifference = current_time - member.getValid_time();
+			
+			long minutes = timeDifference / (1000 * 60) % 60;
+			
+			if(minutes < 10) {
+				System.out.println("유효시간 남음 / 남은 시간 : "+minutes);
+			} else {
+				System.out.println("유효시간 지남, 데이터 삭제");
+				ms.cancelMember(member);
+			}
+		}
+	}
 	
 }

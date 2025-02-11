@@ -36,11 +36,8 @@ public interface AppointmentDao {
 	List<Appointment> getDisabledTimesList(String rdate, int ano);
 	void insertReservation(Appointment appointment);
 
-
-
-
-
-
-
-
+	// 메인페이지
+	List<Appointment> getMainAList();
+	int getTodayRes();
+	int getWaitRes();
 }

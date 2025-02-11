@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserPurchaseServiceImp implements UserPurchaseService {
 	private final UserPurchaseDao pd;
+	private final NotificationService ns;
 
 	// 장바구니 리스트 불러오기
 	@Override
@@ -78,9 +79,12 @@ public class UserPurchaseServiceImp implements UserPurchaseService {
 		if (opayment_mcd == 300) {
 			// 카카오페이
 			orderno = pd.kPurchase(pList, memno, opayment_mcd, ototal_price);
+			
 		} else if (opayment_mcd == 400) {
 			// 매장결제
-			orderno = pd.sPurchase(pList, memno, opayment_mcd, ototal_price);			
+			orderno = pd.sPurchase(pList, memno, opayment_mcd, ototal_price);
+			String message = "새로운 주문이 추가되었습니다!";
+			ns.sendNotification(message);
 		}
 		
 		return orderno;
@@ -93,6 +97,6 @@ public class UserPurchaseServiceImp implements UserPurchaseService {
 		System.out.println("UserPurchaseServiceImp updateStatus orderno ->"+orderno);
 		System.out.println("UserPurchaseServiceImp updateStatus tid ->"+tid);
 		
-		pd.updateKStatus(orderno, tid);
+		pd.updateKStatus(orderno, tid);		
 	}
 }

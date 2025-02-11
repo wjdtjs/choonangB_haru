@@ -1,5 +1,7 @@
 package com.example.haruProject.dao.js;
 
+import java.util.List;
+
 import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Member;
 
@@ -14,5 +16,7 @@ public interface MemberDao {
 	Member getRealPasswd(Member member);
 	Admin chkAdminExist(Admin admin);
 	int chkKakaoUser(Member member);
+	List<Member> chkMemberTime();
+	void cancelMember(Member member);
 
 }

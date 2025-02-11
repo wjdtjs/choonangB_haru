@@ -33,5 +33,10 @@ public interface AppointmentService {
 	// 진료 내역
 	int getTotalCntChart(SearchItem si);
 	List<Appointment> consultationListChart(int startRow, int endRow, SearchItem si);
+	
+	// 메인 페이지
+	List<Appointment> getMainAList();
+	int getTodayRes();
+	int getWaitRes();
 
 }

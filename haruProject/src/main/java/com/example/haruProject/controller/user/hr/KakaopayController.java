@@ -21,6 +21,7 @@ import com.example.haruProject.dto.Purchase;
 import com.example.haruProject.dto.ReadyResponse;
 import com.example.haruProject.service.hj.OrderService;
 import com.example.haruProject.service.hr.KakaoPayService;
+import com.example.haruProject.service.hr.NotificationService;
 import com.example.haruProject.service.hr.UserPurchaseService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,6 +69,8 @@ public class KakaopayController {
 		return readyResponse;
 	}
 	
+	private final NotificationService ns;
+	
 	// 카카오페이 결제 시작
 	@GetMapping("/user/kakaopay/completed")
 	public String kakaoPurchaseCompleted(@RequestParam("pg_token") String pgToken,
@@ -90,8 +93,15 @@ public class KakaopayController {
         	tid = approveResponse.getTid();
             System.out.println("결제 성공! 승인 번호: " + tid);
             
-            // 주문 상태 0 -> 100, tid 입력
+            // 주문 상태 0 -> 100, tid 입력 
             ps.updateKStatus(orderno, tid);
+            
+            // SSE 연결된 클라이언트가 있는지 확인 후 알림 전송
+            boolean notificationSent = ns.sendNotification("카카오페이 결제가 완료되었습니다!");
+
+            if (!notificationSent) {
+                System.out.println("SSE 연결된 클라이언트가 없음");
+            }
             
             // 성공한 주문 정보를 모델에 추가
             model.addAttribute("tid", approveResponse.getTid());
@@ -132,15 +142,13 @@ public class KakaopayController {
 	/*
 	 * 카카오페이 결제 취소
 	 * 
-	 */	
+	 */
 	@RequestMapping("/api/kakaopay/refund")
     public ResponseEntity<?> refund(@RequestBody Map<String, String> requestData) {
 		System.out.println("kakaopay refund start ,,,");
 		
 		String tid = requestData.get("tid");
 	    String ototal_price = requestData.get("ototal_price");
-	    //String sOstatus_mcd = requestData.get("ostatus_mcd");
-	    //String sOrderno = requestData.get("orderno");
 	    int ostatus_mcd = Integer.parseInt(requestData.get("ostatus_mcd"));
 	    int orderno = Integer.parseInt(requestData.get("orderno"));
 	    

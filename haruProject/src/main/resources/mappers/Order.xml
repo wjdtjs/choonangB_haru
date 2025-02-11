@@ -3,194 +3,199 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.haruProject.ShopMapper">
-	<select id="HJTotalCnt" parameterType="SearchItem" resultType="int">
-		select count(*)
-		FROM purchase pc
-		JOIN member mb ON pc.memno = mb.memno
-		<if test="(type4 != 0 and !type4.equals('')) or ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">		
-			WHERE
-		</if>
-		<if test="type4 != 0 and !type4.equals('')">
-			pc.ostatus_mcd = #{type4}
-		</if>
-		<if test="(type4 != 0 and !type4.equals('')) and ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">
-			AND
-		</if>
-		<if test="(type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals(''))">
-			<choose>
-				<when test="type5 == 1">
-					pc.orderno LIKE '%' || #{search1} || '%'
-			  	</when>
-			  	<when test="type5 == 2">
-			  		mb.mname LIKE '%' || #{search1} || '%'
-			  	</when>
-			  	<when test="type5 == 3">
-			  		pc.orderno IN (	SELECT orderno
-			  						FROM orderproduct op1
-			  						JOIN product pd1 ON op1.pno = pd1.pno
-			  						WHERE pd1.pname LIKE '%' || #{search1} || '%'
-			  					   )
-			  	</when>
-			 </choose>
-		</if>
-	</select>
+   <select id="HJTotalCnt" parameterType="SearchItem" resultType="int">
+      select count(*)
+      FROM purchase pc
+      JOIN member mb ON pc.memno = mb.memno
+      <if test="(type4 != 0 and !type4.equals('')) or ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">      
+         WHERE
+      </if>
+      <if test="type4 != 0 and !type4.equals('')">
+         pc.ostatus_mcd = #{type4}
+      </if>
+      <if test="(type4 != 0 and !type4.equals('')) and ((type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals('')))">
+         AND
+      </if>
+      <if test="(type5 != 0 and !type5.equals('')) and (search1 != null and !search1.equals(''))">
+         <choose>
+            <when test="type5 == 1">
+               pc.orderno LIKE '%' || #{search1} || '%'
+              </when>
+              <when test="type5 == 2">
+                 mb.mname LIKE '%' || #{search1} || '%'
+              </when>
+              <when test="type5 == 3">
+                 pc.orderno IN (   SELECT orderno
+                             FROM orderproduct op1
+                             JOIN product pd1 ON op1.pno = pd1.pno
+                             WHERE pd1.pname LIKE '%' || #{search1} || '%'
+                             )
+              </when>
+          </choose>
+      </if>
+   </select>
 
-	<select id="HJSelectShopList" parameterType="Map" resultType="Order">
-		SELECT *
-		FROM (
-				SELECT rownum rn, a.*
-				FROM(
-						SELECT 	pc.orderno, count(*) orderCnt, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd,
-								cm1.content opayment_content,
-								cm2.content ostatus_content,
-								mb.mname,
-								min(pd.pname) pname
-						FROM purchase pc
-						JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
-						JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
-						JOIN member mb ON pc.memno = mb.memno
-						JOIN orderproduct op ON pc.orderno = op.orderno
-						JOIN product pd ON op.pno = pd.pno
-						<if test="(search.type4 != 0 and !search.type4.equals('')) or ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">		
-			  				WHERE
-						</if>
-			  			<if test="search.type4 != 0 and !search.type4.equals('')">
-									pc.ostatus_mcd = #{search.type4}
-			  			</if>
-			  			<if test="(search.type4 != 0 and !search.type4.equals('')) and ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">
-			  				AND
-			  			</if>
-			  			<if test="(search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals(''))">
-			  				<choose>
-			  					<when test="search.type5 == 1">
-			  						pc.orderno LIKE '%' || #{search.search1} || '%'
-			  					</when>
-			  					<when test="search.type5 == 2">
-			  						mb.mname LIKE '%' || #{search.search1} || '%'
-			  					</when>
-			  					<when test="search.type5 == 3">
-			  						pc.orderno IN (	SELECT orderno
-			  									 	FROM orderproduct op1
-			  									 	JOIN product pd1 ON op1.pno = pd1.pno
-			  										WHERE pd1.pname LIKE '%' || #{search.search1} || '%'
-			  									   )
-			  					</when>
-			  				</choose>
-			  			</if>
-						GROUP BY    pc.orderno, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd,
-                    				cm1.content,
-                    				cm2.content,
-                    				mb.mname
-						ORDER BY pc.orderno desc
-					)a
-			)
-		WHERE rn BETWEEN #{startRow} AND #{endRow}
-	</select>
-	
-	<select id="HJGetOrderDetail" parameterType="int" resultType="Order">
-		SELECT	pc.*, mb.*,
-				cm1.content opayment_content,
-		   		cm2.content ostatus_content
-		FROM purchase pc
-		JOIN member mb ON pc.memno = mb.memno
-		JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
-		JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
-		where orderno = #{orderno}
-	</select>
-	
-	<select id="HJSelectOrderProducts" parameterType="int" resultType="OrderProduct">
-		SELECT *
-		FROM orderproduct op
-		JOIN product pd ON op.pno = pd.pno
-		WHERE orderno = #{orderno}
-	</select>
-	
-	<select id="HJOrderStatus" resultType="Common">
-	 	select * from common where bcd = 900 and mcd != 999
-	</select>
-	
-	<select id="HJTotalprice" parameterType="int" resultType="int">
-		SELECT SUM(pprice*oquantity)
-		FROM orderproduct
-		WHERE orderno = #{orderno}
-	</select>
-	
-	<update id="HJUpateOstatus" parameterType="Order">
-		UPDATE purchase
-		SET ostatus_mcd = #{ostatus_mcd},
-			update_date = sysdate
-		WHERE orderno = #{orderno}
-	</update>
-	
-	
-	<!-- 사용자뷰 -->
-	<select id="HJSelectPurchseHistory" parameterType="Map" resultType="Order">
-	 SELECT pc.*,
-	 		cm1.content opayment_content,
-	 		cm2.content ostatus_content
-	 FROM purchase pc
-	 JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd 
-	 JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
-	 WHERE pc.memno = #{memno}
-	 <choose>
-	 	<when test="si.type4 == 2">
-		 ORDER BY pc.odate	 	
-	 	</when>
-	 	<otherwise>
-			 ORDER BY pc.odate desc
-	 	</otherwise>
-	 </choose> 
-	</select>
-	
-	<select id="HJSelectPurchaseProduct" parameterType="int" resultType="OrderProduct">
-		SELECT op.*, pd.*, bd.bno
-		FROM orderproduct op
-		JOIN product pd ON op.pno = pd.pno
-		LEFT JOIN board bd ON bd.orderno = op.orderno AND bd.pno = op.pno
-		WHERE op.orderno = #{orderno}
-	</select>
-	
-	<select id="HJgetMemno" parameterType="int" resultType="int">
-		SELECT memno
-		FROM purchase
-		WHERE orderno = #{orderno}
-	</select>
-	
-	<select id="HJgetPname" parameterType="java.lang.String" resultType="java.lang.String">
-		SELECT pname
-		FROM product
-		WHERE pno = #{pno}
-	</select>
-	
-	
-	<!-- 주문하기 > orderno 불러오기 -->
-	<!-- ADD_PURCHASE 프로시저 실행 -->
+   <select id="HJSelectShopList" parameterType="Map" resultType="Order">
+      SELECT *
+      FROM (
+            SELECT rownum rn, a.*
+            FROM(
+                  SELECT    pc.orderno, count(*) orderCnt, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd,
+                        cm1.content opayment_content,
+                        cm2.content ostatus_content,
+                        mb.mname,
+                        min(pd.pname) pname
+                  FROM purchase pc
+                  JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
+                  JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
+                  JOIN member mb ON pc.memno = mb.memno
+                  JOIN orderproduct op ON pc.orderno = op.orderno
+                  JOIN product pd ON op.pno = pd.pno
+                  <if test="(search.type4 != 0 and !search.type4.equals('')) or ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">      
+                       WHERE
+                  </if>
+                    <if test="search.type4 != 0 and !search.type4.equals('')">
+                           pc.ostatus_mcd = #{search.type4}
+                    </if>
+                    <if test="(search.type4 != 0 and !search.type4.equals('')) and ((search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals('')))">
+                       AND
+                    </if>
+                    <if test="(search.type5 != 0 and !search.type5.equals('')) and (search.search1 != null and !search.search1.equals(''))">
+                       <choose>
+                          <when test="search.type5 == 1">
+                             pc.orderno LIKE '%' || #{search.search1} || '%'
+                          </when>
+                          <when test="search.type5 == 2">
+                             mb.mname LIKE '%' || #{search.search1} || '%'
+                          </when>
+                          <when test="search.type5 == 3">
+                             pc.orderno IN (   SELECT orderno
+                                          FROM orderproduct op1
+                                          JOIN product pd1 ON op1.pno = pd1.pno
+                                         WHERE pd1.pname LIKE '%' || #{search.search1} || '%'
+                                         )
+                          </when>
+                       </choose>
+                    </if>
+                  GROUP BY    pc.orderno, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd,
+                                cm1.content,
+                                cm2.content,
+                                mb.mname
+                  ORDER BY pc.orderno desc
+               )a
+         )
+      WHERE rn BETWEEN #{startRow} AND #{endRow}
+   </select>
+   
+   <select id="HJGetOrderDetail" parameterType="int" resultType="Order">
+      SELECT   pc.*, mb.*,
+            cm1.content opayment_content,
+               cm2.content ostatus_content
+      FROM purchase pc
+      JOIN member mb ON pc.memno = mb.memno
+      JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd
+      JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
+      where orderno = #{orderno}
+   </select>
+   
+   <select id="HJSelectOrderProducts" parameterType="int" resultType="OrderProduct">
+      SELECT *
+      FROM orderproduct op
+      JOIN product pd ON op.pno = pd.pno
+      WHERE orderno = #{orderno}
+   </select>
+   
+   <select id="HJOrderStatus" resultType="Common">
+       select * from common where bcd = 900 and mcd != 999
+   </select>
+   
+   <select id="HJTotalprice" parameterType="int" resultType="int">
+      SELECT SUM(pprice*oquantity)
+      FROM orderproduct
+      WHERE orderno = #{orderno}
+   </select>
+   
+   <update id="HJUpateOstatus" parameterType="Order">
+      UPDATE purchase
+      SET ostatus_mcd = #{ostatus_mcd},
+         update_date = sysdate
+      WHERE orderno = #{orderno}
+   </update>
+   
+   
+   <!-- 사용자뷰 -->
+   <select id="HJSelectPurchseHistory" parameterType="Map" resultType="Order">
+    SELECT pc.*,
+          cm1.content opayment_content,
+          cm2.content ostatus_content
+    FROM purchase pc
+    JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd 
+    JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd
+    WHERE pc.memno = #{memno}
+    <choose>
+       <when test="si.type4 == 2">
+       ORDER BY pc.odate       
+       </when>
+       <otherwise>
+          ORDER BY pc.odate desc
+       </otherwise>
+    </choose> 
+   </select>
+   
+   <select id="HJSelectPurchaseProduct" parameterType="int" resultType="OrderProduct">
+      SELECT op.*, pd.*, bd.bno
+      FROM orderproduct op
+      JOIN product pd ON op.pno = pd.pno
+      LEFT JOIN board bd ON bd.orderno = op.orderno AND bd.pno = op.pno
+      WHERE op.orderno = #{orderno}
+   </select>
+   
+   <select id="HJgetMemno" parameterType="int" resultType="int">
+      SELECT memno
+      FROM purchase
+      WHERE orderno = #{orderno}
+   </select>
+   
+   <select id="HJgetPname" parameterType="java.lang.String" resultType="java.lang.String">
+      SELECT pname
+      FROM product
+      WHERE pno = #{pno}
+   </select>
+   
+   
+   <!-- 주문하기 > orderno 불러오기 -->
+   <!-- ADD_PURCHASE 프로시저 실행 -->
     <update id="HR_addPurchase" parameterType="Map" statementType="CALLABLE">
         { CALL ADD_PURCHASE(
-            #{memno, 		mode=IN, 	jdbcType=NUMERIC},
-            #{opayment_mcd, mode=IN, 	jdbcType=NUMERIC},
-            #{ostatus_mcd, 	mode=IN, 	jdbcType=NUMERIC},
-            #{ototal_price, mode=IN, 	jdbcType=NUMERIC},
-            #{orderno, 		mode=OUT, 	jdbcType=NUMERIC}
+            #{memno,       mode=IN,    jdbcType=NUMERIC},
+            #{opayment_mcd, mode=IN,    jdbcType=NUMERIC},
+            #{ostatus_mcd,    mode=IN,    jdbcType=NUMERIC},
+            #{ototal_price, mode=IN,    jdbcType=NUMERIC},
+            #{orderno,       mode=OUT,    jdbcType=NUMERIC}
         ) }
     </update>
 
     <!-- PROCESS_ORDER_PRODUCTS 프로시저 실행 -->
     <update id="HR_processOrderProducts" parameterType="Map" statementType="CALLABLE">
-	        CALL PROCESS_ORDER_PRODUCTS(
-	            #{memno, mode=IN, jdbcType=NUMERIC},
-	            #{purchase.pno, mode=IN, jdbcType=NUMERIC},
-	            #{purchase.squantity, mode=IN, jdbcType=NUMERIC},
-	            #{purchase.pprice, mode=IN, jdbcType=NUMERIC},
-	            #{orderno, mode=IN, jdbcType=NUMERIC}
-	        )
+           CALL PROCESS_ORDER_PRODUCTS(
+               #{memno, mode=IN, jdbcType=NUMERIC},
+               #{purchase.pno, mode=IN, jdbcType=NUMERIC},
+               #{purchase.squantity, mode=IN, jdbcType=NUMERIC},
+               #{purchase.pprice, mode=IN, jdbcType=NUMERIC},
+               #{orderno, mode=IN, jdbcType=NUMERIC}
+           )
     </update>
     
     <!-- 카카오페이 결제 완료시 주문완료로 update -->
     <update id="HR_updateKState" parameterType="Map">
-    	UPDATE PURCHASE
-		SET ostatus_mcd = 100 , tid = #{tid}
-		WHERE orderno = #{orderno}
+       UPDATE PURCHASE
+      SET ostatus_mcd = 100 , tid = #{tid}
+      WHERE orderno = #{orderno}
     </update>
-	
+   	<!--  관리자 메인페이지 픽업 대기 리스트 불러오기  -->
+	<select id="HR_getMainOList" resultType="Order"> SELECT * FROM ( SELECT rownum rn, a.* FROM( SELECT pc.orderno, count(*) orderCnt, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd, cm1.content opayment_content, cm2.content ostatus_content, mb.mname, min(pd.pname) pname FROM purchase pc JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd JOIN member mb ON pc.memno = mb.memno JOIN orderproduct op ON pc.orderno = op.orderno JOIN product pd ON op.pno = pd.pno WHERE ostatus_mcd = 200 GROUP BY pc.orderno, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd, cm1.content, cm2.content, mb.mname ORDER BY pc.orderno desc )a ) WHERE rn BETWEEN 1 AND 10 </select>
+	<select id="HR_getWaitPur" resultType="int"> SELECT COUNT(*) FROM PURCHASE WHERE ostatus_mcd = 200 </select>
+	<select id="HR_autoOrderCancelList" resultType="Order">
+	<![CDATA[ SELECT * FROM PURCHASE WHERE odate+3 < TO_CHAR(sysdate, 'YY/MM/DD') AND ostatus_mcd = 200 ]]>
+	</select>
 </mapper>

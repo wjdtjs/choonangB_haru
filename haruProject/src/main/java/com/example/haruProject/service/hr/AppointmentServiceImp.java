@@ -191,6 +191,33 @@ public class AppointmentServiceImp implements AppointmentService {
 		return cList;
 	}
 	
+	// 메인페이지 > 예약 대기 리스트 불러오기
+	@Override
+	public List<Appointment> getMainAList() {
+		System.out.println("AppointmentServiceImp getMainAList() start ,,,");
+		
+		List<Appointment> aList = ad.getMainAList();
+		System.out.println("AppointmentServiceImp getMainAList() aList ->"+aList);
+		
+		return aList;
+	}
+	@Override
+	public int getTodayRes() {
+		System.out.println("AppointmentServiceImp getTodayRes() start ,,,");
+		
+		int today_res = ad.getTodayRes();
+		
+		return today_res;
+	}
+	@Override
+	public int getWaitRes() {
+		System.out.println("AppointmentServiceImp getTodayRes() start ,,,");
+		
+		int wait_res = ad.getWaitRes();
+		
+		return wait_res;
+	}
+	
 
 	
 

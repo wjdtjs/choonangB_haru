@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.haruProject.dto.Purchase;
 import com.example.haruProject.dto.ShoppingCart;
+import com.example.haruProject.service.hr.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -181,6 +182,7 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 		return orderno;
 	}
 
+	
 	@Override
 	public void updateKStatus(int orderno, String tid) {
 		System.out.println("UserPurchaseServiceImp updateKStatus start ,,,");

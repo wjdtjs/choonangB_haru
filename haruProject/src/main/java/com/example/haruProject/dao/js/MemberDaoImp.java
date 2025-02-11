@@ -185,4 +185,36 @@ public class MemberDaoImp implements MemberDao {
 		return memno;
 	}
 
+	/**
+	 * 이메일 인증 유효시간 지난 member 불러오기
+	 */
+	@Override
+	public List<Member> chkMemberTime() {
+		System.out.println("chkMemberTime start ,,,");
+		
+		List<Member> mList = new ArrayList<>();
+		
+		try {
+			mList = session.selectList("HR_chkMemberTime");
+		} catch (Exception e) {
+			log.error("chkMemberTime() query error -> ", e);
+		}
+		
+		return mList;
+	}
+
+	/**
+	 * 이메일 인증 유효시간 지난 member 삭제하기
+	 */
+	@Override
+	public void cancelMember(Member member) {
+		System.out.println("cancelMember start ,,,");
+		
+		try {
+			session.delete("HR_cancelMember", member);
+		} catch (Exception e) {
+			log.error("cancelMember() query error -> ", e);
+		}
+	}
+
 }

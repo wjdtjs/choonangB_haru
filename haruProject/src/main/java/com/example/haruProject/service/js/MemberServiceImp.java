@@ -1,5 +1,7 @@
 package com.example.haruProject.service.js;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.js.MemberDao;
@@ -99,6 +101,24 @@ public class MemberServiceImp implements MemberService {
 	public int chkKakaoUser(Member member) {
 		int memno = md.chkKakaoUser(member);
 		return memno;
+	}
+
+	/**
+	 * 이메일 인증 유효시간 지난 member 불러오기
+	 */
+	@Override
+	public List<Member> chkMemberTime() {
+		List<Member> mList = md.chkMemberTime();
+		
+		return mList;
+	}
+
+	/**
+	 * 이메일 인증 유효시간 지난 member 삭제하기
+	 */
+	@Override
+	public void cancelMember(Member member) {
+		md.cancelMember(member);		
 	}
 
 

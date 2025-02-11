@@ -38,4 +38,5 @@ public class Order {
 	
 	// 카카오페이 결제 승인 고유번호
 	private String tid;
+	private int ototal_price;
 }

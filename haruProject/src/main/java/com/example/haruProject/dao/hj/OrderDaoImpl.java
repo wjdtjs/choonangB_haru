@@ -125,5 +125,63 @@ public class OrderDaoImpl implements OrderDao{
 		}
 		return result;
 	}
+	
+
+	@Override
+	public List<Order> getMainOList() {
+		System.out.println("dao getMainOList start ,,,");
+		List<Order> sList = new ArrayList<>();
+		
+		try {
+			sList = session.selectList("HR_getMainOList");			
+			
+			System.out.println("shopList.size()"+sList.size());
+			
+			for (int i=0 ; i < sList.size() ; i++) {
+				int cnt = sList.get(i).getOrderCnt();
+				if (cnt > 1) {
+					cnt = cnt - 1;
+					sList.get(i).setPname1(sList.get(i).getPname()+ "외 "+ cnt +"건");
+					System.out.println("dao getMainOList sList ->"+sList);
+				} else if (cnt == 1) {
+					sList.get(i).setPname1(sList.get(i).getPname());
+					System.out.println("dao getMainOList sList ->"+sList);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("ShopDao getMainOList error->"+e.getMessage());
+		}
+		return sList;
+	}
+
+	@Override
+	public int getWaitPur() {
+		System.out.println("dao getWaitPur start ,,,");
+		
+		int wait_pur = 0;
+		
+		try {
+			wait_pur = session.selectOne("HR_getWaitPur");
+		} catch (Exception e) {
+			System.out.println("ShopDao getWaitPur error->"+e.getMessage());
+		}
+		
+		return wait_pur;
+	}
+
+	@Override
+	public List<Order> autoOrderCancel() {
+		System.out.println("dao autoOrderCancel start ,,,");
+		
+		List<Order> oList = new ArrayList<>();
+		
+		try {
+			oList = session.selectList("HR_autoOrderCancelList");
+		} catch (Exception e) {
+			System.out.println("ShopDao autoOrderCancel error->"+e.getMessage());
+		}
+		
+		return oList;
+	}
 
 }

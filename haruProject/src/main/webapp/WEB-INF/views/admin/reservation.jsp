@@ -320,7 +320,15 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                     </thead>
                                     <tbody>
                                     	<c:forEach var="appointment" items="${aList}">
-	                                    	<tr onclick="goToDetail('${appointment.resno}')" style="cursor: pointer;">
+                                    		<c:choose>
+                                    			<c:when test="${appointment.rstatus_mcd eq 300 }">
+                                    				<tr onclick="goToDetail('${appointment.resno}')" style="cursor: pointer; background: #f2f2f2; color: #919191">   
+                                    			</c:when>
+                                    			<c:otherwise>
+                                    				<tr onclick="goToDetail('${appointment.resno}')" style="cursor: pointer;"> 
+                                    			</c:otherwise>
+                                    		</c:choose>
+	                                    	
 	                                    		<td>${appointment.resno } </td>
 	                                    		<td><fmt:formatDate value="${appointment.rdate}" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;${appointment.start_time }</td>
 	                                      		<td>${appointment.mname } </td>
