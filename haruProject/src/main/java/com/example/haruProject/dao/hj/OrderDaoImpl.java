@@ -184,4 +184,18 @@ public class OrderDaoImpl implements OrderDao{
 		return oList;
 	}
 
+	@Override
+	public String getOdtatusContent(int ostatus_mcd) {
+		String content =  null;
+		System.out.println("ostatus_mcd-> "+ostatus_mcd);
+		try {
+			content = session.selectOne("HJ_GetOstatusContent",ostatus_mcd);
+			System.out.println("content-> "+content);
+			
+		} catch (Exception e) {
+			System.out.println("OrderDap getOdtatusContent error->"+e.getMessage());
+		}
+		return content;
+	}
+
 }

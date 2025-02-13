@@ -33,6 +33,8 @@ public class Order {
 	private String pname;			// 상품이름
 	private String pname1;			// 상품이름
 	
+	private String main_img;
+	
 	// 총구매금액
 	private int totalPrice;
 	

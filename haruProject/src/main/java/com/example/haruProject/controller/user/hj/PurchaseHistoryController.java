@@ -19,6 +19,7 @@ import com.example.haruProject.dto.Board;
 import com.example.haruProject.dto.Order;
 import com.example.haruProject.dto.OrderProduct;
 import com.example.haruProject.dto.SearchItem;
+import com.example.haruProject.service.hj.OrderService;
 import com.example.haruProject.service.hj.PurchaseHistoryService;
 
 import jakarta.servlet.ServletException;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PurchaseHistoryController {
 	private final PurchaseHistoryService ps;
+	private final OrderService os;
 	
 	/* 구매내역 가져오기 */
 	@GetMapping(value = "/user/purchaseHistory")
@@ -51,12 +53,19 @@ public class PurchaseHistoryController {
 			int orderno  = purchaseList.get(i).getOrderno();
 			List<OrderProduct> products = ps.getPurchaseProduct(orderno);
 			
-			purchaseList.get(i).setProductList(products);		
+			purchaseList.get(i).setProductList(products);	
+			purchaseList.get(i).setTotalPrice(os.TotalPrice(orderno));
+			purchaseList.get(i).setMain_img(products.get(0).getPimg_main());
+			
+			if(products.size() ==1) {
+				purchaseList.get(i).setPname1(products.get(0).getPname());
+			} else if (products.size() > 1) {
+				int cnt = products.size() -1;
+				purchaseList.get(i).setPname1(products.get(0).getPname()+"외 "+cnt+"건");
+			}
 		}
 		
 		System.out.println("purchaseList: "+purchaseList);
-		
-		/* 리뷰 작성 여부*/
 		
 		model.addAttribute("purchaseList",purchaseList);
 		model.addAttribute("si",si);

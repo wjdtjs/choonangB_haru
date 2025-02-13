@@ -198,4 +198,10 @@
 	<select id="HR_autoOrderCancelList" resultType="Order">
 	<![CDATA[ SELECT * FROM PURCHASE WHERE odate+3 < TO_CHAR(sysdate, 'YY/MM/DD') AND ostatus_mcd = 200 ]]>
 	</select>
+	
+	<select id="HJ_GetOstatusContent" parameterType="int" resultType="java.lang.String">
+		SELECT CONTENT
+		FROM common
+		WHERE bcd = 900 and mcd = #{ostatus_mcd}
+	</select>
 </mapper>

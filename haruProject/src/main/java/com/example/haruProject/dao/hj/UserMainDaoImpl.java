@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Notice;
 import com.example.haruProject.dto.Pet;
+import com.example.haruProject.dto.Product;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,5 +51,17 @@ public class UserMainDaoImpl implements UserMainDao {
 			System.out.println("UserMainDao getCommingAppointment Error->"+e.getMessage());
 		}
 		return commingRes;
+	}
+
+	@Override
+	public List<Product> getPopProductList() {
+		List<Product> plist = new ArrayList<>();
+		List <Product> purchaseCnt = new ArrayList<>();
+		try {
+			plist = session.selectList("HJ_PopularProductList");
+		} catch (Exception e) {
+			System.out.println("UserMainDao getPopProductList Error->"+e.getMessage());
+		}
+		return plist;
 	}
 }

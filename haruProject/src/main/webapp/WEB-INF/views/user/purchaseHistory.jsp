@@ -39,10 +39,9 @@ body{
 
 .purchase-info .purchase-info-top > .status-content{
 	font-size: 12px;
-	text-align: right; /* 오른쪽 정렬 */
-    /* flex: 1; */ /* Flexbox 비율 지정 (공간 나눔) */
-    border-radius: 20px;
-   	padding: 6px 12px;
+    border-radius: 12px;
+   	padding: 3px 6px;
+   	text-align: center;
 }
 
 .purchase-product{
@@ -62,9 +61,30 @@ body{
 	background-color: #eee;
 	margin-right: 5px;
 
+} 
+
+img{
+	width: 5.5rem;
+	height: 5.5rem;
+	border-radius: 12px;
+	background-color: #eee;
+	margin-right: 5px;
+
 }
+.purchase-info-prd > i{
+	display: inline-block;
+	flex-direction: row;
+	align-items: center;
+	}
 
 .purchase-product-info .productInfo{
+	min-height: 5.5rem;
+	width: 100%;
+	margin-right: 5px;
+	padding: 3px;
+
+}
+.productInfo{
 	min-height: 5.5rem;
 	width: 100%;
 	margin-right: 5px;
@@ -96,7 +116,10 @@ a{
 	text-decoration: none;
 	color: black;
 }
-
+.page-btn {
+	min-height: 5.5rem;
+	line-height: 5.5rem;
+}
 </style>
 <body class="box" style="overflow-y: scroll;">
 	<div class="haru-user-container">
@@ -131,35 +154,58 @@ a{
 					<c:when test="${not empty purchaseList }">
 						<c:forEach var="purchase" items="${purchaseList}">
 							<div class="purchase-info" data-ostatus="${purchase.ostatus_mcd }">
-								<div class="purchase-info-top">
-									<div><fmt:formatDate value="${purchase.odate}" pattern="yyyy-MM-dd"/></div>
-									<div class="status-content">${purchase.ostatus_content}</div>
-								</div>
-								<c:forEach var="product" items="${purchase.productList }">
-									<div class="purchase-product">
-										
-										<input type="hidden" value="${product.orderno }">
-										<input type="hidden" value="${product.pno }">
-										<div class="purchase-product-info">
-											<img alt="prodictimg" src="${product.pimg_main }">
-											<div class="productInfo">
-												<div >${product.pbrand }</div>
-												<div><a href="/user/details-product?pno=${product.pno}"> ${product.pname }</a></div>
-												<div>${product.oquantity }개 / ${product.pprice }</div>
+								<div class="purchase-info-content">
+									<div class="purchase-info-top">
+										<div style="font-size: 12; font-weight: 600; padding-top: 3px;">주문번호 ${purchase.orderno}</div>
+										<div class="status-content">${purchase.ostatus_content}</div>
+									</div>
+									<fmt:formatDate value="${purchase.odate}" pattern="yyyy-MM-dd"/>
+									<div style="display: flex; width: 100%;">
+										<div style="width: 100%;">
+											<div class="purchase-info-prd" style="display: flex;">
+												<img alt="prodictimg" src="${purchase.main_img }">
+												<div>${purchase.pname1 }</div>
+											</div>
+											<div style="display: flex; justify-content: space-between; margin-top: 4px;">
+												<div>총 결제금액</div>
+												<div style="display: flex;">${purchase.totalPrice }원
+												<div style="color: gray; font-size: 14px; margin: auto;">(${purchase.opayment_content })</div> 
+												</div>
 											</div>
 										</div>
-										<div class="btn-review" style="display: hidden;">
-											<c:choose>
-												<c:when test="${product.bno == 0 }">
-													<button class="border-btn" onclick="location.href='/user/writeProductReview?orderno=${product.orderno}&pno=${product.pno }'" > 리뷰작성  </button>
-												</c:when>
-												<c:when test="${product.bno != 0 }">
-													<button class="bgcolor-btn" onclick="location.href='/user/productReview?orderno=${product.orderno}&pno=${product.pno }'"> 리뷰보기  </button>
-												</c:when>
-											</c:choose>
+										<div>
+										<i class="fa-solid fa-chevron-right page-btn" style="transform: rotate(90deg);"></i> 
 										</div>
-									</div>
-								</c:forEach>
+									</div>		 	
+								</div>
+								<div class="purchase-info-product" style="display: none;">
+									<hr>
+									<div>구매상품</div>
+									<c:forEach var="product" items="${purchase.productList }">
+										<div class="purchase-product">
+											<input type="hidden" value="${product.orderno }">
+											<input type="hidden" value="${product.pno }">
+											<div class="purchase-product-info">
+												<img alt="prodictimg" src="${product.pimg_main }">
+												<div class="productInfo">
+													<div >${product.pbrand }</div>
+													<div><a href="/user/details-product?pno=${product.pno}"> ${product.pname }</a></div>
+													<div>${product.oquantity }개 / ${product.pprice }</div>
+												</div>
+											</div>
+											<div class="btn-review" style="display: hidden;">
+												<c:choose>
+													<c:when test="${product.bno == 0 }">
+														<button class="border-btn" onclick="location.href='/user/writeProductReview?orderno=${product.orderno}&pno=${product.pno }'" > 리뷰작성  </button>
+													</c:when>
+													<c:when test="${product.bno != 0 }">
+														<button class="bgcolor-btn" onclick="location.href='/user/productReview?orderno=${product.orderno}&pno=${product.pno }'"> 리뷰보기  </button>
+													</c:when>
+												</c:choose>
+											</div>
+										</div>
+									</c:forEach>
+								</div>
 							</div>
 						</c:forEach>
 					</c:when>
@@ -206,8 +252,20 @@ a{
 	            $(this).find('.status-content').css('background-color','#eee');
 	            $(this).find('.btn-review').css('display', 'none');
 	        }
-
 		});
+		
+		// 구매내역 버튼 토글 이벤트
+	    $('.purchase-info-content').click(function () {
+	        $(this).next('.purchase-info-product').slideToggle();
+
+	        var tr = $(this).find('.page-btn').css('transform');
+	        var values = tr.split('(')[1].split(')')[0].split(',');
+	        var a = values[0], b = values[1];
+	        var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
+	        var newAngle = angle + 180;
+
+	        $(this).find('.page-btn').css('transform', `rotate(${newAngle}deg)`);
+	    });
 	});
 	
 	$(document).on('change','.selected-order',function(){

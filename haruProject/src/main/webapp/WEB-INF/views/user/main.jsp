@@ -111,11 +111,12 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 		font-size: 14px;
 	}
 	
-	.shortcut , .reservation{
-		margin-top: 1rem;
+	.shortcut , .reservation, .shop{
+		margin-top: 1.8rem;
 		color: #6F7173;
 	}
 	.title{
+	color: #6F7173;
 		font-size: 16px;
 	}
 	.shortcut .shortcut_list{
@@ -158,6 +159,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	margin: 12px 0;
 	padding: 10px;
 	}
+	.past-type {
+	background-color: #D0E3E7;
+	padding: 1px 4px;
+	border-radius: 12px;
+	width: 56px;
+	text-align: center;
+	}
 	.pet-res-content .res-date,
 	.pet-res-content .res-petname,
 	.pet-res-content .res-item,
@@ -187,6 +195,25 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
+	}
+	
+	.shopping-product-list{
+		grid-template-columns: repeat(3, 1fr);
+		row-gap: 10px;
+		column-gap: 10px;
+		margin: 12px 0;
+	}
+	.prosduct-info-div{
+	width: 110px;
+	}
+	.shopping-product-list .product-thumbnail-div{
+	width: 110px;
+	height: 110px;
+	}
+	.product-info-desc > div {
+	width: 110px;
+	font-size: 0.9rem;
+	color: black;
 	}
 </style>
 <body>
@@ -241,7 +268,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
             			</div>
         			</c:forEach>
         			<div class="swiper-slide">
-            			<li class="add_pet">
+            			<li class="add_pet" onclick="location.href='/user/addPetView'">
                 			<i class="fa-solid fa-circle-plus" style="color: #ffffff;"></i> 동물추가하기
             			</li>
 			        </div>
@@ -310,11 +337,25 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 				</div>
 			</div>
 			<div class="shop">
-				<div class="title">인기있는 상품</div>
-				<div>
-					<div></div>
-					<div></div>
-					<div></div>
+				<div class="title">인기상품</div>
+				<div class="shopping-product-list">
+					<c:forEach var="pl" items="${pList }">
+						<div class="prosduct-info-div" onclick="goDetail(${pl.pno})">
+							<c:choose>
+								<c:when test="${not empty pl.pimg_main }">
+									<div class="product-thumbnail-div" style="background: url(${pl.pimg_main}); background-size: cover;"></div>						
+								</c:when>
+								<c:otherwise>
+									<div class="product-thumbnail-div"></div>
+								</c:otherwise>
+							</c:choose>
+							<div class="product-info-desc" style="margin-top: 1rem;">
+								<div class="js-pbrand"><c:if test="${pl.pquantity eq 0 }"><span style="color: red">[품절]</span></c:if> ${pl.pbrand }</div>
+								<div class="js-pname">${pl.pname }</div>
+								<div class="js-pprice" style="${pl.pquantity eq 0 ? 'text-decoration: line-through':''}"> <fmt:formatNumber value="${pl.pprice }" pattern="#,###" />원</div>
+							</div>
+						</div>
+					</c:forEach>
 				</div>
 			</div>
 		</div>

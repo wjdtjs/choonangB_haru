@@ -101,4 +101,10 @@ public class OrderServiceImpl implements OrderService{
 			return oList;
 		}
 
+		@Override
+		public String getOstatusContent(int ostatus_mcd) {
+			String content = od.getOdtatusContent(ostatus_mcd);
+			return content;
+		}
+
 }

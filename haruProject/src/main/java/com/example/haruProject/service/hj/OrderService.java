@@ -19,5 +19,6 @@ public interface OrderService {
 	List<Order> 		getMainOList();
 	int 				getWaitPur();
 	List<Order> 		autoOrderCancel();
+	String				getOstatusContent(int ostatus_mcd);
 
 }

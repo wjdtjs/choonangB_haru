@@ -26,12 +26,9 @@
 }
 
 .order_info tr{
-   text-align: center;
-   border-bottom: 1px solid #d0e4e8;
+   text-align: center; 
 }
-.order_info td{
-   padding: 7px 0;
-}
+
 .order_info .infotitle td:first-child{
    border-top-left-radius:8px;
    border-bottom-left-radius:8px;
@@ -40,10 +37,14 @@
    border-top-right-radius:8px;
    border-bottom-right-radius:8px;
 }
-.infotitle {
+.info-title {
    font-size: 1rem;
    height: 35px;
    background-color: #d0e4e8;
+}
+.info-content{
+ 	border-bottom: 1px solid #d0e4e8;
+ 	padding: 7px 0;
 }
 
 .form-input-title {
@@ -168,7 +169,7 @@ function psUpdate() {
                               <col width="3%" />
                           </colgroup>
                        <tr>
-                          <td class="form-input-title">주문번호</td> <td>:</td> <td><input class="send-info" type="text" value="${sale.orderno}" readonly="readonly"></td>
+                          <td class="form-input-title">주문번호</td> <td>:</td> <td><input class="send-info" type="text"  name="orderno" value="${sale.orderno}" readonly="readonly"></td>
                        </tr>
                        <tr>
                           <td class="form-input-title">주문일시</td> <td>:</td> <td><fmt:formatDate value="${sale.odate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -191,27 +192,28 @@ function psUpdate() {
                               <col width="3%" />
                           </colgroup>
                        <tr>
-                          <td class="form-input-title">회원번호</td>   <td>:</td> <td>${sale.memno}</td>
+                          <td class="form-input-title">회원번호</td> <td>:</td>
+                          <td><input class="send-info" type="text" name="memno" value="${sale.memno}" readonly="readonly"></td>
                        </tr>
                        <tr>
-                          <td class="form-input-title">이름</td>   <td>:</td> <td>${sale.mname}</td>
+                          <td class="form-input-title">이름</td>   <td>:</td>
+                          <td><input class="send-info" type="text" name="mname" value="${sale.mname}" readonly="readonly"></td>
                        </tr>
                        <tr>
-                          <td class="form-input-title">전화번호</td>   <td>:</td> <td>${sale.mtel}</td>
+                          <td class="form-input-title">전화번호</td>  <td>:</td>
+                          <td>${sale.mtel}</td>
                        </tr>
                        <tr>
-                          <td class="form-input-title">이메일</td>   <td>:</td> <td>${sale.memail}</td>
+                          <td class="form-input-title">이메일</td>   <td>:</td>
+                          <td><input class="send-info" type="text" name="memail" value="${sale.memail}" readonly="readonly"></td>
                        </tr>
                     </table>
                     
-                    
-                       <input type="hidden" name="orderno" value="${sale.orderno}">
-
-                       
-                       <div class="form-row">
-                          <div class="form-input-title" style="width: 80px;">주문상태</div>
-                          <div><select class="form-input-1 sub-alevel-mcd-select" name="ostatus_mcd">
-                                <c:forEach var="status" items="${ostatus }">
+                    <div class="form-row">
+                    	<div class="form-input-title" style="width: 80px;">주문상태</div>
+                         <div>
+                         	<select class="form-input-1 sub-alevel-mcd-select" name="ostatus_mcd">
+                         		<c:forEach var="status" items="${ostatus }">
                                    <c:choose>
                                       <c:when test="${status.mcd == sale.ostatus_mcd}">
                                          <option value="${status.mcd }" selected>${status.content }</option>
@@ -227,7 +229,7 @@ function psUpdate() {
                        <div class="form-row">
                           <div class="form-input-title">마지막 상태 변경 시간</div>
                           <div style="width: 50px; text-align: center;">:</div>
-                          <div>${sale.update_date}</div>
+                          <div><fmt:formatDate value="${sale.update_date}" pattern="yyyy-MM-dd"/></div>
                        </div>
                     </form>
                     
@@ -239,14 +241,14 @@ function psUpdate() {
                           <col width="10%">
                           <col width="15%">                           
                        </colgroup>
-                       <tr class="infotitle">
+                       <tr class="info-title">
                           <td>상품번호</td>
                           <td>상품명</td>
                           <td>수량</td>
                           <td>가격</td>
                        </tr>
                        <c:forEach var="prd" items="${products }">
-                          <tr>
+                          <tr class="info-content">
                              <td>${prd.pno}</td>
                              <td>${prd.pname}</td>
                              <td>${prd.oquantity}</td>

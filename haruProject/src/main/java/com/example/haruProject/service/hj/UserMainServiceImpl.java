@@ -9,6 +9,7 @@ import com.example.haruProject.dao.hj.UserMainDao;
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Notice;
 import com.example.haruProject.dto.Pet;
+import com.example.haruProject.dto.Product;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,5 +34,11 @@ public class UserMainServiceImpl implements UserMainService {
 	public Appointment getCommingRes(int memno) {
 		Appointment comingRes = ud.getCommingRes(memno);
 		return comingRes;
+	}
+
+	@Override
+	public List<Product> getPopProductList() {
+		List<Product> pList = ud.getPopProductList();
+		return pList;
 	}
 }

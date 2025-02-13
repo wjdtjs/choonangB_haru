@@ -10,6 +10,7 @@ import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Notice;
 import com.example.haruProject.dto.Pet;
+import com.example.haruProject.dto.Product;
 import com.example.haruProject.service.hj.UserMainService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,9 +42,14 @@ public class MainController {
 		Appointment commingRes = us.getCommingRes(memno);
 		System.out.println("commingRes->"+commingRes);
 		
+		/* 상품리스트 */
+		List<Product> pList = us.getPopProductList();
+		
+		
 		model.addAttribute("notices",notices);
 		model.addAttribute("pets",pets);
 		model.addAttribute("res",commingRes);
+		model.addAttribute("pList",pList);
 		
 		return "user/main";
 	}

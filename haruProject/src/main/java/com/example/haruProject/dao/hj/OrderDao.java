@@ -19,4 +19,5 @@ public interface OrderDao {
 	List<Order> 		getMainOList();
 	int 				getWaitPur();
 	List<Order> 		autoOrderCancel();
+	String				getOdtatusContent(int ostatus_mcd);
 }

@@ -40,6 +40,7 @@ public class PurchaseHistoryDaoImpl implements PurchaseHistoryDao {
 	@Override
 	public List<OrderProduct> getPurchaseProduct(int orderno) {
 		List<OrderProduct> products = new ArrayList<>();
+		
 		try {
 			products = session.selectList("HJSelectPurchaseProduct",orderno);
 		} catch (Exception e) {

@@ -210,4 +210,28 @@
 		WHERE PNO = #{pd.pno}
 	</update>
 	
+	<select id="HJ_PopularProductList" resultType="Product">
+	<![CDATA[
+		
+		SELECT *
+		FROM product
+		WHERE pno IN (
+		    SELECT pno
+		    FROM (
+		    	WITH TopOrderedProducts AS (
+			    	SELECT op.pno, COUNT(*) AS cnt
+			    	FROM orderproduct op
+			    	JOIN product pd ON op.pno = pd.pno
+			    	WHERE pd.PQUANTITY != 0
+			      	AND pd.PSTATUS_MCD != 200
+			    	GROUP BY op.pno
+				)
+		        SELECT pno, ROW_NUMBER() OVER (ORDER BY cnt DESC) AS rn
+		        FROM TopOrderedProducts
+		    )
+		    WHERE rn < 7
+		)
+
+	]]>
+	</select>
 </mapper>
