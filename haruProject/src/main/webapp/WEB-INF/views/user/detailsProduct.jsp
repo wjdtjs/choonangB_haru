@@ -115,7 +115,7 @@
 		<c:if test="${product.pquantity ne 0 }">
 			<div class="js-shop-btn-div">
 				<button class="btn-sub" type="submit" form="productForm" onclick="javascript: form.action='/user/updateCart'">장바구니</button>
-				<button class="btn-primary" form="productForm" onclick="javascript: form.action=''">구매하기</button>
+				<button class="btn-primary" onclick="directPurchase()">주문하기</button>
 			</div>			
 		</c:if>
 		
@@ -147,6 +147,21 @@
 			
 			return result;
 		}
+		
+		
+		
+		
+		function directPurchase() {
+			console.log("direct order start ,,,");
+			
+			let pno = Number($("input[name='pno']").val());
+			let squantity = Number($("input[name='pquantity']").val());
+			
+			console.log("pno ->",pno, ", squantity ->", squantity);
+			
+			location.href = `/user/direct_purchase?pno=\${pno}&&squantity=\${squantity}`;
+		}
+		
 	
 		$(()=>{
 

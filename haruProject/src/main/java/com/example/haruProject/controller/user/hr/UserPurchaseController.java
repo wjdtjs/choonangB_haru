@@ -20,11 +20,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.ApproveResponse;
+import com.example.haruProject.dto.Order;
+import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.Purchase;
 import com.example.haruProject.dto.ReadyResponse;
 import com.example.haruProject.dto.ShoppingCart;
 import com.example.haruProject.service.hr.KakaoPayService;
 import com.example.haruProject.service.hr.UserPurchaseService;
+import com.example.haruProject.service.js.ShopService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -89,7 +92,7 @@ public class UserPurchaseController {
 
 	
 	/*
-	 * 주문하기 뷰
+	 * 주문하기 뷰 (장바구니)
 	 * memno
 	 */
 	@GetMapping("/user/purchaseView")
@@ -97,7 +100,7 @@ public class UserPurchaseController {
 								HttpServletRequest request,
 								Model model) {
 		System.out.println("UserPurchaseController purchaseView() start ,,,");
-		System.out.println("UserPurchaseController deleteShoppingProduct() pnoListStr ->"+pnoListStr);
+		System.out.println("UserPurchaseController purchaseView() pnoListStr ->"+pnoListStr);
 		
 		// 받은 pno 문자열 pnoList로 변환
 		List<Integer> pnoList = Arrays.stream(pnoListStr.split(","))
@@ -116,9 +119,43 @@ public class UserPurchaseController {
 		model.addAttribute("sList", sList);
 		model.addAttribute("totalSquantity", totalSquantity);
 		model.addAttribute("totalPrice", totalPrice);
+		model.addAttribute("direct_purchase", 0);
 		
 		return "user/purchase";
 	}
+	
+	/*
+	 * 주문하기 뷰 (상품상세)
+	 * memno
+	 */	
+	private final ShopService ss;
+	@GetMapping("/user/direct_purchase")
+	public String direct_purchase(@RequestParam(value = "pno", required = true) int pno,
+								@RequestParam(value = "squantity", required = true) int squantity,
+								HttpServletRequest request,
+								Model model) {
+		System.out.println("UserPurchaseController direct_purchase() start ,,,");
+		System.out.println("UserPurchaseController direct_purchase() pno ->"+pno);
+		System.out.println("UserPurchaseController direct_purchase() squantity ->"+squantity);
+
+		Product p = ss.getProductDetail(Integer.toString(pno));
+		System.out.println("product -> "+p);
+		
+		int totalSquantity = squantity;
+		int totalPrice = p.getPprice() * totalSquantity;
+		
+		// 주문상품에 대한 정보 전달
+		// pbrand, pname, pprice, squantity
+		model.addAttribute("p", p);
+		model.addAttribute("totalSquantity", totalSquantity);
+		model.addAttribute("totalPrice", totalPrice);
+		model.addAttribute("direct_purchase", 1);
+		
+		return "user/purchase";
+	}
+	
+	
+	
 	
 	/*
 	 * 주문하기
@@ -144,13 +181,16 @@ public class UserPurchaseController {
 		int memno = SessionUtil.getNo(request);
 		int opayment_mcd = pList.get(0).getOpayment_mcd();
 		int ototal_price = pList.get(0).getOtotal_price();
-		System.out.println("memno: "+memno);
-		System.out.println("opayment_mcd: "+opayment_mcd);
-		System.out.println("ototal_price: "+ototal_price);
-		
+		int dp = pList.get(0).getDp();
+		System.out.println("pList ->"+pList);
+		System.out.println("dp ->"+dp);
+
+//		System.out.println("memno: "+memno);
+//		System.out.println("opayment_mcd: "+opayment_mcd);
+//		System.out.println("ototal_price: "+ototal_price);
 		int orderno = 0;
 		
-		orderno = ps.skPurchase(pList, memno, opayment_mcd, ototal_price);
+		orderno = ps.skPurchase(pList, memno, opayment_mcd, ototal_price, dp);
 		System.out.println("purchase controller orderno ->"+orderno);
 		
 		Map<String, Object> response = new HashMap<>();
@@ -158,7 +198,7 @@ public class UserPurchaseController {
 		response.put("redirectUrl", "/user/purchaseResult?orderno="+orderno);
 		
 		return response;
-	}	
+	}
 	
 	
 	/*

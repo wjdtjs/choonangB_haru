@@ -38,11 +38,7 @@
 
 <!-- 알림 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
-
-<script type="text/javascript">
-
-    
+<script>
 document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM 로드 완료, SSE 연결 시작");
 
@@ -142,8 +138,5 @@ document.addEventListener("DOMContentLoaded", function () {
     loadNotifications();
     connectSSE(); // ✅ SSE 연결 시작
 });
-    
-    
-
 
 </script>

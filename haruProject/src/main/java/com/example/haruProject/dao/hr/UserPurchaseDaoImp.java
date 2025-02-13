@@ -10,6 +10,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.Purchase;
 import com.example.haruProject.dto.ShoppingCart;
 import com.example.haruProject.service.hr.NotificationService;
@@ -104,7 +105,7 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 
 	// 매장 결제 주문 
 	@Override
-	public int sPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
+	public int sPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price, int dp) {
 		System.out.println("UserPurchaseDaoImp storePurchase() start ,,,");
 		System.out.println("UserPurchaseDaoImp storePurchase() memno ->"+memno);
 		System.out.println("UserPurchaseDaoImp storePurchase() pList ->"+pList);
@@ -136,6 +137,7 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 				insertMap.put("purchase", purchase);
 				insertMap.put("memno", memno);
 				insertMap.put("orderno", orderno);
+				insertMap.put("dp", dp);
 				session.update("HR_processOrderProducts", insertMap);
 			}
 		} catch (Exception e) {
@@ -147,7 +149,7 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 	
 	// 카카오페이 주문
 	@Override
-	public int kPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
+	public int kPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price, int dp) {
 		System.out.println("UserPurchaseServiceImp storePurchase() start ,,,");
 		System.out.println("UserPurchaseServiceImp storePurchase() memno ->"+memno);
 		System.out.println("UserPurchaseServiceImp storePurchase() pList ->"+pList);
@@ -173,6 +175,7 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 				insertMap.put("purchase", purchase);
 				insertMap.put("memno", memno);
 				insertMap.put("orderno", orderno);
+				insertMap.put("dp", dp);
 				session.update("HR_processOrderProducts", insertMap);
 			}
 		} catch (Exception e) {
@@ -197,6 +200,20 @@ public class UserPurchaseDaoImp implements UserPurchaseDao {
 		} catch (Exception e) {
 			log.error("updateKStatus() error ->", e);
 		}
+	}
+
+	// 제품상세 -> 주문하기
+	@Override
+	public List<Product> getProduct(int pno) {
+		List<Product> sList = new ArrayList<>();
+		
+		try {
+			sList = session.selectList("HR_getProduct", pno);
+		} catch (Exception e) {
+			log.error("getProduct() error ->", e);
+		}
+		
+		return sList;
 	}
 	
 	

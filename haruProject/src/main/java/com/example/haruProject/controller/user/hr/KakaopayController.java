@@ -61,8 +61,10 @@ public class KakaopayController {
 		int memno = SessionUtil.getNo(request);
 		int ototal_price = pList.get(0).getOtotal_price();
 		int opayment_mcd = pList.get(0).getOpayment_mcd();
+		int dp = pList.get(0).getDp();
+		System.out.println("dp ->"+dp);
 		
-		int orderno = ps.skPurchase(pList, memno, opayment_mcd, ototal_price);
+		int orderno = ps.skPurchase(pList, memno, opayment_mcd, ototal_price, dp);
 		
 		ReadyResponse readyResponse = ks.payReady(pname, ototal_price, orderno, memno);
 		
@@ -97,8 +99,9 @@ public class KakaopayController {
             ps.updateKStatus(orderno, tid);
             
             // SSE 연결된 클라이언트가 있는지 확인 후 알림 전송
-            boolean notificationSent = ns.sendNotification("카카오페이 결제가 완료되었습니다!");
-
+            //boolean notificationSent = ns.sendNotification("카카오페이 결제가 완료되었습니다!");
+            boolean notificationSent = ns.sendNotification(" 새로운 주문이 추가되었습니다!");
+            
             if (!notificationSent) {
                 System.out.println("SSE 연결된 클라이언트가 없음");
             }

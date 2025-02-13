@@ -349,13 +349,13 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 							    <!-- 이전 블록 이동 -->
 							    <c:if test="${pagination.startPage > pagination.blockSize}">
 							        <i class="haru-pagearrow fa-solid fa-chevron-left" 
-							           onclick="location.href='?pageNum=${pagination.startPage - pagination.blockSize}'"></i>
+							           onclick="location.href='?pageNum=${pagination.startPage - pagination.blockSize}&type4=${type4}&type5=${type5}&search1=${search1}&start_date=${start_date}&end_date=${start_date}'"></i>
 							    </c:if>
 							
 							    <!-- 페이지 번호 출력 -->
 							    <c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}">
 							        <div class="haru-pagenum ${i == pagination.currentPage ? 'active' : ''}" 
-							             onclick="location.href='?pageNum=${i}'">
+							             onclick="location.href='?pageNum=${i}&type4=${type4}&type5=${type5}&search1=${search1}&start_date=${start_date}&end_date=${start_date}'">
 							            ${i}
 							        </div>
 							    </c:forEach>
@@ -363,7 +363,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 							    <!-- 다음 블록 이동 -->
 							    <c:if test="${pagination.endPage < pagination.pageCnt}">
 							        <i class="haru-pagearrow fa-solid fa-chevron-right" 
-							           onclick="location.href='?pageNum=${pagination.startPage + pagination.blockSize}'"></i>
+							           onclick="location.href='?pageNum=${pagination.startPage + pagination.blockSize}&type4=${type4}&type5=${type5}&search1=${search1}&start_date=${start_date}&end_date=${start_date}'"></i>
 							    </c:if>
 							</div>
 						</div>

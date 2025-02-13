@@ -192,16 +192,41 @@
       SET ostatus_mcd = 100 , tid = #{tid}
       WHERE orderno = #{orderno}
     </update>
-   	<!--  관리자 메인페이지 픽업 대기 리스트 불러오기  -->
-	<select id="HR_getMainOList" resultType="Order"> SELECT * FROM ( SELECT rownum rn, a.* FROM( SELECT pc.orderno, count(*) orderCnt, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd, cm1.content opayment_content, cm2.content ostatus_content, mb.mname, min(pd.pname) pname FROM purchase pc JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd JOIN member mb ON pc.memno = mb.memno JOIN orderproduct op ON pc.orderno = op.orderno JOIN product pd ON op.pno = pd.pno WHERE ostatus_mcd = 200 GROUP BY pc.orderno, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd, cm1.content, cm2.content, mb.mname ORDER BY pc.orderno desc )a ) WHERE rn BETWEEN 1 AND 10 </select>
-	<select id="HR_getWaitPur" resultType="int"> SELECT COUNT(*) FROM PURCHASE WHERE ostatus_mcd = 200 </select>
-	<select id="HR_autoOrderCancelList" resultType="Order">
-	<![CDATA[ SELECT * FROM PURCHASE WHERE odate+3 < TO_CHAR(sysdate, 'YY/MM/DD') AND ostatus_mcd = 200 ]]>
-	</select>
 	
 	<select id="HJ_GetOstatusContent" parameterType="int" resultType="java.lang.String">
 		SELECT CONTENT
 		FROM common
 		WHERE bcd = 900 and mcd = #{ostatus_mcd}
 	</select>
+	
+	<!--  관리자 메인페이지 픽업 대기 리스트 불러오기  -->
+	<select id="HR_getMainOList" resultType="Order">
+		SELECT * FROM (
+						SELECT rownum rn, a.* 
+						FROM( 
+							SELECT pc.orderno, count(*) orderCnt, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd,
+							 cm1.content opayment_content, cm2.content ostatus_content, mb.mname, min(pd.pname) pname 
+							 FROM purchase pc 
+							 JOIN common cm1 ON pc.opayment_bcd = cm1.bcd AND pc.opayment_mcd = cm1.mcd 
+							 JOIN common cm2 ON pc.ostatus_bcd = cm2.bcd AND pc.ostatus_mcd = cm2.mcd 
+							 JOIN member mb ON pc.memno = mb.memno JOIN orderproduct op ON pc.orderno = op.orderno 
+							 JOIN product pd ON op.pno = pd.pno 
+							 WHERE ostatus_mcd = 200 
+							 GROUP BY pc.orderno, pc.odate, pc.update_date, pc.ostatus_mcd, pc.ostatus_bcd, cm1.content, cm2.content, mb.mname ORDER BY pc.orderno desc 
+							 )a 
+						) 
+		WHERE rn BETWEEN 1 AND 10 
+	</select>
+	
+	<select id="HR_getWaitPur" resultType="int">
+		SELECT COUNT(*) 
+		FROM PURCHASE 
+		WHERE ostatus_mcd = 200 
+	</select>
+	<select id="HR_autoOrderCancelList" resultType="Order">
+		<![CDATA[ SELECT * 
+					FROM PURCHASE 
+					WHERE odate+3 < TO_CHAR(sysdate, 'YY/MM/DD') AND ostatus_mcd = 200 ]]>
+	</select>
+	
 </mapper>

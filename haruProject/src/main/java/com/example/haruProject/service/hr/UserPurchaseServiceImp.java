@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
 import com.example.haruProject.dao.hr.UserPurchaseDao;
+import com.example.haruProject.dto.Product;
 import com.example.haruProject.dto.Purchase;
 import com.example.haruProject.dto.ShoppingCart;
 
@@ -67,28 +68,28 @@ public class UserPurchaseServiceImp implements UserPurchaseService {
 	}
 
 	// 주문
-	@Override
-	public int skPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price) {
-		System.out.println("UserPurchaseServiceImp storePurchase() start ,,,");
-		System.out.println("UserPurchaseServiceImp storePurchase() pList ->"+pList);
-		System.out.println("UserPurchaseServiceImp storePurchase() memno ->"+memno);
-		
-		
-		int orderno = 0;
-		
-		if (opayment_mcd == 300) {
-			// 카카오페이
-			orderno = pd.kPurchase(pList, memno, opayment_mcd, ototal_price);
+		@Override
+		public int skPurchase(List<Purchase> pList, int memno, int opayment_mcd, int ototal_price, int dp) {
+			System.out.println("UserPurchaseServiceImp storePurchase() start ,,,");
+			System.out.println("UserPurchaseServiceImp storePurchase() pList ->"+pList);
+			System.out.println("UserPurchaseServiceImp storePurchase() memno ->"+memno);
 			
-		} else if (opayment_mcd == 400) {
-			// 매장결제
-			orderno = pd.sPurchase(pList, memno, opayment_mcd, ototal_price);
-			String message = "새로운 주문이 추가되었습니다!";
-//			ns.sendNotification(message);
+			
+			int orderno = 0;
+			
+			if (opayment_mcd == 300) {
+				// 카카오페이
+				orderno = pd.kPurchase(pList, memno, opayment_mcd, ototal_price, dp);
+				
+			} else if (opayment_mcd == 400) {
+				// 매장결제
+				orderno = pd.sPurchase(pList, memno, opayment_mcd, ototal_price, dp);
+				String message = "새로운 주문이 추가되었습니다!";
+				ns.sendNotification(message);
+			}
+			
+			return orderno;
 		}
-		
-		return orderno;
-	}
 
 	// 카카오페이 > 결제 성공시 주문상태 100으로 update
 	@Override
@@ -98,5 +99,13 @@ public class UserPurchaseServiceImp implements UserPurchaseService {
 		System.out.println("UserPurchaseServiceImp updateStatus tid ->"+tid);
 		
 		pd.updateKStatus(orderno, tid);		
+	}
+	
+	// 상품 상세 -> 주문
+	@Override
+	public List<Product> getProduct(int pno) {
+		List<Product> sList = pd.getProduct(pno);
+		
+		return sList;
 	}
 }

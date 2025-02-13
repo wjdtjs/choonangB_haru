@@ -158,6 +158,8 @@ function purchase() {
 
     // 총 결제 금액 가져오기
     const ototal_price = document.querySelector('input[name="ototal_price"]').value;
+    
+    const direct_purchase = document.querySelector('input[name="direct_purchase"]').value;
 
     // 상품 목록 만들기
     let purchaseList = [];
@@ -168,7 +170,8 @@ function purchase() {
             pprice: document.querySelectorAll("input[name='pprice']")[index].value,
             pname: document.querySelectorAll("input[name='pname']")[index].value,
             opayment_mcd: opayment_mcd, // 공통 값
-            ototal_price: ototal_price  // 공통 값
+            ototal_price: ototal_price,  // 공통 값
+            dp: direct_purchase
         };
         purchaseList.push(purchaseData);
     });
@@ -243,44 +246,82 @@ function purchase() {
 						<!-- <p><i class="fa-solid fa-chevron-right page-btn" style="transform: rotate(90deg);"></i> </p> -->
 					</div>
 				</div>
-					
-				<c:forEach var="purchase" items="${sList }" varStatus="status">
-					<input type="hidden" name="pno" value="${purchase.pno}">
-					<input type="hidden" name="squantity" value="${purchase.squantity}">
-					<input type="hidden" name="pprice" value="${purchase.pprice}">
-					<input type="hidden" name="pname" value="${purchase.pname}">
+				<input type="hidden" name="direct_purchase" value="${direct_purchase}">
 				
+				<c:if test="${direct_purchase eq 1}">
+					<input type="hidden" name="pno" value="${p.pno}">
+					<input type="hidden" name="squantity" value="${totalSquantity}">
+					<input type="hidden" name="pprice" value="${p.pprice}">
+					<input type="hidden" name="pname" value="${p.pname}">
+					
 					<div class="p-container">
 						<!-- 상품 이미지 -->
-						<c:choose>
-							<c:when test="${not empty purchase.pimg_main }">
-								<div class="sc-product-img" style="background: url(${purchase.pimg_main}); background-size: cover;"></div>						
-							</c:when>
+					<c:choose>
+						<c:when test="${not empty p.pimg_main }">
+							<div class="sc-product-img" style="background: url(${p.pimg_main}); background-size: cover;"></div>						
+						</c:when>
 							<c:otherwise>
 								<div class="sc-product-img"></div>
 							</c:otherwise>
 						</c:choose>
 						<!-- 상품 내용 -->
-						<div class="sc-info" onclick="location.href='/user/details-product?pno='+${purchase.pno}">
-							<p class="sc-info-brand" style="font-size: 13px;">${purchase.pbrand}</p>
-							<p class="sc-info-name"  style="font-size: 16px;">${purchase.pname}</p>
+						<div class="sc-info" onclick="location.href='/user/details-product?pno='+${p.pno}">
+							<p class="sc-info-brand" style="font-size: 13px;">${p.pbrand}</p>
+							<p class="sc-info-name"  style="font-size: 16px;">${p.pname}</p>
 						</div>
 					</div>
 					
 					<div style="display: flex; justify-content: space-between;">
 						<div style="display: flex; font-size: 13px; margin-left: 8px;">
-							<p><fmt:formatNumber value="${purchase.pprice }" pattern="#,###" />원 &nbsp;/&nbsp;</p>
-							<p>${purchase.squantity} 개</p>
+							<p><fmt:formatNumber value="${p.pprice }" pattern="#,###" />원 &nbsp;/&nbsp;</p>
+							<p>${totalSquantity} 개</p>
 						</div>
-						<p style="font-size: 16px;"><fmt:formatNumber value="${purchase.squantity * purchase.pprice }" pattern="#,###" />원</p>
+						<p style="font-size: 16px;"><fmt:formatNumber value="${totalPrice}" pattern="#,###" />원</p>
 					</div>
-
-					<!-- 구분선 -->					
-					<c:if test="${!status.last}">
-				        <hr style="border: 0; height: 1px; background: #d9d9d9; margin: 10px 0;">
-				    </c:if>
-				    
-				</c:forEach>
+				</c:if>
+				
+				<c:if test="${direct_purchase eq 0}">
+					<c:forEach var="purchase" items="${sList }" varStatus="status">
+						<input type="hidden" name="pno" value="${purchase.pno}">
+						<input type="hidden" name="squantity" value="${purchase.squantity}">
+						<input type="hidden" name="pprice" value="${purchase.pprice}">
+						<input type="hidden" name="pname" value="${purchase.pname}">
+					
+						<div class="p-container">
+							<!-- 상품 이미지 -->
+							<c:choose>
+								<c:when test="${not empty purchase.pimg_main }">
+									<div class="sc-product-img" style="background: url(${purchase.pimg_main}); background-size: cover;"></div>						
+								</c:when>
+								<c:otherwise>
+									<div class="sc-product-img"></div>
+								</c:otherwise>
+							</c:choose>
+							<!-- 상품 내용 -->
+							<div class="sc-info" onclick="location.href='/user/details-product?pno='+${purchase.pno}">
+								<p class="sc-info-brand" style="font-size: 13px;">${purchase.pbrand}</p>
+								<p class="sc-info-name"  style="font-size: 16px;">${purchase.pname}</p>
+							</div>
+						</div>
+						
+						<div style="display: flex; justify-content: space-between;">
+							<div style="display: flex; font-size: 13px; margin-left: 8px;">
+								<p><fmt:formatNumber value="${purchase.pprice }" pattern="#,###" />원 &nbsp;/&nbsp;</p>
+								<p>${purchase.squantity} 개</p>
+							</div>
+							<p style="font-size: 16px;"><fmt:formatNumber value="${purchase.squantity * purchase.pprice }" pattern="#,###" />원</p>
+						</div>
+	
+						<!-- 구분선 -->					
+						<c:if test="${!status.last}">
+					        <hr style="border: 0; height: 1px; background: #d9d9d9; margin: 10px 0;">
+					    </c:if>
+					    
+					</c:forEach>
+				
+				</c:if>
+				
+				
 			</div>		
 		
 			<!-- 결제 방법 -->

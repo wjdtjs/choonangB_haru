@@ -12,4 +12,6 @@ public class Purchase {
 	private int ototal_price;
 	private String pname;
 	private int orderno;
+	
+	private int dp; // direct_purchase
 }

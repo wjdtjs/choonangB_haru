@@ -184,7 +184,9 @@ public class UserShopController {
 	 * @return
 	 */
 	@PostMapping("/user/updateCart")
-	public String updateShoppingCart(Product product, HttpServletRequest request, RedirectAttributes attr) {
+	public String updateShoppingCart(Product product, HttpServletRequest request
+									, RedirectAttributes attr
+									) {
 		log.info("updateShoppingCart() start..");
 		
 		int memno = SessionUtil.getNo(request);

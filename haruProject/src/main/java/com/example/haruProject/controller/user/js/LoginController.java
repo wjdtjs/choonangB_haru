@@ -20,6 +20,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -501,7 +502,9 @@ public class LoginController {
 	 * -> 데이터 삭제
 	 * 
 	 */
-	@Scheduled(fixedRate = 3600000)
+	// @Scheduled(fixedRate = 3600000)
+	@Async
+	@Scheduled(cron = "0 0 0 * * *")
 	public void autoMemberCancel() {
 		log.info("auto member cancel start ,,,");
 		

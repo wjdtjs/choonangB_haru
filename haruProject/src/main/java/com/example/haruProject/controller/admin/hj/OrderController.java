@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -135,11 +136,12 @@ public class OrderController {
 	 * 픽업대기 3일 지난 주문 내역 > 주문 취소
 	 * 
 	 */
-	//@Scheduled(cron = "0 0 0 * * *")
 	
 	private final KakaopayController kc;
 	
-	@Scheduled(fixedRate = 3600000)
+	@Async
+//	@Scheduled(fixedRate = 3600000)
+	@Scheduled(cron = "0 0 0 * * *")
 	public void autoOrderCancel() {
 		log.info("auto order cancel start ,,,");
 		
