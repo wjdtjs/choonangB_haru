@@ -182,7 +182,8 @@
                #{purchase.pno, mode=IN, jdbcType=NUMERIC},
                #{purchase.squantity, mode=IN, jdbcType=NUMERIC},
                #{purchase.pprice, mode=IN, jdbcType=NUMERIC},
-               #{orderno, mode=IN, jdbcType=NUMERIC}
+               #{orderno, mode=IN, jdbcType=NUMERIC},
+               #{dp, mode=IN, jdbcType=NUMERIC}
            )
     </update>
     

@@ -1,3 +1,5 @@
+<script src="/js/sseUtil.js?v=0.09"></script>
+
 <nav
 	class="navbar navbar-expand navbar-light bg-white topbar static-top shadow" style="margin-bottom: 4rem">
 

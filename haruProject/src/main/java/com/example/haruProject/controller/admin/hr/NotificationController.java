@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import com.example.haruProject.service.hr.NotificationService;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 @RestController
 @RequestMapping("/api")
@@ -26,7 +27,9 @@ public class NotificationController {
     @PostConstruct
     public void init() {
         notificationService.clearEmitters();
+        System.out.println("서버 종료 - SSE 연결 정리 완료");
     }
+  
 
     // ✅ 클라이언트가 SSE 구독
     @GetMapping("/notifications")
@@ -39,6 +42,12 @@ public class NotificationController {
     public ResponseEntity<String> sendNotification(@RequestBody String message) {
         boolean result = notificationService.sendNotification(message);
         return result ? ResponseEntity.ok("알림 전송 성공") : ResponseEntity.noContent().build();
+    }
+    
+    @PostMapping("/notifications/close")
+    public void closeAllConnections() {
+    	System.out.println("🚨 클라이언트에서 SSE 연결 종료 요청");
+    	notificationService.clearEmitters();
     }
     
 }
