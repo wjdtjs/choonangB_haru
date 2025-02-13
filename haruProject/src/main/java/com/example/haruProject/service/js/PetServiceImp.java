@@ -60,4 +60,22 @@ public class PetServiceImp implements PetService {
 		return result;
 	}
 
+	/**
+	 * 동물 수정
+	 */
+	@Override
+	public void updatePetInfo(Pet pet) {
+		pd.updatePetInfo(pet);
+		
+	}
+
+	/**
+	 * 동물 추가
+	 */
+	@Override
+	public void uploadPet(Pet pet) {
+		pd.uploadPet(pet);
+		
+	}
+
 }

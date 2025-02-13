@@ -21,6 +21,7 @@ import com.example.haruProject.dto.Pet;
 import com.example.haruProject.dto.Schedule;
 import com.example.haruProject.service.hj.ScheduleService;
 import com.example.haruProject.service.hr.AppointmentService;
+import com.example.haruProject.service.hr.NotificationService;
 import com.example.haruProject.service.js.ReservationService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ public class UserReservationController {
 	private final ReservationService rs;
 	private final AppointmentService as;
 	private final ScheduleService ss;
+	private final NotificationService ns;
 	
 	/**
 	 * 예약내역 리스트 조회
@@ -242,9 +244,11 @@ public class UserReservationController {
 		
 		int memno = SessionUtil.getNo(request);
 		app.setMemno(memno);
+		
+		System.out.println("controller*********mtitle_bcd => "+app.getMtitle_bcd());
+		System.out.println("controller*********mtitle_mcd => "+app.getMtitle_mcd());
 		rs.doAppointmentAction(app);
 		
-		//TODO: 첫 등록이면 담당의 update 해주기
 		
 		return "redirect:/user/reservation";
 	}

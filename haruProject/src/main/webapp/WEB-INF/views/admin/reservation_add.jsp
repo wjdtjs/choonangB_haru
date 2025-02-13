@@ -564,7 +564,7 @@ input#res-mname {
         		// 기존에 선택된 버튼이 있다면 선택 해제 -> 최대 한 개의 버튼만 선택 가능
         		const previouslySelected = document.querySelector(".cal_time_btn.selected_time");
                 if (previouslySelected && previouslySelected !== button) {
-                    previouslySelected.classList.remove("selected_time");
+                	resetButtonStates();
                 }
                 
         		const isSelected = button.classList.toggle("selected_time");	// 버튼 색 변경
@@ -625,7 +625,7 @@ input#res-mname {
             // button.classList.remove("selected_time"); // 클래스 초기화
             
             button.disabled = false; // 버튼 활성화
-   	    	button.classList.remove("disabled-btn", "selected_time"); // 관련 클래스 제거
+   	    	button.classList.remove("selected_time"); // 관련 클래스 제거
    	    	button.style.backgroundColor = ""; // 스타일 초기화
    	    	button.style.color = ""; // 텍스트 색 초기화
    	    	button.style.pointerEvents = "";

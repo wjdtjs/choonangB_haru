@@ -141,6 +141,9 @@ public class ReservationDaoImp implements ReservationDao {
 		System.out.println("dao doAppointmentAction() application => "+app);
 		TransactionStatus txStatus = ptm.getTransaction(new DefaultTransactionDefinition());
 		
+		System.out.println("dao*********mtitle_bcd => "+app.getMtitle_bcd());
+		System.out.println("dao*********mtitle_mcd => "+app.getMtitle_mcd());
+		
 		try {
 			//예약정보 insert
 			session.insert("JS_InsertAppointment", app);

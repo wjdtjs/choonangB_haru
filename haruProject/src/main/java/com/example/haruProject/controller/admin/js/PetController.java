@@ -91,6 +91,10 @@ public class PetController {
 		List<Map<String, Object>> docList = new ArrayList<>(); 	//의사 정보
 		docList = as.getDocList();
 		
+		List<Pet> bcdList = new ArrayList<>();
+		bcdList = us.getSpeciesBcd();
+		System.out.println("==== "+ bcdList);
+		
 		List<Weight> wList = new ArrayList<>();
 		wList = us.getPetWeightList(pet.getPetno());
 		System.out.println("petDetailView() 동물 몸무게 ==> "+wList);
@@ -109,6 +113,7 @@ public class PetController {
 		System.out.println("labels========> "+labels);
 		System.out.println("weight========> "+weight);
 		
+		model.addAttribute("bcd", bcdList);
 		model.addAttribute("pet", pet_detail);
 		model.addAttribute("vet", docList);
 		model.addAttribute("labels", labels);
@@ -136,6 +141,91 @@ public class PetController {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * 동물 정보 수정
+	 * @param gender
+	 * @param gender2
+	 * @param pet
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/admin/updatePet")
+	public String updatePetInfo(Pet pet, Model model) 
+	{
+		log.info("updatePetInfo() start..");
+		System.out.println("updatePetInfo() pet ==> "+ pet);
+		
+		String gender1 = pet.getGender1();
+	    String gender2 = pet.getGender2();
+	    System.out.println("gender1 : "+gender1 + ", gender2 : "+gender2);
+	    
+	    if (gender1.equals("2") && gender2.equals("1")) {
+	        pet.setPetgender_mcd(110); // 중성화 O 여자
+	    } else if (gender1.equals("2") && gender2.equals("2")) {
+	        pet.setPetgender_mcd(120); // 중성화 X 여자
+	    } else if (gender1.equals("1") && gender2.equals("1")) {
+	        pet.setPetgender_mcd(210); // 중성화 O 남자
+	    } else if (gender1.equals("1") && gender2.equals("2")) {
+	        pet.setPetgender_mcd(220); // 중성화 X 남자
+	    }
+	    
+	    ps.updatePetInfo(pet);
+		
+		int petno = pet.getPetno();
+		return "redirect:/admin/details-pet?petno="+petno;
+	}
+	
+	
+	/**
+	 * 동물 추가 뷰
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/admin/upload-pet")
+	public String uploadPetView(Model model) {
+		log.info("addPet() start..");
+		
+		List<Map<String, Object>> docList = new ArrayList<>(); 	//의사 정보
+		docList = as.getDocList();
+		
+		List<Pet> bcdList = new ArrayList<>();
+		bcdList = us.getSpeciesBcd();
+		
+		model.addAttribute("vet", docList);
+		model.addAttribute("bcd", bcdList);
+		
+		return "admin/uploadPet";
+	}
+	
+	
+	/**
+	 * 동물 추가
+	 * @param pet
+	 * @return
+	 */
+	@PostMapping("/admin/uploadPet")
+	public String uploadPetAction(Pet pet) {
+		log.info("uploadPetAction() start..");
+		System.out.println("uploadPetAction() pet ==> " + pet);
+		
+		String gender1 = pet.getGender1();
+	    String gender2 = pet.getGender2();
+	    
+	    if (gender1.equals("2") && gender2.equals("1")) {
+	        pet.setPetgender_mcd(110); // 중성화 O 여자
+	    } else if (gender1.equals("2") && gender2.equals("2")) {
+	        pet.setPetgender_mcd(120); // 중성화 X 여자
+	    } else if (gender1.equals("1") && gender2.equals("1")) {
+	        pet.setPetgender_mcd(210); // 중성화 O 남자
+	    } else if (gender1.equals("1") && gender2.equals("2")) {
+	        pet.setPetgender_mcd(220); // 중성화 X 남자
+	    }
+		
+		ps.uploadPet(pet);
+		
+		return "redirect:/admin/pets";
 	}
 	
 }

@@ -11,7 +11,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>동물 상세</title>
+    <title>동물 추가</title>
     
 <style type="text/css">
 .pet-gender-radio-div label {
@@ -79,10 +79,10 @@ textarea {
                 <div class="container-fluid modal_">
 
                     <!-- Page Heading -->
-                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >동물 상세</h1>
+                    <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >동물 추가</h1>
                     
 					<div class="modal_l_detail">
-		       			 <form class="js-pro-container" action="updatePet" id="pet-update-form" method="post" onsubmit="return updateValidateForm()">
+		       			 <form class="js-pro-container" action="uploadPet" id="pet-upload-form" method="post" onsubmit="return updateValidateForm()">
 				        	<div class="js-pro-info">
 				        		<div class="title">동물 정보</div>
 					        	<table>
@@ -93,17 +93,12 @@ textarea {
 					        			<col width="40%"/>
 					        		</colgroup>
 					        		<tr>
-					        			<td class="sub-title">번호</td>
-					        			<td>
-					        				${pet.petno }
-					        				<input type="hidden" value="${pet.petno }" name="petno">
-					        			</td>
 					        			<td class="sub-title">종</td>
-					        			<td>
+					        			<td colspan="3">
 					        				<select class="species-bcd" style="width: 120px;" name="petspecies_bcd" required="required">
-					        					<option value="0" disabled>선택</option>
+					        					<option value="0" disabled selected>선택</option>
 					        					<c:forEach var="b" items="${bcd }">
-					        						<option value="${b.bcd}" ${pet.petspecies_bcd == String.valueOf(b.bcd) ? 'selected="selected"' : ''}>${b.species }</option>
+					        						<option value="${b.bcd}">${b.species }</option>
 					        					</c:forEach>
 					        				</select>
 					        				<select class="species-mcd" style="width: 223px" name="petspecies_mcd" required="required">
@@ -112,13 +107,20 @@ textarea {
 					        		</tr>
 					        		<tr>
 					        			<td class="sub-title">보호자</td>
-					        			<td>${pet.mname }</td>
+					        			<td style="display: flex;">
+					        				<input type="text" name="search1" id="res-mname" style="width: 150px; margin-right: 10px;"
+				        								onkeypress="console.log('onkeypress 실행됨'); if (event.key === 'Enter') search_mname(event)"
+				        								value="${search1 }" required="required">
+					                       	<select id="res-select-mname" name="memno" style="display:none" required>
+					                       		<option disabled selected value="0">선택</option>
+					                    	</select>
+					        			</td>
 					        			<td class="sub-title">담당의</td>
 					        			<td>
-					        				<select class="incharge-vet" name="ano">
+					        				<select class="incharge-vet" name="ano" required="required">
 					        					<option value="0">-</option>
 					        					<c:forEach var="v" items="${vet }">
-					        						<option value="${v.ANO }" ${v.ANO eq pet.ano ? 'selected' : '' }>${v.ANAME }</option>
+					        						<option value="${v.ANO }" >${v.ANAME }</option>
 					        					</c:forEach>
 					        				</select>
 					        			</td>
@@ -126,51 +128,41 @@ textarea {
 					        		<tr>
 					        			<td class="sub-title">이름 <span class="haru-required">*</span></td>
 					        			<td>
-					        				<input class="haru-pro-price" name="petname" type="text" required="required"
-					        						value="${pet.petname }"
-					        				>
+					        				<input class="haru-pro-price" name="petname" type="text" required="required">
 					        			</td>
 					        			<td class="sub-title">몸길이(cm)</td>
 					        			<td>
-					        				<input class="haru-pro-brand" name="petheight" type="text" 
-					        						value="${pet.petheight }">
+					        				<input class="haru-pro-brand" name="petheight" type="text" >
 					        			</td>
 					        		</tr>
 					        		<tr>
 					        			<td class="sub-title">생년월일</td>
-					        			<td colspan="3">
-					        				<input class="haru-pro-quantity" name="petbirth" type="date" style="border: 1px solid var(--haru); border-radius: 15px; padding-inline: 1rem"
-					        						value="${pet.petbirth }">
+					        			<td>
+					        				<input class="haru-pro-quantity" name="petbirth" type="date" style="border: 1px solid var(--haru); border-radius: 15px; padding-inline: 1rem">
+					        			</td>
+					        			<td class="sub-title">몸무게(kg)</td>
+					        			<td>
+					        				<input class="haru-pro-quantity" name="petweight" type="text">
 					        			</td>
 					        		</tr>
 					        		<tr class="pet-gender-radio-div">
 					        			<td class="sub-title">성별</td>
 					        			<td>
 					        				<label for="male">수컷					        				
-					        					<input type="radio" name="gender1" value="1" id="male" ${pet.gender1 eq 1 ? 'checked' : ''} >
+					        					<input type="radio" name="gender1" value="1" id="male" required="required">
 					        				</label>
 					        				<label for="female">암컷
-						        				<input type="radio" name="gender1" value="2" id="female" ${pet.gender1 eq 2 ? 'checked' : ''} >				        				
+						        				<input type="radio" name="gender1" value="2" id="female"  required="required">				        				
 					        				</label>
 					        			</td>
 					        			<td class="sub-title">중성화 여부</td>
 					        			<td>
 					        				<label for="ok"><i class="fa-solid fa-o"></i>
-						        				<input type="radio" name="gender2" value="1" id="ok" ${pet.gender2 eq 1 ? 'checked' : ''}>				        				
+						        				<input type="radio" name="gender2" value="1" id="ok" required="required">				        				
 					        				</label>
 					        				<label for="no"><i class="fa-solid fa-x"></i>
-						        				<input type="radio" name="gender2" value="2" id="no" ${pet.gender2 eq 2 ? 'checked' : ''}>					        				
+						        				<input type="radio" name="gender2" value="2" id="no" required="required">					        				
 					        				</label>
-					        			</td>
-					        		</tr>
-					        		<tr>
-					        			<td class="sub-title">등록일</td>
-					        			<td>
-					        				<fmt:formatDate value="${pet.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
-					        			</td>
-					        			<td class="sub-title">최종 수정일</td>
-					        			<td class="pro-update-date">
-					        				<fmt:formatDate value="${pet.update_date}" pattern="yyyy-MM-dd HH:mm:ss"/>
 					        			</td>
 					        		</tr>
 					        		
@@ -178,26 +170,7 @@ textarea {
 					        	
 					        	<div style="margin-top: 2rem;">
 						        	<div style="font-weight: 500">특이사항</div>
-									<textarea name="petspecial">${pet.petspecial }</textarea>					        	
-					        	</div>
-					        	
-					        	<div style="margin-top: 2rem;">
-					        		<div style="display: flex; align-items: center; justify-content: space-between;">
-							        	<div style="font-weight: 500">몸무게</div>
-										<div>
-											<input type="text" style="width: 200px;" class="add-weight-input">
-											<button type="button" onclick="addWeight()"
-													style="color: white; background: var(--haru); border-radius: 5px; border: none; outline: none; padding: 4px;">몸무게 추가</button>
-										</div>					        		
-					        		</div>
-									<canvas id="pet-weight-chart"></canvas>			        	
-					        	</div>
-					        	
-					        	<div style="margin-top: 3rem;">
-					        		<div class="title">예약 내역</div>
-					        		<div onclick="location.href='/admin/reservation?search4=${pet.petno}'" style="cursor: pointer; color: blue">
-					        			예약 내역 보러가기 <i class="fa-regular fa-hand-pointer fa-rotate-90"></i>
-					        		</div>
+									<textarea name="petspecial"></textarea>					        	
 					        	</div>
 					        	
 				        	</div>
@@ -208,7 +181,7 @@ textarea {
 			        <!-- 모달 버튼 -->
 			        <div class="modal_l-content-btn">
 			        	<button type="button" id="modal_close_btn" class="to_list pro_reg" onclick="location.href='/admin/pets'">목록으로</button>
-			        	<button type="submit" class="update_btn" form="pet-update-form">수정하기</button>
+			        	<button type="submit" class="update_btn" form="pet-upload-form">추가하기</button>
 			        </div>
                 </div>
                 <!-- /.container-fluid -->
@@ -241,7 +214,9 @@ textarea {
 	 	 * validation 체크
 	 	 */
 	   	function updateValidateForm() {
-			return confirm('이대로 수정하시겠습니까?');
+	 		
+	 		
+			return confirm('이대로 추가하시겠습니까?');
 		}
     	
     	
@@ -291,98 +266,58 @@ textarea {
 	   	        }
 	   		})
 	   	}
-	 	
-    	
-		
-    	// JSP에서 가져온 데이터를 JavaScript 배열로 변환
-        var arr = '${labels}';  // X축 (날짜)
-        var labels = arr.replace(/\[|\]/g, '').split(', ').map(item => item.trim());
-        var dataValues = ${weight};  // Y축 (값)
-        const ctx = document.getElementById('pet-weight-chart').getContext('2d');
-    	
-    	$(()=>{
-            // 차트 생성
-            buildChart();
-    	})
-    	
-    	/* 몸무게 추가 */
-    	function addWeight() {
-    		var weight = $('.add-weight-input').val();
-    		if(weight!=null || weight != '') {
-    			
-    			//몸무게 추가 api 호출
-    			let url = `<%=request.getContextPath()%>/api/add-weight`;
-    			
-    			$.ajax({
-				url: url,
-				method: 'post',
-				contentType:"application/json",
-				data: JSON.stringify({
-					memno: ${pet.memno},
-					petno: ${pet.petno},
-					petweight: weight
-				}),
-				success: function(data) {
-					console.log(data);
-					
-					if(data) {
-						var today = new Date();
-						var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-						labels.push(date);
-						dataValues.push(weight);
-						
-						buildChart()
-						$('.add-weight-input').val('');
-					}
-					
+	   	
+	 // ------ 보호자 이름 + 동물 이름
+	    // 보호자 이름 입력시 드롭박스 display: none -> block
+		function search_mname(e) {
+	    	if(e.key === "Enter") {
+	    		e.preventDefault(); //enter 쳤을때 form이 submit 되는거 막기
+	    		
+	    		const searchInput = $("#res-mname").val();
+	    		console.log("searchInput(search1) : ", searchInput);
+	    		
+	    		getMname(searchInput);
+	    		
+	    		const dropMname = document.getElementById("res-select-mname");
+	    		console.log("dropMname(res-select-mname) : ", dropMname);
+	    		if (dropMname.style.display === "none") {
+					dropMname.style.display = "block";
+				} else {
+					dropMname.style.display = "none";
 				}
-			})
-    		}
-    		
-    	}
-    
-        function buildChart() {
-    		new Chart(ctx, {
-                type: 'line',  // 라인 차트
-                data: {
-                    labels: labels,  // X축 (날짜)
-                    datasets: [{
-                        label: '몸무게',
-                        data: dataValues,  // Y축 데이터
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.1 // 곡선 효과
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        x: {  // X축 설정
-                            title: {
-                                display: true,
-                                text: '날짜'
-                            }
-                        },
-                        y: {  // Y축 설정
-                            title: {
-                                display: true,
-                                text: '값'
-                            },
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-    	}
-        
+	    		
+	    		
+	    	}
+	    }
+	    
+	    // 보호자 이름 입력시 그에 해당하는 보호자 이름 가져오기
+	    function getMname(searchInput) {
+	    	console.log("getMname start ,,,");
+	    	console.log(searchInput);
+	    	
+	    	$('.add-res-mname').remove();
+	    	$('#res-select-mname option:eq(0)').prop("selected",true);
+	    	
+	    	$.ajax({
+	    		url: `<%=request.getContextPath()%>/api/mname/`+searchInput,
+	    		datatype: 'json',
+	    		success: function(data) {
+	    			console.log("data : ", data);
+	    			let str = "";
+	    			$(data).each(function(index, item) {
+	    				str += `<option value="\${item.MEMNO}" class='.add-res-mname'>\${item.MNAME}&nbsp;(\${item.MTEL})</option>`;    				
+	    			})
+	    			$('#res-select-mname').html(str);
+	    			
+	    			if(searchInput) {
+	    				$('#res-select-mname').val(searchInput).prop('selected', true);
+	    			}
+	    		},
+	    		error: function(xhr, status, error) {
+		            console.error("보호자 이름 데이터를 가져오는 중 오류 발생:", error);
+		        }
+	    	})
+	    }
 
     </script>
 

@@ -102,7 +102,7 @@
 	
 	
 	<!-- 예약 등록 -->
-	<insert id="JS_InsertAppointment" parameterType="Appointment" statementType="CALLABLE">
+	<insert id="JS_InsertAppointment" parameterType="Appointment">
 		INSERT INTO APPOINTMENT(
 			RESNO,
 			RDATE,
@@ -114,10 +114,10 @@
 			MEMO
 		) VALUES (
 		 	<choose>
-	       		<when test="mtitle_bcd = 110">CONCAT('JR', #{resno})</when>
-	       		<when test="mtitle_bcd = 120">CONCAT('SS', #{resno})</when>
-	       		<when test="mtitle_bcd = 130">CONCAT('HC', #{resno})</when>
-	       		<when test="mtitle_bcd = 140">CONCAT('VC', #{resno})</when>
+	       		<when test="mtitle_bcd == 110">CONCAT('JR', #{resno})</when>
+	       		<when test="mtitle_bcd == 120">CONCAT('SS', #{resno})</when>
+	       		<when test="mtitle_bcd == 130">CONCAT('HC', #{resno})</when>
+	       		<when test="mtitle_bcd == 140">CONCAT('VC', #{resno})</when>
 	       </choose>,	
 	       #{rdate},
 	       #{start_time},

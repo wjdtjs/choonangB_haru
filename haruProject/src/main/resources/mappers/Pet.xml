@@ -168,4 +168,173 @@
 		)
 		WHERE rn BETWEEN #{startRow} AND #{endRow}
 	</select>
+	
+	<!-- 동물 전체 수 -->
+	<select id="JS_SelectPetCount" parameterType="SearchItem" resultType="int">
+		SELECT COUNT(*) FROM PET
+		<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
+			WHERE
+			<choose>
+				<when test="search1 == 'petname'">PETNAME LIKE '%' || #{search2} || '%'</when>
+				<when test="search1 == 'mname'">
+					MEMNO IN (
+						SELECT MEMNO FROM MEMBER WHERE MNAME LIKE '%' || #{search2} || '%'
+					)
+				</when>
+				<when test="search1 == 'all'">
+					PETNAME LIKE '%' || #{search2} || '%'
+					or
+					MEMNO IN (
+						SELECT MEMNO FROM MEMBER WHERE MNAME LIKE '%' || #{search2} || '%'
+					)
+				</when>
+			</choose>
+		</if>
+	</select>
+	
+	<!-- 동물 전체 리스트 -->
+	<select id="JS_SelectPetList" parameterType="Map" resultType="Pet">
+		SELECT *
+		FROM (
+			SELECT ROWNUM rn, P.*
+			FROM (
+				SELECT pp.MEMNO,
+					pp.PETNO,
+					pp.PETNAME,
+					pp.PETBIRTH,
+					pp.PETSPECIAL,
+					pp.ANO,
+					pp.PETSPECIES_BCD,
+					pp.PETSPECIES_MCD,
+					pp.PETSTATUS_BCD,
+					pp.PETSTATUS_MCD,
+					pp.PETGENDER_BCD,
+					pp.PETGENDER_MCD,
+					cm.CONTENT as species1,
+					cm2.CONTENT as species2,
+					DECODE(SUBSTR(cm3.MCD, 1, 1), 1, '암컷', '수컷') as gender1,
+					DECODE(SUBSTR(cm3.MCD, 2, 1), 1, 'O', 'X') as gender2,
+					m.MNAME as mname,
+					a.ANAME as aname
+				FROM PET pp 
+                INNER JOIN COMMON cm ON
+                    pp.PETSPECIES_BCD = cm.BCD AND cm.MCD = 999
+                INNER JOIN COMMON cm2 ON    
+                     pp.PETSPECIES_BCD = cm2.BCD AND pp.PETSPECIES_MCD = cm2.MCD
+                INNER JOIN COMMON cm3 ON
+                    pp.PETGENDER_BCD = cm3.BCD AND pp.PETGENDER_MCD = cm3.MCD
+                INNER JOIN MEMBER m ON
+                	pp.MEMNO = m.MEMNO
+                LEFT OUTER JOIN ADMIN a ON
+                	pp.ANO = a.ANO
+                    
+				<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
+					WHERE
+					<choose>
+						<when test="search1 == 'petname'">pp.PETNAME LIKE '%' || #{search2} || '%'</when>
+						<when test="search1 == 'mname'">
+							pp.MEMNO IN (
+								SELECT MEMBER.MEMNO FROM MEMBER
+								INNER JOIN PET ON MEMBER.MEMNO = PET.MEMNO 
+								WHERE MNAME LIKE '%' || #{search2} || '%'
+							)
+						</when>
+						<when test="search1 == 'all'">
+							pp.PETNAME LIKE '%' || #{search2} || '%'
+							or
+							pp.MEMNO IN (
+								SELECT MEMBER.MEMNO FROM MEMBER
+								INNER JOIN PET ON MEMBER.MEMNO = PET.MEMNO 
+								WHERE MNAME LIKE '%' || #{search2} || '%'
+							)
+						</when>
+					</choose>
+				</if>
+				
+				ORDER BY 
+		            PETNO DESC 
+			) P
+		)
+		WHERE rn BETWEEN #{startRow} AND #{endRow} 
+	</select>
+	
+	<!-- 동물 상세 -->
+	<select id="JS_SelectPetDetail" parameterType="Pet" resultType="Pet">
+		SELECT pp.MEMNO,
+			pp.PETNO,
+			pp.PETNAME,
+			pp.PETBIRTH,
+			pp.PETSPECIAL,
+			pp.PETHEIGHT,
+			pp.ANO,
+			pp.PETSPECIES_BCD,
+			pp.PETSPECIES_MCD,
+			pp.PETSTATUS_BCD,
+			pp.PETSTATUS_MCD,
+			pp.PETGENDER_BCD,
+			pp.PETGENDER_MCD,
+			pp.REG_DATE,
+			pp.UPDATE_DATE,
+			cm.CONTENT as species1,
+			cm2.CONTENT as species2,
+			DECODE(SUBSTR(cm3.MCD, 1, 1), 1, '2', '1') as gender1,
+			DECODE(SUBSTR(cm3.MCD, 2, 1), 1, '1', '2') as gender2,
+			m.MNAME as mname,
+			a.ANAME as aname
+		FROM PET pp 
+              INNER JOIN COMMON cm ON
+                  pp.PETSPECIES_BCD = cm.BCD AND cm.MCD = 999
+              INNER JOIN COMMON cm2 ON    
+                   pp.PETSPECIES_BCD = cm2.BCD AND pp.PETSPECIES_MCD = cm2.MCD
+              INNER JOIN COMMON cm3 ON
+                  pp.PETGENDER_BCD = cm3.BCD AND pp.PETGENDER_MCD = cm3.MCD
+              INNER JOIN MEMBER m ON
+              	pp.MEMNO = m.MEMNO
+              LEFT OUTER JOIN ADMIN a ON
+              	pp.ANO = a.ANO
+        WHERE PETNO = #{petno}
+	</select>
+	
+	<!-- 관리자 - 동물 정보 수정 -->
+	<update id="JS_UpdatePetInfo" parameterType="Pet">
+		UPDATE PET SET
+			PETNAME = #{petname},
+			PETSPECIES_BCD = #{petspecies_bcd},
+			PETSPECIES_MCD = #{petspecies_mcd},
+			ANO = #{ano},
+			PETSPECIAL = #{petspecial},
+			PETHEIGHT = #{petheight},
+			PETBIRTH = #{petbirth},
+			PETGENDER_MCD = #{petgender_mcd},
+			UPDATE_DATE = sysdate
+		WHERE petno = #{petno}
+	</update>
+	
+	<!-- 관리자 - 동물 추가 -->
+	<insert id="JS_InsertPetInfo">
+		INSERT ALL
+			INTO PET(
+				MEMNO,
+				PETNO,
+				PETNAME,
+				PETBIRTH,
+				PETHEIGHT,
+				PETSPECIAL,
+				ANO,
+				PETSPECIES_BCD,
+				PETSPECIES_MCD,
+				PETGENDER_MCD
+			) VALUES (
+				#{memno}, SEQ_PET.NEXTVAL, #{petname}, #{petbirth}, #{petheight}, #{petspecial},
+				#{ano}, #{petspecies_bcd}, #{petspecies_mcd}, #{petgender_mcd}
+			)
+			INTO WEIGHT(
+				MEMNO,
+				PETNO,
+				PETWEIGHT
+			) VALUES (#{memno}, SEQ_PET.CURRVAL, #{petweight})
+		SELECT * FROM DUAL
+		
+	</insert>
+	
 </mapper>

@@ -13,6 +13,8 @@ public interface PetService {
 	List<Pet> getPetList(Pagination pagination, SearchItem si);
 	Pet getPetDetail(Pet pet);
 	int addWeight(Weight weight);
+	void updatePetInfo(Pet pet);
+	void uploadPet(Pet pet);
 
 
 }

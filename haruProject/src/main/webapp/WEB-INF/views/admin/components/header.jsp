@@ -38,61 +38,112 @@
 
 <!-- 알림 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<script>
-    console.log("SSE 연결 시작");
 
-    const eventSource = new EventSource("/notifications/subscribe");
 
-    eventSource.onmessage = function(event) {
-        console.log("알림 도착: ", event.data);
-    };
+<script type="text/javascript">
 
-    eventSource.onerror = function(event) {
-        console.log("SSE 연결 오류, 5초 후 재연결 시도...");
-        eventSource.close();
+    
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM 로드 완료, SSE 연결 시작");
 
-        setTimeout(() => {
-            connectSSE();  // 재연결 시도
-        }, 5000);
-    };
+    const notificationContainer = document.createElement("div");
+    notificationContainer.style.position = "fixed";
+    notificationContainer.style.top = "20px";
+    notificationContainer.style.right = "20px";
+    notificationContainer.style.display = "flex";
+    notificationContainer.style.flexDirection = "column-reverse";
+    notificationContainer.style.gap = "10px";
+    notificationContainer.style.zIndex = "9999";
+
+    document.body.appendChild(notificationContainer);
+
+    let eventSource;
+    let reconnectAttempt = 0;
 
     function connectSSE() {
-        const newEventSource = new EventSource("/notifications/subscribe");
+        if (eventSource) {
+            console.log("🔄 기존 SSE 연결 종료 후 새로 연결 시도...");
+            eventSource.close();
+        }
 
-        newEventSource.onmessage = function(event) {
-            console.log("재연결 성공, 알림 도착: ", event.data);
+        console.log(`🔄 SSE 연결 시도 (${reconnectAttempt + 1}번째)`);
+        eventSource = new EventSource("/api/notifications");
+
+        eventSource.onopen = function () {
+            console.log("✅ SSE 연결 성공");
+            reconnectAttempt = 0; // 성공하면 초기화
         };
 
-        newEventSource.onerror = function(event) {
-            console.log("SSE 재연결 실패, 다시 시도...");
-            newEventSource.close();
+        eventSource.onmessage = function (event) {
+            if (event.data !== "connected") {
+                console.log("🔔 새 알림:", event.data);
+                saveNotification(event.data);
+                showNotification(event.data);
+            }
+        };
 
-            setTimeout(connectSSE, 5000);
+        eventSource.onerror = function (event) {
+            console.log("❌ SSE 오류 발생. 재연결을 시도합니다...");
+
+            eventSource.close();
+
+            // ✅ 점진적 재연결 (Exponential Backoff)
+            reconnectAttempt++;
+            let reconnectDelay = Math.min(5000 * reconnectAttempt, 30000); // 최대 30초까지 대기
+            setTimeout(connectSSE, reconnectDelay);
         };
     }
 
+    function saveNotification(message) {
+        let notifications = JSON.parse(sessionStorage.getItem("notifications")) || [];
+        notifications.push(message);
+        sessionStorage.setItem("notifications", JSON.stringify(notifications));
+    }
+
+    function removeNotification(message) {
+        let notifications = JSON.parse(sessionStorage.getItem("notifications")) || [];
+        notifications = notifications.filter(n => n !== message);
+        sessionStorage.setItem("notifications", JSON.stringify(notifications));
+    }
+
     function showNotification(message) {
+        console.log("🔔 showNotification 호출됨:", message);
+
         const notificationDiv = document.createElement("div");
         notificationDiv.textContent = message;
         notificationDiv.style.backgroundColor = "#0C808D";
         notificationDiv.style.color = "#fff";
-        notificationDiv.style.padding = "20px";
-        notificationDiv.style.position = "fixed";
-        notificationDiv.style.top = "20px";
-        notificationDiv.style.right = "20px";
-        notificationDiv.style.borderRadius = "5px";
-        notificationDiv.style.boxShadow = "0px 0px 5px #888";
-        notificationDiv.style.zIndex = "9999";
+        notificationDiv.style.padding = "15px";
+        notificationDiv.style.borderRadius = "8px";
+        notificationDiv.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.1)";
+        notificationDiv.style.cursor = "pointer";
+        notificationDiv.style.opacity = "1";
+        notificationDiv.style.transition = "opacity 0.3s ease";
 
-        document.body.appendChild(notificationDiv);
+        notificationDiv.addEventListener("click", function () {
+            notificationDiv.style.opacity = "0";
+            setTimeout(() => {
+                notificationDiv.remove();
+                removeNotification(message);
+            }, 300);
+        });
 
-        // 10초 후 자동 제거
-        setTimeout(() => {
-            notificationDiv.remove();
-        }, 10000);
+        notificationContainer.prepend(notificationDiv);
+        console.log("✅ 알림 추가 완료!");
     }
 
-    // ✅ SSE 연결 시작
-    connectSSE();
-</script>
+    function loadNotifications() {
+        let notifications = JSON.parse(sessionStorage.getItem("notifications")) || [];
+        notifications.forEach(message => {
+            showNotification(message);
+        });
+    }
 
+    loadNotifications();
+    connectSSE(); // ✅ SSE 연결 시작
+});
+    
+    
+
+
+</script>

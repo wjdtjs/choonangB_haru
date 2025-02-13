@@ -85,4 +85,30 @@ public class PetDaoImp implements PetDao {
 		return result;
 	}
 
+	/**
+	 * 동물 수정
+	 */
+	@Override
+	public void updatePetInfo(Pet pet) {
+		try {
+			session.update("JS_UpdatePetInfo", pet);
+		} catch (Exception e) {
+			log.error("updatePetInfo() query error -> ", e);
+		}
+		
+	}
+
+	/**
+	 * 동물 추가
+	 */
+	@Override
+	public void uploadPet(Pet pet) {
+		try {
+			session.update("JS_InsertPetInfo", pet);
+		} catch (Exception e) {
+			log.error("uploadPet() query error -> ", e);
+		}
+		
+	}
+
 }
