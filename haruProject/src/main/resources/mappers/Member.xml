@@ -234,7 +234,7 @@
    <!-- 카카오 회원 가입 -->
 <!--    <insert id="JS_InsertKakaoUser" parameterType="Member"> -->
 <!-- 	   INSERT INTO MEMBER (MEMNO, MID, MNAME, MEMAIL) -->
-<!-- 			SELECT SEQ_MEM.NEXTVAL, #{mid}, #{mname}, #{memail} -->
+<!-- 			SELECT SEQ_MEM.NEXTVAL, #{mid}, #{mname}, #{memail} --> 
 <!-- 			FROM DUAL -->
 <!-- 			WHERE NOT EXISTS ( -->
 <!-- 		    	SELECT 1 FROM MEMBER WHERE MEMAIL = #{memail} AND MID = #{mid} -->
