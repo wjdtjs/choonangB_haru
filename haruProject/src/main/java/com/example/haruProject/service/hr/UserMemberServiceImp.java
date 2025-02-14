@@ -114,5 +114,14 @@ public class UserMemberServiceImp implements UserMemberService {
 		return result;
 	}
 
+	/**
+	 * 카카오 로그인 유저 id 가져오기
+	 */
+	@Override
+	public String getUserID(int memno) {
+		String id = md.getUserId(memno);
+		return id;
+	}
+
 	
 }

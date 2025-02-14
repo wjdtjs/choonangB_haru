@@ -250,7 +250,7 @@ public class UserReservationController {
 		rs.doAppointmentAction(app);
 		
 		String message = "새로운 예약이 접수되었습니다!";
-		ns.sendNotification(message);
+		ns.sendNotification(message, "#F18D7E");
 		
 		return "redirect:/user/reservation";
 	}

@@ -142,7 +142,7 @@ public class AppointmentController {
 		int mm = today.getMonth()+1;
 		int today_date = today.getDate();
 		if(mm == month) {
-			for (int day = 1; day < today_date; day++) {
+			for (int day = 1; day <= today_date; day++) {
 				Schedule prevToday = new Schedule();
 				Date dd = new Date(today.getYear(), today.getMonth(), day);
 				
@@ -183,14 +183,18 @@ public class AppointmentController {
 		
 		// mtel 전처리
 	    for (Map<String, Object> item : mnameList) {
+	    	String processedMtel = null;
 	        if (item.containsKey("MTEL")) {
 	            String mtel = (String) item.get("MTEL");
 
-	            String processedMtel = mtel.replaceAll("^.*(\\d{4})$", "$1");
+	            processedMtel = mtel.replaceAll("^.*(\\d{4})$", "$1");
 	            System.out.println("processedMtel ->"+processedMtel);
 
-	            item.put("MTEL", processedMtel);
+	            
+	        } else {
+	        	processedMtel = (String) item.get("MEMAIL");
 	        }
+	        item.put("MTEL", processedMtel);
 	    }
 
 	    // 처리된 결과 확인

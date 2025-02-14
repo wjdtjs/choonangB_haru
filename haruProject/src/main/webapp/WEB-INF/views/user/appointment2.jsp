@@ -546,7 +546,7 @@ table#calendar {
 	
 	
 	$(()=>{
-		if(!selected_vet || selected_vet != 0) {
+		if(selected_vet!=null) {
 			selectDoctor();
 			$(".date-choice-toggle").next(".res-re").css('display', 'block');
 			$(".date-choice-toggle").children('.page-btn').css('transform', `rotate(270deg)`);

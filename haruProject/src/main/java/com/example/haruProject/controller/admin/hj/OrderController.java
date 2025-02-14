@@ -174,6 +174,7 @@ public class OrderController {
 		}
 	}
 	
+	@Async
 	private int mailTransport (
 									Order order, 
 									List<OrderProduct> products,
@@ -184,7 +185,7 @@ public class OrderController {
 		
 		System.out.println("mailSending...");
 		String tomail = order.getMemail();
-		String setfrom = "as@naver.com";
+		String setfrom = "하루동물병원 <0808hr@gmail.com>";
 		String title = "주문하신 상품이 " + order.getOstatus_content() + "되었습니다.";
 		
 		try {

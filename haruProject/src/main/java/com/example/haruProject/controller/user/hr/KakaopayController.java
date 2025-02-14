@@ -100,7 +100,7 @@ public class KakaopayController {
             
             // SSE 연결된 클라이언트가 있는지 확인 후 알림 전송
             //boolean notificationSent = ns.sendNotification("카카오페이 결제가 완료되었습니다!");
-            boolean notificationSent = ns.sendNotification(" 새로운 주문이 추가되었습니다!");
+            boolean notificationSent = ns.sendNotification(" 새로운 주문이 추가되었습니다!", "#0C808D");
             
             if (!notificationSent) {
                 System.out.println("SSE 연결된 클라이언트가 없음");

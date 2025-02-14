@@ -65,6 +65,7 @@ kakao:
     id: efe8479005b06cbc1480277bd66620d9
   redirect:
     uri: http://localhost:8399/oauth/api/kakao
+  admin-key: 3e2778273943c7234e9b0fc8bcf90f4d
   
   
   

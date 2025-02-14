@@ -51,6 +51,7 @@ background-color: white;
 	min-height: 50px;
 	margin-top: 5px;
 	margin-bottom: 10px;
+	white-space: pre-line;
 }
 .chartImg {
 	overflow: hidden;

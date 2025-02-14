@@ -53,7 +53,7 @@
 				</c:if>
 				
 				<c:forEach var="i" begin="${pagination.startPage }" end="${pagination.endPage }">
-					<div class="haru-pagenum" id="pageNum${i}" onclick="/user/shop-reviews?pno=${product.pno}&pageNum=${i}&bcd=${cBcd}&mcd=${cMcd}'">${i }</div>
+					<div style="cursor: pointer;" class="haru-pagenum" id="pageNum${i}" onclick="location.href='/user/shop-reviews?pno=${product.pno}&pageNum=${i}&bcd=${cBcd}&mcd=${cMcd}'">${i }</div>
 				</c:forEach>
 				
 				<c:if test="${pagination.endPage < pagination.pageCnt }">

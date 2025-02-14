@@ -67,87 +67,91 @@ public class LoginController {
 	 * @throws ParseException 
 	 */
 	@GetMapping("/oauth/api/kakao")
-	public String kakaoRedirect(@RequestParam(value="code") String code, HttpSession session, HttpServletRequest request) throws ParseException {
+	public String kakaoRedirect(@RequestParam(value="code", required = false) String code, HttpSession session, HttpServletRequest request) throws ParseException {
 		// SETP1 : 인가코드 받기
         // (카카오 인증 서버는 서비스 서버의 Redirect URI로 인가 코드를 전달합니다.)
 
-         String reqURL = "https://kauth.kakao.com/oauth/token";
+		if(code != null) {
+			String reqURL = "https://kauth.kakao.com/oauth/token";
 
-         try {
-             URL url = new URL(reqURL);
-             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-             String redirectUri = "http://"+InetAddress.getLocalHost().getHostAddress()+":8399/oauth/api/kakao";
-             System.out.println(redirectUri);
-
-             //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
-             conn.setRequestMethod("POST");
-             conn.setDoOutput(true);
-
-             //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
-             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-             StringBuilder sb = new StringBuilder();
-             sb.append("grant_type=authorization_code");
-             sb.append("&client_id="+clientId); 
-             sb.append("&redirect_uri="+redirectUri);
-             sb.append("&code=" + code);
-             bw.write(sb.toString());
-             bw.flush();
-
-             //결과 코드가 200이라면 성공
-             int responseCode = conn.getResponseCode();
-             System.out.println("responseCode : " + responseCode);
-
-             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-             String line = "";
-             String result = "";
-
-             while ((line = br.readLine()) != null) {
-                 result += line;
-             }
-             
-             JSONParser par = new JSONParser();
-             JSONObject jsonObj = (JSONObject) par.parse(result);
-             String id_token = (String) jsonObj.get("id_token");
-             String access_token = (String) jsonObj.get("access_token");
-             String refresh_token = (String) jsonObj.get("refresh_token");
-             //TODO: access token, refresh token db 저장
-             
-             String[] splitToken = id_token.split("\\.");
-             
-             byte[] decodedBytes = Base64.getDecoder().decode(splitToken[1]);
-             String decodedStr = new String(decodedBytes);
-
-             jsonObj = (JSONObject) par.parse(decodedStr);
-             String sub = (String) jsonObj.get("sub");
-             String name = (String) jsonObj.get("nickname");
-             String email = (String) jsonObj.get("email");
-             
-             //회원 여부 확인하고 없으면 insert
-             Member member = new Member(email, sub, name);
-//             member.setMemail(email);
-//             member.setMid(sub);
-//             member.setMname(name);
-             int memno = ms.chkKakaoUser(member);
-
-             //session에 저장
-             Map<String, Object> mem_info = new HashMap<>();
-             mem_info.put("no", memno);
-			 mem_info.put("name", member.getMname());
-			 mem_info.put("email", member.getMemail());
-			 mem_info.put("type", "G");
-				
-			 SessionUtil.login(request, mem_info);
-             
-             //TODO: 인터셉터에서 토큰 검증
-
-             br.close();
-             bw.close();
-         } catch (IOException e) {
-             e.printStackTrace();
-             return "user/login";
-         }
-
+			 try {
+			     URL url = new URL(reqURL);
+			     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			     String redirectUri = "http://"+InetAddress.getLocalHost().getHostAddress()+":8399/oauth/api/kakao";
+			     System.out.println(redirectUri);
+			
+			     //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
+			     conn.setRequestMethod("POST");
+			     conn.setDoOutput(true);
+			
+			     //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
+			     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+			     StringBuilder sb = new StringBuilder();
+			     sb.append("grant_type=authorization_code");
+			     sb.append("&client_id="+clientId); 
+			     sb.append("&redirect_uri="+redirectUri);
+			     sb.append("&code=" + code);
+			     bw.write(sb.toString());
+			     bw.flush();
+			
+			     //결과 코드가 200이라면 성공
+			     int responseCode = conn.getResponseCode();
+			     System.out.println("responseCode : " + responseCode);
+			
+			     //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+			     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			     String line = "";
+			     String result = "";
+			
+			     while ((line = br.readLine()) != null) {
+			         result += line;
+			     }
+			     
+			     JSONParser par = new JSONParser();
+			     JSONObject jsonObj = (JSONObject) par.parse(result);
+			     String id_token = (String) jsonObj.get("id_token");
+			     String access_token = (String) jsonObj.get("access_token");
+			     String refresh_token = (String) jsonObj.get("refresh_token");
+			     //TODO: access token, refresh token db 저장
+			     
+			     String[] splitToken = id_token.split("\\.");
+			     
+			     byte[] decodedBytes = Base64.getDecoder().decode(splitToken[1]);
+			     String decodedStr = new String(decodedBytes);
+			
+			     jsonObj = (JSONObject) par.parse(decodedStr);
+			     String sub = (String) jsonObj.get("sub");
+			     String name = (String) jsonObj.get("nickname");
+			     String email = (String) jsonObj.get("email");
+			     
+			     //회원 여부 확인하고 없으면 insert
+			     Member member = new Member(email, sub, name);
+			//	             member.setMemail(email);
+			//	             member.setMid(sub);
+			//	             member.setMname(name);
+			     int memno = ms.chkKakaoUser(member);
+			
+			     //session에 저장
+			     Map<String, Object> mem_info = new HashMap<>();
+			     mem_info.put("no", memno);
+				 mem_info.put("name", member.getMname());
+				 mem_info.put("email", member.getMemail());
+				 mem_info.put("type", "GK");
+					
+				 SessionUtil.login(request, mem_info);
+			     
+			     //TODO: 인터셉터에서 토큰 검증
+			
+			     br.close();
+			     bw.close();
+			 } catch (IOException e) {
+			     e.printStackTrace();
+			     return "user/login";
+			 }
+		} else {
+			return "user/login";
+		}
+         
         return "redirect:/user/index";                                        
          
 	}	
@@ -401,7 +405,7 @@ public class LoginController {
         
         System.out.println("userVO: "+userVO);
         
-        if(userVO.getType().equals("G")) { //사용자 로그인
+        if(userVO.getType().startsWith("G")) { //사용자 로그인
         	System.out.println("loginAction() 로그인 한 사람 : 유저");
         	
         	Member member = new Member(userVO.getId(), userVO.getPasswd());

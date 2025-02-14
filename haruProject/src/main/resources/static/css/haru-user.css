@@ -576,3 +576,9 @@ body > .haru-user-container {
 	color: red;
 }
 
+
+.haru-user-topbar .topbar-title i,
+.haru-user-topbar .topbar-title > div,
+.haru-user-topbar .topbar-title > div > button {
+	cursor: pointer;
+}

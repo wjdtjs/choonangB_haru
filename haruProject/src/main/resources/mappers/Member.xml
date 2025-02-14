@@ -210,7 +210,7 @@
    
    <!--  회원 탈퇴 > 상태 수정  -->
    <update id="HR_deleteMember" parameterType="int"> 
-      UPDATE MEMBER SET mstatus_mcd = 200 
+      UPDATE MEMBER SET mstatus_mcd = 200, mid = null
       WHERE memno = #{memno} 
    </update>
    
@@ -262,4 +262,10 @@
 		FROM MEMBER
 		WHERE MEMNO = #{memno}
 	</delete>
+	
+	
+	<!-- 카카오 로그인 유저 id -->
+	<select id="JS_SelectKakaoUserId" parameterType="int" resultType="java.lang.String">
+		SELECT MID FROM MEMBER WHERE MEMNO = #{memno}
+	</select>
 </mapper>

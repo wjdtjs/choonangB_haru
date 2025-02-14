@@ -148,9 +148,10 @@
 	</select>
 	<!-- 보호자 이름 불러오기 -->
 	<select id="HR_SelectMnameList" parameterType="String" resultType="Map">
-		SELECT MEMNO, MNAME, MTEL
+		SELECT MEMNO, MNAME, MTEL, SUBSTR(MEMAIL, 1, INSTR(MEMAIL, '@')-1) as MEMAIL
 		FROM MEMBER
 		WHERE MNAME LIKE '%' || #{search1} || '%'
+			AND MSTATUS_MCD = 100
 	</select>
 	<!-- 보호자 이름에 따른 동물이름 불러오기 -->
 	<select id="HR_SelectPetnameList" parameterType="int" resultType="Map">

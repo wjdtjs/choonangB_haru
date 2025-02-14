@@ -190,7 +190,7 @@ em {
 					    <table class="myPetTable">
 					    	<div class="myPetTitle">
 					    		<h5>동물정보</h5>
-					    		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn" onclick="/admin/addPet"><i class="fa-solid fa-plus" style="color: white;"></i> 추가</button>
+					    		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn" onclick="location.href='/admin/upload-pet?no=${member.memno }&name=${member.mname }'"><i class="fa-solid fa-plus" style="color: white;"></i> 추가</button>
 					    	</div>   
 				        	<tr class="infoTitle">	
 				        		<th>동물번호</th>

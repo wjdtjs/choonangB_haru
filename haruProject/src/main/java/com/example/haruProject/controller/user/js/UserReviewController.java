@@ -165,12 +165,13 @@ public class UserReviewController {
 		
 		//댓글
 		List<Board> comment = new ArrayList<>();
+		comment = rs.getCommentList(pagination, Integer.parseInt(bno));
 		for(Board c : comment) {
 			if(c.getBstatus_mcd()!=100) {
+				System.out.println("getBstatus_mcd()!!! ==> "+c.getBstatus_mcd());
 				c.setBcontents("삭제된 댓글입니다.");
 			}
 		}
-		comment = rs.getCommentList(pagination, Integer.parseInt(bno));
 		System.out.println("reviewComment list : "+comment);
 		
 		commentMap.put("pagination", pagination);
@@ -288,7 +289,9 @@ public class UserReviewController {
 			System.out.println("parts== "+parts);
 			for (Part image : parts) {
 				
-				if (image.getContentType() != null) { // ContentType이 있는 경우 파일임			        
+				System.out.println("UserReviewController image.getSize ==> "+image.getSize());
+				
+				if (image.getContentType() != null || image.getSize() > 0) { // ContentType이 있는 경우 파일임			        
 			        System.out.println("UserReviewController saveImage() -> "+image.getSubmittedFileName());
 			        InputStream inputStream = image.getInputStream();
 			        

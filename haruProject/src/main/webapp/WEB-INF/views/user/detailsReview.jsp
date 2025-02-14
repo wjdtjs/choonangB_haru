@@ -196,13 +196,16 @@
 			</c:if>
 
 			<!-- 상세내용 -->
-			<div class="js-review-content" style="margin-top: 1rem;">
+			<div style="width: 100%">
+			<div class="js-review-content" style="margin-top: 1rem; white-space: pre-line;">
 				${board.bcontents }
+			</div>
+			
 			</div>
 			
 			<!-- 댓글 -->
 			<div class="js-review-comment-div">
-				<div style="font-weight: 500">댓글 ${cnt }</div>
+				<div style="font-weight: 500">댓글 <span class="reply-cnt">${cnt }</span></div>
 				
 				<div class = "js-comment-container"></div>
 				<c:if test="${cnt > 10 }">
@@ -326,6 +329,9 @@
 							review_container.prepend(str);
 							$('.js-comment-input').val('');
 							$('.js-comment-input').css('height', 'auto');
+							
+							var cnt = $('.reply-cnt').text();
+							$('.reply-cnt').text(Number(cnt)+1);
 						}
 						
 						

@@ -32,13 +32,13 @@
 				<div class="shopping-filter">
 					<div class="shopping-bcd-div">
 						<c:forEach var="bcd" items="${bcdList }">
-							<div class="shopping-filter-bcd ${ cBcd == bcd.BCD ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${bcd.BCD}')">${bcd.CONTENT }</div>
+							<div class="shopping-filter-bcd ${ cBcd == bcd.BCD ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${bcd.BCD}')" style="cursor: pointer;">${bcd.CONTENT }</div>
 						</c:forEach>					
 					</div>
 					<div class="shopping-mcd-div">
 						<span class="shopping-filter-mcd ${ cMcd == 999 ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${cBcd}&mcd=999')">전체</span>
 						<c:forEach var="mcd" items="${mcdList }">
-							<span class="shopping-filter-mcd ${ cMcd == mcd.MCD ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${cBcd}&mcd=${mcd.MCD}')">${mcd.CONTENT}</span>
+							<span class="shopping-filter-mcd ${ cMcd == mcd.MCD ? 'active' : '' }" onclick="location.replace('/user/shop?bcd=${cBcd}&mcd=${mcd.MCD}')" style="cursor: pointer;">${mcd.CONTENT}</span>
 						</c:forEach>
 					</div>
 				</div>
@@ -49,7 +49,7 @@
 						<!-- 상품이 존재할 때 -->
 						<div class="shopping-product-list">
 							<c:forEach var="pl" items="${pList }">
-								<div class="prosduct-info-div" onclick="goDetail(${pl.pno})">
+								<div class="prosduct-info-div" onclick="goDetail(${pl.pno})" style="cursor: pointer;">
 									<c:choose>
 										<c:when test="${not empty pl.pimg_main }">
 											<div class="product-thumbnail-div" style="background: url(${pl.pimg_main}); background-size: cover;"></div>						

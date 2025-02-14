@@ -6,6 +6,12 @@
 <head>
 <meta charset="UTF-8">
 <title>쇼핑</title>
+<style type="text/css">
+button,
+.go-whole-review {
+	cursor: pointer;
+}
+</style>
 </head>
 <body>
 	<div class="haru-user-container">
@@ -61,11 +67,11 @@
 					<div class="js-pi-radio">
 						<div class="pi-radio-btn radio-info">
 							<input id="radio-1" type="radio" name="product-info" value="details" checked>
-							<label for="radio-1">상세정보</label>
+							<label for="radio-1" style="cursor: pointer;">상세정보</label>
 						</div>
 						<div class="pi-radio-btn">
 							<input id="radio-2" type="radio" name="product-info" value="reviews">
-							<label for="radio-2">상품후기(${pagination.totalCnt })</label>
+							<label for="radio-2" style="cursor: pointer;">상품후기(${pagination.totalCnt })</label>
 						</div>
 					</div>
 					<!-- 라디오버튼 div 끝 -->

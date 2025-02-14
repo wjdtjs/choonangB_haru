@@ -131,12 +131,13 @@
 		    FROM (
 		        SELECT
 		        	b.BNO,
-					bcontents,
+					b.BCONTENTS,
 					b.REG_DATE,
 					b.BGROUP,
 					b.BSEQ,
 					b.BLEVEL,
 					b.MEMNO,
+					b.BSTATUS_MCD,
 					mask_email(m.MEMAIL) memail
 				FROM BOARD b JOIN MEMBER m 
 					ON b.MEMNO = m.MEMNO

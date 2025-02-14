@@ -1,11 +1,17 @@
 package com.example.haruProject.controller.user.hr;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,6 +85,12 @@ public class UserMyPageController {
 		return "user/editMyinfo";
 	}
 	
+	
+	
+	@Value("${kakao.admin-key}")
+    String AdminKey;	
+	
+	
 	/**
 	 * 회원 탈퇴
 	 * @return
@@ -89,6 +101,46 @@ public class UserMyPageController {
 		int memno = SessionUtil.getNo(request);
 		
 		System.out.println("UserMyPageController deleteMember() memno ->"+memno);
+		
+		
+		// 카카오 로그인 탈퇴
+		if(SessionUtil.getType(request).equals("GK")) {
+			System.out.println("카카오 로그인 유저 탈퇴 요청");
+			String reqURL = "https://kapi.kakao.com/v1/user/unlink";
+			String target_id = ms.getUserID(memno);
+			
+			
+			try {
+				
+				URL url = new URL(reqURL);
+	            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	
+	            //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
+	            conn.setRequestMethod("POST");
+	            conn.setDoOutput(true);
+	            conn.setRequestProperty("Authorization", "KakaoAK "+AdminKey);
+	            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+	
+	            //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
+	            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+	            StringBuilder sb = new StringBuilder();
+	            sb.append("&target_id="+target_id);
+	            sb.append("&target_id_type=user_id"); 
+	            bw.write(sb.toString());
+	            bw.flush();
+	
+	            //결과 코드가 200이라면 성공
+	            int responseCode = conn.getResponseCode();
+	            System.out.println("카카오 탈퇴 responseCode : " + responseCode);
+	             
+	            bw.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "redirect:/user/myPage";
+			}
+			
+		}
+		
 		
 		int result = ms.deleteMember(memno);
 		

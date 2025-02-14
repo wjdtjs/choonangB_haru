@@ -46,12 +46,12 @@
         </div>
     </li>
     
-    <li class="nav-item">
-        <a class="nav-link" href="medical">
-            <i class="fas fa-fw fa-solid fa-hospital"></i>
-            <span>진료 항목 관리</span>
-		</a>
-    </li>
+<!--     <li class="nav-item"> -->
+<!--         <a class="nav-link" href="medical"> -->
+<!--             <i class="fas fa-fw fa-solid fa-hospital"></i> -->
+<!--             <span>진료 항목 관리</span> -->
+<!-- 		</a> -->
+<!--     </li> -->
     
     <li class="nav-item">
         <a class="nav-link" href="consultation">

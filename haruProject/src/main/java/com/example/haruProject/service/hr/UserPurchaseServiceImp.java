@@ -85,7 +85,7 @@ public class UserPurchaseServiceImp implements UserPurchaseService {
 				// 매장결제
 				orderno = pd.sPurchase(pList, memno, opayment_mcd, ototal_price, dp);
 				String message = "새로운 주문이 추가되었습니다!";
-				ns.sendNotification(message);
+				ns.sendNotification(message, "#0C808D");
 			}
 			
 			return orderno;

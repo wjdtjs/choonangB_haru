@@ -44,7 +44,7 @@
 		SELECT c.bcd, c.mcd, c.content as species
 		FROM common c
 		WHERE c.bcd = #{bcd} and c.mcd != 999
-		ORDER BY species
+		ORDER BY c.mcd asc
 	</select>
 	
 	<!-- 동물 상세 페이지 -->
@@ -78,7 +78,7 @@
 		    JOIN COMMON c ON m.mtitle_bcd = c.bcd AND m.mtitle_mcd = c.mcd
 		    JOIN COMMON c2 ON m.mtitle_bcd = c2.bcd AND c2.mcd = 999
 		    LEFT OUTER JOIN CHART ch ON a.resno = ch.resno
-		    LEFT OUTER JOIN BOARD b ON a.resno = b.resno
+		    LEFT OUTER JOIN BOARD b ON a.resno = b.resno and b.bstatus_mcd = 100
 		WHERE a.petno = #{petno} AND a.rstatus_mcd = 400
 		ORDER BY rdate desc, start_time desc
 	</select>
@@ -328,11 +328,13 @@
 				#{memno}, SEQ_PET.NEXTVAL, #{petname}, #{petbirth}, #{petheight}, #{petspecial},
 				#{ano}, #{petspecies_bcd}, #{petspecies_mcd}, #{petgender_mcd}
 			)
-			INTO WEIGHT(
-				MEMNO,
-				PETNO,
-				PETWEIGHT
-			) VALUES (#{memno}, SEQ_PET.CURRVAL, #{petweight})
+			<if test="petweight != null and petweight > 0">
+				INTO WEIGHT(
+					MEMNO,
+					PETNO,
+					PETWEIGHT
+				) VALUES (#{memno}, SEQ_PET.CURRVAL, #{petweight})
+			</if>
 		SELECT * FROM DUAL
 		
 	</insert>

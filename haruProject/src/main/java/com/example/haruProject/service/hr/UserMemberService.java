@@ -29,4 +29,6 @@ public interface UserMemberService {
 	// 댓글 삭제
 	int deleteRe(int bno);
 
+	String getUserID(int memno);
+
 }

@@ -84,12 +84,13 @@ let reconnectTimer = null;
 	    sessionStorage.setItem("notifications", JSON.stringify(notifications));
 	}
 	
-	function showNotification(message) {
-	    console.log("🔔 showNotification 호출됨:", message);
+	function showNotification(data) {
+		let json_data = JSON.parse(data);
+	    console.log("🔔 showNotification 호출됨:", json_data.message);
 	
 	    const notificationDiv = document.createElement("div");
-	    notificationDiv.textContent = message;
-	    notificationDiv.style.backgroundColor = "#0C808D";
+	    notificationDiv.textContent = json_data.message;
+	    notificationDiv.style.backgroundColor = json_data.color;
 	    notificationDiv.style.color = "#fff";
 	    notificationDiv.style.padding = "15px";
 	    notificationDiv.style.borderRadius = "8px";
@@ -102,7 +103,7 @@ let reconnectTimer = null;
 	        notificationDiv.style.opacity = "0";
 	        setTimeout(() => {
 	            notificationDiv.remove();
-	            removeNotification(message);
+	            removeNotification(data);
 	        }, 300);
 	    });
 	
@@ -112,8 +113,8 @@ let reconnectTimer = null;
 	
 	function loadNotifications() {
 	    let notifications = JSON.parse(sessionStorage.getItem("notifications")) || [];
-	    notifications.forEach(message => {
-	        showNotification(message);
+	    notifications.forEach(data => {
+	        showNotification(data);
 	    });
 	}
 });

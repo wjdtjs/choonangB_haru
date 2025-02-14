@@ -175,7 +175,7 @@
 	
 			// 전체 필수 체크
 			if(isEmpty(bcd) && isEmpty(mcd) && isEmpty(name) && isEmpty(price) && isEmpty(brand) 
-					&& isEmpty(quantity) && isEmpty(thumb)) {
+					&& isEmpty(quantity) && isEmpty(thumb) && isEmpty(store)) {
 				
 				console.log('성공')
 				if(confirm('이대로 등록하시겠습니까?')) {

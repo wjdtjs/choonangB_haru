@@ -93,10 +93,10 @@ textarea {
 					        			<col width="40%"/>
 					        		</colgroup>
 					        		<tr>
-					        			<td class="sub-title">종</td>
+					        			<td class="sub-title">종 <span class="haru-required">*</span></td>
 					        			<td colspan="3">
 					        				<select class="species-bcd" style="width: 120px;" name="petspecies_bcd" required="required">
-					        					<option value="0" disabled selected>선택</option>
+					        					<option value="" disabled selected>선택</option>
 					        					<c:forEach var="b" items="${bcd }">
 					        						<option value="${b.bcd}">${b.species }</option>
 					        					</c:forEach>
@@ -106,19 +106,21 @@ textarea {
 					        			</td>
 					        		</tr>
 					        		<tr>
-					        			<td class="sub-title">보호자</td>
+					        			<td class="sub-title">보호자 <span class="haru-required">*</span></td>
 					        			<td style="display: flex;">
 					        				<input type="text" name="search1" id="res-mname" style="width: 150px; margin-right: 10px;"
 				        								onkeypress="console.log('onkeypress 실행됨'); if (event.key === 'Enter') search_mname(event)"
-				        								value="${search1 }" required="required">
+				        								value="${not empty mname ? mname : '' }" ${not empty memno ? 'disabled' : '' } required="required">
 					                       	<select id="res-select-mname" name="memno" style="display:none" required>
-					                       		<option disabled selected value="0">선택</option>
+					                       		<c:if test="${not empty memno }">
+					                       			<option value="${memno }" selected></option>
+					                       		</c:if>
 					                    	</select>
 					        			</td>
-					        			<td class="sub-title">담당의</td>
+					        			<td class="sub-title">담당의 <span class="haru-required">*</span></td>
 					        			<td>
 					        				<select class="incharge-vet" name="ano" required="required">
-					        					<option value="0">-</option>
+					        					<option value="">-</option>
 					        					<c:forEach var="v" items="${vet }">
 					        						<option value="${v.ANO }" >${v.ANAME }</option>
 					        					</c:forEach>
@@ -136,9 +138,9 @@ textarea {
 					        			</td>
 					        		</tr>
 					        		<tr>
-					        			<td class="sub-title">생년월일</td>
+					        			<td class="sub-title">생년월일 <span class="haru-required">*</span></td>
 					        			<td>
-					        				<input class="haru-pro-quantity" name="petbirth" type="date" style="border: 1px solid var(--haru); border-radius: 15px; padding-inline: 1rem">
+					        				<input class="haru-pro-quantity" name="petbirth" type="date" style="border: 1px solid var(--haru); border-radius: 15px; padding-inline: 1rem" required="required">
 					        			</td>
 					        			<td class="sub-title">몸무게(kg)</td>
 					        			<td>
@@ -146,7 +148,7 @@ textarea {
 					        			</td>
 					        		</tr>
 					        		<tr class="pet-gender-radio-div">
-					        			<td class="sub-title">성별</td>
+					        			<td class="sub-title">성별 <span class="haru-required">*</span></td>
 					        			<td>
 					        				<label for="male">수컷					        				
 					        					<input type="radio" name="gender1" value="1" id="male" required="required">
@@ -224,7 +226,7 @@ textarea {
 	   	$(function() {
 	   		let selectedValue = $(".species-bcd").val(); // 현재 선택된 값 가져오기
 	   		console.log("selectedValue: ", selectedValue);
-	   	    if (selectedValue !== "0") { // 값이 0이 아닐 경우 실행
+	   	    if (selectedValue !== "") { // 값이 0이 아닐 경우 실행
 	   	        getMcd();
 	   	    }
 	   		

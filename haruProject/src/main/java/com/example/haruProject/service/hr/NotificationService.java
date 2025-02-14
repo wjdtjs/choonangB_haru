@@ -2,7 +2,9 @@ package com.example.haruProject.service.hr;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.stereotype.Service;
@@ -51,7 +53,7 @@ public class NotificationService {
     }
 
     // ✅ SSE를 통해 알림 전송
-    public boolean sendNotification(String message) {
+    public boolean sendNotification(String message, String color) {
     	 if (emitters.isEmpty()) {
     	        return false;
     	    }
@@ -60,7 +62,11 @@ public class NotificationService {
 
     	    for (SseEmitter emitter : emitters) {
     	        try {
-    	            emitter.send(SseEmitter.event().data(message));
+    	        	Map<String, Object> data = new HashMap<>();
+    	        	data.put("message", message);
+    	        	data.put("color", color);
+    	        	
+    	            emitter.send(SseEmitter.event().data(data));
     	        } catch (IOException e) {
     	            emitter.complete();
     	            deadEmitters.add(emitter); // 제거할 Emitter 수집

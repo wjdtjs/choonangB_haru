@@ -355,10 +355,10 @@ th:first-child, td:first-child {
 							<!-- 리뷰 -->
 							<c:choose>
 								<c:when test="${res.resno ne null and res.resno eq res.bresno }">
-									<button class="res-btn-b" onclick="location.href=''">리뷰 보러가기</button>
+									<button class="res-btn-b" onclick="location.href='/user/details-review?bno=${res.bno}'">리뷰 보러가기</button>
 								</c:when>
 								<c:otherwise>
-								 	<button class="res-btn-b" onclick="location.href=''">리뷰 작성하기</button>							
+								 	<button class="res-btn-b" onclick="location.href='/user/write-review?resno=${res.resno}'">리뷰 작성하기</button>							
 								</c:otherwise>
 							</c:choose>
 							

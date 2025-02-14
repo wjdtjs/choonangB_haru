@@ -33,7 +33,7 @@ public class AdminLoginInterceptor implements HandlerInterceptor {
 	            }
 	        } else {
 	        	String type = SessionUtil.getType(request);
-	        	if(type.equals("G")) { //세션이 있지만 관리자 타입이 아닐 때 로그인 페이지 이동
+	        	if(type.startsWith("G")) { //세션이 있지만 관리자 타입이 아닐 때 로그인 페이지 이동
 	        		response.sendRedirect("/all/admin/login");
 	        		return false;
 	        	}

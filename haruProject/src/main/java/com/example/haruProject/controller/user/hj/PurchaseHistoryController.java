@@ -100,10 +100,11 @@ public class PurchaseHistoryController {
 		
 		String type = "board";
 		String imgPath = saveImage(type, request);
+		System.out.println("상품후기작성 imgPath==> "+imgPath);
 		
-		if(imgPath==null) {
-			return "redirect:/user/purchaseHistory";
-		} else {
+		if(imgPath!=null) {
+//			return "redirect:/user/purchaseHistory";
+//		} else {
 			board.setBimg(imgPath); //썸네일 이름 객체에 저장			
 		}
 		
@@ -133,28 +134,30 @@ public class PurchaseHistoryController {
 		////썸네일 저장
 		try {
 			Part image = request.getPart("main_img");
-			System.out.println(image);
-			InputStream inputStream = image.getInputStream();
-			
-			// 파일 확장자 구하기
-			String fileName = image.getSubmittedFileName();
-			String[] split = fileName.split("\\.");
-			String suffix = split[split.length -1];
-			
-			log.info("fileName -> {}", fileName);
-			log.info("suffix -> {}",suffix);
-			
-			// Servlet 상속 받지 못했을 때 realPath 불러오는 방법
-			String type_path = "/upload/"+type+"/";
-			String uploadPath = request.getSession().getServletContext().getRealPath(type_path);
-			System.out.println("real path : "+uploadPath);
-			
-			log.info("uploadForm() POST Start..");
-			String savedName = uc.uploadFile(type, inputStream, uploadPath, suffix);
-			
-			log.info("Return savedName: {}", savedName);			
-			imgPath = type_path+savedName;
-			System.out.println(imgPath);
+			if(image.getSize()>0) {
+				System.out.println(image);
+				InputStream inputStream = image.getInputStream();
+				
+				// 파일 확장자 구하기
+				String fileName = image.getSubmittedFileName();
+				String[] split = fileName.split("\\.");
+				String suffix = split[split.length -1];
+				
+				log.info("fileName -> {}", fileName);
+				log.info("suffix -> {}",suffix);
+				
+				// Servlet 상속 받지 못했을 때 realPath 불러오는 방법
+				String type_path = "/upload/"+type+"/";
+				String uploadPath = request.getSession().getServletContext().getRealPath(type_path);
+				System.out.println("real path : "+uploadPath);
+				
+				log.info("uploadForm() POST Start..");
+				String savedName = uc.uploadFile(type, inputStream, uploadPath, suffix);
+				
+				log.info("Return savedName: {}", savedName);			
+				imgPath = type_path+savedName;
+				System.out.println(imgPath);
+			}
 			
 		} catch (Exception e) {
 			System.out.println("image upload error : "+ e.getMessage());

@@ -27,7 +27,7 @@
 					<span style="font-size: 14px">조회수 : ${notice.nview_count }</span>
 				</div>	
 			</div>
-			<div style="margin-top: 1rem">
+			<div style="margin-top: 2rem">
 <!-- 				<textarea name="ncontents" class="summernoteTextArea readonly userNoticeSummernote"></textarea>	 -->
 				${notice.ncontents}
 			</div>

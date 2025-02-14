@@ -96,7 +96,7 @@ public class PetController {
 		System.out.println("==== "+ bcdList);
 		
 		List<Weight> wList = new ArrayList<>();
-		wList = us.getPetWeightList(pet.getPetno());
+		wList = us.getPetWeightList(pet.getPetno(), 1, 10);
 		System.out.println("petDetailView() 동물 몸무게 ==> "+wList);
 		
 		List<String> labels = new ArrayList<>();
@@ -184,7 +184,9 @@ public class PetController {
 	 * @return
 	 */
 	@GetMapping("/admin/upload-pet")
-	public String uploadPetView(Model model) {
+	public String uploadPetView(Model model, 
+					@RequestParam(value="no", required = false, defaultValue = "0") int memno,
+					@RequestParam(value="name", required = false, defaultValue = "") String name) {
 		log.info("addPet() start..");
 		
 		List<Map<String, Object>> docList = new ArrayList<>(); 	//의사 정보
@@ -195,6 +197,10 @@ public class PetController {
 		
 		model.addAttribute("vet", docList);
 		model.addAttribute("bcd", bcdList);
+		if(memno!=0) {
+			model.addAttribute("memno", memno);
+			model.addAttribute("mname", name);
+		}
 		
 		return "admin/uploadPet";
 	}

@@ -12,6 +12,7 @@
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
 	margin: 12px 0;
 	padding: 10px;
+	cursor: pointer;
 }
 .pet-res-content .res-date,
 .pet-res-content .res-petname,
@@ -77,6 +78,9 @@
 	position: absolute;
 	right: 10px;
 	top: 50px;
+}
+button {
+	cursor: pointer;
 }
 </style>
 

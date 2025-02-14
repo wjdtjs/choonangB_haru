@@ -39,8 +39,8 @@ public class NotificationController {
 
     // ✅ SSE를 통해 알림 전송
     @PostMapping("/send")
-    public ResponseEntity<String> sendNotification(@RequestBody String message) {
-        boolean result = notificationService.sendNotification(message);
+    public ResponseEntity<String> sendNotification(@RequestBody String message, @RequestBody String color) {
+        boolean result = notificationService.sendNotification(message, color);
         return result ? ResponseEntity.ok("알림 전송 성공") : ResponseEntity.noContent().build();
     }
     

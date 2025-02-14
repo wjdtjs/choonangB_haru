@@ -100,8 +100,8 @@
 	
 	<!-- 상품 리뷰 CRUD -->
 	<insert id="HJ_insertProductReview" parameterType="Board" >
-		INSERT INTO board(bno, btitle, bcontents, reg_date, board_type_bcd, board_type_mcd, orderno, pno, bimg,memno)
-		VALUES (seq_board.nextval, #{btitle}, #{bcontents}, sysdate, 350, 300, #{orderno}, #{pno}, #{bimg}, #{memno})
+		INSERT INTO board(bno, btitle, bcontents, reg_date, board_type_bcd, board_type_mcd, orderno, pno, bimg, memno)
+		VALUES (seq_board.nextval, #{btitle}, #{bcontents}, sysdate, 350, 300, #{orderno}, #{pno}, #{bimg, jdbcType=VARCHAR}, #{memno})
 		
 	</insert>
 	

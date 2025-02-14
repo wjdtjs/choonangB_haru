@@ -168,6 +168,22 @@ public class UserMemberDaoImp implements UserMemberDao {
 		
 		return result;
 	}
+
+	/**
+	 * 카카오 로그인 유저 id 가져오기
+	 */
+	@Override
+	public String getUserId(int memno) {
+		String id = "";
+		
+		try {
+			id = session.selectOne("JS_SelectKakaoUserId", memno);
+		} catch (Exception e) {
+			log.error("getUserId() query error -> ", e);
+		}
+		
+		return id;
+	}
 	
 	
 
