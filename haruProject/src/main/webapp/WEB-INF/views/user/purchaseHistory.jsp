@@ -17,8 +17,8 @@ body{
 }
 
 .selete-order > select{
-	background-color: #D0E3E7;
-    border: none;
+	background-color: white;
+    border: 1px solid var(--haru);
     width: 30%;
     height: 35px;
     border-radius: 12px;
@@ -59,7 +59,7 @@ body{
 	height: 5.5rem;
 	border-radius: 12px;
 	background-color: #eee;
-	margin-right: 5px;
+	margin-right: 8px;
 
 } 
 
@@ -119,8 +119,10 @@ a{
 .page-btn {
 	min-height: 5.5rem;
 	line-height: 5.5rem;
+	margin: 0 4px;
 }
 </style>
+
 <body class="box" style="overflow-y: scroll;">
 	<div class="haru-user-container">
 		<!-- header -->
@@ -156,19 +158,19 @@ a{
 							<div class="purchase-info" data-ostatus="${purchase.ostatus_mcd }">
 								<div class="purchase-info-content">
 									<div class="purchase-info-top">
-										<div style="font-size: 12; font-weight: 600; padding-top: 3px;">주문번호 ${purchase.orderno}</div>
+										<div style="font-size: 12px; font-weight: 600; padding-top: 3px;">주문번호 ${purchase.orderno}</div>
 										<div class="status-content">${purchase.ostatus_content}</div>
 									</div>
-									<fmt:formatDate value="${purchase.odate}" pattern="yyyy-MM-dd"/>
+									<span style="font-size: 14px;"><fmt:formatDate value="${purchase.odate}" pattern="yyyy-MM-dd"/></span>
 									<div style="display: flex; width: 100%;">
 										<div style="width: 100%;">
 											<div class="purchase-info-prd" style="display: flex;">
 												<img alt="prodictimg" src="${purchase.main_img }">
-												<div>${purchase.pname1 }</div>
+												<div >${purchase.pname1 }</div>
 											</div>
 											<div style="display: flex; justify-content: space-between; margin-top: 4px;">
-												<div>총 결제금액</div>
-												<div style="display: flex;">${purchase.totalPrice }원
+												<div style="font-size: 14px;">총 결제금액</div>
+												<div style="display: flex;"><span style="font-size: 14px;"><fmt:formatNumber value="${purchase.totalPrice}" pattern="#,###" />원</span>
 												<div style="color: gray; font-size: 14px; margin: auto;">(${purchase.opayment_content })</div> 
 												</div>
 											</div>
@@ -180,7 +182,7 @@ a{
 								</div>
 								<div class="purchase-info-product" style="display: none;">
 									<hr>
-									<div>구매상품</div>
+									<div>주문 상세</div>
 									<c:forEach var="product" items="${purchase.productList }">
 										<div class="purchase-product">
 											<input type="hidden" value="${product.orderno }">
@@ -190,7 +192,7 @@ a{
 												<div class="productInfo">
 													<div >${product.pbrand }</div>
 													<div><a href="/user/details-product?pno=${product.pno}"> ${product.pname }</a></div>
-													<div>${product.oquantity }개 / ${product.pprice }</div>
+													<div>${product.oquantity }개 / <fmt:formatNumber value="${product.pprice}" pattern="#,###" />원</span></div>
 												</div>
 											</div>
 											<div class="btn-review" style="display: hidden;">
@@ -217,7 +219,7 @@ a{
 		</div>
 		<!-- menu bar -->
 		<jsp:include page="components/menubar.jsp"></jsp:include>
-0	</div>
+	</div>
 </body>
 <script type="text/javascript">
 	$(()=>{
@@ -260,12 +262,23 @@ a{
 
 	        var tr = $(this).find('.page-btn').css('transform');
 	        var values = tr.split('(')[1].split(')')[0].split(',');
-	        var a = values[0], b = values[1];
-	        var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
-	        var newAngle = angle + 180;
+	       	        
+	        var a = values[0];
+            var b = values[1];
+            var c = values[2];
+            var d = values[3];
 
-	        $(this).find('.page-btn').css('transform', `rotate(${newAngle}deg)`);
+            var scale = Math.sqrt(a*a + b*b);
+            var sin = b/scale;
+            var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+            
+            var newAngle = angle + 180;
+            console.log(newAngle);
+
+	        $(this).find('.page-btn').css('transform', `rotate(\${newAngle}deg)`);
 	    });
+	
+		
 	});
 	
 	$(document).on('change','.selected-order',function(){

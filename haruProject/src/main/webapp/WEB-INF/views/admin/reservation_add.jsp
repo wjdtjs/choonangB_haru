@@ -809,7 +809,7 @@ input#res-mname {
 			sendData = sendData + ('&rdate='+rdate) + ('&start_time='+start_time) + ('&resno='+resno);
 			
 			console.log("sendData : ", sendData);
-			alert("sendData :"+ sendData);
+			//alert("sendData :"+ sendData);
 			
 			$('input:hidden[name=resno]').val(resno);
 			$('input:hidden[name=rdate]').val(rdate);

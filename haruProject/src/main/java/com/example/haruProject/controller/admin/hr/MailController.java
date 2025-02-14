@@ -14,16 +14,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.haruProject.service.hr.AppointmentService;
+import com.example.haruProject.service.js.MailService;
 
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class MailController {
-	private final JavaMailSender mailSender;
+	// private final JavaMailSender mailSender;
 	
 	private final AppointmentService as;
+	private final MailService mailService;
 	
 	// 확정 메일 전송
 	@RequestMapping("/mail/confirmSend")
@@ -35,7 +38,7 @@ public class MailController {
 							      @RequestParam("memo") String memo,
 								  @RequestParam("status") int status,
 								  Model model
-								  )
+								  ) throws MessagingException
 	{
 	    System.out.println("MailController confirmSendMail() start ,,,");
 	    System.out.println("MailController confirmSendMail() memail ->"+memail);
@@ -44,7 +47,7 @@ public class MailController {
 	    System.out.println("MailController confirmSendMail() rtime ->"+rtime);
 	    
 	    String tomail = memail;
-	    String setfrom = "하루동물병원 <0808hr@gmail.com>";
+	    //String setfrom = "하루동물병원 <0808hr@gmail.com>";
 	    String title = "하루 동물병원 예약 확정 안내";
 	    
 		/*
@@ -57,27 +60,31 @@ public class MailController {
 	    String content = "안녕하세요. 하루 동물병원 입니다.\n 신청하신 예약이 확정되었습니다.\n" +
 	            rdate + ", " + start_time + "까지 내원하여 주시기 바랍니다.\n" +
 	            "진료 소요 시간은 " + rtime + "분 입니다. 감사합니다.";
-	    System.out.println("content: "+content);
+	    // System.out.println("content: "+content);
 	    
-	    try {
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper messageHelper = new MimeMessageHelper(message, false, "UTF-8");
-			messageHelper.setFrom(setfrom);
-			messageHelper.setTo(tomail);
-			messageHelper.setSubject(title);
-			messageHelper.setText(content);
-			
-			mailSender.send(message);
-			System.out.println("confirm mail send success");
-			
-            // location.href = "/admin/updateReservation?" + sendData;
-            int result = as.updateReservation(resno, rtime, memo, status);
-            System.out.println("MailController sendMail() updateReservation result ->"+result);
-            
-		} catch (Exception e) {
-			System.out.println("confirm mail send error ->"+e.getMessage());
-			System.out.println("confirm mail send fail");
-		}
+	    mailService.sendMail(tomail, title, content);
+	    int result = as.updateReservation(resno, rtime, memo, status);
+	    System.out.println("MailController sendMail() updateReservation result ->"+result);
+	    
+//	    try {
+//			MimeMessage message = mailSender.createMimeMessage();
+//			MimeMessageHelper messageHelper = new MimeMessageHelper(message, false, "UTF-8");
+//			messageHelper.setFrom(setfrom);
+//			messageHelper.setTo(tomail);
+//			messageHelper.setSubject(title);
+//			messageHelper.setText(content);
+//			
+//			mailSender.send(message);
+//			System.out.println("confirm mail send success");
+//			
+//            // location.href = "/admin/updateReservation?" + sendData;
+//            int result = as.updateReservation(resno, rtime, memo, status);
+//            System.out.println("MailController sendMail() updateReservation result ->"+result);
+//            
+//		} catch (Exception e) {
+//			System.out.println("confirm mail send error ->"+e.getMessage());
+//			System.out.println("confirm mail send fail");
+//		}
 	    
 	    return "redirect:/admin/reservation";
 	}
@@ -85,22 +92,22 @@ public class MailController {
 	// 취소 메일 전송
 	@GetMapping("/mail/cancelSend")
 	public String cancelSendMail(@RequestParam("memail") String memail, 
-								 @RequestParam("rdate") String rdate, 
-								 @RequestParam("start_time") String start_time, 
+//								 @RequestParam("rdate") String rdate, 
+//								 @RequestParam("start_time") String start_time, 
 								 @RequestParam("rtime") int rtime,
 								 @RequestParam("resno") String resno,
 								 @RequestParam("memo") String memo,
 								 @RequestParam("status") int status,
-								 Model model)
+								 Model model) throws MessagingException
 	{
 		System.out.println("MailController cancelSendMail() start ,,,");
 	    System.out.println("MailController cancelSendMail() memail ->"+memail);
-	    System.out.println("MailController cancelSendMail() rdate ->"+rdate);
-	    System.out.println("MailController cancelSendMail() start_time ->"+start_time);
+//	    System.out.println("MailController cancelSendMail() rdate ->"+rdate);
+//	    System.out.println("MailController cancelSendMail() start_time ->"+start_time);
 	    System.out.println("MailController cancelSendMail() rtime ->"+rtime);
 	    
 	    String tomail = memail;
-	    String setfrom = "하루동물병원 <0808hr@gmail.com>";
+	    //String setfrom = "하루동물병원 <0808hr@gmail.com>";
 	    String title = "하루 동물병원 예약 취소 안내";
 	    
 		/*
@@ -110,26 +117,30 @@ public class MailController {
 		 */
 	    
 	    String content = "안녕하세요. 하루 동물병원 입니다.\n 신청하신 예약이 취소되었습니다.\n 감사합니다.";
-	    System.out.println("content: "+content);
+	    // System.out.println("content: "+content);
 	    
-	    try {
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper messageHelper = new MimeMessageHelper(message, false, "UTF-8");
-			messageHelper.setFrom(setfrom);
-			messageHelper.setTo(tomail);
-			messageHelper.setSubject(title);
-			messageHelper.setText(content);
-			
-			mailSender.send(message);
-			System.out.println("cancel mail send success");
-			
-			int result = as.updateReservation(resno, rtime, memo, status);
-            System.out.println("MailController sendMail() updateReservation result ->"+result);
-            
-		} catch (Exception e) {
-			System.out.println("cancel mail send error ->"+e.getMessage());
-			System.out.println("cancel mail send fail");
-		}
+	    mailService.sendMail(tomail, title, content);
+	    int result = as.updateReservation(resno, rtime, memo, status);
+	    System.out.println("MailController sendMail() updateReservation result ->"+result);
+	    
+//	    try {
+//			MimeMessage message = mailSender.createMimeMessage();
+//			MimeMessageHelper messageHelper = new MimeMessageHelper(message, false, "UTF-8");
+//			messageHelper.setFrom(setfrom);
+//			messageHelper.setTo(tomail);
+//			messageHelper.setSubject(title);
+//			messageHelper.setText(content);
+//			
+//			mailSender.send(message);
+//			System.out.println("cancel mail send success");
+//			
+//			int result = as.updateReservation(resno, rtime, memo, status);
+//            System.out.println("MailController sendMail() updateReservation result ->"+result);
+//            
+//		} catch (Exception e) {
+//			System.out.println("cancel mail send error ->"+e.getMessage());
+//			System.out.println("cancel mail send fail");
+//		}
 	    
 	    return "redirect:/admin/reservation";
 	}

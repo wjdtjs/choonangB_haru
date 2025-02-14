@@ -84,7 +84,7 @@
 	
 	<!-- 예약 상세 -->
 	<select id="HR_SelectAppointmentDetail" parameterType="String" resultType="Appointment">
-		SELECT a.resno, a.rdate, c1.content as item, c5.content as item_bcd, d.aname, m.mname, p.petno, p.petname, c2.content as species, c3.content as gender, p.petweight
+		SELECT a.resno, a.rdate, c1.content as item, c5.content as item_bcd, d.aname, d.ano, m.mname, p.petno, p.petname, c2.content as species, c3.content as gender, p.petweight
 				, c4.content as status, a.memo, a.rstatus_mcd, a.start_time, a.rtime, ch.resno as cresno, m.memail
 		FROM APPOINTMENT a
 		    JOIN ADMIN d ON a.ano = d.ano

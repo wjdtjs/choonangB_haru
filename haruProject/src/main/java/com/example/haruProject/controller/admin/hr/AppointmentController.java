@@ -182,20 +182,20 @@ public class AppointmentController {
 		mnameList = as.getMnameList(search1);
 		
 		// mtel 전처리
-	    for (Map<String, Object> item : mnameList) {
-	    	String processedMtel = null;
-	        if (item.containsKey("MTEL")) {
-	            String mtel = (String) item.get("MTEL");
+	       for (Map<String, Object> item : mnameList) {
+	          String processedMtel = null;
+	           if (item.containsKey("MTEL")) {
+	               String mtel = (String) item.get("MTEL");
 
-	            processedMtel = mtel.replaceAll("^.*(\\d{4})$", "$1");
-	            System.out.println("processedMtel ->"+processedMtel);
+	               processedMtel = mtel.replaceAll("^.*(\\d{4})$", "$1");
+	               System.out.println("processedMtel ->"+processedMtel);
 
-	            
-	        } else {
-	        	processedMtel = (String) item.get("MEMAIL");
-	        }
-	        item.put("MTEL", processedMtel);
-	    }
+	               
+	           } else {
+	              processedMtel = (String) item.get("MEMAIL");
+	           }
+	           item.put("MTEL", processedMtel);
+	       }
 
 	    // 처리된 결과 확인
 	    System.out.println("AppointmentController reservationMname() mnameList -> " + mnameList);
@@ -245,7 +245,7 @@ public class AppointmentController {
 		return "redirect:/admin/reservation";
 	}
 	
-	
+
 	
 	
 	
@@ -290,19 +290,25 @@ public class AppointmentController {
 									 @RequestParam("rtime") int rtime,
 									 @RequestParam("memo") String memo,
 									 @RequestParam("status") int status,	// 변경할 상태 번호
+									 @RequestParam("memail") String memail,
 									 Model model
 									 ) {
-		System.out.println("AppointmentController confirmReservation() start ,,,");
-		System.out.println("AppointmentController confirmReservation() resno ->"+resno);
-		System.out.println("AppointmentController confirmReservation() rtime ->"+rtime);
-		System.out.println("AppointmentController confirmReservation() memo ->"+memo);
-		System.out.println("AppointmentController confirmReservation() status ->"+status);		
+		System.out.println("AppointmentController updateReservation() start ,,,");
+		System.out.println("AppointmentController updateReservation() resno ->"+resno);
+		System.out.println("AppointmentController updateReservation() rtime ->"+rtime);
+		System.out.println("AppointmentController updateReservation() memo ->"+memo);
+		System.out.println("AppointmentController updateReservation() status ->"+status);
+		System.out.println("AppointmentController updateReservation() memail ->"+memail);
 		
-		int result = as.updateReservation(resno, rtime, memo, status);
-		System.out.println("AppointmentController confirmReservation() result ->"+result);
-		
-		return "redirect:/admin/reservation";
-		
+		if (status == 300) {
+			return "redirect:/mail/cancelSend?memail="+memail+"&rtime="+rtime+"&resno="+resno
+					+"&memo="+memo+"&status="+status;
+		} else {
+			int result = as.updateReservation(resno, rtime, memo, status);
+			System.out.println("AppointmentController confirmReservation() result ->"+result);
+			return "redirect:/admin/reservation";
+		}
+				
 	}
 
 	

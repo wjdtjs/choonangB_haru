@@ -89,7 +89,7 @@ th:first-child, td:first-child {
 		<!-- header -->
 		<div class="haru-user-topbar">
 			<div class="topbar-title">
-				<i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
+				<i class="fa-solid fa-chevron-left" onclick="location.href='/user/detailPet?petno='+${pet.petno}"></i>
 				몸무게
 				<div style="width:45px"></div>
 			</div>

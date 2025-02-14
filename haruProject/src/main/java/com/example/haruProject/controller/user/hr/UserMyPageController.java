@@ -70,17 +70,19 @@ public class UserMyPageController {
 	 * @return
 	 */
 	@GetMapping("/user/editMyinfo")
-	public String editMyinfoView(HttpServletRequest request, Model model) {
+	public String editMyinfoView(HttpServletRequest request, Model model,
+								@RequestParam(value = "edit_true", required = true, defaultValue = "true") Boolean editTrue) {
 		System.out.println("UserMyPageController editMyinfoView() start ,,,");
 		
 		int memno = SessionUtil.getNo(request);
 		
 		System.out.println("UserMyPageController editMyinfoView() memno-> "+memno);
+		System.out.println("UserMyPageController editMyinfoView() edit_true-> "+editTrue);
 		
 		Member member = ms.getMyinfo(memno);
 		
 		model.addAttribute("member", member);
-		model.addAttribute("edit_true", true);
+		model.addAttribute("edit_true", editTrue);
 		
 		return "user/editMyinfo";
 	}
@@ -188,9 +190,9 @@ public class UserMyPageController {
 		} else {
 			real_mem.setMpasswd(null);
 			redirectAttributes.addFlashAttribute("member", real_mem);
-			redirectAttributes.addFlashAttribute("edit_true", false);
+			// redirectAttributes.addFlashAttribute("edit_true", false);
 			System.out.println("비밀번호 불일치, 정보 수정 실패");				
-			return "redirect:/user/editMyinfo";
+			return "redirect:/user/editMyinfo?edit_true=false";
 		}
 		
 	}

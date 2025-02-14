@@ -256,10 +256,14 @@
 					b.RESNO, 
 					b.BOARD_TYPE_MCD, 
 					b.MEMNO, 
-					b.BGROUP, 
+					b.BGROUP,
+					b.ORDERNO,
+					b.PNO,
+					p.pimg_main,
 					mask_email(m.MEMAIL) memail 
 				FROM BOARD b 
-					JOIN MEMBER m ON b.MEMNO = m.MEMNO 
+					JOIN MEMBER m ON b.MEMNO = m.MEMNO
+					LEFT OUTER JOIN PRODUCT p ON p.pno = b.pno
 				WHERE b.BSTATUS_MCD = 100 AND b.MEMNO = #{si.type5}
 				<if test="si.type4 != 999"> 
 					AND b.BOARD_TYPE_MCD = #{si.type4} 

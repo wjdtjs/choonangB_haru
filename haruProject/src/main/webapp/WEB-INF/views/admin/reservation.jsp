@@ -98,8 +98,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	    	        date2 = $("#datepicker2").val();
 	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 	    			  		+',start_date: '+date1+',end_date: '+date2);
-	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			//alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   		//+',start_date: '+date1+',end_date: '+date2);
 	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
 	    			  		+'&start_date='+date1+'&end_date='+date2;
 	            }
@@ -147,8 +147,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	    	        date2 = $("#datepicker2").val();
 	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 	    			  		+',start_date: '+date1+',end_date: '+date2);
-	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			//alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   		//+',start_date: '+date1+',end_date: '+date2);
 	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
 	    			  		+'&start_date='+date1+'&end_date='+date2;
 	            }
@@ -167,7 +167,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 	// 예약 상세 페이지로 이동
 	function goToDetail(resno) {
-		alert("resno->"+resno);
+		//alert("resno->"+resno);
 		console.log("resno 값:", resno);
 	
 	    if (!resno) {
@@ -200,8 +200,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	            date2 = $("#datepicker2").val();
 			    console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 			    		+',start_date: '+date1+',end_date: '+date2);
-			    alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-			    		+',start_date: '+date1+',end_date: '+date2);
+			    //alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+			    		//+',start_date: '+date1+',end_date: '+date2);
 			    location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
 			    		+'&start_date='+date1+'&end_date='+date2;
 	    }
@@ -220,8 +220,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         date2 = $("#datepicker2").val();
 		console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 				+',start_date: '+date1+',end_date: '+date2);
-		alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-		  		+',start_date: '+date1+',end_date: '+date2);
+		//alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+		  		//+',start_date: '+date1+',end_date: '+date2);
 		location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
 		   		+'&start_date='+date1+'&end_date='+date2;
 	}

@@ -44,4 +44,6 @@ public class Board {
 	private String aname; 		//담당의 이름
 	private String bcd_content; //진료항목 대분류
 	private String mcd_content; //진료항목 중분류
+	
+	private String pimg_main;
 }

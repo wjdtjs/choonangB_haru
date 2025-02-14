@@ -61,11 +61,11 @@ input:focus {
 	border: none;
 }
 .review-info-div .js-review-title {
-	font-size: 18px;
+	font-size: 16px;
 }
 .js-writer-div {
 	color: #6F7173;
-	font-size: 0.9rem;
+	font-size: 0.8rem;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -78,6 +78,12 @@ input:focus {
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
+}
+
+.review-img {
+	width: 3rem;
+	height: 3rem;
+	margin-right: 12px;
 }
 
 </style>
@@ -106,11 +112,25 @@ input:focus {
 		
 		/**	
 		 * 상세페이지 이동
+		 * 상품후기면 상품후기로, 진료수술 후기면 진료수술 후기로
 		 */
-		function goDetail(bno) {
+		function goDetail(bno, mcd, event) {
 			console.log(bno);
+			console.log(mcd);
 			
-			location.href="/user/details-review?bno="+bno;
+			if (mcd == 300) {
+				let parentDiv = event.currentTarget; // 클릭된 div
+		        let orderno = parentDiv.dataset.orderno;
+		        let pno = parentDiv.dataset.pno;
+		        
+				alert("orderno : "+orderno+"pno : "+pno);
+				location.href="/user/productReview?orderno="+orderno+"&pno="+pno;
+				// location.href="/user/"
+			} else {
+				alert("bno : "+bno);
+				location.href="/user/details-review?bno="+bno;				
+			}
+			
 		}
 		
 		
@@ -147,10 +167,23 @@ input:focus {
 						<!-- 후기가 존재할 때 -->
 						<div class="js-review-div">
 							<c:forEach var="rl" items="${rList }">
+								<input type="hidden" name="orderno"  value="${rl.orderno}">
+								<input type="hidden" name="pno" value="${rl.pno}">
 								<!-- 게시글 -->
 								<c:if test="${rl.btitle ne null}">
-									<div class="review-info-div" onclick="goDetail(${rl.bno})">
-											<div class="js-review-title">${rl.btitle }</div>										
+									<div class="review-info-div" 
+										data-orderno="${rl.orderno}" 
+     									data-pno="${rl.pno}" 
+     									onclick="goDetail(${rl.bno}, ${rl.board_type_mcd}, event)">
+										<!-- 상품후기면 이미지 보이게 하기 -->
+										<div style="display: flex;">
+											<c:if test="${rl.pimg_main ne null}">
+												<img class="review-img" alt="prodictimg" src="${rl.pimg_main }">
+											</c:if>
+											<div class="js-review-title">
+												${rl.btitle}
+											</div>																				
+										</div>
 										<div class="js-writer-div" style="display: flex;">
 											<span class="js-review-regdate" style="margin-left: auto;"><fmt:formatDate value="${rl.reg_date }" pattern="yyyy-MM-dd"/></span>
 										</div>

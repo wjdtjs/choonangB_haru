@@ -148,7 +148,8 @@ public class UserPetController {
 	/*
 	 * 사용자 동물 상세 페이지 뷰
 	 * 
-	 */	
+	 */
+	private final UserPetService us;
 	@GetMapping("/user/detailPet")
 	public String detailPetView(@RequestParam(value = "petno", required = true) int petno, Model model) throws ParseException {
 		log.info("detailPet view start ,,,");
@@ -161,7 +162,20 @@ public class UserPetController {
 		
 		// 동물 체중 정보 불러오기
 		List<Weight> wList = new ArrayList<>();
-		wList = ps.getPetWeightList(petno);
+		wList = us.getPetWeightList(petno, 1, 5);
+		
+		List<String> labels = new ArrayList<>();
+		List<String> weight = new ArrayList<>();
+		
+		for(int i = wList.size()-1; i>=0; i--) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+			String strNowDate = simpleDateFormat.format(wList.get(i).getReg_date()); 
+
+			labels.add(strNowDate);
+			weight.add(wList.get(i).getPetweight());
+		}
+		System.out.println("labels========> "+labels);
+		System.out.println("weight========> "+weight);
 		
 		// 진료 날짜 형태 전처리	    
 	    SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy.MM.dd");  // 변환할 형식
@@ -201,7 +215,8 @@ public class UserPetController {
 		model.addAttribute("pet", pet);
 		model.addAttribute("wList", wList);
 		model.addAttribute("aList", aList);
-		
+		model.addAttribute("labels", labels);
+		model.addAttribute("weight", weight);
 		
 		return "user/detailPet";
 	}

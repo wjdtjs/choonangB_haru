@@ -29,6 +29,15 @@ h4, h5 {
 }
 </style>
 
+<script>
+    window.onbeforeunload = function (event) {
+        event.preventDefault();
+        event.returnValue = ""; // 대부분의 최신 브라우저에서는 빈 문자열만 허용됨
+    };
+</script>
+
+
+
 <body>
 
 <div class="haru-user-container">

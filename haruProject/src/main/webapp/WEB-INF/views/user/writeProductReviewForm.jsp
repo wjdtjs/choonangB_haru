@@ -80,8 +80,8 @@ button {
 		<div class="haru-user-topbar">
 			<div class="topbar-title">
 				<i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
-				후기작성
-				<div style="width:50px">
+				후기 작성
+				<div style="max-width: 45px;">
 					<button type="submit" form="add_prvw">완료</button>
 				</div>
 			</div>
@@ -93,9 +93,9 @@ button {
 				<div class="purchase-product-info">
 					<img alt="prodictimg" src="${product.pimg_main }">
 					<div class="productInfo">
-						<div>${product.pbrand }</div>
-						<div>${product.pname }</div>
-						<div>${product.oquantity }개 / ${product.pprice }</div>
+						<div style="font-size: 12px;">${product.pbrand }</div>
+						<div style="font-size: 14px;">${product.pname }</div>
+						<div style="font-size: 12px;">${product.oquantity }개 / <fmt:formatNumber value="${product.pprice}" pattern="#,###" />원</div>
 					</div>
 				</div>
 				<hr>
@@ -116,7 +116,7 @@ button {
 						<div class="content">
 						    <div class="title">후기</div>
 						    <div style="margin-top: 1rem;">
-								<textarea placeholder="후기를 작성하세요" name="bcontents"></textarea>	
+								<textarea placeholder="후기를 작성하세요" name="bcontents" style="font-family: 'Noto Sans KR', serif;"></textarea>	
 						    </div>
 						</div>
 					</form>

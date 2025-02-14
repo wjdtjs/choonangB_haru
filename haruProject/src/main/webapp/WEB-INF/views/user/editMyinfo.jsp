@@ -91,30 +91,36 @@
 			<p>이메일</p>
 			<input type="email" value="${member.memail }" name="memail" readonly>
 			
-			<!-- 비밀번호 -->
-			<div class="hr-pw">
-				<p>비밀번호&nbsp;<span style="color: red;">*</span></p>
-				<div class="pw-container">
-					<input id="b-pw" type="password" name="re_mpasswd" style="width: 230px; border: none; height: auto; margin: auto 0;" required>
-					<button id="pw-change-btn" type="button">비밀번호 변경</button>				
+			<!-- 카카오 로그인은 이름, 이메일만 보이게 -->
+			<c:if test="${member.mid eq null}">
+				<!-- 비밀번호 -->
+				<div class="hr-pw">
+					<p>비밀번호&nbsp;<span style="color: red;">*</span></p>
+					<div class="pw-container">
+						<input id="b-pw" type="password" name="re_mpasswd" style="width: 230px; border: none; height: auto; margin: auto 0;" required>
+						<button id="pw-change-btn" type="button">비밀번호 변경</button>				
+					</div>
+					
+					<div class="pw-change" style="display: none;">
+						<p>새로운 비밀번호</p>
+						<input type="password" class="update-mpasswd" name="mpasswd">
+						<p>비밀번호 확인</p>
+						<input type="password" class="mpasswd2">
+					</div>				
 				</div>
 				
-				<div class="pw-change" style="display: none;">
-					<p>새로운 비밀번호</p>
-					<input type="password" class="update-mpasswd" name="mpasswd">
-					<p>비밀번호 확인</p>
-					<input type="password" class="mpasswd2">
-				</div>				
-			</div>
+				<!-- 전화번호 -->
+				<p>전화번호</p>
+				<input type="tel" value="${member.mtel}" class="update-mtel" name="mtel">	
 			
-			<!-- 전화번호 -->
-			<p>전화번호</p>
-			<input type="tel" value="${member.mtel}" class="update-mtel" name="mtel">
-		
+			</c:if>
 				
 		
 			<div>
-				<button class="user-btn-primary" style="bottom: 140px !important;" type="button" onclick="updateMember()">수정하기</button>
+				<!-- 카카오 로그인은 수정하기 버튼 말고 탈퇴하기 버튼만 보이게 -->
+				<c:if test="${member.mid eq null}">
+					<button class="user-btn-primary" style="bottom: 140px !important;" type="button" onclick="updateMember()">수정하기</button>				
+				</c:if>
 				<button class="info-del-btn" onclick="deleteMember()">탈퇴하기</button>
 			</div>
 		
@@ -127,7 +133,7 @@
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(() => {
 		var editTrue = ${edit_true};
 		console.log("editTrue ->",editTrue);
 		
@@ -161,6 +167,7 @@
 		let result = true;
 		
 		let name = $('#updateMyinfoForm .update-mname').val();
+		let re_passwd = $('#updateMyinfoForm #b-pw').val();
 		let passwd = $('#updateMyinfoForm .update-mpasswd').val();
 		let passwd2 = $('#updateMyinfoForm .mpasswd2').val();
 		let tel = $('#updateMyinfoForm .update-mtel').val();
@@ -169,8 +176,9 @@
 		
 		// 비밀번호 변경창이 보일 때만 검사
 	    if ($(".pw-change").is(":visible")) {
+	    	console.log(passwd, passwd2);
 	        if(!checkRegex(passwd, '^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,}$')) {
-	            str += '비밀번호는 영문, 숫자, 특수문자를 최소 1개씩 조합하여 8자 이상\n';
+	            str += '비밀번호는 영문, 숫자, 특수문자를 최소 1개씩 조합하여 8자 이상\n\n';
 	            result = false;
 	        }
 	        if(passwd !== passwd2) {
