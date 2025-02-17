@@ -217,6 +217,14 @@ public class AppointmentServiceImp implements AppointmentService {
 		
 		return wait_res;
 	}
+	@Override
+	public List<Appointment> getDayAppointment() {
+		System.out.println("AppointmentServiceImp getDayAppointment() start ,,,");
+		
+		List<Appointment> aList = ad.getDayAppointment();
+		
+		return aList;
+	}
 	
 
 	

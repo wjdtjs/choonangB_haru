@@ -198,33 +198,6 @@ th:first-child, td:first-child {
 }
 </style>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		/* 예약 내역 버튼 토글 */
-	    $(".pet-res-content").click(function() {
-	        // 클릭한 버튼과 같은 부모 `.pet-res-content` 내부의 `.res-re`를 토글
-	        $(this).closest(".pet-res-content").next(".res-re").slideToggle();
-	       
-	        var tr = $(this).children('.page-btn').css('transform');
-            var values = tr.split('(')[1].split(')')[0].split(',');
-            var a = values[0];
-            var b = values[1];
-            var c = values[2];
-            var d = values[3];
-
-            var scale = Math.sqrt(a*a + b*b);
-            var sin = b/scale;
-            var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
-            
-            var cur = angle + 180;
-            
-            $(this).children('.page-btn').css('transform', `rotate(\${cur}deg)`);
-	    });
-	});
-	
-
-</script>
-
 <body>
 
 	<div class="haru-user-container">
@@ -287,7 +260,8 @@ th:first-child, td:first-child {
 							<button class="weight-more-btn">더보기<i class="fa-solid fa-chevron-right" style="color: #6F7173; margin-left: 4px;"></i></button>
 						</div>
 					</div>
-				<div class="weight-table">
+				<canvas id="pet-weight-chart"></canvas>
+				<%-- <div class="weight-table">
 					<table>
 						<colgroup>
 							<col width="50%">
@@ -307,7 +281,7 @@ th:first-child, td:first-child {
 						</c:forEach>
 					</table>
 					
-				</div>
+				</div> --%>
 				
 				<!-- 진료 내역 -->
 				<div class="graph-title">
@@ -355,10 +329,10 @@ th:first-child, td:first-child {
 							<!-- 리뷰 -->
 							<c:choose>
 								<c:when test="${res.resno ne null and res.resno eq res.bresno }">
-									<button class="res-btn-b" onclick="location.href='/user/details-review?bno=${res.bno}'">리뷰 보러가기</button>
+									<button class="res-btn-b" onclick="location.href='/user/details-review?bno='+${res.bno}">리뷰 보러가기</button>
 								</c:when>
 								<c:otherwise>
-								 	<button class="res-btn-b" onclick="location.href='/user/write-review?resno=${res.resno}'">리뷰 작성하기</button>							
+								 	<button class="res-btn-b" onclick="location.href='/user/write-review?resno='+${res.resno}">리뷰 작성하기</button>							
 								</c:otherwise>
 							</c:choose>
 							
@@ -390,4 +364,92 @@ th:first-child, td:first-child {
 	</div>
 
 </body>
+
+
+<script type="text/javascript">
+	
+	// JSP에서 가져온 데이터를 JavaScript 배열로 변환
+    var arr = '${labels}';  // X축 (날짜)
+    var labels = arr.replace(/\[|\]/g, '').split(', ').map(item => item.trim());
+    var dataValues = ${weight};  // Y축 (값)
+    const ctx = document.getElementById('pet-weight-chart').getContext('2d');
+
+	
+	/* 몸무게 차트 */
+	function buildChart(ctx) {
+		new Chart(ctx, {
+            type: 'line',  // 라인 차트
+            data: {
+                labels: labels,  // X축 (날짜)
+                datasets: [{
+                    label: '몸무게',
+                    data: dataValues,  // Y축 데이터
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1 // 곡선 효과
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    x: {  // X축 설정
+                        title: {
+                            display: true,
+                            text: '날짜'
+                        }
+                    },
+                    y: {  // Y축 설정
+                        title: {
+                            display: true,
+                            text: '값'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+	}
+	
+	$(document).ready(() => {
+		
+		// 차트 생성
+        const canvas = document.getElementById('pet-weight-chart');
+	    if (canvas) {
+	        const ctx = canvas.getContext('2d');
+	        buildChart(ctx);
+	    }
+	    
+		/* 예약 내역 버튼 토글 */
+	    $(".pet-res-content").click(function() {
+	        // 클릭한 버튼과 같은 부모 `.pet-res-content` 내부의 `.res-re`를 토글
+	        $(this).closest(".pet-res-content").next(".res-re").slideToggle();
+	       
+	        var tr = $(this).children('.page-btn').css('transform');
+            var values = tr.split('(')[1].split(')')[0].split(',');
+            var a = values[0];
+            var b = values[1];
+            var c = values[2];
+            var d = values[3];
+
+            var scale = Math.sqrt(a*a + b*b);
+            var sin = b/scale;
+            var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+            
+            var cur = angle + 180;
+            
+            $(this).children('.page-btn').css('transform', `rotate(\${cur}deg)`);
+	    });
+	});
+	
+
+</script>
+
 </html>

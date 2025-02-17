@@ -331,6 +331,21 @@ public class AppointmentDaoImp implements AppointmentDao {
 		return wait_res;
 	}
 
+	@Override
+	public List<Appointment> getDayAppointment() {
+		System.out.println("AppointmentDaoImp getDayAppointment() start ,,,");
+		
+		List<Appointment> aList = new ArrayList<>();
+		
+		try {
+			aList = session.selectList("HR_getDayAppointment");
+		} catch (Exception e) {
+			log.error("getDayAppointment() error ->", e);
+		}
+		
+		return aList;
+	}
+
 	
 
 	

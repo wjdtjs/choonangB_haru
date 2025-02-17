@@ -1,18 +1,16 @@
 package com.example.haruProject.controller.admin;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.haruProject.dto.Appointment;
-import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Order;
-import com.example.haruProject.service.hj.AdminService;
 import com.example.haruProject.service.hj.OrderService;
 import com.example.haruProject.service.hr.AppointmentService;
 import com.example.haruProject.service.js.ShopService;
@@ -24,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class AdminViewController {
 	
 	private final ShopService ss;
-	private final AdminService ads;
 	
 	//TODO: 비밀번호 관리 뷰 만들기
 	//TODO: 탈퇴 뷰 만들기
@@ -70,11 +67,28 @@ public class AdminViewController {
 		// 픽업 대기
 		int wait_pur = os.getWaitPur();
 		
+		// 그래프
+		List<Appointment> appList = as.getDayAppointment();
+		List<String> labels = new ArrayList<>();
+		List<String> appointments = new ArrayList<>();
+		
+		for(int i = appList.size()-1; i>=0; i--) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+			String strNowDate = simpleDateFormat.format(appList.get(i).getRdate()); 
+
+			labels.add(strNowDate);
+			appointments.add(String.valueOf(appList.get(i).getAcount()));
+		}
+		System.out.println("labels========> "+labels);
+		System.out.println("appointments========> "+appointments);
+		
 		model.addAttribute("sales", sList);
 		model.addAttribute("aList", aList);
 		model.addAttribute("today_res", today_res);
 		model.addAttribute("wait_res", wait_res);
 		model.addAttribute("wait_pur", wait_pur);
+		model.addAttribute("labels", labels);
+		model.addAttribute("appointments", appointments);
 		
 		return "admin/main";
 	}
@@ -84,14 +98,7 @@ public class AdminViewController {
 	 * @return
 	 */
 	@GetMapping("/admin/doctor")
-	public String docView(Model model) {
-		List<Map<String, Object>> bcdmcdList = ads.acommonList();
-		List<Map<String, Object>> statusList = bcdmcdList.stream()
-			    .filter(map -> "200".equals(String.valueOf(map.get("BCD"))))
-			    .collect(Collectors.toList());
-
-		model.addAttribute("statusList",statusList);
-		
+	public String docView() {
 		return "admin/doctor";
 	}
 	

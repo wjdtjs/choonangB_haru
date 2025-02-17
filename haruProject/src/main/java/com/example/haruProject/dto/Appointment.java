@@ -56,4 +56,6 @@ public class Appointment {
 	private int mtitle_mcd;
 	private String rrdate;
 	private String mitem;		// 대분류 content
+	
+	private int acount; 		// 예약 확정 수
 }

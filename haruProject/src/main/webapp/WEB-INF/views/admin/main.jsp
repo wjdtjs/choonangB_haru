@@ -26,11 +26,13 @@
 	font-size: 1rem;
 	margin: auto 0;
 	height: 20px;
+	width: 100px;
 }
 
 .hr-con-card {
-    margin: 12px auto;
+    margin: 16px;
     width: 400px;
+    margin-left: 100px;
 }
 
 p {
@@ -46,30 +48,20 @@ p {
 	font-size: 12px;
 }
 
-</style>
-
-<script type="text/javascript">
-	
-// 예약 상세 페이지로 이동
-function goToDetail(resno) {
-	// alert("resno->"+resno);
-	console.log("resno 값:", resno);
-
-    if (!resno) {
-        alert("resno 값이 비어 있습니다.");
-        return;
-    }
-    location.href = '/admin/detailReservation?resno='+resno;
+.row {
+	display: flex;
+	width: auto;
+	align-content: center;
+	margin-left: 12px;
 }
 
-// detail페이지로 이동
-$(document).on('click','#dataTable .saleTable tr',function(){
-	const orderno = $(this).find('td:nth-child(1)').text();
-	console.log('클릭된 행의 orderno:' + orderno);
-	
-	window.location.href = `<%=request.getContextPath()%>/admin/detailShop?orderno=\${orderno}`;
-});
-</script>
+#main-chart {
+	width: 600px;
+	height: auto;
+	margin: 0 12px;
+}
+
+</style>
 
 <body id="page-top"> 
 
@@ -91,7 +83,7 @@ $(document).on('click','#dataTable .saleTable tr',function(){
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid" style="/* display: flex; */">
+                <div class="container-fluid" style="padding: 0 100px;">
 
                     <!-- Page Heading -->
                    <!--  <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -100,16 +92,21 @@ $(document).on('click','#dataTable .saleTable tr',function(){
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div> -->
 
-					<div style="display: flex; width: 1400px; margin: 0;">
+					<div style="display: flex; width: 1400px; margin: 0 120px;">
+					
+						<!-- 그래프 -->
+						<div>
+							<canvas id="main-chart"></canvas>
+						</div>
 					
 	                    <!-- Content Row -->
 	                    <div class="row" style="">
 	
 	                        <!-- Earnings (Monthly) Card Example -->
 	                        <div class="hr-con-card">
-	                            <div class="card border-left-primary shadow py-2" style="height: 50px;">
+	                            <div class="card border-left-primary shadow py-2" style="height: 50px; cursor: pointer;" onclick="goToApp()">
 	                                <div class="card-body">
-	                                    <div class="row no-gutters align-items-center hr-card">
+	                                    <div class="row no-gutters align-items-center hr-card" style="display: flex;">
 	                                        <div class="col mr-2" style="display: flex;">
 	                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1 hr-card-text">
 	                                                오늘의 예약
@@ -126,9 +123,9 @@ $(document).on('click','#dataTable .saleTable tr',function(){
 	
 	                        <!-- Earnings (Monthly) Card Example -->
 	                        <div class="hr-con-card">
-	                            <div class="card border-left-success shadow py-2" style="height: 50px;">
+	                            <div class="card border-left-success shadow py-2" style="height: 50px; cursor: pointer;" onclick="location.href='/admin/reservation?type4=100&type5=100&search1=&start_date=&end_date='">
 	                                <div class="card-body">
-	                                    <div class="row no-gutters align-items-center hr-card">
+	                                    <div class="row no-gutters align-items-center hr-card" style="display: flex;">
 	                                        <div class="col mr-2" style="display: flex;">
 	                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1 hr-card-text">
 	                                                대기중 예약
@@ -145,9 +142,9 @@ $(document).on('click','#dataTable .saleTable tr',function(){
 	
 	                         <!-- Earnings (Monthly) Card Example -->
 	                        <div class="hr-con-card">
-	                            <div class="card border-left-info shadow py-2" style="height: 50px;">
+	                            <div class="card border-left-info shadow py-2" style="height: 50px; cursor: pointer;" onclick="location.href='/admin/shop?type4=200&type5=1&search1='">
 	                                <div class="card-body">
-	                                    <div class="row no-gutters align-items-center hr-card">
+	                                    <div class="row no-gutters align-items-center hr-card" style="display: flex;">
 	                                        <div class="col mr-2" style="display: flex;">
 	                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1 hr-card-text" style="color: #36b9cc;">
 	                                                픽업 대기
@@ -189,7 +186,7 @@ $(document).on('click','#dataTable .saleTable tr',function(){
                     </div>
                     
                     
-                    <div style="display: flex; width: 1600px;margin: 0 auto;">
+                    <div style="display: flex; width: 1600px;margin: 24px auto;">
                     
 	                    <div style="margin: 12px 16px;">
 	                    	<div>
@@ -280,8 +277,119 @@ $(document).on('click','#dataTable .saleTable tr',function(){
 
 
     <!-- Page level custom scripts -->
-    <script src="/js/demo/chart-area-demo.js"></script>
-    <script src="/js/demo/chart-pie-demo.js"></script>
+<!--     <script src="/js/demo/chart-area-demo.js"></script>
+    <script src="/js/demo/chart-pie-demo.js"></script> -->
+
+<script type="text/javascript">
+
+	function goToApp() {
+		let today = new Date();   
+
+		let year = today.getFullYear(); // 년도
+		let month = today.getMonth() + 1;  // 월
+		let date = today.getDate();  // 날짜
+		let day = today.getDay();  // 요일
+
+		const nToday = (year + '-' + month + '-' + date);
+		
+		console.log("today : ",nToday);
+		
+		location.href=`/admin/reservation?type4=200&type5=100&search1=&start_date=\${nToday}&end_date=\${nToday}`;
+	}
+	
+		
+	//예약 상세 페이지로 이동
+	function goToDetail(resno) {
+		// alert("resno->"+resno);
+		console.log("resno 값:", resno);
+	
+	    if (!resno) {
+	        alert("resno 값이 비어 있습니다.");
+	        return;
+	    }
+	    location.href = '/admin/detailReservation?resno='+resno;
+	}
+	
+	// detail페이지로 이동
+	$(document).on('click','#dataTable .saleTable tr',function(){
+		const orderno = $(this).find('td:nth-child(1)').text();
+		console.log('클릭된 행의 orderno:' + orderno);
+		
+		window.location.href = `<%=request.getContextPath()%>/admin/detailShop?orderno=\${orderno}`;
+	});
+	
+
+	
+	
+	
+	//JSP에서 가져온 데이터를 JavaScript 배열로 변환
+	var arr = '${labels}';  // X축 (날짜)
+	var labels = arr.replace(/\[|\]/g, '').split(', ').map(item => item.trim());
+	var dataValues = ${appointments};  // Y축 (값)
+	const ctx = document.getElementById('main-chart').getContext('2d');
+	
+	
+	/* 몸무게 차트 */
+	function buildChart(ctx) {
+		new Chart(ctx, {
+	      type: 'line',  // 라인 차트
+	      data: {
+	          labels: labels,  // X축 (날짜)
+	          datasets: [{
+	              label: '확정 예약 수',
+	              data: dataValues,  // Y축 데이터
+	              borderColor: 'rgba(75, 192, 192, 1)',
+	              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+	              borderWidth: 2,
+	              fill: true,
+	              tension: 0.1 // 곡선 효과
+	          }]
+	      },
+	      options: {
+	          responsive: false,
+	          plugins: {
+	              legend: {
+	                  display: true,
+	                  position: 'top'
+	              }
+	          },
+	          scales: {
+	        	  xAxes: [{  // X축 설정
+	                  title: {
+	                      display: true,
+	                      text: '날짜'
+	                  }
+	              }],
+	              yAxes: [{  // Y축 설정
+	                  ticks: {
+	                      stepSize: 1,  // 눈금 단위를 1로 설정 (1, 2, 3, 4, ...)
+	              		  min: 0, 
+		                  max: 5 // Y축 최댓값을 5의 배수로 설정
+	                    },
+	                  beginAtZero: true,
+	                  title: {
+	                      display: true,
+	                      text: '값'
+	                  }
+	              }]
+	          }
+	      }
+	  });
+	}
+	
+	$(document).ready(() => {
+		// 차트 생성
+	    const canvas = document.getElementById('main-chart');
+	    if (canvas) {
+	        const ctx = canvas.getContext('2d');
+	        buildChart(ctx);
+	    }
+	    
+	});
+	
+	
+	</script>
 
 </body>
+
 </html>

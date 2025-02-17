@@ -288,7 +288,7 @@
 		            JOIN ADMIN d ON a.ANO = d.ANO
 		            JOIN MEDICAL_ITEM t ON a.MCODE = t.MCODE
 		            JOIN COMMON c1 ON c1.BCD = a.RSTATUS_BCD and c1.MCD = a.RSTATUS_MCD			<!-- 예약 상태 -->
-		            JOIN COMMON c2 ON c2.BCD = t.MTITLE_BCD and c2.MCD = t.MTITLE_MCD			<!-- 진료 항목 -->
+ 		            JOIN COMMON c2 ON c2.BCD = t.MTITLE_BCD and c2.MCD = t.MTITLE_MCD			<!-- 진료 항목 -->
 		            JOIN COMMON c3 ON c3.BCD = p.PETSPECIES_BCD and c3.MCD = p.PETSPECIES_MCD	<!-- 종 -->
 		            JOIN COMMON c4 ON c4.BCD = p.PETGENDER_BCD and c4.MCD = p.PETGENDER_MCD		<!-- 성별 -->
 		        WHERE rstatus_mcd = 100
@@ -307,6 +307,23 @@
 		SELECT count(*)
 		FROM APPOINTMENT
 		WHERE rstatus_mcd = 100
+	</select>
+	
+	<select id="HR_getDayAppointment" resultType="Appointment">
+		<![CDATA[
+		WITH date_series AS (
+		    SELECT TRUNC(SYSDATE) - 2 + LEVEL - 1 AS RDATE
+		    FROM DUAL
+		    CONNECT BY LEVEL <= 7  -- 오늘을 포함하여 앞뒤 2일 총 5일 생성
+		)
+		SELECT d.RDATE, 
+		       COALESCE(COUNT(a.RDATE), 0) AS ACOUNT
+		FROM date_series d
+		LEFT JOIN APPOINTMENT a 
+		    ON d.RDATE = a.RDATE AND a.RSTATUS_MCD = 200
+		GROUP BY d.RDATE
+		ORDER BY d.RDATE asc
+		]]>
 	</select>
 	
 </mapper>

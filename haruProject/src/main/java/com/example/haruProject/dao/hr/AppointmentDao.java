@@ -40,4 +40,5 @@ public interface AppointmentDao {
 	List<Appointment> getMainAList();
 	int getTodayRes();
 	int getWaitRes();
+	List<Appointment> getDayAppointment();
 }
