@@ -208,16 +208,13 @@ public class UserPurchaseController {
 	 */
 	@GetMapping("/user/purchaseResult")
 	public String purchaseResultView(@RequestParam(value = "orderno", required = true) int orderno,
-									 Model model,
-									 HttpSecurity http) throws Exception {
+									 Model model) throws Exception {
 		System.out.println("UserPurchaseController purchaseResultView() start ,,,");
 		System.out.println("UserPurchaseController purchaseResultView() orderno ->"+orderno);
 		
 		model.addAttribute("orderno", orderno);
 		// 카카오페이 결제하고 나서 결제할 때 tid 안 뜨게 세션에 있는 tid를 null로 설정
 		SessionUtil.addAttribute("tid", null);
-		
-		http.headers().cacheControl().disable();
 		
 		return "user/purchaseResult";
 	}
