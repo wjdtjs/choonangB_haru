@@ -16,7 +16,8 @@
 
 </head>
 
-<script type="text/javascript">// 비활동 회원 
+<script type="text/javascript">
+	//detailAdmin으로 이동
 	$(document).on('click','#dataTable .adminTable tr',function(){
 		
 		const ano = $(this).find('td:nth-child(1)').text();
@@ -25,8 +26,23 @@
 		
 		window.location.href = `<%=request.getContextPath()%>/admin/detailAdmin?ano=\${ano}`;
 	});
-
+	
+	// 비활동 관리자
+	function applyInactiveStyles(){
+		const rows = document.querySelectorAll("#dataTable .adminTable tr");
+		
+		rows.forEach((row)=>{
+			const statusCell = row.querySelector("td:nth-child(5)");
+			console.log("statusCell",statusCell);
+			if (statusCell && statusCell.textContent.trim() === "비활동") {
+	            row.style.backgroundColor = "#f2f2f2"; // 원하는 배경색 설정
+	        }
+		});
+	};
+	
+	// AJAX
 	let search1 = "";
+	let search2 = "";
 	
 	$(async ()=>{
 		if(${result==0}) {
@@ -34,6 +50,15 @@
 		}
 		
 		await listShow('1');
+		
+		// 필터
+		$('.haru-show-select').change(function() {
+		    let value = $(this).val();
+			if(value == "0") {
+				search2 = null;
+			} else search2 = value;
+			listShow('1', search1, search2);
+		});
 		
 		//검색
 		$('.tb-search-input').keyup(async function() {
@@ -47,14 +72,15 @@
 	/**
 	 * 리스트 (ajax)
 	*/
-	async function listShow(pageNum, search1) {
+	async function listShow(pageNum, search1, search2) {
 		console.log(search1)
 		
 		$.ajax({
 			url: "<%=request.getContextPath()%>/api/admin-list",
 			data: {
 				pageNum: pageNum,
-				search1: search1
+				search1: search1,
+				search2: search2,
 			},
 			dataType: 'json',
 			success: function(data) {
@@ -71,7 +97,6 @@
 							<tr class="haru-table-click">
 		                        <td>\${this.ano}</a></td>
 		                        <td>\${this.aname}</td>
-		                        <td>\${this.aemail}</td>
 		                        <td>\${this.level_content}</td>
 		                        <td>\${this.hiredate.split('T')[0]}</td>
 		                        <td>\${this.status_content}</td>
@@ -93,6 +118,9 @@
 				$('.haru-pagination').html(str2);
 				
 				$(`#pageNum\${pagination.currentPage}`).addClass('active');
+				
+				// Ajax로 데이터 로드 후 배경색 적용
+				applyInactiveStyles();
 				
 			},
 			error: function(e) {
@@ -116,7 +144,14 @@
 		
 	}
 	
-	
+	// 관리자 등록결과 alert
+	 window.onload = function() {
+         let message = "<c:out value='${message}' />";
+         if (message) {
+             alert(message);
+         }
+     };
+     
 </script>
 
 <body id="page-top"> 
@@ -159,6 +194,12 @@
 	                            	</div>                            
 	                            </div>
 	                            <div class="haru-right">
+	                            	<select class="haru-show-select" name="isshow">
+	                            		<option value="0">전체</option>
+	                            		<c:forEach var="as" items="${statusList }">
+	                            			<option value="${as.MCD }">${as.CONTENT }</option>
+	                            		</c:forEach>
+	                            	</select>
 	                            	<c:if test="${sessionScope.role eq 100 }">
 		                           		<button class="btn-primary haru-tb-btn admin_modal" id="modal_open_btn">관리자 추가</button>                            	
 	                            	</c:if>
@@ -169,10 +210,9 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <colgroup>
-                                    	<col width="10%" />
-                                    	<col width="20%" />
+                                    	<col width="15%" />
                                     	<col width="30%" />
-                                    	<col width="10%" />
+                                    	<col width="25%" />
                                     	<col width="20%" />
                                     	<col width="10%" />
                                     </colgroup>
@@ -180,7 +220,6 @@
                                         <tr>
                                             <th>사번</th>
                                             <th>이름</th>
-                                            <th>이메일</th>
                                             <th>ROLE</th>
                                             <th>입사일</th>
                                             <th>상태</th>

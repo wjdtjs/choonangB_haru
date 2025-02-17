@@ -27,8 +27,8 @@ public class ScheduleServiceImpl implements ScheduleService{
 	}
 
 	@Override
-	public List<Schedule> getRegScheduleList(String current) {
-		List<Schedule> reg_schedules = sd.getRegScheduleList(current);
+	public List<Schedule> getRegScheduleList(String current, String currentEnd) {
+		List<Schedule> reg_schedules = sd.getRegScheduleList(current, currentEnd);
 		return reg_schedules;
 	}
 

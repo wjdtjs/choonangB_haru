@@ -229,8 +229,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 			<div class="notice">
 				<div class="rolling">
 					<c:forEach var="notice" items="${notices}">
-						<li>
-							<a href="">${notice.ntitle}</a>
+						<li onclick="location.href='/user/details-notice?nno=${notice.nno}'">
+							<a>${notice.ntitle}</a>
 						</li>
 					</c:forEach>
 				</div>
@@ -398,6 +398,15 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
         },
         grabCursor: true,  // 마우스 커서 손모양
         touchRatio: 1,  // 터치 민감도
-    })
+    });
+	
+	/**	
+	 * 상세페이지 이동
+	 */
+	function goDetail(pno) {
+		console.log(pno);
+		
+		location.href="/user/details-product?pno="+pno;
+	}
 </script>
 </html>

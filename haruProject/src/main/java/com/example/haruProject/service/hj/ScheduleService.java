@@ -12,7 +12,7 @@ import com.example.haruProject.dto.Schedule;
 public interface ScheduleService {
 
 	List<Schedule> 			getScheduleList(String current);
-	List<Schedule> 			getRegScheduleList(String current);
+	List<Schedule> 			getRegScheduleList(String current, String currentEnd);
 	List<Common> 			getSchtypes();
 	Date					getChangedOff(Schedule schedule);
 	List<String> 			getDocOffdays(Schedule schedule, String currentEnd);

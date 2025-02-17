@@ -1,6 +1,7 @@
 package com.example.haruProject.dao.hj;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Chart;
 import com.example.haruProject.dto.ChartDetail;
+import com.example.haruProject.dto.Pet;
+import com.example.haruProject.dto.Weight;
 
 import lombok.RequiredArgsConstructor;
 
@@ -176,6 +179,56 @@ public class ConsultationDaoImpl implements ConsultationDao {
 			// TODO: handle exception
 		}
 		
+	}
+
+	@Override
+	public int updatePetHeight(Pet pet) {
+		System.out.println("Consultation updatePetheight pet-> "+pet);
+		int result = 0;
+		try {
+			result = session.update("HJ_UpdatePetHight",pet);
+		} catch (Exception e) {
+			System.out.println("ConsultationDao updatePetHeight error->"+e.getMessage());
+		}
+		return result;
+	}
+
+	@Override
+	public Weight getPetWeight(int petno, int memno,Date rdate) {
+		Weight weight = null;
+		Map<String, Object> param = new HashMap<>();
+		param.put("petno", petno);
+		param.put("memno", memno);
+		param.put("rdate", rdate);
+		try {
+			weight = session.selectOne("HJ_getPetWeight", param);
+		} catch (Exception e) {
+			System.out.println("ConsultationDao getPetWeight error->"+e.getMessage());
+		}
+		return weight;
+	}
+
+	@Override
+	public int insertPetWeight(Weight weight) {
+		System.out.println("ConsultationDao insertPetWeight weight->"+weight);
+		int result = 0;
+		try {
+			result = session.insert("HJ_insertPetWeight",weight);
+		} catch (Exception e) {
+			System.out.println("ConsultationDao insertPetWeight error->"+e.getMessage());
+		}
+		return result;
+	}
+
+	@Override
+	public int updatePetWeight(Weight weight) {
+		int result = 0;
+		try {
+			result = session.update("HJ_updatePetweight",weight);
+		} catch (Exception e) {
+			System.out.println("ConsultationDao updatePetWeight error->"+e.getMessage());
+		}
+		return result;
 	}
 
 

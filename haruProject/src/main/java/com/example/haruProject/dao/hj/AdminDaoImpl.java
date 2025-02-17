@@ -22,6 +22,7 @@ public class AdminDaoImpl implements AdminDao {
 	public int getTotalCnt(SearchItem si) {
 		int totalCnt = 0;
 		System.out.println("AdminDao getTotalCnt Start...");
+		System.out.println("AdminDao getTotalCnt si->"+si);
 		
 		try {
 			totalCnt = session.selectOne("HJSelectTotalCnt",si);

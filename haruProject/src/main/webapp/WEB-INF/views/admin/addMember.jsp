@@ -35,7 +35,7 @@
 	        result = false;
 		}
 		
-	    if(!checkRegex(tel, '^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$')) {
+	    if(!checkRegex(tel, '^01([0|1|6|7|8|9])[0-9]{3,4}[0-9]{4}$')) {
 	    	str+='잘못된 핸드폰번호 입니다.\n';
 	        result = false;
 	    }
@@ -179,7 +179,7 @@ em {
 			        	</tr>
 			        	<tr>
 			        		<th>전화번호<em>*</em></th>	<td><input class="form-input" type="text" name="mtel" required="required" placeholder="-없이 입력"></td>
-			        		<th>비밀번호<em>*</em></th>	<td><input class="form-input" type="text" name="mpasswd" required="required" value="1234"></td>
+			        		<th>비밀번호<em>*</em></th>	<td><input class="form-input" type="password" name="mpasswd" required="required" value="1234" readonly="readonly"></td>
 			        									<td><input class="form-input" type="hidden" name="re_mpasswd" value="1234"></td>
 			        	</tr>
 			        	<tr>

@@ -42,10 +42,13 @@ public class ScheduleDaoImpl implements ScheduleDao {
 	
 	// 의사 정기 휴무
 	@Override
-	public List<Schedule> getRegScheduleList(String current) {
+	public List<Schedule> getRegScheduleList(String current,String currentEnd) {
 		List<Schedule> reg_schedules = new ArrayList<>();
+		Map<String, Object> param = new HashMap<>();
+		param.put("current", current);
+		param.put("currentEnd", currentEnd);
 		try {
-			reg_schedules = session.selectList("HJ_RegScheduleList" ,current);
+			reg_schedules = session.selectList("HJ_RegScheduleList" ,param);
 
 			System.out.println("ScheduleDao getRegScheduleList reg_schedules-> "+current);
 			System.out.println("ScheduleDao getRegScheduleList reg_schedules-> "+reg_schedules);

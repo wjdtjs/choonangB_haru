@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.Member;
@@ -92,7 +93,7 @@ public class MemberController {
 	}
 	
 	@PostMapping(value = "/admin/addMemberAction")
-	public String addMemberAction(Member member) {
+	public String addMemberAction(Member member,RedirectAttributes redirectAttributes) {
 		System.out.println("MemberController addMemberAction ...");
 		System.out.println("========= "+member);
 		
@@ -103,17 +104,38 @@ public class MemberController {
 		
 		member.setMpasswd(encodedPassword); //암호화된 패스워드 저장
 		
+		// 핸드폰번호 형식 변환
+		String tel = formatPhoneNumber(member.getMtel());
+		member.setMtel(tel);
+		
 		int result = ms.addMember(member);
 		
+		// 추가결과 -> jsp alert
+		if(result >0) {
+			redirectAttributes.addFlashAttribute("message", "회원 등록이 완료되었습니다.");
+		}else {
+			redirectAttributes.addFlashAttribute("message", "회원 등록에 실패했습니다.");
+		}
+				
 		return "redirect:members";
 	}
 	
 	@PostMapping(value = "/admin/updateMember")
-	public String updateMember(Member member, Model model) {
+	public String updateMember(Member member, Model model, RedirectAttributes redirectAttributes) {
 		System.out.println("MemberController updateMember ...");
 		System.out.println("MemberController updateMember member->"+member);
+		
+		// 핸드폰번호 형식 변환
+		String tel = formatPhoneNumber(member.getMtel());
+		member.setMtel(tel);
+		
 		int result = ms.updateMember(member);
-		System.out.println("MemberController updateMember result->"+result);
+		// 추가결과 -> jsp alert
+		if(result >0) {
+			redirectAttributes.addFlashAttribute("message", "회원 수정이 완료되었습니다.");
+		}else {
+			redirectAttributes.addFlashAttribute("message", "회원 수정에 실패했습니다.");
+		}
 		
 		return "redirect:/admin/members";
 		
@@ -134,5 +156,15 @@ public class MemberController {
 		return result;
 	}
 	
-
+	// 휴대폰번호 형식변환
+	private String formatPhoneNumber(String phone) {
+		phone = phone.replaceAll("\\D", ""); //숫자만 남기기
+		if(phone.length() == 11) {
+			return phone.replaceFirst("(\\d{3})(\\d{4})(\\d{4})", "$1-$2-$3");
+		}else if (phone.length() == 10) {
+			return phone.replaceFirst("(\\d{3})(\\d{3})(\\d{4})", "$1-$2-$3");
+		}
+		return phone; //형식이 맞지 않으면 그대로 리턴
+	}
+		
 }

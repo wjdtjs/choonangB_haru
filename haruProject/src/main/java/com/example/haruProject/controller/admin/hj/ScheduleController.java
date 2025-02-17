@@ -38,15 +38,16 @@ public class ScheduleController {
 											@RequestParam(value = "formattedDateEnd", required = false) String currentEnd
 											) {
 		System.out.println("ScheduleController getSchedule ....");
-		System.out.println("ScheduleController getSchedule current=->"+current);
-		System.out.println("ScheduleController getSchedule currentEnd=->"+currentEnd);
+		System.out.println("ScheduleController getSchedule current-> "+current);
+		System.out.println("ScheduleController getSchedule currentEnd-> "+currentStart);
+		System.out.println("ScheduleController getSchedule currentEnd-> "+currentEnd);
 		
 		List<Schedule> schedules = new ArrayList();
 		List<Schedule> reg_schedules = new ArrayList();
 		// 병원휴무와 개인휴무
 		schedules = ss.getScheduleList(current);
 		// 의사 정기 휴무
-		reg_schedules = ss.getRegScheduleList(currentEnd);
+		reg_schedules = ss.getRegScheduleList(currentStart,currentEnd);
 		
 		// 의사 정기휴무 정보 (ano,현재휴무,변경휴무)
 		for (int i = 0; i<reg_schedules.size();i++) {

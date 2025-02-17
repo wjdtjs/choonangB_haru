@@ -55,6 +55,13 @@
 		}
 	})
 	
+	// 관리자 등록결과 alert
+	 window.onload = function() {
+         let message = "<c:out value='${message}' />";
+         if (message) {
+             alert(message);
+         }
+     };
 </script>
 
 <style>

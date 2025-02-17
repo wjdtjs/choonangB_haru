@@ -66,11 +66,12 @@
 }
 
 .box{
-	height: 50px;
+	min-height: 50px;
 	margin: 5px 0;
 	border-radius: 10px;
 	/* border: 1px solid #aaa; */
 	background-color: #E7F3F4;
+	padding: 16px;
  
 }
 
@@ -91,16 +92,49 @@
 .pre-img-div{
 	width: fit-content;
 	height: fit-content;
+	display: flex;
 
 }
-.pre-img-div>img{
+.pre-img-div .consul-imgitem-div .preroad-img{
 	width: 112px;
 	height: 112px;
 	position: relative;
 	border-radius: 8px;
 	margin: 4px;
 }
+.consul-imgitem-div{
+	position: relative;
+}
+.img-del {
+	position: absolute;
+	top: 3px;
+	right: 4px;
+	color: red;
+	font-size: 16px;
+}
+.input-row{
+	display: flex;
+	margin-top: 20px;
+}
+.input-row .input-row-content{
+	display: flex;
+	width: 50%;
+}
+.input-row .input-row-content .infotitle{
+	width: 100px;
+}
 
+.input-row .input-row-content .info-row-input{
+	width: 80%;
+ 	
+}
+.input-row .input-row-content .info-row-input .form-input{
+	width: 90%;
+	border: 1.5px solid var(--haru);
+	border-radius: 10px;
+	padding: 8px 12px;
+	margin-right: 4px;
+}
 
 /* SELECT 버튼 위치 수정*/
 .file-input-label {
@@ -113,7 +147,13 @@
     font-size: 1.5rem;
     border-radius: 0.625rem;
 }
-
+.linked-td {
+	cursor: pointer;
+	text-decoration: underline;
+}
+.send-info{
+   border: NONE;
+}
 em {
 	color: red;
 	justify-content: center;
@@ -147,7 +187,7 @@ em {
                     <h1 class="h4 mb-4 text-gray-800 font-weight-bold" >차트 작성</h1>
                     
                     <div class="modal_l_detail">
-				        <input type="hidden" name="resno" value="${apm.resno}">
+                    <form action="/admin/addChart" method="post" onsubmit="return vaildateForm()" id="add_chart" enctype="multipart/form-data">
 				        <table class="apmTable">
 				        	<colgroup>
 		                    	<col width="8%" />
@@ -155,10 +195,11 @@ em {
 		   
 		                    </colgroup>
 				        	<tr>
-				        		<td class="form-input-title">예약번호</td> <td>:</td> <td>${apm.resno}</td>
+				        		<td class="form-input-title">예약번호</td> <td>:</td> <td class="linked-td resno"><input type="hidden" name="resno" value="${apm.resno}">${apm.resno} <i class="fa-solid fa-file-lines"></i></td>
 				        	</tr>
 				        	<tr>
-				        		<td class="form-input-title">진료일시</td> <td>:</td> <td><fmt:formatDate value="${apm.rdate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+				        		<td class="form-input-title">진료일시</td> <td>:</td>
+				        		<td><input type="text" class="send-info" name="rreg_date" value="<fmt:formatDate value="${apm.rdate}" pattern="yyyy-MM-dd HH:mm:ss"/>" readonly="readonly"></td>
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">진료과목</td>	<td>:</td> <td>${apm.item}</td>
@@ -167,50 +208,70 @@ em {
 				        		<td class="form-input-title">주치의</td>	<td>:</td> <td>${apm.aname}</td>
 				        	</tr>
 				        	<tr>
-				        		<td class="form-input-title">보호자</td>	<td>:</td> <td onclick="location.href='/admin/detailMember?memno='+${apm.memno}">${apm.mname} <i class="fa-solid fa-file-lines"></i></td>
+				        		<td class="form-input-title">보호자</td>	<td>:</td> <td class="linked-td" onclick="location.href='/admin/detailMember?memno='+${apm.memno}">${apm.mname} <i class="fa-solid fa-file-lines"></i></td>
+				        		<input type="hidden" name="memno" value="${apm.memno}">
 				        	</tr>
 				        </table>
 				        <div class="petInfo_1">
 						    <div class="infoTitle">동물 정보</div>
 				        	<div class="contents">
-				        		<div class="content">${apm.petno }</div>
+				        		<div class="content"><input type="hidden" name="petno" value="${apm.petno }"> ${apm.petno }</div>
 				        		<div class="content">${apm.petname }</div>
 				        		<div class="content">${apm.species } (${apm.gender })</div>
 				        		<div class="content"><fmt:formatDate value="${apm.petbirth}" pattern="yyyy-MM-dd"/> 출생</div>
-				        		<div class="content">${apm.petheight }cm / ${apm.petweight }kg</div>
+				        		<div class="content">${apm.petheight }cm / ${weight.petweight}kg</div>
 				        	</div>
 				        	<div class="infoTitle">특이사항</div>
 				        	<div>
 				        		<div class="box">${apm.petspecial }</div>
 				        	</div>
+				        	<c:if test="${apm.memo ne null}">
+				        		<div class="infoTitle">예약 메모</div>
+					        	<div>
+					        		<div class="box">${apm.memo }</div>
+					        	</div>
+				        	</c:if>
 				        </div>
 				        
-				        <form action="/admin/addChart" method="post" onsubmit="return vaildateForm()" id="add_chart" enctype="multipart/form-data">
-				        	<input type="hidden" name="resno" value="${apm.resno}">
-				        	<div class="consultation-image">
-					        	<div class="infoTitle">이미지</div>
-					        	<div class="file-name-div" style="margin-top: 1rem" >
-									 <div class="pre-img-div"></div>
-									 <label for="img-input" class="file-input-label">+</label>
-									 <input type="file" id="img-input" name="file" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple>
-						       </div>
-				        	</div>
+				        <div class="consultation-image">
+					    	<div class="infoTitle">이미지</div>
+					        <div class="file-name-div" style="margin-top: 1rem" >
+								<div class="pre-img-div"></div>
+								<label for="img-input" class="file-input-label">+</label>
+								<input type="file" id="img-input" name="file" accept=".jpg, .jpeg, .png, .gif" style="display: none" onchange="addFile(this);" multiple>
+						    </div>
+				        </div>
 					       
-					       <div class="infoTitle">차트 내용<em>*</em></div>
-				        	<div>
-				        		<textarea class="form-input-box" name="ccontents" required="required"></textarea>
+					    <div class="infoTitle">차트 내용<em>*</em></div>
+				        <div>
+				        	<textarea class="form-input-box" name="ccontents" required="required"></textarea>
+				        </div>
+				        
+				        <div class="infoTitle">기타/전달사항</div>
+				        <div>
+				        	<textarea class="form-input-box" name="cect_con"></textarea>
+				        </div>
+				        
+				        <div class="input-row">
+				        	<div class="input-row-content">
+						       	<div class="infoTitle">몸길이</div>
+						       	<div class="info-row-input">
+						       	<input type="text" class="form-input" name="petheight">cm
+						       	</div>
 				        	</div>
-				        	
-				        	<div class="infoTitle">기타/전달사항</div>
-				        	<div>
-				        		<textarea class="form-input-box" name="cect_con"></textarea>
+				        	<div class="input-row-content">
+						       	<div class="infoTitle" style="margin-left: 10%;">몸무게</div>
+						       	<div class="info-row-input">
+						       			<input type="text" class="form-input" name="petweight">kg
+						       	</div>
 				        	</div>
+				        </div>
 				        </form>
 				     </div>
 
 					<!-- 모달 버튼 -->
 			       	<div class="modal_l-content-btn">
-				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/consultaion'">목록으로</button>
+				       	<button type="button" class="to_list" id="detail_close_btn" onclick="history.go(-1)">목록으로</button>
 			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="add_chart">등록하기</button>
 			       	</div> 
                 </div>
@@ -260,6 +321,22 @@ em {
 			return false;
 		}
 		
+		function validateForm() {
+			let result = false;
+			
+			var input_str = "";
+			
+			for(let i=0; i<delete_img.length; i++) {
+				input_str += `<input type='hidden' value='\${delete_img[i]}' name='imgno'>`;
+			}
+			console.log('input_str-> '+input_str)
+			$('#add_chart').append(input_str);
+			
+			result = confirm('이대로 수정하시겠습니까?');
+			
+			return result;
+		}
+		
 		for (var i = 0; i< Math.min(curFileCnt, maxFileCnt); i++){
 
 			var reader = new FileReader();
@@ -267,14 +344,73 @@ em {
 			
 			reader.onload = function(event) {
 				var htmlData = '';
-				htmlData += `<img src="\${event.target.result}" style="width: 7rem; height: 7rem" />`;
+				htmlData += `
+					<div class="consul-imgitem-div">
+						<img src="\${event.target.result}" class="preroad-img"/>
+						<i class="fa-solid fa-circle-xmark img-del" data-index="\${file.lastModified}"></i>
+					</div>`;
 				
-				$('.pre-img-div').css('display', 'inline');
+				$('.pre-img-div').css('display', 'flex');
 				$('.pre-img-div').append(htmlData);
 				$('.file-input-label').css('display', 'none');
 			};
 			reader.readAsDataURL(file);
 		}
 	} 
+	
+	/**
+	 * 이미지 삭제
+	 */
+	 $(document).on('click','.img-del', function () {
+		var imgno = $(this).siblings(".preroad-img").data('val');
+		console.log("imgno: ",imgno);
+		
+		// 현재 이미지 요소 완전히 제거
+	    $(this).closest('.consul-imgitem-div').remove();
+		
+		if(imgno){ 	// 서버에서 가져온 이미지 삭제
+			$(this).closest('.consul-imgitem-div').css('display','none');
+			delete_img.push(imgno);
+		}
+		
+		// 현재 이미지 요소 완전히 제거
+	    $(this).closest('.consul-imgitem-div').remove();
+
+	    // 파일 리스트에서 삭제
+	    const dataTransfer = new DataTransfer(); // 변수를 먼저 선언
+	    
+	    var files = $('#img-input')[0].files;
+	    Array.from(files).forEach(file => {
+	        const removeTargetId = $(this).data('index');
+	        if (file.lastModified !== removeTargetId) { // 삭제할 파일 제외
+	            dataTransfer.items.add(file);
+	        }
+	    });
+
+	    document.querySelector('#img-input').files = dataTransfer.files;
+	    console.log(dataTransfer.files);
+	    
+		updateFileInputLabel(); // 삭제 후 버튼 상태 업데이트
+	});
+	
+	 /**
+	  * file-input-label의 display 속성 업데이트
+	  */
+	 function updateFileInputLabel() {
+	     var currentFileCount = $('.consul-imgitem-div').length; // 현재 업로드된 이미지 개수
+	     console.log("currentFileCount: "+currentFileCount);
+	     
+	     if (currentFileCount < maxFileCnt) {
+	         $('.file-input-label').css('display', 'inline-block');
+	     } else {
+	         $('.file-input-label').css('display', 'none');
+	     }
+	 }
+	 
+	//예약 상세
+		$(document).on('click','.resno',function(){
+			 var resno = $(this).text().trim();
+			    location.href = "/admin/detailReservation?resno=" + resno;
+		});
 </script>
 </html>

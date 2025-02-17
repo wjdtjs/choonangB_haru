@@ -19,10 +19,9 @@
 <!-- style -->
 <style>
 
-.modal_l_detail, table, .orderTable{
+.modal_l_detail, table{
    color: black;
    width: 100%;
-   margin-bottom: 20px;
 }
 
 .order_info tr{
@@ -63,21 +62,26 @@
 }
 /*주문상태 드롭박스*/
 .form-input-1{
-   width: 150px;
+   width: 250px;
    height: auto;
    border: 1.5px solid var(--haru);
    border-radius: 20px;
-   padding-left: 10px;
+   padding: 0 16px;
    font-size: 14px;
 }
 
 .form-row {
    width:100%;
-   height: 35px;
+   height: auto;
    line-height: 35px;
    margin-left: 0.1rem;
+   margin-bottom: 3rem;
 }
 
+.form-row-right , .form-row-left{
+	display: flex;
+	width: 50%;
+}
 /* SELECT 버튼 위치 수정*/
 select {
    background-position: 95% center;
@@ -166,70 +170,64 @@ function psUpdate() {
                     <table class="orderTable">
                        <colgroup>
                              <col width="8%" />
-                              <col width="3%" />
+                              <col width="2%" />
+                             <col width="40%" />
+                             <col width="8%" />
+                              <col width="2%" />
+                              <col width="40%" />
                           </colgroup>
                        <tr>
                           <td class="form-input-title">주문번호</td> <td>:</td> <td><input class="send-info" type="text"  name="orderno" value="${sale.orderno}" readonly="readonly"></td>
-                       </tr>
-                       <tr>
-                          <td class="form-input-title">주문일시</td> <td>:</td> <td><fmt:formatDate value="${sale.odate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-                       </tr>
-                       <tr>
-                          <td class="form-input-title">결제방법</td>   <td>:</td> <td>${sale.opayment_content}</td>
-                       </tr>
-                       
-                       <c:if test="${sale.opayment_mcd eq 300}">
-                          <input type="hidden" name="tid" value="${sale.tid}">
-                          <tr>
-                             <td class="form-input-title">카카오페이 <br> 승인 번호</td>   <td>:</td> <td>${sale.tid}</td>
-                          </tr>
-                       </c:if>
-                       
-                    </table>
-                    <table class="orderTable">
-                       <colgroup>
-                             <col width="8%" />
-                              <col width="3%" />
-                          </colgroup>
-                       <tr>
-                          <td class="form-input-title">회원번호</td> <td>:</td>
+                       	<td class="form-input-title">회원번호</td> <td>:</td>
                           <td><input class="send-info" type="text" name="memno" value="${sale.memno}" readonly="readonly"></td>
                        </tr>
                        <tr>
-                          <td class="form-input-title">이름</td>   <td>:</td>
+                          <td class="form-input-title">주문일시</td> <td>:</td> <td><fmt:formatDate value="${sale.odate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                       	  <td class="form-input-title">이름</td>   <td>:</td>
                           <td><input class="send-info" type="text" name="mname" value="${sale.mname}" readonly="readonly"></td>
                        </tr>
                        <tr>
-                          <td class="form-input-title">전화번호</td>  <td>:</td>
-                          <td>${sale.mtel}</td>
+                          <td class="form-input-title">결제방법</td>   <td>:</td>	<td>${sale.opayment_content}</td>
+                       	  <td class="form-input-title">전화번호</td>  	<td>:</td>	<td>${sale.mtel}</td>
                        </tr>
+                       
                        <tr>
-                          <td class="form-input-title">이메일</td>   <td>:</td>
-                          <td><input class="send-info" type="text" name="memail" value="${sale.memail}" readonly="readonly"></td>
+                       <c:if test="${sale.opayment_mcd eq 300}">
+                          <input type="hidden" name="tid" value="${sale.tid}">
+                             <td class="form-input-title">카카오페이 <br> 승인 번호</td>   <td>:</td> <td>${sale.tid}</td>
+                       </c:if>
+                       <c:if test="${sale.opayment_mcd  ne 300}">
+                       		<td></td><td></td><td></td>
+                       </c:if>
+                       		<td class="form-input-title">이메일</td>   <td>:</td>
+                          	<td><input class="send-info" type="text" name="memail" value="${sale.memail}" readonly="readonly"></td>
                        </tr>
+                       
                     </table>
-                    
+
                     <div class="form-row">
-                    	<div class="form-input-title" style="width: 80px;">주문상태</div>
-                         <div>
-                         	<select class="form-input-1 sub-alevel-mcd-select" name="ostatus_mcd">
-                         		<c:forEach var="status" items="${ostatus }">
-                                   <c:choose>
-                                      <c:when test="${status.mcd == sale.ostatus_mcd}">
-                                         <option value="${status.mcd }" selected>${status.content }</option>
-                                      </c:when>
-                                      <c:otherwise>
-                                         <option value="${status.mcd }">${status.content }</option>
-                                      </c:otherwise>
-                                   </c:choose>
-                                </c:forEach>
-                             </select>
+                         <div class="form-row-left">
+                         <div class="form-input-title" style="width: 18%;">주문상태</div>
+		                         <select class="form-input-1 sub-alevel-mcd-select" name="ostatus_mcd">
+		                         	<c:forEach var="status" items="${ostatus }">
+		                         		<c:choose>
+		                         			<c:when test="${status.mcd == sale.ostatus_mcd}">
+		                                        <option value="${status.mcd }" selected>${status.content }</option>
+		                                     </c:when>
+		                                     <c:otherwise>
+		                                        <option value="${status.mcd }">${status.content }</option>
+		                                     </c:otherwise>
+		                                  </c:choose>
+		                            </c:forEach>
+		                         </select>
+		                         
+                         	
                           </div>
-                       </div>
-                       <div class="form-row">
-                          <div class="form-input-title">마지막 상태 변경 시간</div>
-                          <div style="width: 50px; text-align: center;">:</div>
-                          <div><fmt:formatDate value="${sale.update_date}" pattern="yyyy-MM-dd"/></div>
+	                       <div class="form-row-right">
+	                       		<div class="form-input-title">마지막 상태 변경 시간</div>
+	                         	<div style="width: 50px; text-align: center;">:</div>
+	                         	<div><fmt:formatDate value="${sale.update_date}" pattern="yyyy-MM-dd"/></div>
+	                       </div>
                        </div>
                     </form>
                     

@@ -69,6 +69,7 @@ public class OrderController {
 		model.addAttribute("sales",shopList);
 		model.addAttribute("search",si);
 		model.addAttribute("ostatus",ostatus);
+		model.addAttribute("totalCnt",totalCnt);
 		
 		return "admin/shop";
 	}
@@ -174,7 +175,6 @@ public class OrderController {
 		}
 	}
 	
-	@Async
 	private int mailTransport (
 									Order order, 
 									List<OrderProduct> products,
@@ -185,7 +185,7 @@ public class OrderController {
 		
 		System.out.println("mailSending...");
 		String tomail = order.getMemail();
-		String setfrom = "하루동물병원 <0808hr@gmail.com>";
+		String setfrom = "as@naver.com";
 		String title = "주문하신 상품이 " + order.getOstatus_content() + "되었습니다.";
 		
 		try {
@@ -198,7 +198,7 @@ public class OrderController {
 			StringBuffer content = new StringBuffer();
 			content.append("<html><body>")
 					.append("<h2>주문 상세 정보</h2>")
-					.append("<table border='1' style='border-collapse: collapse; width: 100%; text-align: center;'>")
+					.append("<table border='1' style='border-collapse: collapse; max-width: 860px; text-align: center;'>")
 					.append("<tr><th>상품명</th><th>수량</th><th>가격</th></tr>");
 			
 			for (OrderProduct product : products) {

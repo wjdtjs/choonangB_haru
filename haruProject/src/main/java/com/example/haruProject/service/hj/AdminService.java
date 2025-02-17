@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.haruProject.dto.Admin;
+import com.example.haruProject.dto.Common;
 import com.example.haruProject.dto.SearchItem;
 
 public interface AdminService {
@@ -13,7 +14,7 @@ public interface AdminService {
 	int			adminAdd(Admin admin);
 	List<Admin> adminLevelMcd();
 	Admin		getAdminDetail(int ano);
-	int		updateAdmin(Admin admin);
+	int			updateAdmin(Admin admin);
 	List<Map<String, Object>> acommonList();
 
 }

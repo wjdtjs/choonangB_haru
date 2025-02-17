@@ -53,6 +53,10 @@ select {
 	background-position: 95% center;
 }
 
+.modal_l-content-btn {
+	margin-block: 25rem;
+}
+
 </style>
 
 
@@ -78,19 +82,15 @@ select {
 		        		<th>비밀번호</th>	<td><input class="form-input" type="password" name="apasswd" required="required"></td>
 		        	</tr>
 		        	<tr>
-		        		<th>전화번호</th>	<td><input class="form-input" type="text" name="atel" required="required" placeholder="000-0000-0000"></td>
+		        		<th>전화번호</th>	<td><input class="form-input" type="text" name="atel" required="required" placeholder="-없이 입력"></td>
 		        		<th>비밀번호확인</th><td><input class="form-input" type="password" name="re_apasswd" required="required"></td>
 		        	</tr>
 		        	<tr>
-		        		<th>이메일</th>	<td><input class="form-input" type="text" name="aemail"></td>
 		        		<th>Role</th>
 		        		<td>
 		        			<select class="form-input sub-mcd-select" name="mcd"></select>
 		        		</td>
-		        	</tr>
-		        	<tr>
 		        		<th>입사일</th>	<td><input class="form-input" type="text" name="hiredate" required="required" placeholder="YYYY/MM/DD"></td>
-		        		
 		        	</tr>
 		        </table>
 	        </form>
@@ -128,6 +128,7 @@ select {
 		let pw 	  = $('.form-input[name=apasswd]').val();
 		let re_pw = $('.form-input[name=re_apasswd]').val();
 		let tel   = $('.form-input[name=atel]').val();
+		let hiredate   = $('.form-input[name=hiredate]').val();
 		
 		console.log('tel ',tel)
 		
@@ -142,8 +143,13 @@ select {
 	        result = false;
      	}
 
-      	if(!checkRegex(tel, '^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$')) {
+      	if(!checkRegex(tel, '^01([0|1|6|7|8|9])[0-9]{3,4}[0-9]{4}$')) {
     	  	str+='잘못된 핸드폰번호 입니다.\n';
+         	result = false;
+      	}
+      	
+      	if(!checkRegex(hiredate, '^20[0-9]{2}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$')) {
+    	  	str+='입사일 형식을 맞춰주세요. yyyy/mm/dd \n';
          	result = false;
       	}
       	
@@ -151,6 +157,6 @@ select {
        	  	alert(str);
 		
 		return result;
-	}t
+	}
 </script>
 

@@ -1,5 +1,6 @@
 package com.example.haruProject.service.hj;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,8 @@ import com.example.haruProject.dao.hj.ConsultationDao;
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Chart;
 import com.example.haruProject.dto.ChartDetail;
+import com.example.haruProject.dto.Pet;
+import com.example.haruProject.dto.Weight;
 
 import lombok.RequiredArgsConstructor;
 
@@ -77,5 +80,29 @@ public class ConsultationServiceImpl implements ConsultationService {
 	@Override
 	public void updateConsultation(Chart ch, List<String> imgPaths) {
 		cd.updateConsultation(ch, imgPaths);
+	}
+
+	@Override
+	public int updatePetHight(Pet pet) {
+		int updateResult = cd.updatePetHeight(pet);
+		return updateResult;
+	}
+
+	@Override
+	public Weight getPetWeight(int petno, int memno,Date rdate) {
+		Weight weight = cd.getPetWeight(petno,memno,rdate);
+		return weight;
+	}
+
+	@Override
+	public int insertPetWeight(Weight weight) {
+		int result = cd.insertPetWeight(weight);
+		return result;
+	}
+
+	@Override
+	public int UpdatePetWeight(Weight weight) {
+		int result = cd.updatePetWeight(weight);
+		return result;
 	}
 }

@@ -17,8 +17,8 @@ body{
 }
 
 .selete-order > select{
-	background-color: white;
-    border: 1px solid var(--haru);
+	background-color: #D0E3E7;;
+    border: none;
     width: 30%;
     height: 35px;
     border-radius: 12px;
@@ -59,7 +59,7 @@ body{
 	height: 5.5rem;
 	border-radius: 12px;
 	background-color: #eee;
-	margin-right: 8px;
+	margin-right: 5px;
 
 } 
 

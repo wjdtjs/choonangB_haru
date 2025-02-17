@@ -2,8 +2,11 @@ package com.example.haruProject.controller.admin.hj;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,8 @@ import com.example.haruProject.controller.admin.js.UploadController;
 import com.example.haruProject.dto.Appointment;
 import com.example.haruProject.dto.Chart;
 import com.example.haruProject.dto.ChartDetail;
+import com.example.haruProject.dto.Pet;
+import com.example.haruProject.dto.Weight;
 import com.example.haruProject.service.hj.ConsultationService;
 
 import jakarta.servlet.ServletException;
@@ -41,8 +46,11 @@ public class ConsultationController {
 		System.out.println("ConsultationController addConsultation ...");
 		System.out.println("ConsultationController addConsultation resno->"+resno);
 		Appointment apm =  cs.getConsultation(resno);
+		Weight weight = cs.getPetWeight(apm.getPetno(),apm.getMemno(),apm.getRdate());
+		System.out.println("ConsultationController addConsultation weight->"+weight);
 		
 		model.addAttribute("apm",apm);
+		model.addAttribute("weight",weight);
 		
 		return "admin/addConsultation";
 	}
@@ -50,14 +58,25 @@ public class ConsultationController {
 	/* 차트 추가 */
 	@PostMapping(value = "/admin/addChart")
 	public String addChart(Chart ch,
+							Pet pet,
+							Weight weight,
 							@RequestParam("file") List<MultipartFile> files,
 							HttpServletRequest request, Model model) {
 		System.out.println("ConsultController addChart Start ...");
+		System.out.println("ConsultController addChart ch ->"+ch);
+		System.out.println("ConsultController addChart pet ->"+pet);
+		System.out.println("ConsultController addChart weight ->"+weight);
 		System.out.println("ConsultController addChart files->"+files);
 		
 		String type = "chart";
 		List<String> imgPaths = saveImages(type,files,request);
-
+		
+		if (pet.getPetheight() != null) { 
+			int updateResult = cs.updatePetHight(pet);
+		}
+		if(weight.getPetweight() != null) {
+			int insertResult = cs.insertPetWeight(weight);
+		}
 		cs.addChart(ch);
 		cs.chartImgSave(imgPaths,ch);
 		
@@ -83,6 +102,12 @@ public class ConsultationController {
 				log.info("fileName -> {}", fileName);
 				log.info("suffix -> {}",suffix);
 				
+				// 빈 파일 체크
+	            if (file.isEmpty()) {
+	                log.warn("첨부된 파일이 비어 있음: {}", file.getOriginalFilename());
+	                continue; // 빈 파일이면 건너뛰기
+	            }
+	            
 				// 저장파일 경로 설정
 				// Servlet 상속 받지 못했을 때 realPath 불러오는 방법
 				String type_path = "/upload/"+type+"/";
@@ -113,11 +138,15 @@ public class ConsultationController {
 		Chart chart = cs.getChart(resno);
 		List<ChartDetail> chartImgs = cs.getImages(resno);
 		
+		Weight weight = cs.getPetWeight(apm.getPetno(),apm.getMemno(),apm.getRdate());
+		System.out.println("ConsultationController addConsultation weight->"+weight);
+		
 		System.out.println("ConsultationController detailConsulatation chartImgs->"+chartImgs);
 		
 		model.addAttribute("apm",apm);
 		model.addAttribute("chart",chart);
 		model.addAttribute("chartImgs",chartImgs);
+		model.addAttribute("weight",weight);
 		
 		return "admin/detailConsultation";
 	}
@@ -125,13 +154,40 @@ public class ConsultationController {
 	/* 차트수정 */
 	@RequestMapping(value = "/admin/updChart")
 	public String updateConsultation(Chart ch,
+									Weight weight,
 									@RequestParam("file") List<MultipartFile> files,
-									HttpServletRequest request, Model model) {
+									HttpServletRequest request, Model model) throws ParseException {
+		
+		System.out.println("ConsultationController updateConsultation weight..."+weight);
 		
 		// 이미지저장
 		List<String> imgPaths = saveImages("chart",files,request);
 		// 업데이트, 수정한 이미지 삭제
 		cs.updateConsultation(ch, imgPaths);
+		//몸무게 수정
+		if(weight.getPetweight() != null) {
+			
+			// 등록되어있다면 수정
+			if(weight.getRreg_date() != null ){ 
+				
+				String dateString = weight.getRreg_date();
+				
+				// SimpleDateFormat을 사용하여 날짜 형식 지정
+	            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	            
+	            // String을 Date로 변환
+	            Date date = formatter.parse(dateString);
+	            
+				weight.setReg_date(date);
+				int updateWeight = cs.UpdatePetWeight(weight);
+			}
+			
+			// 등록된 값이 없다면 추가
+			else {
+				int insertResult = cs.insertPetWeight(weight);
+			}
+		}
+		
 		
 		return "redirect:/admin/consultation";
 	}

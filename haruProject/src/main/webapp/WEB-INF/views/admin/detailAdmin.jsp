@@ -98,7 +98,7 @@ em {
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">전화번호<em>*</em></td>	<td><input class="form-input" type="text" name="atel" required="required" value="${admin.atel}"></td>
-				        		<td class="form-input-title">이메일</td>				<td><input class="form-input" type="text" name="aemail" value="${admin.aemail}"></td>
+				        		<td class="form-input-title">현재 비밀번호<em>*</em></td><td><input class="form-input" type="password" name="apasswd" required="required" placeholder="수정하려면 비밀번호를 입력하세요"></td>
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">Role</td>
@@ -116,6 +116,9 @@ em {
 				        				</c:forEach>
 					        		</select>
 				        		</td>
+				        		<td class="form-input-title">비밀번호재설정</td><td><input class="form-input" type="password" name="re_apasswd" placeholder="변경할 비밀번호를 입력하세요."></td>
+				        	</tr>
+				        	<tr>
 				        		<td class="form-input-title">상태</td>
 				        		<td>
 				        			<select class="form-input sub-status-mcd-select" name="astatus_mcd" >
@@ -131,13 +134,6 @@ em {
 				        				</c:forEach>
 				        			</select>
 				        		</td>
-								
-				        	</tr>
-				        	<tr>
-				        		<td class="form-input-title">비밀번호재설정</td><td><input class="form-input" type="password" name="re_apasswd" placeholder="변경할 비밀번호를 입력하세요."></td>
-				        		<td class="form-input-title">현재 비밀번호<em>*</em></td><td><input class="form-input" type="password" name="apasswd" required="required" placeholder="수정하려면 비밀번호를 입력하세요"></td>				        		
-				        	</tr>
-				        	<tr>
 				        		<td class="form-input-title">비밀번호확인</td><td><input class="form-input" type="password" name="re_apasswd2" placeholder="변경할 비밀번호를 재입력하세요."></td>
 				        	</tr>
 				        </table>

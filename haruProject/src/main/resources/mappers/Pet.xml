@@ -44,7 +44,7 @@
 		SELECT c.bcd, c.mcd, c.content as species
 		FROM common c
 		WHERE c.bcd = #{bcd} and c.mcd != 999
-		ORDER BY c.mcd asc
+		ORDER BY species
 	</select>
 	
 	<!-- 동물 상세 페이지 -->
@@ -78,7 +78,7 @@
 		    JOIN COMMON c ON m.mtitle_bcd = c.bcd AND m.mtitle_mcd = c.mcd
 		    JOIN COMMON c2 ON m.mtitle_bcd = c2.bcd AND c2.mcd = 999
 		    LEFT OUTER JOIN CHART ch ON a.resno = ch.resno
-		    LEFT OUTER JOIN BOARD b ON a.resno = b.resno and b.bstatus_mcd = 100
+		    LEFT OUTER JOIN BOARD b ON a.resno = b.resno
 		WHERE a.petno = #{petno} AND a.rstatus_mcd = 400
 		ORDER BY rdate desc, start_time desc
 	</select>
@@ -328,15 +328,50 @@
 				#{memno}, SEQ_PET.NEXTVAL, #{petname}, #{petbirth}, #{petheight}, #{petspecial},
 				#{ano}, #{petspecies_bcd}, #{petspecies_mcd}, #{petgender_mcd}
 			)
-			<if test="petweight != null and petweight > 0">
-				INTO WEIGHT(
-					MEMNO,
-					PETNO,
-					PETWEIGHT
-				) VALUES (#{memno}, SEQ_PET.CURRVAL, #{petweight})
-			</if>
+			INTO WEIGHT(
+				MEMNO,
+				PETNO,
+				PETWEIGHT
+			) VALUES (#{memno}, SEQ_PET.CURRVAL, #{petweight})
 		SELECT * FROM DUAL
 		
 	</insert>
 	
+	<!-- 차트작성 - 몸길이 수정 -->
+	<update id="HJ_UpdatePetHight" parameterType="pet">
+		UPDATE pet
+		SET petheight = #{petheight}
+		WHERE memno = #{memno} AND petno = #{petno}
+	</update>
+	
+	<!-- 차트작성 - 최근 몸무게 get -->
+	<select id="HJ_getPetWeight" parameterType="Map" resultType="Weight">
+	<![CDATA[
+		SELECT w.memno, w.petno, w.reg_date, w.petweight 
+	    FROM weight w
+	    WHERE (memno, petno, reg_date) IN (
+		        SELECT memno, petno, MAX(reg_date)
+		        FROM weight
+		        WHERE petno = #{petno} 
+		        AND memno = #{memno}
+		        AND reg_date <= #{rdate}
+		        GROUP BY petno, memno
+	    )
+	    ]]>
+	</select>
+	
+	<!-- 차트작성 - 몸무게 추가 -->
+	<insert id="HJ_insertPetWeight" parameterType="Weight">
+		INSERT INTO WEIGHT(MEMNO, PETNO, REG_DATE, PETWEIGHT)
+		VALUES(#{memno}, #{petno}, #{rreg_date}, #{petweight})
+	</insert>
+	
+	<!-- 차트 수정 -  몸무게 수정 -->
+	<update id="HJ_updatePetweight" parameterType="Weight">
+		UPDATE weight
+		SET petweight = #{petweight}
+		WHERE memno = #{memno}
+		AND petno = #{petno}
+		AND reg_date = #{reg_date}
+	</update>
 </mapper>

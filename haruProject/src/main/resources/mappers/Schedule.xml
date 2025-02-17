@@ -20,20 +20,33 @@
 	</select>
 	
 	<!-- 의사정기휴무 정보 리스트 -->
-	<select id="HJ_RegScheduleList" parameterType="java.lang.String" resultType="schedule">
+	<select id="HJ_RegScheduleList" parameterType="MAP" resultType="schedule">
 	<![CDATA[
 		SELECT *
-		FROM(
-				SELECT sd.*, cm.content sch_content, ad.aname,
-						ROW_NUMBER() OVER (PARTITION BY sd.ano ORDER BY sd.schdate DESC) AS rn
-				FROM schedule sd
-				JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
-				LEFT JOIN admin ad ON sd.ano = ad.ano
-				WHERE cm.mcd = 200
-				AND sd.schdate < #{currentStart}
-				AND ad.astatus_mcd = 100
-			) t
-		where t.rn in (1,2)
+		FROM (
+		    SELECT sd.*, cm.content sch_content, ad.aname,
+		           ROW_NUMBER() OVER (PARTITION BY sd.ano ORDER BY sd.schdate DESC) AS rn
+		    FROM schedule sd
+		    JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
+		    LEFT JOIN admin ad ON sd.ano = ad.ano
+		    WHERE cm.mcd = 200
+		      AND ad.astatus_mcd = 100
+		      AND sd.schdate < #{current}
+		  )
+		  WHERE rn IN (1, 2)
+		  
+		  UNION ALL
+		
+		  SELECT sd.*, cm.content sch_content, ad.aname,
+		           ROW_NUMBER() OVER (PARTITION BY sd.ano ORDER BY sd.schdate ASC) AS rn
+		  FROM schedule sd
+		  JOIN common cm ON sd.schtype_bcd = cm.bcd AND sd.schtype_mcd = cm.mcd
+		  LEFT JOIN admin ad ON sd.ano = ad.ano
+		  WHERE cm.mcd = 200
+		  AND ad.astatus_mcd = 100
+		  AND sd.schdate BETWEEN #{current} AND #{currentEnd}
+
+		
 	]]>
 	</select>
 	
@@ -49,14 +62,14 @@
  	<![CDATA[
 		SELECT schdate as newoff
 		FROM (
-    		SELECT schdate
+    		SELECT schdate, ROWNUM AS rn
     		FROM schedule
     		WHERE schtype_mcd = #{schtype_mcd}
       		AND ano = #{ano}
       		AND schdate > #{schdate}
     		ORDER BY schdate ASC
 		)
-		WHERE ROWNUM = 2
+		WHERE rn = 2
 		]]>
 	</select>
 	
@@ -82,15 +95,7 @@
                 FROM schedule
                 WHERE schno = #{sche.schno}
                 )
-			connect by schdate + (level - 1) *7 <= #{sche.newoff}
-			UNION
-			SELECT  #{sche.newoff} + (level - 1) *7
-			FROM    (
-                SELECT *
-                FROM schedule
-                WHERE schno = #{sche.schno}
-                )
-			connect by #{sche.newoff} + (level - 1) *7 < #{currentEnd}
+			connect by schdate + (level - 1) *7 < #{sche.newoff}
 		]]>
 	</if>
 	</select>
