@@ -62,6 +62,7 @@
              alert(message);
          }
      };
+	
 </script>
 
 <style>
@@ -148,7 +149,12 @@ select {
 	                                        <tr>
 	                                            <td>${member.memno }</td>
 	                                            <td>${member.mname  }</td>
-	                                            <td>${member.mtel }</td>
+	                                            <c:choose>
+	                                            	<c:when test="${not empty member.mtel }">
+			                                            <td class="phone-num">${member.mtel }</td>                                            	
+	                                            	</c:when>
+	                                            	<c:otherwise><td>-</td></c:otherwise>
+	                                            </c:choose>
 	                                            <td>${member.memail }</td>
 	                                            <td>${member.mstatis_content }</td>
 	                                        </tr>
@@ -203,6 +209,13 @@ select {
     <!-- Logout Modal-->
     <jsp:include page="components/logOutModal.jsp"></jsp:include>
 
+<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function () {
+	    document.querySelectorAll(".phone-num").forEach(td => {
+	        td.textContent = td.textContent.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+	    });
+	});
+</script>
 
 </body>
 </html>

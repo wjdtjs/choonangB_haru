@@ -224,7 +224,7 @@ em {
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">진료일시</td> <td>:</td>
-				        		<td><input type="text" class="send-info" name="rdate" value="<fmt:formatDate value="${apm.rdate}" pattern="yyyy-MM-dd HH:mm:ss"/>" readonly="readonly"></td>
+				        		<td><input type="text" class="send-info" name="rdate" value="<fmt:formatDate value="${apm.rdate}" pattern="yyyy-MM-dd"/> ${fn:substring(apm.start_time, 0, 2) }:${fn:substring(apm.start_time, 2, 4) } " readonly="readonly"></td>
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">진료과목</td>	<td>:</td> <td>${apm.item}</td>
@@ -242,7 +242,7 @@ em {
 				        		<div class="content"><input type="hidden" name="petno" value="${apm.petno }">${apm.petno }</div>
 				        		<div class="content">${apm.petname }</div>
 				        		<div class="content">${apm.species } (${apm.gender })</div>
-				        		<div class="content">${apm.petbirth } 출생</div>
+				        		<div class="content"><fmt:formatDate value="${apm.petbirth }" pattern="yyyy년 MM월 dd일"/> 출생</div>
 				        		<div class="content">${apm.petheight }cm / ${weight.petweight }kg</div>
 				        	</div>
 				        	<div class="infoTitle">특이사항</div>
