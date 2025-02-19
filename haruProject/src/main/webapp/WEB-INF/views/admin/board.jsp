@@ -20,14 +20,13 @@
 
 	// 후기 상세 페이지로 이동
 	function goToDetail(bno) {
-		alert("kk bno->"+bno);
-		console.log("kk bno 값:", bno);
+		//alert("kk bno->"+bno);
+		//console.log("kk bno 값:", bno);
 
         if (!bno) {
             alert("bno 값이 비어 있습니다.");
             return;
         }
-       // location.href = `/admin/board_detail?bno=${bno}`;
         location.href = '/admin/board_detail?bno='+bno;
     }
 	
@@ -50,8 +49,8 @@
 
 	        search1 = searchInput.value; // 입력된 검색어
 	        type4 = searchSelect.value; // 선택된 필터
-	        console.log('search_word 실행 -> search1: '+search1 + ', type4: '+type4);
-	        alert('search_word 실행 -> search1: '+search1 + ', type4: '+type4);
+	        //console.log('search_word 실행 -> search1: '+search1 + ', type4: '+type4);
+	        //alert('search_word 실행 -> search1: '+search1 + ', type4: '+type4);
 	        location.href = '/admin/board?type4='+type4+'&search1='+search1;
 	        // redirectToSearch(type1, search1);
 	    }
@@ -69,8 +68,8 @@
 
 		    type4 = selectElement.value; // 선택된 필터
 		    search1 = searchInput.value; // 입력된 검색어
-		    console.log('search_type 실행 -> search1: '+search1 + ', type4: '+type4);
-		    alert('search_type 실행 -> search1: '+search1 + ', type4: '+type4);
+		    //console.log('search_type 실행 -> search1: '+search1 + ', type4: '+type4);
+		    //alert('search_type 실행 -> search1: '+search1 + ', type4: '+type4);
 		    location.href = '/admin/board?type4='+type4+'&search1='+search1;
 		    // redirectToSearch(type1, search1);
 	}
@@ -145,7 +144,7 @@
                                     		<td>${board.bno } </td>
                                    		    <td>${board.content } </td>
                                       		<td>${board.btitle } </td>
-                                    		<td>${board.mid } </td>
+                                    		<td>${board.memail } </td>
                                     		<td><fmt:formatDate value="${board.reg_date}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                                     		<td>${board.bview_count } </td>
                                     	</tr>

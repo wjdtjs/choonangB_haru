@@ -15,6 +15,9 @@
 </head>
 
 <style>
+
+
+
 .modal_ p {
 	color: black;
 	padding: 12px 24px;
@@ -412,40 +415,6 @@ input#res-mname {
     		selected_vet = selectedValue;
     		selectDoctor();
     		
-//     		if (selectedValue && selectedValue != "0") {
-// 				const dDates = await getDisabledDates(selectedValue);
-// 				const dDates2 = await getRegularDisabledDates(selectedValue);
-//     			console.log("if selectedValue ->"+selectedValue);
-//     			console.log("if dDates ->"+dDates);
-    			
-//     			disabledDates = [];
-//     			if(dDates) {
-//     				for (var i = 0; i < dDates.length; i++) {
-//     					disabledDates.push(dDates[i].schdate);
-//     				}
-//     			}
-//     			if(dDates2) {
-//     				for (var i = 0; i < dDates2.length; i++) {
-//     					if(dDates2[i].persoffdays) {
-//     						for(var j = 0; j < dDates2[i].persoffdays.length; j++) {
-//     							disabledDates.push(dDates2[i].persoffdays[j]);			
-//     						}					
-//     					}
-//     					if(dDates2[i].newoff) {
-//     						for(var j = 0; j < dDates2[i].newoff.length; j++) {
-//     							disabledDates.push(dDates2[i].newoff[j]);			
-//     						}					
-//     					}
-//     				}			
-//     			}
-				
-// 				if (disabledDates) {
-// 					console.log("disabledDates ->",disabledDates);
-// 					console.log("buildCalendar ready,,,");
-// 					buildCalendar(disabledDates);					// 진료 불가능 날짜 적용된 달력 함수 호출
-// 					$('#res-calendar').css("display", "block");		// 달력 보이게
-// 				}
-// 			}
     	})
     })
     
@@ -456,11 +425,9 @@ input#res-mname {
 	async function selectDoctor() {
 		console.log("selectedValue ->"+selected_vet);
 		
-	//	if (selected_vet && selected_vet != "0") {
 			const dDates = await getDisabledDates(selected_vet);
 			const dDates2 = await getRegularDisabledDates(selected_vet);
 			console.log("if selectedValue ->"+selected_vet);
-	//		console.log("if dDates ->"+dDates);
 			
 			disabledDates = [];
 			if(dDates) {
@@ -485,12 +452,10 @@ input#res-mname {
 			console.log("disabledDates ->", disabledDates);
 			
 			if (disabledDates) {
-	//			console.log("disabledDates ->",disabledDates);
 				console.log("buildCalendar ready,,,");
 				buildCalendar(disabledDates);					// 진료 불가능 날짜 적용된 달력 함수 호출
 				$('#res-calendar').css("display", "block");		// 달력 보이게
 			}
-	//	}
 	}
     
 
@@ -738,9 +703,7 @@ input#res-mname {
     		error: function(xhr, status, error) {
 	            console.error("동물 이름 데이터를 가져오는 중 오류 발생:", error);
 	        }
-    	})
-    	
-    	
+    	})    	
     }
     
    

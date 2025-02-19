@@ -185,7 +185,7 @@ public class OrderController {
 		
 		System.out.println("mailSending...");
 		String tomail = order.getMemail();
-		String setfrom = "as@naver.com";
+		String setfrom = "하루동물병원 <0808hr@gmail.com>"; //보내는사람
 		String title = "주문하신 상품이 " + order.getOstatus_content() + "되었습니다.";
 		
 		try {

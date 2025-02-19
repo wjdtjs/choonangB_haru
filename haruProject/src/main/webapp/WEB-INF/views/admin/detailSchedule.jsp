@@ -172,7 +172,7 @@ td > button {
 		 const schno = '${schedule.schno}';
 		 var sendData = $('form').serialize();
 		 sendData = sendData +('&schno='+schno);
-         alert('sendData : ' + sendData);
+         // alert('sendData : ' + sendData);
 		 
 		 location.href = "/admin/updateSchedule?"+sendData;
 	 }

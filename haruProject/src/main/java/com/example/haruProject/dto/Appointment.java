@@ -17,6 +17,7 @@ public class Appointment {
 	private int ano;
 	private int memno;
 	private int petno;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private Date reg_date;
 	private String memo;
 	private String start_time;

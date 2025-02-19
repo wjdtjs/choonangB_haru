@@ -227,7 +227,7 @@ table#board_detail_re_table {
 								        				<td>${board.bno }</td>
 								        				
 								        				<th>작성자</th>
-								        				<td>${board.mid }</td>
+								        				<td>${board.memail }</td>
 								        			</tr>
 								        			<tr>								        				
 								        				<c:choose>

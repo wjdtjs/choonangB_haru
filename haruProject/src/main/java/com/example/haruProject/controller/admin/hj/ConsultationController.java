@@ -147,7 +147,7 @@ public class ConsultationController {
 		model.addAttribute("chart",chart);
 		model.addAttribute("chartImgs",chartImgs);
 		model.addAttribute("weight",weight);
-		
+		 
 		return "admin/detailConsultation";
 	}
 	
@@ -165,25 +165,32 @@ public class ConsultationController {
 		// 업데이트, 수정한 이미지 삭제
 		cs.updateConsultation(ch, imgPaths);
 		//몸무게 수정
-		if(weight.getPetweight() != null) {
+		if(weight.getPetweight() != null || weight.getPetweight() != "") {
+			System.out.println("==================== "+weight.getPetweight());
+			// SimpleDateFormat을 사용하여 날짜 형식 지정
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
+			// String을 Date로 변환
+			String dateString = weight.getRreg_date();
+			Date date = formatter.parse(dateString);
+			System.out.println("==================== format date"+date);
+
 			// 등록되어있다면 수정
-			if(weight.getRreg_date() != null ){ 
+			if(date != ch.getRdate() ){ 
+				System.out.println("==================== if"+weight.getPetweight());
 				
-				String dateString = weight.getRreg_date();
 				
-				// SimpleDateFormat을 사용하여 날짜 형식 지정
-	            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	            
-	            // String을 Date로 변환
-	            Date date = formatter.parse(dateString);
+				//System.out.println("==================== date"+weight.getRreg_date());
+				
 	            
 				weight.setReg_date(date);
+				System.out.println("==================== weight"+weight);
 				int updateWeight = cs.UpdatePetWeight(weight);
 			}
 			
 			// 등록된 값이 없다면 추가
 			else {
+				System.out.println("==================== else"+weight.getPetweight());
 				int insertResult = cs.insertPetWeight(weight);
 			}
 		}

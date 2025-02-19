@@ -125,8 +125,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	    	        date2 = $("#datepicker2").val();
 	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 	    			  		+',start_date: '+date1+',end_date: '+date2);
-	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			//alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   	//+',start_date: '+date1+',end_date: '+date2);
 	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
 	    			  		+'&start_date='+date1+'&end_date='+date2;
 	            }
@@ -174,8 +174,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	    	        date2 = $("#datepicker2").val();
 	    			console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 	    			  		+',start_date: '+date1+',end_date: '+date2);
-	    			alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-	    			   		+',start_date: '+date1+',end_date: '+date2);
+	    			//alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+	    			   	//	+',start_date: '+date1+',end_date: '+date2);
 	    			location.href = '/admin/reservation?type4='+type4+'&type5='+type5+'&search1='+search1
 	    			  		+'&start_date='+date1+'&end_date='+date2;
 	            }
@@ -211,8 +211,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	            date2 = $("#datepicker2").val();
 			    console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 			    		+',start_date: '+date1+',end_date: '+date2);
-			    alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-			    		+',start_date: '+date1+',end_date: '+date2);
+			    //alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+			    		//+',start_date: '+date1+',end_date: '+date2);
 			    location.href = '/admin/consultation?type4='+type4+'&type5='+type5+'&search1='+search1
 			    		+'&start_date='+date1+'&end_date='+date2;
 	    }
@@ -231,8 +231,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 	    date2 = $("#datepicker2").val();
 		console.log('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
 				+',start_date: '+date1+',end_date: '+date2);
-		alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
-		  		+',start_date: '+date1+',end_date: '+date2);
+		//alert('search_type 실행 -> type4: '+type4+',type5: '+type5+',search1: '+search1
+		  		//+',start_date: '+date1+',end_date: '+date2);
 		location.href = '/admin/consultation?type4='+type4+'&type5='+type5+'&search1='+search1
 		   		+'&start_date='+date1+'&end_date='+date2;
 	}
@@ -321,7 +321,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
                                     </thead>
                                     <tbody>
                                     	<c:forEach var="consultation" items="${cList }">
-                                    		<tr onclick="goToDetail('${consultation.resno}')" style="cursor: pointer;">
+                                    		<tr onclick="goToDetail('${consultation.resno}')">
 	                                    		<td>${consultation.resno } </td>
 	                                    		<td><fmt:formatDate value="${consultation.rdate}" pattern="yyyy-MM-dd"/></td>
 	                                    		<td>${consultation.mname } </td>

@@ -180,10 +180,9 @@
 	<!-- 후기 삭제 + 댓글 포함 
 		(BSTATUS_MCD = 200: 삭제(노출x))
 	-->
-	<update id="JS_UpdateReviewStatusDelete" parameterType="int">	
-		UPDATE BOARD SET BSTATUS_MCD = 200 
-		WHERE BGROUP = #{bno}
-	</update>
+	<update id="JS_UpdateReviewStatusDelete" parameterType="int">   
+      DELETE FROM BOARD WHERE BGROUP = #{bno}
+   	</update>
 	
 	<!-- 후기작성 
 		프로시저 사용

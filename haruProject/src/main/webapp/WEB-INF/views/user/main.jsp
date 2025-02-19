@@ -287,7 +287,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 						<div class="service-icon"><img alt="" src="/img/icon-consullist.png"></div>
 						<div class="service-title">진료내역</div>
 					</li>
-					<li class="shortcut_item" onclick="location.href='/user/community'">
+					<li class="shortcut_item" onclick="location.href='/user/notice'">
 						<div class="service-icon"><img alt="" src="/img/icon-notice.png"></div>
 						<div class="service-title">공지사항</div>
 					</li>

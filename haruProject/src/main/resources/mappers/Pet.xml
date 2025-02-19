@@ -19,7 +19,7 @@
 		JOIN common cm3 ON pt.petgender_bcd = cm3.bcd AND pt.petgender_mcd = cm3.mcd
 		JOIN common cm4 ON pt.petstatus_bcd = cm4.bcd AND pt.petstatus_mcd = cm4.mcd
 		LEFT OUTER JOIN admin a ON pt.ano = a.ano
-		WHERE pt.memno = #{memno}
+		WHERE pt.memno = #{memno} AND petstatus_mcd = 100
 	</select>
 	
 	
@@ -173,20 +173,20 @@
 	<select id="JS_SelectPetCount" parameterType="SearchItem" resultType="int">
 		SELECT COUNT(*) FROM PET
 		<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
-			WHERE
+			WHERE petstatus_mcd = 100
 			<choose>
 				<when test="search1 == 'petname'">PETNAME LIKE '%' || #{search2} || '%'</when>
 				<when test="search1 == 'mname'">
-					MEMNO IN (
+					AND MEMNO IN (
 						SELECT MEMNO FROM MEMBER WHERE MNAME LIKE '%' || #{search2} || '%'
 					)
 				</when>
 				<when test="search1 == 'all'">
-					PETNAME LIKE '%' || #{search2} || '%'
+					AND (PETNAME LIKE '%' || #{search2} || '%'
 					or
 					MEMNO IN (
 						SELECT MEMNO FROM MEMBER WHERE MNAME LIKE '%' || #{search2} || '%'
-					)
+					))
 				</when>
 			</choose>
 		</if>
@@ -227,9 +227,10 @@
                 	pp.MEMNO = m.MEMNO
                 LEFT OUTER JOIN ADMIN a ON
                 	pp.ANO = a.ANO
+					WHERE petstatus_mcd = 100
                     
 				<if test="(search1 != null and !search1.equals('')) and (search2 != null and !search2.equals(''))">
-					WHERE
+					AND
 					<choose>
 						<when test="search1 == 'petname'">pp.PETNAME LIKE '%' || #{search2} || '%'</when>
 						<when test="search1 == 'mname'">
@@ -372,6 +373,6 @@
 		SET petweight = #{petweight}
 		WHERE memno = #{memno}
 		AND petno = #{petno}
-		AND reg_date = #{reg_date}
+	    AND reg_date = #{reg_date}
 	</update>
 </mapper>

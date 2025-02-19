@@ -98,7 +98,7 @@ function psUpdate() {
    console.log("주문 상태 변경 시작");
    const ostatus_mcd = document.querySelector("select[name='ostatus_mcd']").value;
    const orderno = document.querySelector("input[name='orderno']").value;
-   alert("수정될 주문 상태 ->"+ostatus_mcd+", 주문 번호 ->"+orderno);
+   //alert("수정될 주문 상태 ->"+ostatus_mcd+", 주문 번호 ->"+orderno);
    
    // 주문취소일시 
    if(ostatus_mcd === "400") {
@@ -107,7 +107,7 @@ function psUpdate() {
          
          const tid = document.querySelector("input[name='tid']").value;
          const ototal_price = document.querySelector("input[name='ototal_price']").value;
-         alert("카카오페이 환불 가격 : "+ ototal_price + ", tid : " + tid);
+         //alert("카카오페이 환불 가격 : "+ ototal_price + ", tid : " + tid);
          
          $.ajax({
             type: 'POST',

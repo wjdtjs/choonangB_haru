@@ -126,7 +126,7 @@ select {
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="cursor: pointer;">
                                     <colgroup>
                                     	<col width="10%" />
                                     	<col width="20%" />

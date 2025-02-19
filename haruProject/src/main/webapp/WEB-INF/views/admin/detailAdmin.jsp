@@ -140,10 +140,13 @@ em {
 	       			 </form>
 	       			 </div>
 					<!-- 모달 버튼 -->
-			       	<div class="modal_l-content-btn">
-				       	<button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/doctor'">목록으로</button>
-			            <button type="submit" class="admin_modal update_btn" id="update_btn" form="upd_ad">수정하기</button>
-			       	</div> 
+                    <c:if test="${userno == admin.ano || userrole == 100 }">
+                      <div class="modal_l-content-btn">
+                         <button type="button" class="to_list" id="detail_close_btn" onclick="location.href='/admin/doctor'">목록으로</button>
+                        <button type="submit" class="admin_modal update_btn" id="update_btn" form="upd_ad">수정하기</button>
+                      </div> 
+                    </c:if>
+
                 </div>
                 <!-- /.container-fluid -->
 

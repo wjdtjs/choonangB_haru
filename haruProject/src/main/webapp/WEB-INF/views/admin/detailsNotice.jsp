@@ -112,7 +112,7 @@
 					
 			        <!-- 모달 버튼 -->
 			        <div class="modal_l-content-btn">
-			        	<button type="button" id="modal_close_btn" class="to_list pro_reg" onclick="location.href='/admin/stock'">목록으로</button>
+			        	<button type="button" id="modal_close_btn" class="to_list pro_reg" onclick="location.href='/admin/notice'">목록으로</button>
 			        	<button type="submit" class="update_btn" form="notice-update-form">수정하기</button>
 			        </div>
 

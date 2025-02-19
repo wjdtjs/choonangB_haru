@@ -117,7 +117,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                             	<div style="float: right; margin-bottom: 4px;">총 ${totalCnt }건</div>
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="cursor: pointer;">
                                     <thead>
                                         <tr>
                                             <th>주문번호</th>

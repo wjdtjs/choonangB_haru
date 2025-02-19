@@ -2,7 +2,9 @@ package com.example.haruProject.controller.admin.hr;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -38,7 +40,7 @@ public class MailController {
 							      @RequestParam("memo") String memo,
 								  @RequestParam("status") int status,
 								  Model model
-								  ) throws MessagingException
+								  ) throws MessagingException, java.text.ParseException, ParseException
 	{
 	    System.out.println("MailController confirmSendMail() start ,,,");
 	    System.out.println("MailController confirmSendMail() memail ->"+memail);
@@ -57,8 +59,16 @@ public class MailController {
 		 * 진료 소요 시간은 00분 입니다. 감사합니다.
 		 */
 	    
+	 // ✅ 날짜 변환
+	    SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+	    SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
+
+	    String formattedDate = "";
+	    Date parsedDate = inputFormat.parse(rdate); // ✅ String을 Date로 변환
+		formattedDate = outputFormat.format(parsedDate); // 원하는 형식으로 변환
+	    
 	    String content = "안녕하세요. 하루 동물병원 입니다.\n 신청하신 예약이 확정되었습니다.\n" +
-	            rdate + ", " + start_time + "까지 내원하여 주시기 바랍니다.\n" +
+	    		formattedDate + ", " + start_time + "까지 내원하여 주시기 바랍니다.\n" +
 	            "진료 소요 시간은 " + rtime + "분 입니다. 감사합니다.";
 	    // System.out.println("content: "+content);
 	    

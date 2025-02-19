@@ -28,7 +28,7 @@
 					<div style="display: none">${rl.bno }</div>
 					<div class="js-p-review-div">
 						<div class="p-review-top">
-							<div>${rl.mid }</div>
+							<div>${rl.memail }</div>
 							<div><fmt:formatDate value="${rl.reg_date }" pattern="yyyy-MM-dd"/></div>							
 						</div>
 						<c:choose>

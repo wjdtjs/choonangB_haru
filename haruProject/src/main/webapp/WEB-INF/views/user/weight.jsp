@@ -54,6 +54,7 @@ td {
 }
 
 th:first-child, td:first-child {
+
     border-left: none;
 }
 
@@ -165,28 +166,15 @@ th:first-child, td:first-child {
 
 <script type="text/javascript">
 
-// 몸무게 수정(추가)
-/* $(() => {
-	$('.update-weight-btn').click(function() {
-		var weight = $(".input-pet-weight").val();
-		let today = new Date();
-		var reg_date = today.toLocaleDateString('ko-KR', 
-											   {year: 'numeric',
-												month: '2-digit',
-												day: '2-digit',
-												}) // 객체 {year, month, day}를 인수로 넣은 이유는 월, 일을 두자리로 만들기 위함 
-												.replace(/\./g, '')
-												.replace(/\s/g, '.');
-											
-		console.log(`weight: \${weight}, reg_date: \${reg_date}`);
-		
-		$("#weight-table > tbody:first").append('<tr><td>' + reg_date + '</td><td>' + weight + 'kg</td></tr>');
-		
-		
-		//document.getElementById("updateWeightForm").action = "/user/updateWeight";
-		//document.getElementById("updateWeightForm").submit();
-	});
-}) */
+document.getElementById("updateWeightForm").addEventListener("submit", function(event) {
+    var weightInput = document.querySelector(".input-pet-weight").value.trim();
+
+    if (weightInput === "" || isNaN(weightInput)) {
+        alert("몸무게를 입력해주세요.");
+        event.preventDefault(); // 폼 제출 방지
+    }
+});
+
 
 $(()=>{
     $('#pageNum${pagination.currentPage}.haru-pagenum').addClass('active');

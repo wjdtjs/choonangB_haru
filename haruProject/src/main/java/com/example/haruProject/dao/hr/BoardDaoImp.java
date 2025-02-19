@@ -104,6 +104,7 @@ public class BoardDaoImp implements BoardDao {
 		int result = 0;
 		
 		try {
+			session.delete("HR_DeleteBoardImages", bno);
 			result = session.delete("HR_DeleteBoard", bno);
 			System.out.println("BoardDaoImp deleteBoard() result ->"+result);
 		} catch (Exception e) {

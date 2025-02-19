@@ -259,7 +259,7 @@ public class ReviewDaoImp implements ReviewDao {
 			//boardimg에서 삭제할 이미지 있는지 확인
 			int [] arr = board.getImgno();
 			int bno = board.getBno();
-			if(arr.length>0) {
+			if(arr.length>0 && arr != null) {
 				for(int i : arr) {
 					Map<String, Object> delMap = new HashMap<>();
 					delMap.put("imgno", i);

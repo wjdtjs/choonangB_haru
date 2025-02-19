@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.haruProject.common.utils.SessionUtil;
 import com.example.haruProject.dto.Admin;
 import com.example.haruProject.dto.Pagination;
 import com.example.haruProject.dto.SearchItem;
 import com.example.haruProject.service.hj.AdminService;
 import com.example.haruProject.service.js.MemberService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -135,21 +138,33 @@ public class AdminController {
 	 */
 	
 	// 관리자 정보
-	@GetMapping(value = "/admin/detailAdmin")
-	public String getAdminDetail(@RequestParam("ano") String ano,Model model) {
-		System.out.println("AdminController getAdminDetail... ");
-		System.out.println("AdminController getAdminDetailano- >"+ano);
-		
-		Admin admin = as.getAdminDetail(Integer.parseInt(ano));
-		System.out.println("AdminController getAdminDetailano admin- >"+admin);
-		List<Map<String, Object>> acommonList=as.acommonList();
-		System.out.println("AdminController getAdminDetailano acommonList- >"+acommonList);
-		model.addAttribute("admin",admin);
-		model.addAttribute("common",acommonList);
-		model.addAttribute("pageNum",1);
+	   @GetMapping(value = "/admin/detailAdmin")
+	   public String getAdminDetail(
+	                           HttpServletRequest request, 
+	                           @RequestParam("ano") String ano, 
+	                           Model model) {
+	      System.out.println("AdminController getAdminDetail... ");
+	      System.out.println("AdminController getAdminDetailano- >"+ano);
+	      
+	      int userno = SessionUtil.getNo(request); // 현재 로그인 정보
+	      int userrole = SessionUtil.getRole(request); // 현재 로그인 정보
+	      //System.out.println("AdminController getAdminDetailano userno- >"+userno);
+	      //System.out.println("AdminController getAdminDetailano userrole- >"+userrole);
+	      
+	      Admin admin = as.getAdminDetail(Integer.parseInt(ano));
+	      System.out.println("AdminController getAdminDetailano admin- >"+admin);
+	      
+	      List<Map<String, Object>> acommonList=as.acommonList();
+	      System.out.println("AdminController getAdminDetailano acommonList- >"+acommonList);
+	      
+	      model.addAttribute("userno",userno);
+	      model.addAttribute("userrole",userrole);
+	      model.addAttribute("admin",admin);
+	      model.addAttribute("common",acommonList);
+	      model.addAttribute("pageNum",1);
 
-		return "admin/detailAdmin";
-	}
+	      return "admin/detailAdmin";
+	   }
 	
 	// 관리자 정보 수정
 	@PostMapping(value = "/admin/updateAdmin")

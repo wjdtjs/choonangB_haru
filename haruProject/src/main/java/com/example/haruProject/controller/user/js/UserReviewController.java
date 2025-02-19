@@ -291,7 +291,7 @@ public class UserReviewController {
 				
 				System.out.println("UserReviewController image.getSize ==> "+image.getSize());
 				
-				if (image.getContentType() != null || image.getSize() > 0) { // ContentType이 있는 경우 파일임			        
+				if (image.getContentType() != null && image.getSize() > 0) { // ContentType이 있는 경우 파일임			        
 			        System.out.println("UserReviewController saveImage() -> "+image.getSubmittedFileName());
 			        InputStream inputStream = image.getInputStream();
 			        

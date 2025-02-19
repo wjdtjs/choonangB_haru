@@ -224,7 +224,9 @@ em {
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">진료일시</td> <td>:</td>
-				        		<td><input type="text" class="send-info" name="rdate" value="<fmt:formatDate value="${apm.rdate}" pattern="yyyy-MM-dd"/> ${fn:substring(apm.start_time, 0, 2) }:${fn:substring(apm.start_time, 2, 4) } " readonly="readonly"></td>
+				        		<td>
+				        		<input type="date" name="rdate" value="<fmt:formatDate value="${apm.rdate }" pattern="yyyy-MM-dd"/>" style="display: none;">				        		
+				        		<input type="text" class="send-info" value="<fmt:formatDate value="${apm.rdate}" pattern="yyyy-MM-dd"/> ${fn:substring(apm.start_time, 0, 2) }:${fn:substring(apm.start_time, 2, 4) } " readonly="readonly"></td>
 				        	</tr>
 				        	<tr>
 				        		<td class="form-input-title">진료과목</td>	<td>:</td> <td>${apm.item}</td>
@@ -240,14 +242,14 @@ em {
 						    <div class="infoTitle">동물 정보</div>
 				        	<div class="contents">
 				        		<div class="content"><input type="hidden" name="petno" value="${apm.petno }">${apm.petno }</div>
-				        		<div class="content">${apm.petname }</div>
+				        		<div class="content linked-td" onclick="location.href='/admin/details-pet?petno='+${apm.petno}">${apm.petname} <i class="fa-solid fa-file-lines"></i></div>
 				        		<div class="content">${apm.species } (${apm.gender })</div>
 				        		<div class="content"><fmt:formatDate value="${apm.petbirth }" pattern="yyyy년 MM월 dd일"/> 출생</div>
 				        		<div class="content">${apm.petheight }cm / ${weight.petweight }kg</div>
 				        	</div>
 				        	<div class="infoTitle">특이사항</div>
 				        	<div>
-				        		<div class="box">
+				        		<div class="box"> 
 				        			${apm.petspecial }
 				        			<c:if test="${apm.petspecial == null}">
 				        				특이사항 없습니다.
@@ -264,7 +266,6 @@ em {
 				        </div>
 				        
 				       
-				        	<input type="hidden" name="cno" value="${chart.cno}">
 				        	<div class="infoTitle">이미지</div>
 				        	<div class="file-name-div" style="margin-top: 1rem" >
 								<div class="pre-img-div">
@@ -285,19 +286,19 @@ em {
 				        	</div>
 				        	<div class="infoTitle">기타/전달사항</div>
 				        	<div>
-				        		<textarea class="form-input-box" name="cect_con" >
-				        			${chart.cect_con }
-				        		</textarea>
+				        		<textarea class="form-input-box" name="cect_con" >${chart.cect_con }</textarea>
 				        	</div>
 				        	
 				        	<div class="input-row">
 						        <div class="infoTitle">몸무게</div>
 						        <div class="info-row-input">
-						        <input type="hidden" name="rreg_date" value="<fmt:formatDate value='${weight.reg_date}' pattern='yyyy-MM-dd HH:mm:ss'/>">
-						        	<c:if test="${weight.reg_date == apm.rdate}">
+						        <input type="hidden" name="rreg_date" value="<fmt:formatDate value='${apm.rdate}' pattern='yyyy-MM-dd HH:mm:ss'/>">
+						        <fmt:formatDate var="weight1" value="${weigth.reg_date }" pattern="yyyy-MM-dd"/>
+						        <fmt:formatDate var="apm1" value="${apm.rdate }" pattern="yyyy-MM-dd"/>
+						        	<c:if test="${weight1 == apm1}">
 						       			<input type="text" class="form-input" name="petweight" value="${weight.petweight}">kg
 						       		</c:if>
-						       		<c:if test="${weight.reg_date != apm.rdate}">
+						       		<c:if test="${weight1 != apm1}">
 						       			<input type="text" class="form-input" name="petweight">kg
 						       		</c:if>
 						        </div>

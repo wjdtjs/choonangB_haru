@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>결제하기</title>
+<title>주문하기</title>
 </head>
 
 <style>
@@ -105,8 +105,6 @@ p {
 $(() => {
 	// 총 결제 금액 표시
 	let totalPrice = 0;
-	
-	
 	
 	updateButtonState();
 	
@@ -349,7 +347,7 @@ function purchase() {
 			<div style="width: 100%;">
 				<div class="p-total">
 					<input type="hidden" name="ototal_price" value="${totalPrice}">
-					<p>총 결제금액</p>
+					<p>총 주문금액</p>
 					<p style="color: var(--haru);"><fmt:formatNumber value="${totalPrice}" pattern="#,###" />&nbsp;원</p>
 				</div>
 				
@@ -374,7 +372,7 @@ function purchase() {
 			<div style="margin: 80px 0;"></div>
 			
 			<div>
-				<button class="user-btn-primary" onclick="purchase()" id="purchase-btn">결제하기</button>
+				<button class="user-btn-primary" onclick="purchase()" id="purchase-btn">주문하기</button>
 			</div>
 		 
 		</div>

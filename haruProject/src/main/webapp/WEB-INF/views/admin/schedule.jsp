@@ -18,8 +18,8 @@
 
 </head>
 <style>
-	.calendar {
-	 	width: 60%;
+	#calendar {
+	 	height: 60%;
 	}
 	.fc-toolbar-chunk{
 	 	font-size: 14px;

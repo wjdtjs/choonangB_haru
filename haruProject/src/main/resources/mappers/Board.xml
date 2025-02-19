@@ -27,11 +27,12 @@
 		FROM (
 		    SELECT ROWNUM rn, bb.*
 		    FROM (
-		        SELECT b.bno, b.btitle, m.mid, b.reg_date, b.bview_count, b.board_type_mcd, c.content
+		        SELECT b.bno, b.btitle, m.mid, b.reg_date, b.bview_count, b.board_type_mcd, c.content, m.memail
 				FROM BOARD b
                      JOIN member m ON b.memno = m.memno
                      JOIN (SELECT mcd,content FROM common WHERE bcd= 350) c ON b.board_type_mcd = c.mcd
 				WHERE b.btitle IS NOT NULL
+					AND b.bstatus_mcd = 100
 				<if test="(type4 != null and type4 != 0) or (search1 != null and !search1.equals(''))">
 					AND
 				</if>
@@ -54,7 +55,7 @@
 	<!-- 후기 상세 -->
 	<!-- 게시글 원글만 불러오기 -->
 	<select id="HR_SelectBoardDetailContent" parameterType="int" resultType="Board">
-		SELECT b.bno, b.resno, c.content as item, m.mid, b.reg_date, b.update_date, b.bview_count,
+		SELECT b.bno, b.resno, c.content as item, m.mid, b.reg_date, b.update_date, b.bview_count, m.memail,
 		 b.btitle, b.bcontents, b.bseq, b.pno, b.bgroup, b.pno, b.board_type_mcd, (SELECT COUNT(*)
 																					FROM BOARD b
 																					WHERE b.bgroup = #{bno}) as re_count
@@ -78,11 +79,14 @@
 	
 	
 	<!-- 게시글 삭제 -->
-	<delete id="HR_DeleteBoard" parameterType="int">
-		DELETE
-		FROM BOARD
-		WHERE bgroup = #{bno}
+	<delete id="HR_DeleteBoardImages" parameterType="int">
+    	DELETE FROM BOARDIMG WHERE BOARD_ID = #{bno}
 	</delete>
+	
+	<delete id="HR_DeleteBoard" parameterType="int">
+	    DELETE FROM BOARD WHERE bgroup = #{bno}
+	</delete>
+
 	
 	<update id="HR_DeleteBoardRe" parameterType="int">
 		UPDATE BOARD

@@ -157,16 +157,23 @@ button,
 		
 		
 		
-		function directPurchase() {
-			console.log("direct order start ,,,");
-			
-			let pno = Number($("input[name='pno']").val());
-			let squantity = Number($("input[name='pquantity']").val());
-			
-			console.log("pno ->",pno, ", squantity ->", squantity);
-			
-			location.href = `/user/direct_purchase?pno=\${pno}&&squantity=\${squantity}`;
-		}
+	      function directPurchase() {
+	          console.log("direct order start ,,,");
+	          
+	          let quantity = $('input[name=pquantity]').val();
+	          if(quantity == null || quantity == 0) {
+	             alert('수량을 선택해 주세요.');
+	             result = false;
+	          } else {
+	             let pno = Number($("input[name='pno']").val());
+	             let squantity = Number(quantity);
+	             
+	             console.log("pno ->",pno, ", squantity ->", squantity);
+	             
+	             location.href = `/user/direct_purchase?pno=\${pno}&&squantity=\${squantity}`;
+	          }
+	          
+	       }
 		
 	
 		$(()=>{

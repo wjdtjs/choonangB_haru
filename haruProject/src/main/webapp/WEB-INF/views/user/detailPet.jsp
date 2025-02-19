@@ -400,19 +400,24 @@ th:first-child, td:first-child {
                     }
                 },
                 scales: {
-                    x: {  // X축 설정
+                    xAxes: [{  // X축 설정
                         title: {
                             display: true,
                             text: '날짜'
                         }
-                    },
-                    y: {  // Y축 설정
+                    }],
+                    yAxes: [{  // Y축 설정
+                        beginAtZero: true,
+                        ticks: {
+  	                      stepSize: 0.1,
+  	                      min: 0,
+  	                      max: Math.ceil(Math.max(...dataValues) / 5) * 5 
+  	                    },
                         title: {
                             display: true,
                             text: '값'
-                        },
-                        beginAtZero: true
-                    }
+                        }
+                    }]
                 }
             }
         });

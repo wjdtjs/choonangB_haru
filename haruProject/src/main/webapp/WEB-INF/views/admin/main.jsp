@@ -332,7 +332,7 @@ p {
 	/* 몸무게 차트 */
 	function buildChart(ctx) {
 		new Chart(ctx, {
-	      type: 'line',  // 라인 차트
+	      type: 'bar',  // 라인 차트
 	      data: {
 	          labels: labels,  // X축 (날짜)
 	          datasets: [{
@@ -364,7 +364,7 @@ p {
 	                  ticks: {
 	                      stepSize: 1,  // 눈금 단위를 1로 설정 (1, 2, 3, 4, ...)
 	              		  min: 0, 
-		                  max: 5 // Y축 최댓값을 5의 배수로 설정
+		                  max: Math.ceil(Math.max(...dataValues) / 5) * 5  // Y축 최댓값을 5의 배수로 설정
 	                    },
 	                  beginAtZero: true,
 	                  title: {

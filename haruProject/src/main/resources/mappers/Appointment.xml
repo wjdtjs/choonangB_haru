@@ -157,7 +157,7 @@
 	<select id="HR_SelectPetnameList" parameterType="int" resultType="Map">
 		SELECT PETNO, PETNAME, PETBIRTH
 		FROM PET
-		WHERE MEMNO = #{memno}
+		WHERE MEMNO = #{memno} AND petstatus_mcd = 100
 	</select>
 	
 	<!-- 예약 추가 -->
@@ -312,7 +312,7 @@
 	<select id="HR_getDayAppointment" resultType="Appointment">
 		<![CDATA[
 		WITH date_series AS (
-		    SELECT TRUNC(SYSDATE) - 2 + LEVEL - 1 AS RDATE
+		    SELECT TRUNC(SYSDATE) - 3 + LEVEL - 1 AS RDATE
 		    FROM DUAL
 		    CONNECT BY LEVEL <= 7  -- 오늘을 포함하여 앞뒤 2일 총 5일 생성
 		)

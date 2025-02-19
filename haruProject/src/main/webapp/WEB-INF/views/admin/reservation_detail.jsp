@@ -226,27 +226,11 @@ button#res_change, #res_cancel, #res_del {
 	                return; // 검증 실패 시 종료
 	            }
 				
-				// 메일 보내기
-				const memail = '${appointment_d.memail}';
-				const date = '${appointment_d.rdate}';
-				const fixedDate = date.replace("KST", "+0900"); // KST를 +0900으로 변경
-				const bdate = new Date(fixedDate);
-				
-				const year = bdate.getFullYear(); // 연도
-			    const month = String(bdate.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1 필요)
-			    const day = String(bdate.getDate()).padStart(2, '0'); // 일
-			    const rdate = year+'년 '+month+'월 '+day+'일';
-				
-				const start_time = '${appointment_d.start_time}';
-				const rtime = document.querySelector('input[name="rtime"]').value;
 				var sendData = $('form').serialize();
 				sendData = sendData + ('&status='+200);
 				
-				console.log("memail: "+memail+", rdate: "+rdate+", start_time: "+start_time+", rtime: "+rtime+"\n"
-						+"sendData: "+sendData);
-				
-				url="/mail/confirmSend?memail="+memail+"&rdate="+rdate+"&start_time="+start_time+"&rtime="+rtime
-						+"&"+sendData;
+				url="/mail/confirmSend?"+sendData;
+				//alert(url);
 				
 				// 메일 전송으로 이동, 메일 전송 후에 상태변경 controller 호출
 				location.href = url;
@@ -508,6 +492,16 @@ button#res_change, #res_cancel, #res_del {
         }
     }
 	
+    $(document).ready(() => {
+        const start_time = $('input[name=start_time]').val().replace(":", ""); // 시작 시간 값
+        const rtime = parseInt($('input[name=rtime]').val()) || 0; // 진료 소요 시간 값 (기본값 0)
+        const count = rtime / 30; // 30분 단위로 버튼 개수 설정
+
+        if (start_time && count > 0) {
+            buttonChangeFromRtime(start_time, count); // 버튼 선택 적용
+        }
+    });
+	
 	
 
 </script>
@@ -570,6 +564,7 @@ button#res_change, #res_cancel, #res_del {
 								        				<td>
 								        					<input type="hidden" name="rdate" value="${appointment_d.rdate}">
 								        					<input type="hidden" name="start_time" value="${appointment_d.start_time}">
+								        					<input type="hidden" name="memail" value="${appointment_d.memail}">
 								        					<fmt:formatDate value="${appointment_d.rdate}" pattern="yyyy-MM-dd"/>&nbsp; ${appointment_d.start_time }
 								        				</td>
 								        				<th>&nbsp;&nbsp;진료 소요 시간(분)</th>
